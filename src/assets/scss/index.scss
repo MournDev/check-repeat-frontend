@@ -1,0 +1,51 @@
+// 主样式入口文件
+
+// 1. 首先导入变量和混合器
+@use 'variables' as *;
+
+// 2. 然后导入Element Plus主题
+@use 'element-plus/theme-chalk/src/index.scss';
+
+// 3. 最后是自定义样式
+
+// 全局样式重置
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: $font-family;
+  background-color: #f9fafb;
+  color: #1f2937;
+  font-size: $font-size-base;
+}
+
+// 布局样式
+.el-container {
+  height: 100vh;
+}
+
+.el-aside {
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.el-header {
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+}
+
+// 响应式辅助类
+.hidden-xs {
+  @media (max-width: 768px) {
+    display: none !important;
+  }
+}
+
+.hidden-sm {
+  @media (min-width: 769px) and (max-width: 992px) {
+    display: none !important;
+  }
+}
