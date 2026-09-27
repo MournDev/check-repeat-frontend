@@ -174,7 +174,7 @@ const loadPreview = async () => {
 
   try {
     const token = Cookies.get('token');
-    const response = await fetch(`/check/api/v1/preview/info/${props.paperId}`, {
+    const response = await fetch(`/check/api/preview/info/${props.paperId}`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     fileInfo.value = await response.json();
@@ -211,7 +211,7 @@ const handleIframeError = () => {
 
 const downloadFile = () => {
   const token = Cookies.get('token');
-  const downloadUrl = `/check/api/v1/file/download/${fileInfo.value?.fileId || props.paperId}/${encodeURIComponent(fileName.value)}`;
+  const downloadUrl = `/check/api/file/download/${fileInfo.value?.fileId || props.paperId}/${encodeURIComponent(fileName.value)}`;
   const link = document.createElement('a');
   link.href = downloadUrl;
   link.download = fileName.value;

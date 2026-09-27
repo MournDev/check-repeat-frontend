@@ -3,7 +3,7 @@ import request from '../request'
 // 获取通知列表
 export const getNoticeList = (params) => {
   return request({
-    url: '/api/v1/notices/list',
+    url: '/api/notices/list',
     method: 'get',
     params
   })
@@ -12,7 +12,7 @@ export const getNoticeList = (params) => {
 // 获取未读通知数量
 export const getUnreadCount = () => {
   return request({
-    url: '/api/v1/notices/unread-count',
+    url: '/api/notices/unread-count',
     method: 'get'
   })
 }
@@ -20,7 +20,7 @@ export const getUnreadCount = () => {
 // 按优先级获取未读通知数量
 export const getUnreadCountByPriority = () => {
   return request({
-    url: '/api/v1/notices/unread-count-by-priority',
+    url: '/api/notices/unread-count-by-priority',
     method: 'get'
   })
 }
@@ -28,7 +28,7 @@ export const getUnreadCountByPriority = () => {
 // 标记通知已读
 export const markAsRead = (noticeId) => {
   return request({
-    url: `/api/v1/notices/read/${noticeId}`,
+    url: `/api/notices/read/${noticeId}`,
     method: 'put'
   })
 }
@@ -36,7 +36,7 @@ export const markAsRead = (noticeId) => {
 // 批量标记已读
 export const batchMarkAsRead = (noticeIds) => {
   return request({
-    url: '/api/v1/notices/batch-read',
+    url: '/api/notices/batch-read',
     method: 'put',
     data: noticeIds
   })
@@ -45,7 +45,7 @@ export const batchMarkAsRead = (noticeIds) => {
 // 全部标记已读
 export const markAllAsRead = () => {
   return request({
-    url: '/api/v1/notices/read-all',
+    url: '/api/notices/read-all',
     method: 'put'
   })
 }
@@ -53,7 +53,7 @@ export const markAllAsRead = () => {
 // 删除通知
 export const deleteNotice = (noticeId) => {
   return request({
-    url: `/api/v1/notices/delete/${noticeId}`,
+    url: `/api/notices/delete/${noticeId}`,
     method: 'delete'
   })
 }
@@ -61,7 +61,7 @@ export const deleteNotice = (noticeId) => {
 // 批量删除通知
 export const batchDeleteNotice = (noticeIds) => {
   return request({
-    url: '/api/v1/notices/batch-delete',
+    url: '/api/notices/batch-delete',
     method: 'delete',
     data: noticeIds
   })
@@ -70,7 +70,7 @@ export const batchDeleteNotice = (noticeIds) => {
 // 清空所有通知
 export const clearAllNotice = () => {
   return request({
-    url: '/api/v1/notices/clear-all',
+    url: '/api/notices/clear-all',
     method: 'delete'
   })
 }
@@ -78,7 +78,7 @@ export const clearAllNotice = () => {
 // 获取最新通知
 export const getLatestNotice = (limit = 5) => {
   return request({
-    url: '/api/v1/notices/latest',
+    url: '/api/notices/latest',
     method: 'get',
     params: { limit }
   })
@@ -87,7 +87,7 @@ export const getLatestNotice = (limit = 5) => {
 // 获取通知统计
 export const getNoticeStats = () => {
   return request({
-    url: '/api/v1/notices/stats',
+    url: '/api/notices/stats',
     method: 'get'
   })
 }
@@ -95,7 +95,7 @@ export const getNoticeStats = () => {
 // 发送测试通知
 export const sendTestNotice = () => {
   return request({
-    url: '/api/v1/notices/test',
+    url: '/api/notices/test',
     method: 'post'
   })
 }
@@ -103,7 +103,7 @@ export const sendTestNotice = () => {
 // 发送带优先级测试通知
 export const sendTestNoticeWithPriority = () => {
   return request({
-    url: '/api/v1/notices/test-priority',
+    url: '/api/notices/test-priority',
     method: 'post'
   })
 }

@@ -131,7 +131,7 @@ const loadPreview = async () => {
     const token = Cookies.get('token')
     
     // 调用预览接口获取临时token
-    const response = await fetch(`/check/api/v1/preview/info/${props.fileId}`, {
+    const response = await fetch(`/check/api/preview/info/${props.fileId}`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -152,7 +152,7 @@ const loadPreview = async () => {
       } else if (result.previewToken) {
         // 本地存储文件的预览（需要临时token验证）
         const encodedFileName = encodeURIComponent(props.fileName || 'document')
-        previewUrl.value = `/check/api/v1/file/preview/${result.previewToken}/${encodedFileName}`
+        previewUrl.value = `/check/api/file/preview/${result.previewToken}/${encodedFileName}`
       } else {
         error.value = true
         errorMessage.value = '未获取到有效的预览URL'

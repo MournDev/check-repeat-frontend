@@ -2,14 +2,14 @@ import request from "./request";
 
 export const getMajorList = () => {
   return request({
-    url: "/api/v1/papers/major/list",
+    url: "/api/papers/major/list",
     method: "get",
   });
 };
 
 export const uploadPaper = (data) => {
   return request({
-    url: "/api/v1/papers/submit",
+    url: "/api/papers/submit",
     method: "post",
     data: data,
   });
@@ -17,7 +17,7 @@ export const uploadPaper = (data) => {
 
 export const getStudentPaperPage = (params) => {
   return request({
-    url: "/api/v1/papers/page",
+    url: "/api/papers/page",
     method: "post",
     data: params,
   });
@@ -25,7 +25,7 @@ export const getStudentPaperPage = (params) => {
 
 export const getStudentCheckTasks = (params) => {
   return request({
-    url: "/api/v1/student/check-tasks/list",
+    url: "/api/student/check-tasks/list",
     method: "get",
     params: params,
   });
@@ -33,7 +33,7 @@ export const getStudentCheckTasks = (params) => {
 
 export const createCheckTask = (paperId) => {
   return request({
-    url: "/api/v1/student/check-tasks/create",
+    url: "/api/student/check-tasks/create",
     method: "post",
     params: {
       paperId: paperId,
@@ -43,7 +43,7 @@ export const createCheckTask = (paperId) => {
 
 export const createBatchCheckTasks = (paperIds) => {
   return request({
-    url: "/api/v1/student/batch-check/create",
+    url: "/api/student/batch-check/create",
     method: "post",
     data: {
       paperIds: paperIds
@@ -53,7 +53,7 @@ export const createBatchCheckTasks = (paperIds) => {
 
 export const autoAssign = (paperSubmitId) => {
   return request({
-    url: "/api/v1/advisor/assign/auto",
+    url: "/api/advisor/assign/auto",
     method: "post",
     params: {
       paperSubmitId: paperSubmitId,
@@ -63,63 +63,63 @@ export const autoAssign = (paperSubmitId) => {
 
 export const getLatestPaper = () => {
   return request({
-    url: '/api/v1/student/dashboard/latest-paper',
+    url: '/api/student/dashboard/latest-paper',
     method: 'get'
   })
 }
 
 export const getStudentDashboardStats = () => {
   return request({
-    url: '/api/v1/student/dashboard/stats',
+    url: '/api/student/dashboard/stats',
     method: 'get'
   })
 }
 
 export const getAdvisorInfo = () => {
   return request({
-    url: '/api/v1/student/dashboard/advisor',
+    url: '/api/student/dashboard/advisor',
     method: 'get'
   })
 }
 
 export const getDashboardDeadlines = () => {
   return request({
-    url: '/api/v1/student/dashboard/deadlines',
+    url: '/api/student/dashboard/deadlines',
     method: 'get'
   })
 }
 
 export const getAbilityRadarData = () => {
   return request({
-    url: '/api/v1/student/dashboard/ability-radar',
+    url: '/api/student/dashboard/ability-radar',
     method: 'get'
   })
 }
 
 export const getSimilarityTrendChart = () => {
   return request({
-    url: '/api/v1/student/dashboard/similarity-trend',
+    url: '/api/student/dashboard/similarity-trend',
     method: 'get'
   })
 }
 
 export const getMajorComparisonData = () => {
   return request({
-    url: '/api/v1/student/dashboard/major-comparison',
+    url: '/api/student/dashboard/major-comparison',
     method: 'get'
   })
 }
 
 export const getTodoList = () => {
   return request({
-    url: '/api/v1/student/dashboard/todo-list',
+    url: '/api/student/dashboard/todo-list',
     method: 'get'
   })
 }
 
 export const getNotifications = (limit = 5) => {
   return request({
-    url: '/api/v1/student/dashboard/notifications',
+    url: '/api/student/dashboard/notifications',
     method: 'get',
     params: { limit }
   })
@@ -127,14 +127,14 @@ export const getNotifications = (limit = 5) => {
 
 export const getProgressTracking = () => {
   return request({
-    url: '/api/v1/student/dashboard/progress-tracking',
+    url: '/api/student/dashboard/progress-tracking',
     method: 'get'
   })
 }
 
 export const exportDashboardStats = () => {
   return request({
-    url: '/api/v1/student/dashboard/export',
+    url: '/api/student/dashboard/export',
     method: 'get',
     responseType: 'blob'
   })
@@ -142,7 +142,7 @@ export const exportDashboardStats = () => {
 
 export const getPaperDetails = (paperId) => {
   return request({
-    url: '/api/v1/papers/detail',
+    url: '/api/papers/detail',
     method: 'get',
     params: {
       paperId: paperId
@@ -152,7 +152,7 @@ export const getPaperDetails = (paperId) => {
 
 export const getFileInfo = (fileId) => {
   return request({
-    url: '/api/v1/file/info',
+    url: '/api/file/info',
     method: 'get',
     params: {
       fileId: fileId
@@ -162,7 +162,7 @@ export const getFileInfo = (fileId) => {
 
 export const getPaperReport = (reportId) => {
   return request({
-    url: '/api/v1/student/reports/data',
+    url: '/api/student/reports/data',
     method: "get",
     params: { reportId }
   });
@@ -170,7 +170,7 @@ export const getPaperReport = (reportId) => {
 
 export const getSimpleCheckReport = (paperId) => {
   return request({
-    url: '/api/v1/student/reports/list',
+    url: '/api/student/reports/list',
     method: "get",
     params: { paperId }
   });
@@ -178,7 +178,7 @@ export const getSimpleCheckReport = (paperId) => {
 
 export const deletePaper = (paperId) => {
   return request({
-    url: `/api/v1/papers/delete`,
+    url: `/api/papers/delete`,
     method: "post",
     params: {
       paperId: paperId
@@ -188,14 +188,14 @@ export const deletePaper = (paperId) => {
 
 export const deleteCheckTask = (taskId) => {
   return request({
-    url: `/api/v1/student/check-tasks/${taskId}/delete`,
+    url: `/api/student/check-tasks/${taskId}/delete`,
     method: "delete"
   });
 };
 
 export const deleteFile = (fileId) => {
   return request({
-    url: `/api/v1/file/delete/file`,
+    url: `/api/file/delete/file`,
     method: "delete",
     params: {
       fileId: fileId
@@ -205,7 +205,7 @@ export const deleteFile = (fileId) => {
 
 export const getCheckTaskDetail = (paperId) => {
   return request({
-    url: `/api/v1/student/check-tasks/taskDetail`,
+    url: `/api/student/check-tasks/taskDetail`,
     method: "get",
     params: {
       paperId: paperId
@@ -215,14 +215,14 @@ export const getCheckTaskDetail = (paperId) => {
 
 export const getCheckTaskById = (taskId) => {
   return request({
-    url: `/api/v1/student/check-tasks/${taskId}`,
+    url: `/api/student/check-tasks/${taskId}`,
     method: "get"
   });
 }
 
 export const getDetailedCheckReport = (reportId) => {
   return request({
-    url: '/api/v1/student/reports/preview',
+    url: '/api/student/reports/preview',
     method: "get",
     params: { reportId }
   });
@@ -230,14 +230,14 @@ export const getDetailedCheckReport = (reportId) => {
 
 export const getCheckHistory = (paperId) => {
   return request({
-    url: `/api/v1/student/papers/${paperId}/check-history`,
+    url: `/api/student/papers/${paperId}/check-history`,
     method: "get"
   });
 };
 
 export const getSimilarityTrend = (paperId, period = 30) => {
   return request({
-    url: `/api/v1/student/papers/${paperId}/similarity-trend`,
+    url: `/api/student/papers/${paperId}/similarity-trend`,
     method: "get",
     params: { period }
   });
@@ -245,7 +245,7 @@ export const getSimilarityTrend = (paperId, period = 30) => {
 
 export const recheckPlagiarism = (paperId) => {
   return request({
-    url: `/api/v1/student/check-tasks/recheck`,
+    url: `/api/student/check-tasks/recheck`,
     params: { paperId },
     method: "post"
   });
@@ -253,7 +253,7 @@ export const recheckPlagiarism = (paperId) => {
 
 export const getCheckStatus = (taskId) => {
   return request({
-    url: `/api/v1/student/check-tasks/status`,
+    url: `/api/student/check-tasks/status`,
     params: { taskId },
     method: "get"
   });
@@ -261,7 +261,7 @@ export const getCheckStatus = (taskId) => {
 
 export const exportCheckReport = (reportId, format) => {
   return request({
-    url: '/api/v1/student/reports/download',
+    url: '/api/student/reports/download',
     method: "post",
     data: { reportId, format },
     responseType: 'blob'
@@ -270,7 +270,7 @@ export const exportCheckReport = (reportId, format) => {
 
 export const withdrawPaper = (paperId, withdrawReasonType, reasonDetail) => {
   return request({
-    url: `/api/v1/papers/${paperId}/withdraw`,
+    url: `/api/papers/${paperId}/withdraw`,
     method: "post",
     headers: {
       'Content-Type': 'application/json'
@@ -284,7 +284,7 @@ export const withdrawPaper = (paperId, withdrawReasonType, reasonDetail) => {
 
 export const resubmitAfterWithdraw = (paperId, data) => {
   return request({
-    url: `/api/v1/papers/${paperId}/resubmit-after-withdraw`,
+    url: `/api/papers/${paperId}/resubmit-after-withdraw`,
     method: "post",
     data
   });
@@ -292,7 +292,7 @@ export const resubmitAfterWithdraw = (paperId, data) => {
 
 export const resubmitAfterRevision = (paperId, data) => {
   return request({
-    url: `/api/v1/papers/${paperId}/resubmit-after-revision`,
+    url: `/api/papers/${paperId}/resubmit-after-revision`,
     method: "post",
     data
   });
@@ -300,7 +300,7 @@ export const resubmitAfterRevision = (paperId, data) => {
 
 export const requestModification = (paperId, reason) => {
   return request({
-    url: `/api/v1/papers/${paperId}/modify-request`,
+    url: `/api/papers/${paperId}/modify-request`,
     method: "post",
     data: { reason }
   });
@@ -308,7 +308,7 @@ export const requestModification = (paperId, reason) => {
 
 export const downloadPaper = (paperId) => {
   return request({
-    url: `/api/v1/papers/${paperId}/download`,
+    url: `/api/papers/${paperId}/download`,
     method: "get",
     params: { paperId },
     responseType: 'blob'
@@ -317,7 +317,7 @@ export const downloadPaper = (paperId) => {
 
 export const batchDownloadPapers = (paperIds) => {
   return request({
-    url: `/api/v1/papers/batch-download`,
+    url: `/api/papers/batch-download`,
     method: "post",
     data: { paperIds },
     responseType: 'blob'
@@ -326,7 +326,7 @@ export const batchDownloadPapers = (paperIds) => {
 
 export const batchDeletePapers = (paperIds) => {
   return request({
-    url: `/api/v1/papers/batch-delete`,
+    url: `/api/papers/batch-delete`,
     method: "delete",
     data: { paperIds }
   });
@@ -334,21 +334,21 @@ export const batchDeletePapers = (paperIds) => {
 
 export const getPaperVersions = (paperId) => {
   return request({
-    url: `/api/v1/papers/${paperId}/versions`,
+    url: `/api/papers/${paperId}/versions`,
     method: "get"
   });
 };
 
 export const getVersionDetail = (paperId, versionId) => {
   return request({
-    url: `/api/v1/papers/${paperId}/versions/${versionId}`,
+    url: `/api/papers/${paperId}/versions/${versionId}`,
     method: "get"
   });
 };
 
 export const comparePaperVersions = (paperId, versionIds) => {
   return request({
-    url: `/api/v1/papers/compare-versions`,
+    url: `/api/papers/compare-versions`,
     method: "post",
     data: {
       paperId,
@@ -359,7 +359,7 @@ export const comparePaperVersions = (paperId, versionIds) => {
 
 export const compareVersionHistory = (paperId, fromVersion, toVersion) => {
   return request({
-    url: `/api/v1/student/papers/${paperId}/compare-versions`,
+    url: `/api/student/papers/${paperId}/compare-versions`,
     method: "post",
     data: {
       fromVersion,
@@ -370,7 +370,7 @@ export const compareVersionHistory = (paperId, fromVersion, toVersion) => {
 
 export const downloadVersionCompare = (paperId, versionIds) => {
   return request({
-    url: `/api/v1/papers/download-version-compare`,
+    url: `/api/papers/download-version-compare`,
     method: "post",
     data: {
       paperId,
@@ -382,7 +382,7 @@ export const downloadVersionCompare = (paperId, versionIds) => {
 
 export const downloadVersion = (versionId) => {
   return request({
-    url: `/api/v1/papers/versions/${versionId}/download`,
+    url: `/api/papers/versions/${versionId}/download`,
     method: "get",
     responseType: 'blob'
   });
@@ -390,7 +390,7 @@ export const downloadVersion = (versionId) => {
 
 export const downloadAttachment = (attachmentId) => {
   return request({
-    url: `/api/v1/papers/attachments/${attachmentId}/download`,
+    url: `/api/papers/attachments/${attachmentId}/download`,
     method: "get",
     responseType: 'blob'
   });
@@ -398,14 +398,14 @@ export const downloadAttachment = (attachmentId) => {
 
 export const getAdvisorInteractionInfo = () => {
   return request({
-    url: '/api/v1/student/advisor/info',
+    url: '/api/student/advisor/info',
     method: 'get'
   });
 };
 
 export const getMessageSessions = () => {
   return request({
-    url: '/api/v1/student/messages/sessions',
+    url: '/api/student/messages/sessions',
     method: 'get'
   });
 };
@@ -420,7 +420,7 @@ export const getMessages = (params) => {
     sessionId = params;
   }
   return request({
-    url: '/api/v1/student/messages/list',
+    url: '/api/student/messages/list',
     method: 'get',
     params: {
       sessionId,
@@ -432,7 +432,7 @@ export const getMessages = (params) => {
 
 export const sendMessage = (data) => {
   return request({
-    url: '/api/v1/student/messages/send',
+    url: '/api/student/messages/send',
     method: 'post',
     data
   });
@@ -440,7 +440,7 @@ export const sendMessage = (data) => {
 
 export const uploadMessageFile = (formData) => {
   return request({
-    url: '/api/v1/student/messages/upload',
+    url: '/api/student/messages/upload',
     method: 'post',
     data: formData,
     headers: {
@@ -451,7 +451,7 @@ export const uploadMessageFile = (formData) => {
 
 export const downloadMessageAttachment = (attachmentId) => {
   return request({
-    url: `/api/v1/student/messages/attachment/${attachmentId}`,
+    url: `/api/student/messages/attachment/${attachmentId}`,
     method: 'get',
     responseType: 'blob'
   });
@@ -459,14 +459,14 @@ export const downloadMessageAttachment = (attachmentId) => {
 
 export const clearMessages = (sessionId) => {
   return request({
-    url: `/api/v1/student/messages/session/${sessionId}/clear`,
+    url: `/api/student/messages/session/${sessionId}/clear`,
     method: 'delete'
   });
 };
 
 export const exportChatHistory = (data) => {
   return request({
-    url: '/api/v1/student/messages/export',
+    url: '/api/student/messages/export',
     method: 'post',
     data,
     responseType: 'blob'
@@ -475,7 +475,7 @@ export const exportChatHistory = (data) => {
 
 export const getSharedFiles = (sessionId) => {
   return request({
-    url: '/api/v1/student/messages/shared-files',
+    url: '/api/student/messages/shared-files',
     method: 'get',
     params: { sessionId },
     _skipLoginRedirect: true
@@ -484,7 +484,7 @@ export const getSharedFiles = (sessionId) => {
 
 export const downloadSharedFile = (fileId) => {
   return request({
-    url: `/api/v1/student/messages/shared-file/${fileId}`,
+    url: `/api/student/messages/shared-file/${fileId}`,
     method: 'get',
     responseType: 'blob'
   });
@@ -492,7 +492,7 @@ export const downloadSharedFile = (fileId) => {
 
 export const deleteSharedFile = (fileId) => {
   return request({
-    url: `/api/v1/student/messages/shared-file/${fileId}`,
+    url: `/api/student/messages/shared-file/${fileId}`,
     method: 'delete'
   });
 };
@@ -505,28 +505,28 @@ export const markMessagesAsRead = (params) => {
     sessionId = params;
   }
   return request({
-    url: `/api/v1/student/messages/session/${sessionId}/read`,
+    url: `/api/student/messages/session/${sessionId}/read`,
     method: 'put'
   });
 };
 
 export const recallMessage = (messageId) => {
   return request({
-    url: `/api/v1/student/messages/${messageId}/recall`,
+    url: `/api/student/messages/${messageId}/recall`,
     method: 'delete'
   });
 };
 
 export const getPersonalAcademicAdvice = () => {
   return request({
-    url: '/api/v1/student/academic-integrity/personal-advice',
+    url: '/api/student/academic-integrity/personal-advice',
     method: 'get'
   });
 };
 
 export const getAcademicResources = (params) => {
   return request({
-    url: '/api/v1/student/academic-integrity/resources',
+    url: '/api/student/academic-integrity/resources',
     method: 'get',
     params
   });
@@ -534,14 +534,14 @@ export const getAcademicResources = (params) => {
 
 export const getAcademicChecklist = () => {
   return request({
-    url: '/api/v1/student/academic-integrity/checklist',
+    url: '/api/student/academic-integrity/checklist',
     method: 'get'
   });
 };
 
 export const updateChecklistItem = (itemId, checked) => {
   return request({
-    url: `/api/v1/student/academic-integrity/checklist/${itemId}`,
+    url: `/api/student/academic-integrity/checklist/${itemId}`,
     method: 'put',
     data: { checked }
   });
@@ -551,7 +551,7 @@ export const updateChecklistItem = (itemId, checked) => {
 
 export const getStudentReviewList = (params) => {
   return request({
-    url: '/api/v1/student/reviews/list',
+    url: '/api/student/reviews/list',
     method: 'get',
     params
   });
@@ -559,7 +559,7 @@ export const getStudentReviewList = (params) => {
 
 export const getStudentReviewDetail = (params) => {
   return request({
-    url: '/api/v1/student/reviews/detail',
+    url: '/api/student/reviews/detail',
     method: 'get',
     params
   });
@@ -567,7 +567,7 @@ export const getStudentReviewDetail = (params) => {
 
 export const downloadReviewAttach = (params) => {
   return request({
-    url: '/api/v1/student/reviews/download-attach',
+    url: '/api/student/reviews/download-attach',
     method: 'get',
     params,
     responseType: 'blob'
@@ -576,7 +576,7 @@ export const downloadReviewAttach = (params) => {
 
 export const resubmitAfterReview = (formData) => {
   return request({
-    url: '/api/v1/student/reviews/re-submit',
+    url: '/api/student/reviews/re-submit',
     method: 'post',
     data: formData,
     headers: {
@@ -587,7 +587,7 @@ export const resubmitAfterReview = (formData) => {
 
 export const getResubmitRecord = (params) => {
   return request({
-    url: '/api/v1/student/reviews/resubmit-record',
+    url: '/api/student/reviews/resubmit-record',
     method: 'get',
     params
   });
@@ -597,7 +597,7 @@ export const getResubmitRecord = (params) => {
 
 export const cancelCheckTask = (taskId) => {
   return request({
-    url: '/api/v1/student/check-tasks/cancel',
+    url: '/api/student/check-tasks/cancel',
     method: 'delete',
     params: { taskId }
   });
@@ -607,7 +607,7 @@ export const cancelCheckTask = (taskId) => {
 
 export const getPaperStatistics = (paperId) => {
   return request({
-    url: `/api/v1/student/papers/${paperId}/statistics`,
+    url: `/api/student/papers/${paperId}/statistics`,
     method: 'get'
   });
 };
@@ -616,7 +616,7 @@ export const getPaperStatistics = (paperId) => {
 
 export const getDefaultCheckRule = () => {
   return request({
-    url: '/api/v1/check-rules/default',
+    url: '/api/check-rules/default',
     method: 'get'
   });
 };

@@ -208,7 +208,7 @@ const treeProps = {
   children: 'children',
 }
 // 上传配置
-const uploadUrl = import.meta.env.VITE_API_BASE_URL + '/api/v1/file/upload'
+const uploadUrl = import.meta.env.VITE_API_BASE_URL + '/api/file/upload'
 const uploadHeaders = computed(() => ({
   Authorization: `${userStore.token}`
 }))

@@ -3,7 +3,7 @@ import request from '../request'
 // 获取模板列表
 export const getTemplateList = (params) => {
   return request({
-    url: '/api/v1/message-templates/list',
+    url: '/api/message-templates/list',
     method: 'get',
     params
   })
@@ -12,7 +12,7 @@ export const getTemplateList = (params) => {
 // 按编码查询模板
 export const getTemplateByCode = (templateCode) => {
   return request({
-    url: `/api/v1/message-templates/code/${templateCode}`,
+    url: `/api/message-templates/code/${templateCode}`,
     method: 'get'
   })
 }
@@ -20,7 +20,7 @@ export const getTemplateByCode = (templateCode) => {
 // 按类型查询模板
 export const getTemplatesByType = (templateType) => {
   return request({
-    url: `/api/v1/message-templates/type/${templateType}`,
+    url: `/api/message-templates/type/${templateType}`,
     method: 'get'
   })
 }
@@ -28,7 +28,7 @@ export const getTemplatesByType = (templateType) => {
 // 创建模板
 export const createTemplate = (data) => {
   return request({
-    url: '/api/v1/message-templates/create',
+    url: '/api/message-templates/create',
     method: 'post',
     data
   })
@@ -37,7 +37,7 @@ export const createTemplate = (data) => {
 // 更新模板
 export const updateTemplate = (data) => {
   return request({
-    url: '/api/v1/message-templates/update',
+    url: '/api/message-templates/update',
     method: 'put',
     data
   })
@@ -46,7 +46,7 @@ export const updateTemplate = (data) => {
 // 删除模板
 export const deleteTemplate = (id) => {
   return request({
-    url: `/api/v1/message-templates/delete/${id}`,
+    url: `/api/message-templates/delete/${id}`,
     method: 'delete'
   })
 }
@@ -54,7 +54,7 @@ export const deleteTemplate = (id) => {
 // 启用/禁用模板
 export const toggleTemplateStatus = (id, isActive) => {
   return request({
-    url: `/api/v1/message-templates/status/${id}`,
+    url: `/api/message-templates/status/${id}`,
     method: 'put',
     params: { isActive }
   })
@@ -63,7 +63,7 @@ export const toggleTemplateStatus = (id, isActive) => {
 // 渲染模板
 export const renderTemplate = (templateCode, variables) => {
   return request({
-    url: `/api/v1/message-templates/render/${templateCode}`,
+    url: `/api/message-templates/render/${templateCode}`,
     method: 'post',
     data: variables
   })

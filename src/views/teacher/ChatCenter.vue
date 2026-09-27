@@ -168,7 +168,7 @@ const filteredSessions = computed(() => {
 })
 
 const uploadUrl = computed(() => {
-  return '/check/api/v1/teacher/message/upload'
+  return '/check/api/teacher/message/upload'
 })
 
 // 方法

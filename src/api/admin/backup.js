@@ -2,14 +2,14 @@ import request from '../request'
 
 export const triggerBackup = () => {
   return request({
-    url: '/api/v1/admin/backup/trigger',
+    url: '/api/admin/backup/trigger',
     method: 'post'
   })
 }
 
 export const getBackupHistory = (params) => {
   return request({
-    url: '/api/v1/admin/backup/history',
+    url: '/api/admin/backup/history',
     method: 'get',
     params
   })
@@ -17,28 +17,28 @@ export const getBackupHistory = (params) => {
 
 export const getLastBackup = () => {
   return request({
-    url: '/api/v1/admin/backup/last',
+    url: '/api/admin/backup/last',
     method: 'get'
   })
 }
 
 export const getBackupStatus = () => {
   return request({
-    url: '/api/v1/admin/backup/status',
+    url: '/api/admin/backup/status',
     method: 'get'
   })
 }
 
 export const getBackupSettings = () => {
   return request({
-    url: '/api/v1/admin/backup/settings',
+    url: '/api/admin/backup/settings',
     method: 'get'
   })
 }
 
 export const updateBackupSettings = (data) => {
   return request({
-    url: '/api/v1/admin/backup/settings',
+    url: '/api/admin/backup/settings',
     method: 'put',
     data
   })

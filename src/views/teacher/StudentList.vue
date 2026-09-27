@@ -813,7 +813,7 @@ const viewPaper = async (student) => {
       // 如果有文件ID，则进行预览
       if (res.data.fileId) {
         // 使用已有的KKFileView预览逻辑
-        const previewApiUrl = `/check/api/v1/file/smartPreview?fileId=${res.data.fileId}`
+        const previewApiUrl = `/check/api/file/smartPreview?fileId=${res.data.fileId}`
         previewUrl.value = previewApiUrl
         previewVisible.value = true
         previewLoading.value = true
@@ -871,7 +871,7 @@ const viewPaperFromList = (paper) => {
   // 如果有文件ID，则进行预览
   if (paper.fileId) {
     // 使用已有的KKFileView预览逻辑
-    const previewApiUrl = `/check/api/v1/file/smartPreview?fileId=${paper.fileId}`
+    const previewApiUrl = `/check/api/file/smartPreview?fileId=${paper.fileId}`
     previewUrl.value = previewApiUrl
     previewVisible.value = true
     previewLoading.value = true
@@ -988,7 +988,7 @@ const retryPreview = () => {
   if (currentPaper.value?.fileId) {
     previewLoading.value = true
     previewError.value = false
-    const previewApiUrl = `/check/api/v1/file/smartPreview?fileId=${currentPaper.value.fileId}`
+    const previewApiUrl = `/check/api/file/smartPreview?fileId=${currentPaper.value.fileId}`
     previewUrl.value = previewApiUrl
   }
 }
@@ -997,7 +997,7 @@ const downloadPaper = () => {
   if (currentPaper.value?.fileId) {
     // 实现下载逻辑
     const link = document.createElement('a')
-    link.href = `/api/v1/file/download/${currentPaper.value.fileId}`
+    link.href = `/api/file/download/${currentPaper.value.fileId}`
     link.download = currentPaper.value.fileName || '论文文件'
     link.click()
     closePreview()

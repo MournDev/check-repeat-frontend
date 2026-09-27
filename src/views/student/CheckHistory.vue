@@ -557,7 +557,7 @@ const viewReport = (reportId) => {
 const downloadPdfReport = (reportId) => {
   try {
     // 构建PDF下载URL
-    const downloadUrl = `/api/v1/detection/report/pdf/${reportId}`
+    const downloadUrl = `/api/detection/report/pdf/${reportId}`
     
     // 创建下载链接
     const link = document.createElement('a')

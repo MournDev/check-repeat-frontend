@@ -28,7 +28,7 @@ export const downloadPaper = async (fileId, fileName) => {
       downloadFileName += '.docx'
     }
 
-    const response = await fetch(`/check/api/v1/file/download/${fileId}/${encodeURIComponent(downloadFileName)}`, {
+    const response = await fetch(`/check/api/file/download/${fileId}/${encodeURIComponent(downloadFileName)}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,

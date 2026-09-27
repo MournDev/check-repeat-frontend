@@ -54,7 +54,7 @@ export const tokenManager = {
     try {
       const axios = (await import('axios')).default
       const res = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/refresh-token`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/refresh-token`,
         { oldToken: token },
         { headers: { Authorization: `Bearer ${token}` } }
       )

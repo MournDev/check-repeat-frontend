@@ -395,7 +395,7 @@ const dialogTitle = computed(() => {
 })
 
 const uploadUrl = computed(() => {
-  return '/api/v1/teacher/reviews/upload-attachment'
+  return '/api/teacher/reviews/upload-attachment'
 })
 
 const uploadHeaders = computed(() => ({

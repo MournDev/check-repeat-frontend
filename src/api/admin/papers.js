@@ -3,7 +3,7 @@ import request from '../request'
 // 获取论文列表
 export const getPaperList = (params) => {
   return request({
-    url: '/api/v1/admin/papers/list',
+    url: '/api/admin/papers/list',
     method: 'get',
     params: params
   })
@@ -13,7 +13,7 @@ export const getPaperList = (params) => {
 export const uploadPaper = (formData, config = {}) => {
   // config 可包含 headers, onUploadProgress 等 axios 配置
   return request(Object.assign({
-    url: '/api/v1/file/upload',
+    url: '/api/file/upload',
     method: 'post',
     data: formData,
     headers: { 'Content-Type': 'multipart/form-data' }
@@ -23,7 +23,7 @@ export const uploadPaper = (formData, config = {}) => {
 // 删除论文
 export const deletePaper = (paperId) => {
   return request({
-    url: `/api/v1/admin/papers/${paperId}`,
+    url: `/api/admin/papers/${paperId}`,
     method: 'delete'
   })
 }
@@ -31,7 +31,7 @@ export const deletePaper = (paperId) => {
 // 批量删除论文
 export const batchDeletePapers = (paperIds) => {
   return request({
-    url: '/api/v1/admin/papers/batch-delete',
+    url: '/api/admin/papers/batch-delete',
     method: 'post',
     data: paperIds
   })
@@ -40,7 +40,7 @@ export const batchDeletePapers = (paperIds) => {
 // 校内查重
 export const internalCheck = (paperId) => {
   return request({
-    url: `/api/v1/admin/papers/${paperId}/internal-check`,
+    url: `/api/admin/papers/${paperId}/internal-check`,
     method: 'post'
   })
 }
@@ -48,7 +48,7 @@ export const internalCheck = (paperId) => {
 // 第三方查重
 export const thirdPartyCheck = (paperId) => {
   return request({
-    url: `/api/v1/admin/papers/${paperId}/third-party-check`,
+    url: `/api/admin/papers/${paperId}/third-party-check`,
     method: 'post'
   })
 }
@@ -56,7 +56,7 @@ export const thirdPartyCheck = (paperId) => {
 // 批量校内查重
 export const batchInternalCheck = (paperIds) => {
   return request({
-    url: '/api/v1/admin/papers/batch-internal-check',
+    url: '/api/admin/papers/batch-internal-check',
     method: 'post',
     data: paperIds
   })
@@ -65,7 +65,7 @@ export const batchInternalCheck = (paperIds) => {
 // 批量第三方查重
 export const batchThirdPartyCheck = (paperIds) => {
   return request({
-    url: '/api/v1/admin/papers/batch-third-party-check',
+    url: '/api/admin/papers/batch-third-party-check',
     method: 'post',
     data: paperIds
   })
@@ -74,7 +74,7 @@ export const batchThirdPartyCheck = (paperIds) => {
 // 获取论文库统计
 export const getPaperStats = () => {
   return request({
-    url: '/api/v1/admin/papers/statistics',
+    url: '/api/admin/papers/statistics',
     method: 'get'
   })
 }
@@ -82,7 +82,7 @@ export const getPaperStats = () => {
 // 导出论文数据
 export const exportPapers = (params) => {
   return request({
-    url: '/api/v1/admin/papers/export',
+    url: '/api/admin/papers/export',
     method: 'get',
     params: params,
     responseType: 'blob'
@@ -92,7 +92,7 @@ export const exportPapers = (params) => {
 // 单篇论文下载（返回 blob）
 export const downloadPaper = (paperId) => {
   return request({
-    url: `/api/v1/admin/papers/${paperId}/download`,
+    url: `/api/admin/papers/${paperId}/download`,
     method: 'get',
     responseType: 'blob'
   })
@@ -101,7 +101,7 @@ export const downloadPaper = (paperId) => {
 // 审核论文
 export const auditPaper = (paperId, data) => {
   return request({
-    url: `/api/v1/admin/papers/${paperId}/audit`,
+    url: `/api/admin/papers/${paperId}/audit`,
     method: 'put',
     data
   })
@@ -110,7 +110,7 @@ export const auditPaper = (paperId, data) => {
 // 批量审核论文
 export const batchAuditPapers = (data) => {
   return request({
-    url: '/api/v1/admin/papers/batch-audit',
+    url: '/api/admin/papers/batch-audit',
     method: 'post',
     data
   })

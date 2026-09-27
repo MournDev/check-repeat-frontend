@@ -2,7 +2,7 @@ import request from './request'
 
 export const login = (data) => {
   return request({
-    url: '/api/v1/auth/login',
+    url: '/api/auth/login',
     method: 'post',
     data: data
   })
@@ -10,7 +10,7 @@ export const login = (data) => {
 
 export const register = (registerForm) => {
   return request({
-    url: '/api/v1/auth/register',
+    url: '/api/auth/register',
     method: 'post',
     data: {
       username: registerForm.username,
@@ -25,7 +25,7 @@ export const register = (registerForm) => {
 
 export const forgetPassword = (data) => {
   return request({
-    url: '/api/v1/auth/forgot-password',
+    url: '/api/auth/forgot-password',
     method: 'post',
     data: data
   })
@@ -33,7 +33,7 @@ export const forgetPassword = (data) => {
 
 export const sendPasswordResetCode = (data) => {
   return request({
-    url: '/api/v1/auth/send-password-reset-code',
+    url: '/api/auth/send-password-reset-code',
     method: 'post',
     data: data
   })
@@ -41,7 +41,7 @@ export const sendPasswordResetCode = (data) => {
 
 export const logout = () => {
   return request({
-    url: '/api/v1/auth/logout',
+    url: '/api/auth/logout',
     method: 'post',
     _skipLoginRedirect: true
   })

@@ -3,7 +3,7 @@ import request from '../request'
 // 获取系统配置
 export const getSystemConfig = () => {
   return request({
-    url: '/api/v1/admin/config/system',
+    url: '/api/admin/config/system',
     method: 'get'
   })
 }
@@ -11,7 +11,7 @@ export const getSystemConfig = () => {
 // 更新基础配置
 export const updateBasicConfig = (data) => {
   return request({
-    url: '/api/v1/admin/config/basic',
+    url: '/api/admin/config/basic',
     method: 'put',
     data: data
   })
@@ -20,7 +20,7 @@ export const updateBasicConfig = (data) => {
 // 更新查重配置
 export const updatePlagiarismConfig = (data) => {
   return request({
-    url: '/api/v1/admin/config/plagiarism',
+    url: '/api/admin/config/plagiarism',
     method: 'put',
     data: data
   })
@@ -29,7 +29,7 @@ export const updatePlagiarismConfig = (data) => {
 // 更新安全配置
 export const updateSecurityConfig = (data) => {
   return request({
-    url: '/api/v1/admin/config/security',
+    url: '/api/admin/config/security',
     method: 'put',
     data: data
   })
@@ -38,7 +38,7 @@ export const updateSecurityConfig = (data) => {
 // 更新邮件配置
 export const updateEmailConfig = (data) => {
   return request({
-    url: '/api/v1/admin/config/email',
+    url: '/api/admin/config/email',
     method: 'put',
     data: data
   })
@@ -47,7 +47,7 @@ export const updateEmailConfig = (data) => {
 // 更新性能配置
 export const updatePerformanceConfig = (data) => {
   return request({
-    url: '/api/v1/admin/config/performance',
+    url: '/api/admin/config/performance',
     method: 'put',
     data: data
   })
@@ -56,7 +56,7 @@ export const updatePerformanceConfig = (data) => {
 // 保存所有配置
 export const saveAllConfig = (configData) => {
   return request({
-    url: '/api/v1/admin/config/save-all',
+    url: '/api/admin/config/save-all',
     method: 'post',
     data: configData
   })
@@ -65,7 +65,7 @@ export const saveAllConfig = (configData) => {
 // 测试邮件配置
 export const testEmailConfig = (testEmail) => {
   return request({
-    url: '/api/v1/admin/config/test-email',
+    url: '/api/admin/config/test-email',
     method: 'post',
     data: { testEmail: testEmail }
   })
@@ -74,7 +74,7 @@ export const testEmailConfig = (testEmail) => {
 // 导出配置
 export const exportConfig = () => {
   return request({
-    url: '/api/v1/admin/system/config/export',
+    url: '/api/admin/system/config/export',
     method: 'get',
     responseType: 'blob'
   })
@@ -83,7 +83,7 @@ export const exportConfig = () => {
 // 恢复默认配置
 export const resetDefaultConfig = () => {
   return request({
-    url: '/api/v1/admin/config/reset-default',
+    url: '/api/admin/config/reset-default',
     method: 'post'
   })
 }
@@ -91,7 +91,7 @@ export const resetDefaultConfig = () => {
 // 获取时间节点配置
 export const getDeadlinesConfig = () => {
   return request({
-    url: '/api/v1/admin/config/deadlines',
+    url: '/api/admin/config/deadlines',
     method: 'get'
   })
 }
@@ -99,7 +99,7 @@ export const getDeadlinesConfig = () => {
 // 更新时间节点配置
 export const updateDeadlinesConfig = (data) => {
   return request({
-    url: '/api/v1/admin/config/deadlines',
+    url: '/api/admin/config/deadlines',
     method: 'put',
     data: data
   })
@@ -110,7 +110,7 @@ export const updateDeadlinesConfig = (data) => {
 // 查询查重规则列表
 export const getCheckRuleList = (params) => {
   return request({
-    url: '/api/v1/admin/config/check-rule/list',
+    url: '/api/admin/config/check-rule/list',
     method: 'get',
     params: params
   })
@@ -119,7 +119,7 @@ export const getCheckRuleList = (params) => {
 // 新增/编辑查重规则
 export const saveOrUpdateCheckRule = (data) => {
   return request({
-    url: '/api/v1/admin/config/check-rule/save-or-update',
+    url: '/api/admin/config/check-rule/save-or-update',
     method: 'post',
     data: data
   })
@@ -128,7 +128,7 @@ export const saveOrUpdateCheckRule = (data) => {
 // 删除查重规则
 export const deleteCheckRule = (ruleId) => {
   return request({
-    url: '/api/v1/admin/config/check-rule/delete',
+    url: '/api/admin/config/check-rule/delete',
     method: 'post',
     params: { ruleId }
   })
@@ -137,7 +137,7 @@ export const deleteCheckRule = (ruleId) => {
 // 查询规则关联的比对库
 export const getRuleRelatedLibs = (ruleId) => {
   return request({
-    url: '/api/v1/admin/config/check-rule/related-libs',
+    url: '/api/admin/config/check-rule/related-libs',
     method: 'get',
     params: { ruleId }
   })
@@ -148,7 +148,7 @@ export const getRuleRelatedLibs = (ruleId) => {
 // 查询比对库列表
 export const getCompareLibList = (params) => {
   return request({
-    url: '/api/v1/admin/config/compare-lib/list',
+    url: '/api/admin/config/compare-lib/list',
     method: 'get',
     params: params
   })
@@ -157,7 +157,7 @@ export const getCompareLibList = (params) => {
 // 新增/编辑比对库
 export const saveOrUpdateCompareLib = (data) => {
   return request({
-    url: '/api/v1/admin/config/compare-lib/save-or-update',
+    url: '/api/admin/config/compare-lib/save-or-update',
     method: 'post',
     data: data
   })
@@ -166,7 +166,7 @@ export const saveOrUpdateCompareLib = (data) => {
 // 启用/禁用比对库
 export const toggleLibEnabled = (libId, isEnabled) => {
   return request({
-    url: '/api/v1/admin/config/compare-lib/toggle-enabled',
+    url: '/api/admin/config/compare-lib/toggle-enabled',
     method: 'post',
     params: { libId, isEnabled }
   })

@@ -3,7 +3,7 @@ import request from '../request'
 // 获取专业列表
 export const getMajors = (collegeId) => {
   return request({
-    url: '/api/v1/common/dict/majors',
+    url: '/api/common/dict/majors',
     method: 'get',
     params: { collegeId }
   })
@@ -12,7 +12,7 @@ export const getMajors = (collegeId) => {
 // 获取学院列表
 export const getColleges = () => {
   return request({
-    url: '/api/v1/common/dict/colleges',
+    url: '/api/common/dict/colleges',
     method: 'get'
   })
 }

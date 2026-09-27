@@ -435,7 +435,7 @@ const previewFile = async (file) => {
     currentFileType.value = getFileExtension(file.originalFilename)
 
     // 2. 构建后端智能预览接口路径（和Controller完全匹配，无额外前缀）
-    const previewApiUrl = `/check/api/v1/file/smartPreview?fileId=${file.id}`
+    const previewApiUrl = `/check/api/file/smartPreview?fileId=${file.id}`
 
     // 3. 显示预览弹框，开始加载
     previewVisible.value = true
@@ -444,7 +444,7 @@ const previewFile = async (file) => {
     previewUrl.value = ''
 
     try {
-        const previewApiUrl = `/check/api/v1/file/smartPreview?fileId=${file.id}`
+        const previewApiUrl = `/check/api/file/smartPreview?fileId=${file.id}`
         previewUrl.value = previewApiUrl
     } catch (error) {
         handlePreviewError(error)
@@ -486,7 +486,7 @@ const retryPreview = () => {
         previewLoading.value = true
         previewError.value = false
         // 直接调用 /smartPreview
-        const previewApiUrl = `/check/api/v1/file/smartPreview?fileId=${currentFileId.value}`
+        const previewApiUrl = `/check/api/file/smartPreview?fileId=${currentFileId.value}`
         previewUrl.value = previewApiUrl // 重新赋值触发iframe刷新
     }
 }
@@ -494,7 +494,7 @@ const retryPreview = () => {
 // 新窗口打开
 const openInNewWindow = () => {
     if (currentFileId.value) {
-        const previewApiUrl = `/check/api/v1/file/smartPreview?fileId=${currentFileId.value}`
+        const previewApiUrl = `/check/api/file/smartPreview?fileId=${currentFileId.value}`
         window.open(previewApiUrl, '_blank', 'width=1200,height=800');
         closePreview()
     }
@@ -504,7 +504,7 @@ const openInNewWindow = () => {
 const downloadInstead = () => {
     if (currentFileId.value) {
         const encodedFileName = encodeURIComponent(currentFileName.value || 'document')
-        const downloadUrl = `/check/api/v1/file/download/${currentFileId.value}/${encodedFileName}`
+        const downloadUrl = `/check/api/file/download/${currentFileId.value}/${encodedFileName}`
         window.open(downloadUrl, '_blank')
     }
     closePreview()
@@ -522,7 +522,7 @@ const downloadFile = async (file) => {
     try {
         // 根据后端代码构建下载URL
         const encodedFileName = encodeURIComponent(file.originalFilename || 'document');
-        const downloadUrl = `/check/api/v1/file/download/${file.id}/${encodedFileName}`;
+        const downloadUrl = `/check/api/file/download/${file.id}/${encodedFileName}`;
         window.open(downloadUrl, '_blank');
         ElMessage.success('开始下载文件');
     } catch (error) {
@@ -572,7 +572,7 @@ const downloadSimilarityReport = async () => {
 
         // 4. 构建下载URL（根据后端接口）
         // 使用reportId
-        const downloadUrl = `/check/api/v1/file/downloadReport/${reportId}`
+        const downloadUrl = `/check/api/file/downloadReport/${reportId}`
 
         // 5. 显示加载提示
         loadingInstance = ElLoading.service({
@@ -774,7 +774,7 @@ const uploadFile = () => {
 // 上传文件的API调用
 const uploadFileAPI = async (formData) => {
     const token = userStore.token || ''
-    const response = await fetch('/check/api/v1/file/upload', {
+    const response = await fetch('/check/api/file/upload', {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -787,7 +787,7 @@ const uploadFileAPI = async (formData) => {
 // 更新论文文件的API调用
 const updatePaperFile = async (paperId, fileId, fileMd5) => {
     const token = userStore.token || ''
-    const response = await fetch(`/check/api/v1/papers/${paperId}/update`, {
+    const response = await fetch(`/check/api/papers/${paperId}/update`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -938,7 +938,7 @@ const viewSimilarityReport = async () => {
             similarityPreviewError.value = false
             similarityErrorMessage.value = ''
             try {
-                similarityPreviewUrl.value = `/check/api/v1/file/smartPreviewReport?paperId=${idToUse}`
+                similarityPreviewUrl.value = `/check/api/file/smartPreviewReport?paperId=${idToUse}`
             } catch (error) {
                 console.error('打开相似度报告失败:', error)
                 similarityPreviewError.value = true
@@ -968,7 +968,7 @@ const viewSimilarityReport = async () => {
         similarityPreviewError.value = false
         similarityErrorMessage.value = ''
         try {
-            similarityPreviewUrl.value = `/check/api/v1/file/smartPreviewReport?paperId=${idToUse}`
+            similarityPreviewUrl.value = `/check/api/file/smartPreviewReport?paperId=${idToUse}`
         } catch (error) {
             console.error('打开相似度报告失败:', error)
             similarityPreviewError.value = true
