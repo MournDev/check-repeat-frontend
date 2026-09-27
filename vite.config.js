@@ -34,10 +34,16 @@ export default defineConfig({
           if (id.includes('node_modules/element-plus')) {
             return 'element-plus'
           }
-          if (id.includes('node_modules/vue') || 
-              id.includes('node_modules/vue-router') || 
+          if (id.includes('node_modules/vue') ||
+              id.includes('node_modules/vue-router') ||
               id.includes('node_modules/pinia')) {
             return 'vue-vendor'
+          }
+          // echarts 与 zrender 需在同一 chunk，否则会因循环引用报错；
+          // 单独成块可让它长期缓存，不随业务代码发版而失效。
+          if (id.includes('node_modules/echarts') ||
+              id.includes('node_modules/zrender')) {
+            return 'echarts'
           }
         }
       }
@@ -74,6 +80,7 @@ export default defineConfig({
       'axios',
       'element-plus',
       '@element-plus/icons-vue',
+      'echarts',
       '@stomp/stompjs',
       'sockjs-client'
     ]

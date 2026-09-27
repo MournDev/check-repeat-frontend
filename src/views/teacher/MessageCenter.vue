@@ -221,7 +221,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { ElMessage } from 'element-plus'
 
@@ -512,19 +512,6 @@ const formatMessage = (content) => {
 // 生命周期
 onMounted(() => {
   refreshMessages()
-  
-  // 模拟WebSocket连接
-  const ws = new WebSocket('ws://localhost:8080/websocket')
-  ws.onmessage = (event) => {
-    const data = JSON.parse(event.data)
-    if (data.type === 'new_message') {
-      // 处理新消息
-    }
-  }
-})
-
-onUnmounted(() => {
-  // 清理WebSocket连接
 })
 </script>
 
