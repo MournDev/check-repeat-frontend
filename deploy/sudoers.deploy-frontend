@@ -10,13 +10,22 @@
 # 作用：deploy 用户只能在【无密码】的情况下执行这一个脚本，
 #       不能执行任意命令，也拿不到交互式 root shell。
 #
-# 注意 arguments 的写法：
-#   sudoers 默认允许该命令带【任意参数】。末尾的 [0-9a-f]* 把参数
-#   限制为「以十六进制字符开头」，只放行 commit SHA，挡掉 --flag 之类。
-#   真正的格式校验由脚本自身完成（它要求 7-40 位纯十六进制且拒绝多余参数）。
+# 注意 arguments 的写法：末尾的 "" 表示【不允许任何参数】。
 #
-#   若要收紧到「完全不允许任何参数」，把 [0-9a-f]* 换成 ""，
-#   代价是无法指定提交，只能部署 origin/master 的当前 HEAD。
+#   这是刻意的收紧。commit SHA 不经命令行传入 —— 它由 sshd 放进环境变量
+#   SSH_ORIGINAL_COMMAND，脚本自行读取（见 authorized_keys 的 command=）。
+#   因此命令行上不该有任何参数。
+#
+#   ⚠️ 不要写成省略参数的形式（止于 /usr/local/bin/deploy-frontend.sh）。
+#   sudoers 对省略参数的命令默认允许【任意参数】，那会让 command= 的
+#   限制形同虚设。
+#
+#   root 在宿主机上手工指定提交时不经过 sudo，不受本文件约束。
 # ============================================================
 
-deploy ALL=(root) NOPASSWD: /usr/local/bin/deploy-frontend.sh [0-9a-f]*
+# sudo 默认清空环境变量。SSH_ORIGINAL_COMMAND 是脚本取 commit SHA 的
+# 唯一来源，必须显式保留，否则脚本会一直退回「部署 origin/master HEAD」，
+# 表现为 Jenkins 传什么提交都无效。只对 deploy 用户放开，不做全局设置。
+Defaults:deploy env_keep += "SSH_ORIGINAL_COMMAND"
+
+deploy ALL=(root) NOPASSWD: /usr/local/bin/deploy-frontend.sh ""

@@ -72,13 +72,23 @@ check_drift() {
 # 1. 参数校验
 #    这是权限边界的关键：脚本是 deploy 用户唯一能做的事，
 #    因此参数必须严格白名单校验，且拒绝任何多余参数。
+#
+#    参数有两个来源：
+#      a) SSH_ORIGINAL_COMMAND —— 经 authorized_keys 的 command= 调用时，
+#         sshd 把客户端原始命令放进这个环境变量，由本脚本自行读取。
+#         command= 里【不插值】它，因此客户端输入全程不经过 shell，
+#         只能作为一个整体字符串接受下面的正则校验。
+#         （若在 command= 里写成 $SSH_ORIGINAL_COMMAND，sshd 会交给登录
+#          shell 展开执行，客户端命令中的 ; | ` 会被解释 —— 等于任意
+#          命令执行。详见 deploy/README.md 四·4.3。）
+#      b) 位置参数 —— 仅供 root 在宿主机上手工执行，不经过 SSH。
 # ------------------------------------------------------------
 if [ "$#" -gt 1 ]; then
     echo "错误：只接受 0 或 1 个参数，收到 $#" >&2
     exit 1
 fi
 
-TARGET_INPUT="${1:-}"
+TARGET_INPUT="${SSH_ORIGINAL_COMMAND:-${1:-}}"
 
 if [ -n "$TARGET_INPUT" ] && ! printf '%s' "$TARGET_INPUT" | grep -qE '^[0-9a-f]{7,40}$'; then
     echo "错误：参数必须是 7-40 位十六进制 commit SHA，收到：$TARGET_INPUT" >&2

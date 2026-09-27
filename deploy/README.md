@@ -532,7 +532,7 @@ ssh-keygen -t ed25519 -f /tmp/deploy_frontend_key -N "" -C "jenkins-deploy-front
 ```bash
 mkdir -p /home/deploy/.ssh
 cat > /home/deploy/.ssh/authorized_keys <<'EOF'
-command="sudo /usr/local/bin/deploy-frontend.sh $SSH_ORIGINAL_COMMAND",no-agent-forwarding,no-port-forwarding,no-pty,no-user-rc,no-X11-forwarding ssh-ed25519 AAAA...你的公钥... jenkins-deploy-frontend
+command="sudo /usr/local/bin/deploy-frontend.sh",no-agent-forwarding,no-port-forwarding,no-pty,no-user-rc,no-X11-forwarding ssh-ed25519 AAAA...你的公钥... jenkins-deploy-frontend
 EOF
 
 chmod 0700 /home/deploy/.ssh
@@ -542,13 +542,50 @@ chown -R deploy:deploy /home/deploy/.ssh
 
 这行的效果：**该密钥无论请求执行什么，都只会运行那一个脚本**，且不能开 PTY、不能端口转发、不能转发 agent。
 
+#### ⚠️ `command=` 里绝不能写 `$SSH_ORIGINAL_COMMAND`
+
+sshd 执行 `command=` 时是交给**登录 shell** 跑的。一旦把客户端命令插值进去，
+其中的 `;`、`|`、反引号会被 shell 解释：
+
+```
+客户端：ssh deploy@host 'id; whoami'
+shell ：sudo /usr/local/bin/deploy-frontend.sh id; whoami
+                                                  └── 这段以 deploy 身份跑掉了
+```
+
+`sudo` 那半截会被 sudoers 的参数限制挡下，但 `;` 后面那截不会 —— 等于把受限密钥
+变成任意命令执行。`origin/master` 校验、sudoers 白名单都发生在脚本内部，在那之后，
+挡不住这个。
+
+**commit SHA 的传递方式是环境变量，不是命令行参数。** sshd 会把客户端原始命令放进
+`SSH_ORIGINAL_COMMAND` 环境变量（见 `sshd(8)`），脚本自己读它，全程不经过 shell。
+配合 sudoers 里的 `env_keep`（[sudoers.deploy-frontend](sudoers.deploy-frontend)）
+保证 `sudo` 不把它清掉。
+
 ### 4.4 验证密钥限制确实生效
 
 ```bash
 ssh -i /tmp/deploy_frontend_key deploy@127.0.0.1 "id; whoami"
 ```
 
-预期：只会触发部署脚本，**不会**返回 `id`/`whoami` 的输出。若真返回了，说明 `command=` 没生效，检查 authorized_keys 格式。
+预期：只会触发部署脚本并因参数不合规而报错，**不会**返回 `id`/`whoami` 的输出。
+若真返回了 uid，说明 `command=` 里插值了 `$SSH_ORIGINAL_COMMAND`（见 4.3 的警告），
+或 `command=` 根本没生效，检查 authorized_keys 格式。
+
+再验一次**正常路径**，确认 SHA 确实通过环境变量传到了脚本：
+
+```bash
+# 取一个真实存在的 commit SHA（这一步本身就会触发一次真实部署）
+SHA=$(git -C /opt/check-repeat-frontend rev-parse origin/master)
+ssh -i /tmp/deploy_frontend_key deploy@127.0.0.1 "$SHA"
+```
+
+预期：脚本日志里出现 `请求参数：<该 SHA>`。
+
+- 若报 `请求参数：<master HEAD>`（拿不到 SHA）→ sudoers 缺 `env_keep += "SSH_ORIGINAL_COMMAND"`
+- 若报 `sudo: a password is required` 或 `not allowed` → sudoers 末尾的 `""` 写法有问题，
+  它表示「不允许任何参数」，确认已按 [sudoers.deploy-frontend](sudoers.deploy-frontend) 安装并
+  `visudo -cf` 通过
 
 ### 4.5 记录主机指纹（供 Jenkins 校验，防中间人）
 
