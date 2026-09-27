@@ -241,8 +241,26 @@ docker exec check-repeat-gateway nginx -t \
 #### ⑤ 验证
 
 ```bash
-curl -sS -o /dev/null -w '%{http_code}\n' https://jenkins.check-repeat-system.xyz/login
-# 预期 200（或 403，若你启用了 allow/deny 白名单而当前 IP 不在名单内）
+# ① UI 路径被 `deny all` 挡住，从任何公网地址（含本机）都应是 403。
+#    这条预期 403 —— 403 才说明白名单生效，200 反而意味着没生效。
+curl -sS -o /dev/null -w 'UI(应 403): %{http_code}\n' \
+  --resolve jenkins.check-repeat-system.xyz:443:127.0.0.1 \
+  https://jenkins.check-repeat-system.xyz/login
+
+# ② 验证「网关 → Jenkins」这条链真的通，必须走不受白名单影响的 webhook 路径。
+#    此时 Generic Webhook Trigger 插件可能还没装，返回 404 是正常的；
+#    关键是【不能是 502】—— 502 说明上游 jenkins 解析不到（第 ③ 步没做）。
+curl -sS -o /dev/null -w 'webhook(不应 502): %{http_code}\n' \
+  --resolve jenkins.check-repeat-system.xyz:443:127.0.0.1 \
+  'https://jenkins.check-repeat-system.xyz/generic-webhook-trigger/invoke?token=probe'
+```
+
+**日常访问 UI 的方式**（不经公网，隧道直连宿主机端口，绕开网关）：
+
+```bash
+# 端口以 `docker port jenkins` 的实际输出为准
+ssh -L 8080:172.17.0.1:8081 root@8.130.184.34
+# 然后浏览器打开 http://localhost:8080
 ```
 
 #### 紧急回退
@@ -975,6 +993,13 @@ ssh -i <key> deploy@<host> "<目标commit短SHA>"
    调用会抛 `SyntaxError`。全项目无调用点。若启用需改拼绝对地址
    （参考 `src/composables/useCheckProgress.js` 的 SockJS 写法）。
 
-3. **Jenkins UI 暴露**：网关配置中 Jenkins 子域的 `location /` 默认未限制来源，
-   `allow/deny` 两行是注释状态。**务必开启 Jenkins 登录认证并使用强密码**；
-   若能确定运维出口 IP，建议取消注释做白名单。
+3. **Jenkins UI 完全不对公网开放**（已按此落地，非遗留风险）：子域的
+   `location /` 为 `deny all`，只能经 SSH 隧道访问（见一·5 ⑤）。
+   之所以不采用「靠 Jenkins 登录认证挡着」：证书一经签发，域名即写入
+   Certificate Transparency 日志，而 CT 日志公开且被实时监控 —— 实测本子域
+   启用后一分钟内，日志里就出现了 LeakIX 扫描器探测 `/.env`、`/.DS_Store`、
+   `/v2/_catalog`。Jenkins 登录页长期暴露在公网不划算。
+   确实需要放开时，把 `deny all` 换成 `allow <出口IP>;` + `deny all;`
+   并重装片段（`jenkins.d` 是目录挂载，`install` 安全）。
+   webhook 路径 `location /generic-webhook-trigger/` 是独立 location，
+   不受白名单影响，Gitee 回调照常。
