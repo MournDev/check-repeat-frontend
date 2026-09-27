@@ -1,0 +1,41 @@
+# ========================================
+# Docker 构建上下文排除清单
+#
+# 关键：Dockerfile 中 `COPY . .` 在 `npm ci` 之后执行，
+# 若把宿主机的 node_modules 带进镜像，会【覆盖】容器内已装好的 Linux 依赖。
+# 本项目 vite 为 rolldown-vite，含平台相关原生二进制，
+# Windows 版二进制在 Alpine 容器内无法运行，将直接导致构建失败。
+# ========================================
+
+# 依赖与构建产物（容器内会自行安装 / 构建）
+node_modules
+dist
+dist-ssr
+
+# 版本控制与编辑器
+.git
+.gitignore
+.vscode
+.idea
+.DS_Store
+
+# 本机调试用的 Windows 版 Nginx 发行版，体积大且与镜像无关
+nginx-1.28.0
+
+# 日志
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# 误提交的空文件
+npm
+
+# ----------------------------------------
+# 以下文件【必须保留】，不要加入本文件：
+#   .env.production   Vite 生产构建依赖它注入 VITE_* 变量
+#   nginx.conf        Dockerfile 会 COPY 它作为容器内 Nginx 配置
+#   package-lock.json npm ci 强依赖，缺失或不同步会直接失败
+# ----------------------------------------
