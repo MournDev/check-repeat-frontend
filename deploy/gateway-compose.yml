@@ -48,6 +48,16 @@ services:
 
     volumes:
       # 主配置：前端静态代理 + /check/ + /ws/ + ACME
+      #
+      # ⚠️ 这是【单文件】bind mount，绑的是 inode 而非路径。
+      #    更新它必须原地覆写，不能换 inode：
+      #        cat <仓库里的新版本> > /opt/check-repeat/nginx/conf/nginx.conf   ✅
+      #        install / mv / cp --remove-destination  ... 该文件                ❌
+      #    后者会 unlink 再创建，宿主机路径指向新 inode，而容器仍挂在旧 inode 上，
+      #    改动永远不生效 —— 且 install 返回成功、文件时间戳也变了，只有
+      #    nginx -t 报的错还是旧的，极难排查。
+      #    已经换过 inode 的话，docker restart 本容器即可重新挂载。
+      #    详见 deploy/README.md 三·3.5。
       - /opt/check-repeat/nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
 
       # Jenkins 子域片段目录。初始只有纯注释的占位文件；

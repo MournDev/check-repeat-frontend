@@ -503,9 +503,37 @@ visudo -cf /etc/sudoers.d/deploy-frontend    # 必须通过
 > git checkout --detach --force origin/master
 > ```
 
+> ⚠️ **网关主配置必须用 `cat >` 原地覆写，不能用 `install` / `mv`。**
+>
+> 它是被**单文件 bind mount** 进容器的（见 [gateway-compose.yml](gateway-compose.yml)），
+> 而 bind mount 绑的是 **inode**。`install` 会先 unlink 再创建，换掉 inode ——
+> 宿主机路径指向新文件，容器仍挂在旧 inode 上（该 inode 已 unlink，仅因被挂载而存活），
+> **改动永远不生效**。
+>
+> 这个陷阱的恶劣之处在于它不报错：`install` 返回成功、`stat` 看到文件大小和时间戳
+> 都更新了，只有 `nginx -t` 报的错还是旧配置的 —— 把人引向完全错误的方向。
+>
+> 判定方法：比对容器内外的 inode，不一致即中招。
+>
+> ```bash
+> stat -c '宿主机 inode=%i 大小=%s' /opt/check-repeat/nginx/conf/nginx.conf
+> docker exec check-repeat-gateway stat -c '容器内 inode=%i 大小=%s' /etc/nginx/nginx.conf
+> ```
+>
+> 已经换过 inode 的补救办法是**重启容器**，让它按路径重新挂载：
+>
+> ```bash
+> docker restart check-repeat-gateway
+> ```
+>
+> `gateway-compose.yml` 不被挂载，用 `install` 没有问题。
+
 ```bash
-install -m 0644 /opt/check-repeat-frontend/deploy/nginx-gateway.conf \
-    /opt/check-repeat/nginx/conf/nginx.conf
+# 网关主配置：原地覆写，保持 inode 不变
+cat /opt/check-repeat-frontend/deploy/nginx-gateway.conf \
+    > /opt/check-repeat/nginx/conf/nginx.conf
+
+# 编排文件不被挂载，install 安全
 install -m 0644 /opt/check-repeat-frontend/deploy/gateway-compose.yml \
     /opt/check-repeat/nginx/docker-compose.yml
 
@@ -924,7 +952,7 @@ ssh -i <key> deploy@<host> "<目标commit短SHA>"
 | 改了网关配置但行为没变 | 网关配置不随前端部署更新，需手工重装 + reload，见 3.5 |
 | `docker compose config` 校验了错误的文件 | 未显式带 `-f`，compose 向上找到了后端编排，见 2.3 |
 | `git pull` 报 `not currently on a branch` | 部署脚本把检出留在 detached HEAD。用 `git fetch --prune origin && git checkout --detach --force origin/master`，见 3.5 |
-| 改了网关配置重装后 `nginx -t` 仍报旧内容 | 检出没同步，`install` 装的是旧文件。先按 3.5 同步检出再重装 |
+| 改了网关配置重装后 `nginx -t` 仍报旧内容 | 两种原因，都属「失败不报错」：① 检出没同步（detached HEAD 下 `git pull` 失败），装的是旧文件；② `install` 换掉了 inode，单文件 bind mount 看不到新内容。判定与处理见 3.5 |
 | `nginx -t` 报 `host not found in upstream` 但 `getent hosts <名>` 查得到 | 该上游是**字面主机名**，nginx 在加载配置时解析并缓存，与当前 DNS 可能不一致。改上游名后必须 reload 才生效 |
 
 ---
