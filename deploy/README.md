@@ -487,7 +487,21 @@ visudo -cf /etc/sudoers.d/deploy-frontend    # 必须通过
 
 #### 后两个文件没有自检，只能靠人工
 
-网关配置与网关编排不在部署脚本的视野内（它们跑在另一个容器里），改了必须手工重装：
+网关配置与网关编排不在部署脚本的视野内（它们跑在另一个容器里），改了必须手工重装。
+
+> ⚠️ **重装前先同步检出。** 部署脚本执行的是 `git checkout --detach --force <SHA>`，
+> 所以**部署过一次之后，检出就停在 detached HEAD**，此时 `git pull` 会报
+> `You are not currently on a branch` 而失败 —— 你会以为装上了新文件，
+> 实际装上去的还是旧版本。这种情况尤其危险：`nginx -t` 报的是旧配置的错，
+> 让人往完全错误的方向排查。
+>
+> 正确的手工同步方式（与脚本行为保持一致）：
+>
+> ```bash
+> cd /opt/check-repeat-frontend
+> git fetch --prune origin
+> git checkout --detach --force origin/master
+> ```
 
 ```bash
 install -m 0644 /opt/check-repeat-frontend/deploy/nginx-gateway.conf \
@@ -909,6 +923,9 @@ ssh -i <key> deploy@<host> "<目标commit短SHA>"
 | Jenkins 日志有 `⚠️ 部署脚本 与仓库版本不一致` | 正常告警，不是错误。改了脚本/sudoers 没重装，见 3.5 |
 | 改了网关配置但行为没变 | 网关配置不随前端部署更新，需手工重装 + reload，见 3.5 |
 | `docker compose config` 校验了错误的文件 | 未显式带 `-f`，compose 向上找到了后端编排，见 2.3 |
+| `git pull` 报 `not currently on a branch` | 部署脚本把检出留在 detached HEAD。用 `git fetch --prune origin && git checkout --detach --force origin/master`，见 3.5 |
+| 改了网关配置重装后 `nginx -t` 仍报旧内容 | 检出没同步，`install` 装的是旧文件。先按 3.5 同步检出再重装 |
+| `nginx -t` 报 `host not found in upstream` 但 `getent hosts <名>` 查得到 | 该上游是**字面主机名**，nginx 在加载配置时解析并缓存，与当前 DNS 可能不一致。改上游名后必须 reload 才生效 |
 
 ---
 
