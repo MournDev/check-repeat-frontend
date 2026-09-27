@@ -856,7 +856,7 @@ const contactAdvisor = () => {
 }
 
 const viewAllNotifications = () => {
-  router.push('src/components/MessageCenter.vue')
+  router.push('/message-center')
 }
 
 const getStatusType = (status) => {

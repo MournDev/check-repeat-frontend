@@ -478,7 +478,7 @@ import {
   EditPen, Refresh, UserFilled, Clock, Check, TrendCharts,
   Document, More, User, Files, View, Download, DataLine,
   Operation, Histogram, Setting, ArrowUp, ArrowDown, Bell,
-  Timer, Reading
+  Timer, Reading, Message
 } from '@element-plus/icons-vue'
 
 const router = useRouter()
@@ -669,6 +669,10 @@ const goToStudentManagement = () => {
 
 const goToStatistics = () => {
   router.push('/teacher/data-statistics')
+}
+
+const goToMessageCenter = () => {
+  router.push('/message-center')
 }
 
 const reviewPaper = (paperId) => {
