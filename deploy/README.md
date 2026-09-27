@@ -894,6 +894,7 @@ ssh -i <key> deploy@<host> "<目标commit短SHA>"
 | --- | --- |
 | 网关起不来，日志 `host not found in upstream` | `location /` 未用 `resolver`+变量；检查是否误写成字面主机名 |
 | 502 且 frontend 容器在跑 | 两者不在同一网络：`docker inspect` 确认都在 `check-repeat_app-network` |
+| `/check/` 全线 502，但后端容器 `healthy` | 后端换了容器名，网关里的**字面主机名**解析不到。字面主机名在**加载配置时**解析，所以 `nginx -t` 也会失败、配置 reload 不进去。把网关上游改成后端实际容器名并重装配置；根治办法是要求后端在 compose 里声明稳定的 network alias —— 容器名不该成为跨方接口 |
 | 前端 compose 报 `network ... not found` | 基础设施侧 compose 尚未创建该网络，或网络名不匹配（见 2.2） |
 | Jenkins 里 `ssh: not found` | 容器缺 openssh-client，见 5.1 |
 | `Host key verification failed` | known_hosts 未写入，见 5.3 |
