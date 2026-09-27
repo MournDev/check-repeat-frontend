@@ -10,11 +10,29 @@
 # 这类问题排查成本极高，故显式钉死行尾。
 # ============================================================
 
+# 兜底：未在上面显式列出的文本文件也按内容自动判定并入库存成 LF。
+# 只影响入库形态，不影响 Windows 工作区（那由 core.autocrlf 决定）。
+*                   text=auto
+
 *.sh                text eol=lf
 Jenkinsfile         text eol=lf
 Dockerfile          text eol=lf
 .dockerignore       text eol=lf
 .gitattributes      text eol=lf
+
+# ------------------------------------------------------------
+# dotenv 文件 —— 这一类故障最隐蔽，单列出来说明
+#
+# .sh 里混进 \r，shebang 变成 "#!/usr/bin/env bash\r"，执行时报
+# bad interpreter，会当场炸、好查。
+# .env 里混进 \r 则完全相反：
+#     VITE_API_BASE_URL=/check   →   VITE_API_BASE_URL=/check\r
+# dotenv 会把它整段当作值，于是请求打到 "/check\r/..." 这样的路径上。
+# 构建成功、部署成功、页面能开，只有接口全挂，且报错指向后端而非配置。
+# 因此这里必须锁死，不能依赖各人本地的 core.autocrlf。
+# ------------------------------------------------------------
+.env                text eol=lf
+.env.*              text eol=lf
 
 *.conf              text eol=lf
 nginx.conf          text eol=lf
