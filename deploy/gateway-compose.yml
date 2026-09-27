@@ -21,9 +21,13 @@
 # 「上游未解析导致 nginx 拒绝启动」的问题由主配置里的
 # resolver + 变量 proxy_pass 解决（见 nginx-gateway.conf 注释）。
 #
-# 常用命令（均在 /opt/check-repeat/nginx 下执行）：
-#   docker compose up -d
-#   docker compose logs -f
+# 常用命令。注意必须显式带 -f：
+#   Docker Compose v2 在当前目录找不到 compose 文件时会向上级目录查找，
+#   而 /opt/check-repeat/docker-compose.yml（后端那份）就在上一级。
+#   不带 -f 时 `up -d` 会去启动【后端】，`config` 会静默校验后端文件。
+#
+#   docker compose -f /opt/check-repeat/nginx/docker-compose.yml up -d
+#   docker compose -f /opt/check-repeat/nginx/docker-compose.yml logs -f
 #   docker exec check-repeat-gateway nginx -t
 #   docker exec check-repeat-gateway nginx -s reload
 # ============================================================

@@ -93,6 +93,24 @@ certbot 才有地方落验证文件。
 | 前端目录 | `/opt/check-repeat-frontend` |
 | 基础设施目录 | `/opt/check-repeat` |
 
+### 宿主机依赖（先确认，缺了后面一步都走不了）
+
+```bash
+git --version            # 【必需】首次 clone、部署脚本的 fetch/checkout/merge-base 全依赖它
+docker --version
+certbot --version
+```
+
+`git` 缺失时装上（阿里云 Linux 3 为 RHEL 系）：
+
+```bash
+dnf install -y git       # 若报错改用 yum
+```
+
+> 这条**容易漏**：宿主机上既有的服务都是容器化的，日常运维用不到 git，
+> 但本方案的部署链路每一环都是 git 驱动的（构建内容完全由提交决定），
+> 所以宿主机必须有 git。
+
 ---
 
 ## 一、🔴 修复证书续期（最高优先级，先做这个）
@@ -306,8 +324,18 @@ install -m 0644 /opt/check-repeat-frontend/deploy/gateway-compose.yml \
     /opt/check-repeat/nginx/docker-compose.yml
 
 cd /opt/check-repeat/nginx
-docker compose config >/dev/null && echo "编排语法 OK"
+docker compose -f /opt/check-repeat/nginx/docker-compose.yml config >/dev/null \
+    && echo "网关编排 OK"
 ```
+
+> ⚠️ **必须显式带 `-f`**。Docker Compose v2 在当前目录找不到 compose 文件时会
+> **向上级目录查找**，而 `/opt/check-repeat/docker-compose.yml`（后端那份）就在上一级。
+> 不带 `-f` 的后果：
+>   - `docker compose config` 会静默校验**后端**文件并报 OK，让你以为网关没问题
+>   - `docker compose up -d` 会去**启动后端**，而不是网关
+>
+> 判断有没有踩到：看输出里的路径。校验通过时 `grep '^name:'` 应回显
+> `check-repeat-gateway`，回显 `check-repeat` 就说明校验的是后端。
 
 三方生命周期互相独立，没有任何启动顺序依赖：
 
@@ -351,8 +379,11 @@ nginx
 ### 2.5 校验
 
 ```bash
-cd /opt/check-repeat/nginx
-docker compose config >/dev/null && echo "网关编排 OK"
+docker compose -f /opt/check-repeat/nginx/docker-compose.yml config \
+    | grep -E '^name:'          # 应回显 check-repeat-gateway
+
+docker compose -f /opt/check-repeat/nginx/docker-compose.yml config >/dev/null \
+    && echo "网关编排 OK"
 
 # 注意：此时【不要】执行 docker compose up -d
 # 80/443 还被旧前端容器占着，现在起会因端口冲突失败。
@@ -666,7 +697,8 @@ docker inspect --format '{{.State.Health.Status}}' check-repeat-frontend   # 必
 docker stop check-repeat-frontend-legacy
 
 # 4. 起网关，接住 80/443 —— 中断结束（整个窗口通常几秒）
-cd /opt/check-repeat/nginx && docker compose up -d
+#    必须带 -f，否则 compose 会向上找到后端编排并去启动后端（见 2.3 的警告）
+docker compose -f /opt/check-repeat/nginx/docker-compose.yml up -d
 
 # 5. 验证
 docker exec check-repeat-gateway nginx -t
@@ -688,8 +720,8 @@ docker rm check-repeat-frontend-legacy
 ### 回滚预案（切换后异常时立即执行）
 
 ```bash
-# 1. 停网关（释放 80/443）
-cd /opt/check-repeat/nginx && docker compose down
+# 1. 停网关（释放 80/443）—— 同样必须带 -f
+docker compose -f /opt/check-repeat/nginx/docker-compose.yml down
 
 # 2. 恢复旧前端容器（它原名就是 check-repeat-frontend，
 #    所以先把新前端容器改名让位）
