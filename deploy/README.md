@@ -258,8 +258,12 @@ curl -sS -o /dev/null -w 'webhook(不应 502): %{http_code}\n' \
 **日常访问 UI 的方式**（不经公网，隧道直连宿主机端口，绕开网关）：
 
 ```bash
-# 端口以 `docker port jenkins` 的实际输出为准
-ssh -L 8080:172.17.0.1:8081 root@8.130.184.34
+# 端口以 `docker port jenkins` 的实际输出为准（本机实测：8080/tcp -> 127.0.0.1:8081）
+#
+# ⚠️ 必须是 127.0.0.1，不能写 172.17.0.1 —— Jenkins 只监听宿主机 loopback。
+#    别与 Jenkinsfile 的 DEPLOY_HOST=172.17.0.1 混淆，那是【反方向】：
+#    Jenkins 容器主动连出到宿主机，走 docker0 网关，与隧道无关。
+ssh -L 8080:127.0.0.1:8081 root@8.130.184.34
 # 然后浏览器打开 http://localhost:8080
 ```
 
