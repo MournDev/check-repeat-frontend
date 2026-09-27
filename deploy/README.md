@@ -934,9 +934,9 @@ ssh -i <key> deploy@<host> "<目标commit短SHA>"
 
 | 现象 | 原因与处理 |
 | --- | --- |
-| 网关起不来，日志 `host not found in upstream` | `location /` 未用 `resolver`+变量；检查是否误写成字面主机名 |
+| 网关起不来，日志 `host not found in upstream` | 该上游写成了**字面主机名**，nginx 加载配置时解析不到就拒绝启动。主配置的 `/`、`/check/`、`/ws/` 都已用 `resolver`+变量规避；若仍报错，检查是不是 Jenkins 片段里的 `jenkins:8080`（那处是有意写死的，见四·4.5） |
 | 502 且 frontend 容器在跑 | 两者不在同一网络：`docker inspect` 确认都在 `check-repeat_app-network` |
-| `/check/` 全线 502，但后端容器 `healthy` | 后端换了容器名，网关里的**字面主机名**解析不到。字面主机名在**加载配置时**解析，所以 `nginx -t` 也会失败、配置 reload 不进去。把网关上游改成后端实际容器名并重装配置；根治办法是要求后端在 compose 里声明稳定的 network alias —— 容器名不该成为跨方接口 |
+| `/check/` 全线 502，但后端容器 `healthy` | 后端容器刚被重建/改名，网关还没跟上。主配置已是 `resolver`+变量，正常会在 10s 内自愈；若持续 502，逐项查：① `docker exec check-repeat-gateway getent hosts check-backend` 能否解析（不能则容器名又变了，须改配置并 reload）；② 关键——**检查生效的是不是新配置**：日志里 `upstream` 的地址是否为新 IP（见 3.5 的 inode 陷阱）。根治办法是要求后端在 compose 里声明稳定的 `aliases:` —— 容器名不该成为跨方接口 |
 | 前端 compose 报 `network ... not found` | 基础设施侧 compose 尚未创建该网络，或网络名不匹配（见 2.2） |
 | Jenkins 里 `ssh: not found` | 容器缺 openssh-client，见 5.1 |
 | `Host key verification failed` | known_hosts 未写入，见 5.3 |
@@ -953,7 +953,9 @@ ssh -i <key> deploy@<host> "<目标commit短SHA>"
 | `docker compose config` 校验了错误的文件 | 未显式带 `-f`，compose 向上找到了后端编排，见 2.3 |
 | `git pull` 报 `not currently on a branch` | 部署脚本把检出留在 detached HEAD。用 `git fetch --prune origin && git checkout --detach --force origin/master`，见 3.5 |
 | 改了网关配置重装后 `nginx -t` 仍报旧内容 | 两种原因，都属「失败不报错」：① 检出没同步（detached HEAD 下 `git pull` 失败），装的是旧文件；② `install` 换掉了 inode，单文件 bind mount 看不到新内容。判定与处理见 3.5 |
-| `nginx -t` 报 `host not found in upstream` 但 `getent hosts <名>` 查得到 | 该上游是**字面主机名**，nginx 在加载配置时解析并缓存，与当前 DNS 可能不一致。改上游名后必须 reload 才生效 |
+| `nginx -t` 报 `host not found in upstream` 但 `getent hosts <名>` 查得到 | 该上游是**字面主机名**（现仅剩 Jenkins 片段的 `jenkins:8080`），nginx 在加载配置时解析并缓存，与运行时的 DNS 可能不一致。先 `docker network connect` 把目标容器接进共享网络，再 `nginx -t` |
+| 后端重建后 `/check/` 短暂 502 后自愈 | 预期行为。上游是 `resolver`+变量，Docker DNS 每 `valid=10s` 重解析一次，最长约 10s |
+| 后端**改容器名**后 `/check/` 一直 502 | 变量只解决「IP 变化」，不解决「名字变化」——`check-backend` 这个名字写在配置里。需同步改 `nginx-gateway.conf` 两个 `set $backend_upstream`，重装配置并 reload（`/ws/` 那条容易漏） |
 
 ---
 
