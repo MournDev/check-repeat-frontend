@@ -22,74 +22,66 @@
     </div>
 
     <!-- 统计卡片 -->
-    <el-row :gutter="16" class="stats-row">
-      <el-col :xs="24" :sm="12" :lg="6">
-        <el-card class="stat-card" shadow="hover">
-          <div class="stat-content">
-            <div class="stat-icon-wrapper" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-              <el-icon>
-                <User />
-              </el-icon>
-            </div>
-            <div class="stat-info">
-              <div class="stat-number">{{ stats.totalStudents || 0 }}</div>
-              <div class="stat-label">总学生数</div>
-            </div>
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-content">
+          <div class="stat-icon-wrapper">
+            <el-icon>
+              <User />
+            </el-icon>
           </div>
-        </el-card>
-      </el-col>
+          <div class="stat-info">
+            <div class="stat-number">{{ stats.totalStudents || 0 }}</div>
+            <div class="stat-label">总学生数</div>
+          </div>
+        </div>
+      </div>
 
-      <el-col :xs="24" :sm="12" :lg="6">
-        <el-card class="stat-card" shadow="hover">
-          <div class="stat-content">
-            <div class="stat-icon-wrapper" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-              <el-icon>
-                <Document />
-              </el-icon>
-            </div>
-            <div class="stat-info">
-              <div class="stat-number">{{ stats.submittedStudents || 0 }}</div>
-              <div class="stat-label">已提交论文</div>
-            </div>
+      <div class="stat-card">
+        <div class="stat-content">
+          <div class="stat-icon-wrapper">
+            <el-icon>
+              <Document />
+            </el-icon>
           </div>
-        </el-card>
-      </el-col>
+          <div class="stat-info">
+            <div class="stat-number">{{ stats.submittedStudents || 0 }}</div>
+            <div class="stat-label">已提交论文</div>
+          </div>
+        </div>
+      </div>
 
-      <el-col :xs="24" :sm="12" :lg="6">
-        <el-card class="stat-card" shadow="hover">
-          <div class="stat-content">
-            <div class="stat-icon-wrapper" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-              <el-icon>
-                <UserFilled />
-              </el-icon>
-            </div>
-            <div class="stat-info">
-              <div class="stat-number">{{ stats.assignedStudents || 0 }}</div>
-              <div class="stat-label">已分配导师</div>
-            </div>
+      <div class="stat-card">
+        <div class="stat-content">
+          <div class="stat-icon-wrapper">
+            <el-icon>
+              <UserFilled />
+            </el-icon>
           </div>
-        </el-card>
-      </el-col>
+          <div class="stat-info">
+            <div class="stat-number">{{ stats.assignedStudents || 0 }}</div>
+            <div class="stat-label">已分配导师</div>
+          </div>
+        </div>
+      </div>
 
-      <el-col :xs="24" :sm="12" :lg="6">
-        <el-card class="stat-card" shadow="hover">
-          <div class="stat-content">
-            <div class="stat-icon-wrapper" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
-              <el-icon>
-                <Check />
-              </el-icon>
-            </div>
-            <div class="stat-info">
-              <div class="stat-number">{{ stats.completedStudents || 0 }}</div>
-              <div class="stat-label">已完成审核</div>
-            </div>
+      <div class="stat-card">
+        <div class="stat-content">
+          <div class="stat-icon-wrapper">
+            <el-icon>
+              <Check />
+            </el-icon>
           </div>
-        </el-card>
-      </el-col>
-    </el-row>
+          <div class="stat-info">
+            <div class="stat-number">{{ stats.completedStudents || 0 }}</div>
+            <div class="stat-label">已完成审核</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- 筛选和搜索区域 -->
-    <el-card class="filter-card" shadow="hover">
+    <div class="filter-card">
       <div class="filter-content">
         <div class="filter-left">
           <el-input v-model="searchQuery" placeholder="搜索学生姓名、学号或专业" :prefix-icon="Search" class="search-input"
@@ -123,38 +115,36 @@
           </el-button>
         </div>
       </div>
-    </el-card>
+    </div>
 
     <!-- 学生列表 -->
-    <el-card class="list-card" shadow="hover">
-      <template #header>
-        <div class="list-header">
-          <div class="header-title">
-            <el-icon>
-              <List />
-            </el-icon>
-            <span>学生列表</span>
-            <span class="total-count">(共 {{ students.length }} 人)</span>
-          </div>
-          <div class="header-actions">
-            <el-button :icon="Refresh" text @click="refreshList">
-              刷新
-            </el-button>
-          </div>
+    <div class="list-card">
+      <div class="list-header">
+        <div class="header-title">
+          <el-icon>
+            <List />
+          </el-icon>
+          <span>学生列表</span>
+          <span class="total-count">(共 {{ students.length }} 人)</span>
         </div>
-      </template>
+        <div class="header-actions">
+          <el-button :icon="Refresh" text @click="refreshList">
+            刷新
+          </el-button>
+        </div>
+      </div>
 
       <el-table :data="filteredStudents" v-loading="loading" stripe class="student-table"
         @sort-change="handleSortChange">
-        <el-table-column type="index" label="序号" width="60" align="center" />
+        <el-table-column type="index" label="序号" width="55" align="center" />
 
-        <el-table-column prop="username" label="学号" width="120" sortable>
+        <el-table-column prop="username" label="学号" width="130" sortable>
           <template #default="{ row }">
             <span class="student-id">{{ row.username }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column prop="studentName" label="姓名" width="100" sortable>
+        <el-table-column prop="studentName" label="姓名" min-width="90" sortable show-overflow-tooltip>
           <template #default="{ row }">
             <div class="student-info">
               <div class="student-name">
@@ -164,33 +154,40 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="collegeName" label="学院" width="120" sortable>
+        <el-table-column prop="collegeName" label="学院" min-width="120" sortable show-overflow-tooltip>
           <template #default="{ row }">
             <el-tag type="info" size="small">{{ row.collegeName }}</el-tag>
           </template>
         </el-table-column>
 
-        <el-table-column prop="major" label="专业" width="140" sortable>
+        <el-table-column prop="major" label="专业" min-width="140" sortable show-overflow-tooltip>
           <template #default="{ row }">
             <span class="major">{{ row.major }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column prop="grade" label="年级" width="80" sortable>
+        <el-table-column prop="grade" label="年级" width="80" sortable show-overflow-tooltip>
           <template #default="{ row }">
             <span class="grade">{{ row.grade }}级</span>
           </template>
         </el-table-column>
 
-        <el-table-column prop="paperStatus" label="论文状态" width="100" sortable>
+        <el-table-column prop="paperStatus" label="论文状态" min-width="110" sortable>
           <template #default="{ row }">
-            <el-tag :type="getStatusType(row.paperStatus)" effect="light" size="small">
-              {{ getStatusText(row.paperStatus) }}
-            </el-tag>
+            <template v-if="row.paperCount && row.paperCount > 1">
+              <el-tag type="info" effect="light" size="small" @click="viewAllPapers(row)" style="cursor: pointer;">
+                多篇论文 ({{ row.paperCount }})
+              </el-tag>
+            </template>
+            <template v-else>
+              <el-tag :type="getStatusType(row.paperStatus)" effect="light" size="small">
+                {{ getStatusText(row.paperStatus) }}
+              </el-tag>
+            </template>
           </template>
         </el-table-column>
 
-        <el-table-column prop="advisorName" label="指导老师" width="120">
+        <el-table-column prop="advisorName" label="指导老师" min-width="100" show-overflow-tooltip>
           <template #default="{ row }">
             <div v-if="row.advisorName" class="advisor-info">
               <span class="advisor-name">{{ row.advisorName }}</span>
@@ -199,7 +196,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="submitTime" label="提交时间" width="140" sortable>
+        <el-table-column prop="submitTime" label="提交时间" width="155" sortable>
           <template #default="{ row }">
             <span v-if="row.submitTime" class="submit-time">
               {{ formatDate(row.submitTime) }}
@@ -208,7 +205,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="similarity" label="相似度" width="100" sortable>
+        <el-table-column prop="similarity" label="相似度" width="115" sortable>
           <template #default="{ row }">
             <div v-if="row.similarity !== null && row.similarity !== undefined">
               <el-progress :percentage="row.similarity" :stroke-width="6" :show-text="false"
@@ -219,7 +216,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="180" fixed="right">
+        <el-table-column label="操作" width="150" fixed="right">
           <template #default="{ row }">
             <div class="action-buttons" style="display: flex; align-items: center; gap: 8px;">
               <!-- 主要操作显式展示 -->
@@ -247,15 +244,15 @@
 
       <!-- 分页 -->
       <div class="pagination-container">
-        <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize" :total="total"
+        <el-pagination :current-page="currentPage" :page-size="pageSize" :total="total"
           :page-sizes="[10, 20, 50, 100]" layout="total, sizes, prev, pager, next, jumper" background
           @size-change="handleSizeChange" @current-change="handleCurrentChange" />
       </div>
-    </el-card>
+    </div>
 
     <!-- 批量操作区域 -->
     <div class="batch-operations" v-if="selectedStudents?.length > 0">
-      <el-card shadow="hover">
+      <div class="batch-card">
         <div class="batch-content">
           <div class="batch-info">
             <el-icon>
@@ -281,7 +278,7 @@
             </el-button>
           </div>
         </div>
-      </el-card>
+      </div>
     </div>
 
     <!-- 添加学生对话框 -->
@@ -423,6 +420,63 @@
         </div>
       </template>
     </el-dialog>
+
+    <!-- 论文列表对话框 -->
+    <el-dialog 
+      v-model="papersDialogVisible" 
+      :title="`${currentStudent?.studentName} 的论文列表`" 
+      width="80%" 
+      top="5vh"
+    >
+      <div class="papers-container">
+        <el-table :data="studentPapers" stripe class="papers-table">
+          <el-table-column type="index" label="序号" width="60" align="center" />
+          <el-table-column prop="paperTitle" label="论文标题">
+            <template #default="{ row }">
+              <span class="paper-title">{{ row.paperTitle }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="status" label="状态" width="100">
+            <template #default="{ row }">
+              <el-tag :type="getStatusType(row.status)" effect="light" size="small">
+                {{ getStatusText(row.status) }}
+              </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column prop="submitTime" label="提交时间" width="140">
+            <template #default="{ row }">
+              <span class="submit-time">{{ formatDate(row.submitTime) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="similarity" label="相似度" width="100">
+            <template #default="{ row }">
+              <div v-if="row.similarity !== null && row.similarity !== undefined">
+                <el-progress :percentage="row.similarity" :stroke-width="6" :show-text="false"
+                  :color="getSimilarityColor(row.similarity)" class="similarity-progress" />
+                <span class="similarity-value">{{ row.similarity }}%</span>
+              </div>
+              <span v-else>--</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="120" fixed="right">
+            <template #default="{ row }">
+              <div class="action-buttons">
+                <el-button type="primary" :icon="Document" size="small" @click="viewPaperFromList(row)" title="查看论文" />
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div v-if="studentPapers.length === 0" class="empty-papers">
+          <el-empty description="暂无论文" :image-size="120" />
+        </div>
+      </div>
+
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="papersDialogVisible = false">关闭</el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -444,9 +498,11 @@ import {
   addStudent,
   getColleges,
   getMajors,
-  getStudentPaper
+  getStudentPaper,
+  getStudentPapers
 } from '@/api/teacher'
 import { useUserStore } from '@/stores/user'
+import { getSimilarityColor } from '@/utils/reviewStatus.js'
 
 // 图标引入
 import {
@@ -522,6 +578,11 @@ const previewUrl = ref('')
 const currentPaper = ref(null)
 const errorMessage = ref('')
 
+// 论文列表相关数据
+const papersDialogVisible = ref(false)
+const studentPapers = ref([])
+const currentStudent = ref(null)
+
 // 计算属性
 const filteredStudents = computed(() => {
   let filtered = [...students.value]
@@ -591,8 +652,20 @@ const loadStudents = async () => {
     
     const res = await getStudentListFull(params)
     if (res.code === 200) {
-      students.value = res.data.list || []
-      total.value = res.data.totalCount || 0
+      // 检查返回的数据结构
+      if (res.data.records) {
+        // 后端返回的是Page对象
+        students.value = res.data.records || []
+        total.value = res.data.total || 0
+      } else if (res.data.list) {
+        // 后端返回的是自定义结构
+        students.value = res.data.list || []
+        total.value = res.data.totalCount || 0
+      } else {
+        // 其他结构
+        students.value = []
+        total.value = 0
+      }
     } else {
       ElMessage.error(res.message || '获取学生列表失败')
     }
@@ -623,7 +696,6 @@ const refreshList = async () => {
 }
 
 const handleSortChange = ({ prop, order }) => {
-  console.log('排序:', prop, order)
   // 实际应用中这里会重新请求排序后的数据
 }
 
@@ -660,13 +732,6 @@ const getStatusText = (status) => {
     'completed': '已完成'
   }
   return textMap[status] || '未知状态'
-}
-
-const getSimilarityColor = (similarity) => {
-  if (!similarity) return '#909399'
-  if (similarity < 15) return '#52c41a'
-  if (similarity < 30) return '#faad14'
-  return '#ff4d4f'
 }
 
 const formatDate = (date) => {
@@ -733,12 +798,12 @@ const assignAdvisor = async (student) => {
 const viewPaper = async (student) => {
   try {
     // 显示加载状态
-    const loading = ElLoading.service({
+    const loadingRef = ElLoading.service({
       lock: true,
       text: '正在加载论文信息...',
       background: 'rgba(0,0,0,0.4)'
     })
-    
+
     // 获取学生论文信息
     const res = await getStudentPaper(student.studentId)
     
@@ -748,7 +813,7 @@ const viewPaper = async (student) => {
       // 如果有文件ID，则进行预览
       if (res.data.fileId) {
         // 使用已有的KKFileView预览逻辑
-        const previewApiUrl = `/check/api/file/smartPreview?fileId=${res.data.fileId}`
+        const previewApiUrl = `/check/api/v1/file/smartPreview?fileId=${res.data.fileId}`
         previewUrl.value = previewApiUrl
         previewVisible.value = true
         previewLoading.value = true
@@ -765,8 +830,52 @@ const viewPaper = async (student) => {
   } finally {
     // 关闭加载状态
     setTimeout(() => {
-      ElLoading.service().close()
+      loadingRef?.close()
     }, 500)
+  }
+}
+
+const viewAllPapers = async (student) => {
+  try {
+    // 显示加载状态
+    const loadingRef2 = ElLoading.service({
+      lock: true,
+      text: '正在加载论文列表...',
+      background: 'rgba(0,0,0,0.4)'
+    })
+    
+    // 获取学生所有论文
+    const res = await getStudentPapers(student.studentId)
+    
+    if (res.code === 200 && res.data) {
+      studentPapers.value = res.data
+      currentStudent.value = student
+      papersDialogVisible.value = true
+    } else {
+      ElMessage.warning(res.message || '未找到该学生的论文信息')
+    }
+  } catch (error) {
+    console.error('获取论文列表失败:', error)
+    ElMessage.error('获取论文列表失败: ' + error.message)
+  } finally {
+    // 关闭加载状态
+    setTimeout(() => {
+      loadingRef2?.close()
+    }, 500)
+  }
+}
+
+const viewPaperFromList = (paper) => {
+  currentPaper.value = paper
+  
+  // 如果有文件ID，则进行预览
+  if (paper.fileId) {
+    // 使用已有的KKFileView预览逻辑
+    const previewApiUrl = `/check/api/v1/file/smartPreview?fileId=${paper.fileId}`
+    previewUrl.value = previewApiUrl
+    previewVisible.value = true
+    previewLoading.value = true
+    previewError.value = false
   }
 }
 
@@ -859,7 +968,6 @@ const deleteStudent = async (student) => {
 // 论文预览相关函数
 const onPreviewLoad = () => {
   previewLoading.value = false
-  console.log('论文预览加载完成')
 }
 
 const onPreviewError = () => {
@@ -880,7 +988,7 @@ const retryPreview = () => {
   if (currentPaper.value?.fileId) {
     previewLoading.value = true
     previewError.value = false
-    const previewApiUrl = `/check/api/file/smartPreview?fileId=${currentPaper.value.fileId}`
+    const previewApiUrl = `/check/api/v1/file/smartPreview?fileId=${currentPaper.value.fileId}`
     previewUrl.value = previewApiUrl
   }
 }
@@ -889,7 +997,7 @@ const downloadPaper = () => {
   if (currentPaper.value?.fileId) {
     // 实现下载逻辑
     const link = document.createElement('a')
-    link.href = `/api/file/download/${currentPaper.value.fileId}`
+    link.href = `/api/v1/file/download/${currentPaper.value.fileId}`
     link.download = currentPaper.value.fileName || '论文文件'
     link.click()
     closePreview()
@@ -999,7 +1107,7 @@ const exportData = async () => {
     const res = await exportStudentData(params)
     
     // 创建下载链接
-    const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+    const blob = res.data instanceof Blob ? res.data : new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
     const url = window.URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
@@ -1131,7 +1239,7 @@ const batchExport = async () => {
     const res = await exportStudentData(params)
     
     // 创建下载链接
-    const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+    const blob = res.data instanceof Blob ? res.data : new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
     const url = window.URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
@@ -1212,35 +1320,44 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 .student-management {
-  padding: 20px;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea0d 0%, #764ba20d 100%);
+  background: var(--apple-canvas-parchment);
+  color: var(--apple-ink);
+  font-family: var(--apple-font-text);
+  padding: var(--apple-spacing-xl);
 }
 
 // 页面头部
 .page-header {
-  margin-bottom: 24px;
-  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 2px 12px rgba(102, 126, 234, 0.1);
+  margin-bottom: var(--apple-spacing-xxl);
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-xl);
+  padding: var(--apple-spacing-xl);
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: var(--apple-hairline);
+  }
 
   .header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
 
     .header-left {
       .page-title {
         margin: 0 0 8px 0;
         font-size: 1.75rem;
         font-weight: 700;
-        color: #2c3e50;
+        color: var(--apple-ink);
       }
 
       .page-subtitle {
         margin: 0;
-        color: #7f8c8d;
+        color: var(--apple-ink-muted-48);
         font-size: 0.875rem;
       }
     }
@@ -1248,6 +1365,17 @@ onMounted(async () => {
     .header-right {
       display: flex;
       gap: 12px;
+      
+      .el-button {
+        border-radius: var(--apple-rounded-lg);
+        transition: border-color 0.2s ease;
+        border: 1px solid var(--apple-hairline);
+
+        &:hover {
+          /* translateY + box-shadow removed for Apple HIG */
+          border-color: var(--apple-hairline);
+        }
+      }
     }
   }
 }
@@ -1255,15 +1383,21 @@ onMounted(async () => {
 // 统计卡片
 .stats-row {
   margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
 
   .stat-card {
-    border-radius: 12px;
-    border: none;
-    transition: all 0.3s ease;
-
+    background: var(--apple-surface);
+    border: 1px solid var(--apple-hairline);
+    border-radius: var(--apple-rounded-xl);
+    padding: 20px;
+    transition: border-color 0.2s ease;
+    
     &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+      /* translateY removed for Apple HIG */;
+      /* box-shadow removed for Apple HIG */;
+      border-color: var(--apple-hairline);
     }
 
     .stat-content {
@@ -1274,29 +1408,31 @@ onMounted(async () => {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 48px;
-        height: 48px;
-        border-radius: 12px;
+        width: 56px;
+        height: 56px;
+        border-radius: var(--apple-rounded-lg);
         margin-right: 16px;
+        background: var(--apple-canvas-parchment);
 
         .el-icon {
-          color: white;
+          color: var(--apple-ink-muted-48); // Slate-600
           font-size: 1.5rem;
         }
       }
 
       .stat-info {
         .stat-number {
-          font-size: 1.5rem;
+          font-size: 1.75rem;
           font-weight: 700;
-          color: #2c3e50;
+          color: var(--apple-ink); // Slate-900
           line-height: 1;
+          margin-bottom: 4px;
         }
 
         .stat-label {
           font-size: 0.875rem;
-          color: #7f8c8d;
-          margin-top: 4px;
+          color: var(--apple-ink-muted-48); // Slate-500
+          margin: 0;
         }
       }
     }
@@ -1306,8 +1442,16 @@ onMounted(async () => {
 // 筛选区域
 .filter-card {
   margin-bottom: 24px;
-  border-radius: 12px;
-  border: none;
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-xl);
+  padding: 20px;
+  transition: border-color 0.2s ease;
+  
+  &:hover {
+    /* box-shadow removed for Apple HIG */;
+    border-color: var(--apple-hairline);
+  }
 
   .filter-content {
     display: flex;
@@ -1324,29 +1468,73 @@ onMounted(async () => {
 
       .search-input {
         width: 300px;
+        
+        :deep(.el-input__wrapper) {
+          border-radius: var(--apple-rounded-lg);
+          border: 1px solid var(--apple-hairline);
+          transition: border-color 0.2s ease;
+          
+          &:hover {
+            border-color: var(--apple-hairline);
+            /* box-shadow removed for Apple HIG */
+          }
+        }
       }
 
       .filter-select {
         width: 150px;
+        
+        :deep(.el-select__wrapper) {
+          border-radius: var(--apple-rounded-lg);
+          border: 1px solid var(--apple-hairline);
+          transition: border-color 0.2s ease;
+          
+          &:hover {
+            border-color: var(--apple-hairline);
+            /* box-shadow removed for Apple HIG */
+          }
+        }
       }
     }
 
     .filter-right {
       display: flex;
       gap: 8px;
+      
+      .el-button {
+        border-radius: var(--apple-rounded-lg);
+        transition: border-color 0.2s ease;
+        border: 1px solid var(--apple-hairline);
+
+        &:hover {
+          /* translateY + box-shadow removed for Apple HIG */
+          border-color: var(--apple-hairline);
+        }
+      }
     }
   }
 }
 
 // 列表卡片
 .list-card {
-  border-radius: 12px;
-  border: none;
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-xl);
+  margin-bottom: 24px;
+  transition: border-color 0.2s ease;
+  
+  &:hover {
+    /* box-shadow removed for Apple HIG */;
+    border-color: var(--apple-hairline);
+  }
 
   .list-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 20px;
+    background: var(--apple-canvas-parchment);
+    border-bottom: 1px solid var(--apple-hairline);
 
     .header-title {
       display: flex;
@@ -1354,15 +1542,15 @@ onMounted(async () => {
       gap: 8px;
       font-weight: 600;
       font-size: 1.125rem;
-      color: #2c3e50;
+      color: var(--apple-ink); // Slate-900
 
       .el-icon {
-        color: #667eea;
+        color: var(--apple-ink-muted-48); // Slate-600
       }
 
       .total-count {
         font-size: 0.875rem;
-        color: #7f8c8d;
+        color: var(--apple-ink-muted-48); // Slate-500
         margin-left: 8px;
       }
     }
@@ -1370,78 +1558,153 @@ onMounted(async () => {
     .header-actions {
       display: flex;
       gap: 8px;
+      
+      .el-button {
+        border-radius: var(--apple-rounded-lg);
+        transition: border-color 0.2s ease;
+        border: 1px solid var(--apple-hairline);
+
+        &:hover {
+          /* translateY + box-shadow removed for Apple HIG */
+          border-color: var(--apple-hairline);
+        }
+      }
     }
   }
 
   .student-table {
     width: 100%;
 
+    :deep(.el-table__header-wrapper) {
+      background-color: var(--apple-canvas-parchment);
+      
+      th {
+        color: var(--apple-ink); // Slate-900
+        font-weight: 600;
+        border-bottom: 2px solid var(--apple-hairline);
+        padding: 12px 16px;
+      }
+    }
+    
+    :deep(.el-table__row:hover) {
+      background-color: var(--apple-canvas-parchment);
+      transition: background-color 0.2s ease;
+    }
+    
+    :deep(.el-table__row) {
+      transition: border-color 0.2s ease;
+      padding: 16px 0;
+    }
+    
+    :deep(.el-table__row.el-table__row--striped) {
+      background-color: var(--apple-canvas-parchment);
+    }
+    
+    :deep(.el-table__cell) {
+      padding: 16px;
+      color: var(--apple-ink); // Slate-900
+    }
+
     .student-info {
       display: flex;
       align-items: center;
       gap: 12px;
-
-      .student-avatar {
-        flex-shrink: 0;
+      padding: 8px;
+      background: var(--apple-canvas-parchment);
+      border-radius: var(--apple-rounded-lg);
+      transition: border-color 0.2s ease;
+      
+      &:hover {
+        background: var(--apple-canvas-parchment);
       }
 
       .student-name {
         .name {
-          font-weight: 500;
-          color: #2c3e50;
-        }
-
-        .gender {
-          font-size: 0.75rem;
-          color: #7f8c8d;
-          margin-top: 2px;
+          font-weight: 600;
+          color: var(--apple-ink); // Slate-900
         }
       }
     }
 
     .student-id {
       font-family: 'Monaco', 'Consolas', monospace;
-      color: #667eea;
-      font-weight: 500;
+      color: var(--apple-primary); // Blue-500
+      font-weight: 600;
+      padding: 4px 8px;
+      background: var(--apple-canvas-parchment);
+      border-radius: 8px;
     }
 
     .major,
     .grade {
-      color: #5a6c7d;
+      color: var(--apple-ink-muted-48); // Slate-500
+      padding: 4px 8px;
+      background: var(--apple-canvas-parchment);
+      border-radius: 8px;
     }
 
     .advisor-info {
       .advisor-name {
-        color: #2c3e50;
-        font-weight: 500;
+        color: var(--apple-ink); // Slate-900
+        font-weight: 600;
+        padding: 4px 8px;
+        background: var(--apple-canvas-parchment);
+        border-radius: 8px;
       }
     }
 
     .no-advisor,
     .no-submit {
-      color: #999;
+      color: var(--apple-ink-muted-48); // Slate-400
       font-style: italic;
+      padding: 4px 8px;
+      background: var(--apple-canvas-parchment);
+      border-radius: 8px;
     }
 
     .submit-time {
-      color: #5a6c7d;
+      color: var(--apple-ink-muted-48); // Slate-500
       font-size: 0.875rem;
+      padding: 4px 8px;
+      background: var(--apple-canvas-parchment);
+      border-radius: 8px;
     }
 
     .similarity-progress {
       display: inline-block;
-      width: 60px;
+      width: 80px;
       margin-right: 8px;
+      
+      :deep(.el-progress__bar) {
+        border-radius: 8px;
+      }
+      
+      :deep(.el-progress__bar__outer) {
+        background: var(--apple-hairline);
+        border-radius: 8px;
+      }
     }
 
     .similarity-value {
       font-size: 0.875rem;
-      color: #5a6c7d;
+      color: var(--apple-ink-muted-48); // Slate-500
+      font-weight: 400;
     }
 
     .action-buttons {
       display: flex;
-      gap: 4px;
+      gap: 8px;
+      
+      .el-button {
+        border-radius: var(--apple-rounded-lg);
+        transition: border-color 0.2s ease;
+        border: 1px solid var(--apple-hairline);
+
+        &:hover {
+          /* translateY + box-shadow removed for Apple HIG */
+          border-color: var(--apple-hairline);
+        }
+      }
     }
   }
 
@@ -1449,6 +1712,24 @@ onMounted(async () => {
     margin-top: 24px;
     display: flex;
     justify-content: flex-end;
+    padding: 0 20px 20px;
+    
+    :deep(.el-pagination) {
+      .el-pagination__item {
+        border-radius: var(--apple-rounded-lg);
+        border: 1px solid var(--apple-hairline);
+        
+        &:hover {
+          color: var(--apple-primary); // Blue-500
+          border-color: var(--apple-primary);
+        }
+        
+        &.is-active {
+          background-color: var(--apple-primary);
+          border-color: var(--apple-primary);
+        }
+      }
+    }
   }
 }
 
@@ -1456,30 +1737,56 @@ onMounted(async () => {
 .batch-operations {
   margin-top: 16px;
   position: sticky;
-  bottom: 20px;
+  bottom: 24px;
   z-index: 100;
+
+  .batch-card {
+    background: var(--apple-surface);
+    border: 1px solid var(--apple-hairline);
+    border-radius: var(--apple-rounded-xl);
+    padding: 16px 24px;
+    transition: border-color 0.2s ease;
+    
+    &:hover {
+      /* box-shadow removed for Apple HIG */;
+      border-color: var(--apple-hairline);
+    }
+  }
 
   .batch-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 24px;
+    gap: 16px;
+    flex-wrap: wrap;
 
     .batch-info {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-weight: 500;
-      color: #2c3e50;
+      font-weight: 400;
+      color: var(--apple-ink); // Slate-900
 
       .el-icon {
-        color: #667eea;
+        color: var(--apple-ink-muted-48); // Slate-600
       }
     }
 
     .batch-actions {
       display: flex;
       gap: 8px;
+      flex-wrap: wrap;
+      
+      .el-button {
+        border-radius: var(--apple-rounded-lg);
+        transition: border-color 0.2s ease;
+        border: 1px solid var(--apple-hairline);
+
+        &:hover {
+          /* translateY + box-shadow removed for Apple HIG */
+          border-color: var(--apple-hairline);
+        }
+      }
     }
   }
 }
@@ -1496,19 +1803,20 @@ onMounted(async () => {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    padding: 12px 16px;
-    background: #f5f7fa;
-    border-radius: 4px;
+    padding: 16px;
+    background: var(--apple-canvas-parchment);
+    border: 1px solid var(--apple-hairline);
+    border-radius: var(--apple-rounded-lg);
     margin-bottom: 16px;
     
     .info-item {
       .label {
-        font-weight: 500;
-        color: #606266;
+        font-weight: 400;
+        color: var(--apple-ink-muted-48); // Slate-500
         margin-right: 4px;
       }
       .value {
-        color: #303133;
+        color: var(--apple-ink); // Slate-900
       }
     }
   }
@@ -1520,8 +1828,8 @@ onMounted(async () => {
     .preview-iframe {
       width: 100%;
       height: 100%;
-      border: 1px solid #dcdfe6;
-      border-radius: 4px;
+      border: 1px solid var(--apple-hairline);
+      border-radius: var(--apple-rounded-lg);
     }
     
     .preview-error {
@@ -1531,7 +1839,7 @@ onMounted(async () => {
       height: 100%;
       
       .error-detail {
-        color: #909399;
+        color: var(--apple-ink-muted-48); // Slate-400
         margin: 16px 0;
       }
     }
@@ -1542,7 +1850,111 @@ onMounted(async () => {
     justify-content: flex-end;
     gap: 12px;
     padding-top: 16px;
-    border-top: 1px solid #ebeef5;
+    border-top: 1px solid var(--apple-hairline);
+    
+    .el-button {
+      border-radius: var(--apple-rounded-lg);
+      transition: border-color 0.2s ease;
+      border: 1px solid var(--apple-hairline);
+      
+      &:hover {
+        /* translateY + box-shadow removed for Apple HIG */
+        border-color: var(--apple-hairline);
+      }
+    }
+  }
+}
+
+// 论文列表对话框样式
+.papers-container {
+  .papers-table {
+    width: 100%;
+
+    :deep(.el-table__header-wrapper) {
+      background-color: var(--apple-canvas-parchment);
+      
+      th {
+        color: var(--apple-ink); // Slate-900
+        font-weight: 600;
+        border-bottom: 2px solid var(--apple-hairline);
+        padding: 12px 16px;
+      }
+    }
+    
+    :deep(.el-table__row:hover) {
+      background-color: var(--apple-canvas-parchment);
+      transition: background-color 0.2s ease;
+    }
+    
+    :deep(.el-table__row) {
+      transition: border-color 0.2s ease;
+      padding: 16px 0;
+    }
+    
+    :deep(.el-table__row.el-table__row--striped) {
+      background-color: var(--apple-canvas-parchment);
+    }
+    
+    :deep(.el-table__cell) {
+      padding: 12px;
+      color: var(--apple-ink); // Slate-900
+    }
+
+    .paper-title {
+      color: var(--apple-ink);
+      font-weight: 400;
+      padding: 4px 8px;
+      background: var(--apple-canvas-parchment);
+      border-radius: 8px;
+    }
+
+    .submit-time {
+      color: var(--apple-ink-muted-48);
+      font-size: 0.875rem;
+      padding: 4px 8px;
+      background: var(--apple-canvas-parchment);
+      border-radius: 8px;
+    }
+
+    .similarity-progress {
+      display: inline-block;
+      width: 80px;
+      margin-right: 8px;
+      
+      :deep(.el-progress__bar) {
+        border-radius: 8px;
+      }
+      
+      :deep(.el-progress__bar__outer) {
+        background: var(--apple-hairline);
+        border-radius: 8px;
+      }
+    }
+
+    .similarity-value {
+      font-size: 0.875rem;
+      color: var(--apple-ink-muted-48);
+      font-weight: 400;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+      
+      .el-button {
+        border-radius: 8px;
+        transition: border-color 0.2s ease;
+        
+        &:hover {
+          /* translateY + box-shadow removed for Apple HIG */
+        }
+      }
+    }
+  }
+  
+  .empty-papers {
+    text-align: center;
+    padding: 40px 0;
   }
 }
 
@@ -1595,6 +2007,12 @@ onMounted(async () => {
   }
 
   .student-table {
+    :deep(.el-table__cell) {
+      padding: 8px 0;
+    }
+  }
+
+  .papers-table {
     :deep(.el-table__cell) {
       padding: 8px 0;
     }

@@ -1,27 +1,34 @@
 import { defineStore } from "pinia";
-import Cookies from "js-cookie";
-import { login as userLogin, register } from "@/api/login";
+import { login as userLogin, register, logout as apiLogout } from "@/api/login";
+import { tokenManager } from "@/utils/tokenManager";
+
+// localStorage中只保留非敏感的展示字段（敏感信息如email/phone从后端实时获取）
+const SAFE_STORAGE_FIELDS = ['userId', 'username', 'realName', 'avatar', 'major', 'grade', 'className', 'position', 'collegeName'];
+
+function filterSafeInfo(data) {
+  if (!data) return null;
+  const safe = {};
+  SAFE_STORAGE_FIELDS.forEach(k => {
+    if (data[k] !== undefined && data[k] !== null) safe[k] = data[k];
+  });
+  return safe;
+}
 
 export const useUserStore = defineStore("user", {
   state: () => ({
-    token: Cookies.get("token") || "", // 从Cookie读取令牌（持久化）
-    role: Cookies.get("role") || "", // 角色（STUDENT/TEACHER/ADMIN）
-    userInfo: JSON.parse(localStorage.getItem("userInfo")) || null, // 用户信息
+    token: tokenManager.get(),
+    role: "",
+    userInfo: JSON.parse(localStorage.getItem("userInfo")) || null,
+    lastActivityTime: Date.now(),
   }),
   actions: {
-    // 登录：存储令牌和角色
     async login(loginForm) {
-      console.log("loginForm", loginForm);
       const { username, password } = loginForm;
-      const res = await userLogin({
-        username: username,
-        password: password,
-      });
+      const res = await userLogin({ username, password });
       this.token = res.data.token;
-      this.role = res.data.roleCode;
-      // 保存完整的用户信息到 userInfo
+      this.role = tokenManager.getRole() || res.data.roleCode || "";
       this.userInfo = {
-        userId: res.data.userId, // ✅ 正确存储userId
+        userId: res.data.userId,
         username: res.data.username,
         realName: res.data.realName,
         major: res.data.major,
@@ -33,67 +40,69 @@ export const useUserStore = defineStore("user", {
         introduce: res.data.introduce,
         avatar: res.data.avatar,
         lastLoginTime: res.data.lastLoginTime,
-        // title: res.data.title,
-        // collegeId: res.data.collegeId,
-        // researchFields: res.data.researchFields,
-        // office: res.data.office,
-        // officeHours: res.data.officeHours,
-        // maxReviewCount: res.data.maxReviewCount,
-        // remainingReviewCount: res.data.remainingReviewCount,
         expireDate: res.data.expireDate,
         expireTime: res.data.expireTime,
+        position: res.data.position,
+        department: res.data.department,
+        officeAddress: res.data.officeAddress,
+        collegeName: res.data.collegeName,
       };
-      // 持久化存储（防止页面刷新丢失）
-      Cookies.set("token", this.token, { expires: 1 }); // 有效期1天
-      Cookies.set("role", this.role, { expires: 1 });
-      localStorage.setItem("userInfo", JSON.stringify(this.userInfo));
+      tokenManager.set(this.token);
+      localStorage.setItem("userInfo", JSON.stringify(filterSafeInfo(this.userInfo)));
+      this.lastActivityTime = Date.now();
       return res;
     },
-    // 添加注册方法
     async register(registerForm) {
-      try {
-        console.log("Store: 调用注册API", registerForm);
-
-        // 调用注册API
-        const res = await register(registerForm);
-        console.log("Store: 注册成功", res);
-        return res;
-      } catch (error) {
-        console.error("Store: 注册失败", error);
-        throw error;
-      }
+      const res = await register(registerForm);
+      return res;
     },
-    // 退出登录：清除状态和存储
-    logout() {
+    async logout() {
+      try {
+        await apiLogout();
+      } catch {
+        // 即使后端调用失败也继续清除本地状态
+      }
       this.token = "";
       this.role = "";
       this.userInfo = null;
-      Cookies.remove("token");
-      Cookies.remove("role");
+      this.lastActivityTime = 0;
+      tokenManager.remove();
       localStorage.removeItem("userInfo");
     },
     setUserInfo(userData) {
       this.userInfo = userData;
-      // 同时更新本地存储
-      localStorage.setItem("userInfo", JSON.stringify(userData));
+      localStorage.setItem("userInfo", JSON.stringify(filterSafeInfo(userData)));
     },
     updateAvatar(avatarRaw) {
       this.userInfo = { ...(this.userInfo || {}), avatar: avatarRaw };
-      localStorage.setItem("userInfo", JSON.stringify(this.userInfo));
+      localStorage.setItem("userInfo", JSON.stringify(filterSafeInfo(this.userInfo)));
     },
     restoreFromStorage() {
       try {
         const s = localStorage.getItem("userInfo");
         if (s) this.userInfo = JSON.parse(s);
-        const t = localStorage.getItem("token");
-        if (t) this.token = t;
-      } catch (e) {
+        const t = tokenManager.get();
+        if (t) {
+          this.token = t;
+          this.role = tokenManager.getRole();
+        }
+        this.lastActivityTime = Date.now();
+      } catch {
         /* ignore */
       }
     },
+    isTokenValid() {
+      return !!this.token && !tokenManager.isExpired();
+    },
+    updateActivityTime() {
+      this.lastActivityTime = Date.now();
+    },
+    async verifySensitiveOperation() {
+      if (!this.token) return false;
+      return !tokenManager.isNearExpiry();
+    },
   },
   getters: {
-    // 计算可访问的头像地址
     avatarSrc: (state) => {
       const raw = state.userInfo?.avatar || "";
       if (!raw || raw === "null" || raw === "undefined") return "";
@@ -103,21 +112,13 @@ export const useUserStore = defineStore("user", {
       ).replace(/\/$/, "");
       return base ? `${base}${raw.startsWith("/") ? "" : "/"}${raw}` : raw;
     },
-    // 获取用户真实姓名
     realName: (state) => state.userInfo?.realName || "",
-
-    // 获取用户名
     userName: (state) => state.userInfo?.username || "",
-
-    // 判断是否已登录
     isLoggedIn: (state) => !!state.token,
-
-    // 判断用户角色
     isStudent: (state) => state.role === "STUDENT",
     isTeacher: (state) => state.role === "TEACHER",
-    isAdmin: (state) => state.role === "ADMIN",
-
-    // 获取最后登录时间
+    isAdmin: (state) => state.role === "ADMIN" || state.role === "SUPER_ADMIN",
+    isSuperAdmin: (state) => state.role === "SUPER_ADMIN",
     lastLoginTime: (state) => state.userInfo?.lastLoginTime || "",
   },
 });

@@ -50,10 +50,8 @@ const email = ref('');
 const verifyEmail = async (token) => {
   try {
     loading.value = true;
-    console.log('开始验证，token:', token);
     
     const response = await verifyEmailAPI(token);
-    console.log('验证响应:', response);
     
     if (response.success || response.code === 200) {
       success.value = true;
@@ -89,7 +87,6 @@ const goToHome = () => {
 };
 
 onMounted(() => {
-  console.log('路由参数:', route.query);
   
   const token = route.query.token || route.query.verify_token;
   
@@ -106,11 +103,13 @@ onMounted(() => {
 
 <style scoped>
 .verify-email-page {
-  min-height: 60vh;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
+  background: #f5f5f7; /* Slate-50 */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 24px;
 }
 
 .loading-container,
@@ -118,5 +117,49 @@ onMounted(() => {
 .error-container {
   width: 100%;
   max-width: 500px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 48px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: #cbd5e1;
+  }
+  
+  :deep(.el-result) {
+    .el-result__title {
+      color: #0f172a; /* Slate-900 */
+      font-weight: 600;
+    }
+    
+    .el-result__subtitle {
+      color: #64748b; /* Slate-500 */
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    
+    .el-result__extra {
+      margin-top: 32px;
+      
+      .el-button {
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        border: 1px solid #e2e8f0;
+        padding: 10px 24px;
+        font-size: 1rem;
+        margin: 0 8px;
+        
+        &:hover {
+          filter: brightness(0.95);
+        }
+
+        &:active {
+          transform: scale(0.95);
+          transition: transform 0.15s ease;
+        }
+      }
+    }
+  }
 }
 </style>

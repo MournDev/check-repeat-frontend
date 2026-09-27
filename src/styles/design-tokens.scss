@@ -1,0 +1,126 @@
+// ============================================================
+// Apple Design Language — Design Tokens
+// Reference: DESIGN.md (version: alpha, name: Apple)
+// ============================================================
+
+:root {
+  // ── Brand & Accent ──────────────────────────────────────
+  --apple-primary: #0066cc;
+  --apple-primary-focus: #0071e3;
+  --apple-primary-on-dark: #2997ff;
+
+  // ── Surface ─────────────────────────────────────────────
+  --apple-canvas: #ffffff;
+  --apple-canvas-parchment: #f5f5f7;
+  --apple-surface-pearl: #fafafc;
+  --apple-surface-tile-1: #272729;
+  --apple-surface-tile-2: #2a2a2c;
+  --apple-surface-tile-3: #252527;
+  --apple-surface-black: #000000;
+  --apple-surface-chip-translucent: #d2d2d7;
+
+  // ── Text / Ink ──────────────────────────────────────────
+  --apple-ink: #1d1d1f;
+  --apple-body: #1d1d1f;
+  --apple-body-on-dark: #ffffff;
+  --apple-body-muted: #cccccc;
+  --apple-ink-muted-80: #333333;
+  --apple-ink-muted-48: #7a7a7a;
+
+  // ── Hairlines & Dividers ────────────────────────────────
+  --apple-divider-soft: #f0f0f0;
+  --apple-hairline: #e0e0e0;
+  --apple-hairline-alpha: rgba(0, 0, 0, 0.08);
+
+  // ── On-primary / On-dark ────────────────────────────────
+  --apple-on-primary: #ffffff;
+  --apple-on-dark: #ffffff;
+
+  // ── Rounded ─────────────────────────────────────────────
+  --apple-rounded-none: 0px;
+  --apple-rounded-xs: 5px;
+  --apple-rounded-sm: 8px;
+  --apple-rounded-md: 11px;
+  --apple-rounded-lg: 18px;
+  --apple-rounded-pill: 9999px;
+  --apple-rounded-full: 9999px;
+
+  // ── Spacing ─────────────────────────────────────────────
+  --apple-spacing-xxs: 4px;
+  --apple-spacing-xs: 8px;
+  --apple-spacing-sm: 12px;
+  --apple-spacing-md: 17px;
+  --apple-spacing-lg: 24px;
+  --apple-spacing-xl: 32px;
+  --apple-spacing-xxl: 48px;
+  --apple-spacing-section: 80px;
+
+  // ── Typography Scale (CSS variables for dynamic use) ────
+  --apple-font-display: "SF Pro Display", "Inter", system-ui, -apple-system, sans-serif;
+  --apple-font-text: "SF Pro Text", "Inter", system-ui, -apple-system, sans-serif;
+
+  --apple-fs-hero: 56px;
+  --apple-fs-display-lg: 40px;
+  --apple-fs-display-md: 34px;
+  --apple-fs-lead: 28px;
+  --apple-fs-lead-airy: 24px;
+  --apple-fs-tagline: 21px;
+  --apple-fs-body-strong: 17px;
+  --apple-fs-body: 17px;
+  --apple-fs-caption: 14px;
+  --apple-fs-caption-strong: 14px;
+  --apple-fs-button-large: 18px;
+  --apple-fs-button-utility: 14px;
+  --apple-fs-fine-print: 12px;
+  --apple-fs-nav-link: 12px;
+
+  --apple-lh-hero: 1.07;
+  --apple-lh-display-lg: 1.10;
+  --apple-lh-display-md: 1.47;
+  --apple-lh-lead: 1.14;
+  --apple-lh-lead-airy: 1.5;
+  --apple-lh-tagline: 1.19;
+  --apple-lh-body-strong: 1.24;
+  --apple-lh-body: 1.47;
+  --apple-lh-caption: 1.43;
+  --apple-lh-caption-strong: 1.29;
+  --apple-lh-button-large: 1.0;
+  --apple-lh-button-utility: 1.29;
+  --apple-lh-fine-print: 1.0;
+  --apple-lh-nav-link: 1.0;
+
+  --apple-ls-hero: -0.28px;
+  --apple-ls-display-lg: 0;
+  --apple-ls-display-md: -0.374px;
+  --apple-ls-lead: 0.196px;
+  --apple-ls-lead-airy: 0;
+  --apple-ls-tagline: 0.231px;
+  --apple-ls-body-strong: -0.374px;
+  --apple-ls-body: -0.374px;
+  --apple-ls-caption: -0.224px;
+  --apple-ls-caption-strong: -0.224px;
+  --apple-ls-button-large: 0;
+  --apple-ls-button-utility: -0.224px;
+  --apple-ls-fine-print: -0.12px;
+  --apple-ls-nav-link: -0.12px;
+
+  // ── Shadow (the ONE product shadow) ─────────────────────
+  --apple-shadow-product: 3px 5px 30px 0 rgba(0, 0, 0, 0.22);
+
+  // ── Transition ──────────────────────────────────────────
+  --apple-transition-fast: 0.15s ease;
+  --apple-transition-normal: 0.2s ease;
+  --apple-transition-slow: 0.3s ease;
+
+  // ── Component Tokens ────────────────────────────────────
+  --apple-global-nav-height: 44px;
+  --apple-sub-nav-height: 52px;
+  --apple-button-primary-padding: 11px 22px;
+  --apple-button-secondary-padding: 11px 22px;
+  --apple-button-dark-utility-padding: 8px 15px;
+  --apple-button-pearl-padding: 8px 14px;
+  --apple-button-store-hero-padding: 14px 28px;
+  --apple-search-input-height: 44px;
+  --apple-search-input-padding: 12px 20px;
+  --apple-touch-target-min: 44px;
+}

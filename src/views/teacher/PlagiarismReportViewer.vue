@@ -1,5 +1,5 @@
 <template>
-  <div class="report-viewer">
+  <div class="report-page">
     <!-- 报告头部 -->
     <div class="report-header">
       <div class="header-main">
@@ -73,10 +73,6 @@
           <div class="detail-item">
             <div class="detail-label">引用文献</div>
             <div class="detail-value">{{ reportData.citations }} 篇</div>
-          </div>
-          <div class="detail-item">
-            <div class="detail-label">网络资源</div>
-            <div class="detail-value">{{ reportData.webSources }} 处</div>
           </div>
         </div>
       </div>
@@ -348,6 +344,49 @@
             </el-row>
           </div>
         </el-tab-pane>
+
+        <!-- 历史记录 -->
+        <el-tab-pane label="历史记录" name="history">
+          <div class="tab-content">
+            <el-card class="history-card">
+              <template #header>
+                <div class="card-header">
+                    <el-icon><Clock /></el-icon>
+                    <span>查重历史记录</span>
+                  </div>
+              </template>
+              
+              <el-timeline>
+                <el-timeline-item 
+                  v-for="(record, index) in historyRecords" 
+                  :key="index"
+                  :timestamp="record.createTime"
+                  :type="record.type"
+                  :icon="record.icon"
+                >
+                  <div class="history-item">
+                    <div class="version-info">
+                      <span class="version-label">版本 {{ record.version }}</span>
+                      <el-tag :type="record.similarityType">
+                        相似度: {{ record.checkRate }}%
+                      </el-tag>
+                    </div>
+                    <div class="change-description">{{ record.description }}</div>
+                    <div class="history-actions">
+                      <el-button link @click="viewHistoryReport(record)">
+                        查看报告
+                      </el-button>
+                    </div>
+                  </div>
+                </el-timeline-item>
+              </el-timeline>
+              
+              <div v-if="historyRecords.length === 0" class="empty-history">
+                <el-empty description="暂无历史记录" />
+              </div>
+            </el-card>
+          </div>
+        </el-tab-pane>
       </el-tabs>
     </div>
     
@@ -366,12 +405,16 @@ import { ref, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { 
   Download, Share, Printer, PieChart, DataAnalysis, 
-  Lightning, Document, Tools
+  Lightning, Document, Tools, Clock
 } from '@element-plus/icons-vue'
+import { getPaperReport, getSimpleCheckReport, exportCheckReport, compareReport, approveReport, requestRevision as requestRevisionAPI, contactStudentReport, getSourceDetail, getHistoryReportList } from '@/api/teacher'
+import { getSimilarityColor } from '@/utils/dataType.js'
+import { getSimilarityClass, getSimilarityTagType } from '@/utils/reviewStatus.js'
+import '@/styles/report-styles.scss'
 
 const props = defineProps({
   paperId: {
-    type: String,
+    type: [String, Number],
     required: true
   }
 })
@@ -383,15 +426,15 @@ const loading = ref(false)
 const activeTab = ref('overview')
 const selectedSource = ref('')
 const comparisonData = ref(null)
+const historyRecords = ref([])
 const reportData = ref({
   paperTitle: '',
   studentName: '',
   submitTime: '',
   similarity: 0,
   checkTime: '',
-  checkScope: '全网数据库',
+  checkScope: '校内论文库',
   citations: 0,
-  webSources: 0,
   totalWords: 0,
   similarWords: 0,
   uniqueSentences: 0,
@@ -424,27 +467,9 @@ const calculateStrokeDash = (percent) => {
   return (percent / 100) * 339
 }
 
-const getSimilarityColor = (similarity) => {
-  if (similarity <= 15) return '#67c23a'
-  if (similarity <= 30) return '#e6a23c'
-  return '#f56c6c'
-}
-
-const getSimilarityClass = (similarity) => {
-  if (similarity <= 15) return 'similarity-low'
-  if (similarity <= 30) return 'similarity-medium'
-  return 'similarity-high'
-}
-
-const getSimilarityTagType = (similarity) => {
-  if (similarity <= 15) return 'success'
-  if (similarity <= 30) return 'warning'
-  return 'danger'
-}
-
 const getSimilarityLevel = (similarity) => {
-  if (similarity <= 15) return '低风险'
-  if (similarity <= 30) return '中风险'
+  if (similarity < 15) return '低风险'
+  if (similarity < 30) return '中风险'
   return '高风险'
 }
 
@@ -461,7 +486,7 @@ const getSourceTypeTag = (type) => {
 const getSourceTypeName = (type) => {
   const nameMap = {
     'academic': '学术期刊',
-    'web': '网络资源',
+    'paper': '校内论文',
     'book': '图书著作',
     'thesis': '学位论文'
   }
@@ -487,20 +512,40 @@ const getPriorityLabel = (priority) => {
 }
 
 const getRiskLevelTag = (similarity) => {
-  if (similarity <= 15) return 'success'
-  if (similarity <= 30) return 'warning'
+  if (similarity < 15) return 'success'
+  if (similarity < 30) return 'warning'
   return 'danger'
 }
 
 const getRiskLevel = (similarity) => {
-  if (similarity <= 15) return '低风险'
-  if (similarity <= 30) return '中等风险'
+  if (similarity < 15) return '低风险'
+  if (similarity < 30) return '中等风险'
   return '高风险'
 }
 
-const downloadReport = () => {
-  ElMessage.success('开始下载查重报告')
-  // 实现下载逻辑
+const downloadReport = async () => {
+  try {
+    // 先获取论文的最新报告ID
+    const reportListRes = await getSimpleCheckReport(props.paperId);
+    if (reportListRes.code === 200 && reportListRes.data && reportListRes.data.length > 0) {
+      const latestReport = reportListRes.data[0];
+      const response = await exportCheckReport(latestReport.id, 'pdf')
+      // 处理文件下载
+      const blob = response.data instanceof Blob ? response.data : new Blob([response.data])
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `查重报告_${reportData.value.paperTitle || '未知'}.pdf`
+      link.click()
+      window.URL.revokeObjectURL(url)
+      ElMessage.success('报告下载成功')
+    } else {
+      ElMessage.error('未找到该论文的查重报告');
+    }
+  } catch (error) {
+    console.error('下载报告失败:', error)
+    ElMessage.error('下载报告失败')
+  }
 }
 
 const shareReport = () => {
@@ -513,152 +558,360 @@ const printReport = () => {
 }
 
 const viewSourceDetail = (source) => {
-  ElMessage.info(`查看来源详情: ${source.title}`)
-  // 实现查看详情逻辑
+  const detailLines = [
+    `<strong>标题：</strong>${source.title || '未知'}`,
+    `<strong>作者：</strong>${source.author || '未知'}`,
+    `<strong>年份：</strong>${source.year || '未知'}`,
+    `<strong>类型：</strong>${source.type || '未知'}`,
+    `<strong>相似度：</strong>${source.similarity || 0}%`,
+    `<strong>匹配内容：</strong>${source.matchedWords || '无'}`
+  ]
+  ElMessageBox.alert(detailLines.join('<br/>'), '来源详情', {
+    dangerouslyUseHTMLString: true,
+    confirmButtonText: '关闭'
+  })
 }
 
-const compareWithSource = () => {
+const compareWithSource = async () => {
   if (!selectedSource.value) {
     ElMessage.warning('请选择要对比的来源')
     return
   }
   
   loading.value = true
-  setTimeout(() => {
-    comparisonData.value = {
-      originalSegments: [
-        { text: '这是一个示例段落，用于演示文本对比功能...', isSimilar: false },
-        { text: '这部分内容与某个学术论文存在高度相似...', isSimilar: true },
-        { text: '这是另一段原创内容，不与其他文献重复...', isSimilar: false }
-      ],
-      sourceSegments: [
-        { text: '这是原始学术论文中的对应段落内容...', isSimilar: false },
-        { text: '这部分内容与某个学术论文存在高度相似...', isSimilar: true },
-        { text: '这里是该论文的后续内容描述...', isSimilar: false }
-      ]
+  try {
+    // 获取报告ID（假设从相似来源中获取）
+    const source = similarSources.value.find(s => s.id === selectedSource.value)
+    if (!source) {
+      ElMessage.error('未找到选中的来源')
+      return
     }
+    
+    // 调用后端对比接口
+    const res = await compareReport(source.reportId || '', selectedSource.value)
+    if (res.code === 200) {
+      comparisonData.value = res.data
+      ElMessage.success('对比分析完成')
+    } else {
+      ElMessage.error(res.message || '对比分析失败')
+    }
+  } catch (error) {
+    console.error('对比分析失败:', error)
+    ElMessage.error('对比分析失败')
+  } finally {
     loading.value = false
-    ElMessage.success('对比分析完成')
-  }, 1500)
+  }
 }
 
-const approvePaper = () => {
+const approvePaper = async () => {
   ElMessageBox.confirm('确定要通过这篇论文的审核吗？', '审核通过', {
     type: 'success',
     confirmButtonText: '确认通过',
     cancelButtonText: '取消'
-  }).then(() => {
-    emit('approve', props.paperId)
-    ElMessage.success('论文审核已通过')
+  }).then(async () => {
+    loading.value = true
+    try {
+      // 获取最新报告ID
+      const reportListRes = await getSimpleCheckReport(props.paperId)
+      if (reportListRes.code === 200 && reportListRes.data && reportListRes.data.length > 0) {
+        const latestReport = reportListRes.data[0]
+        const res = await approveReport(latestReport.id, '论文审核通过')
+        if (res.code === 200) {
+          emit('approve', props.paperId)
+          ElMessage.success('论文审核已通过')
+        } else {
+          ElMessage.error(res.message || '审核通过失败')
+        }
+      } else {
+        ElMessage.error('未找到该论文的查重报告')
+      }
+    } catch (error) {
+      console.error('审核通过失败:', error)
+      ElMessage.error('审核通过失败')
+    } finally {
+      loading.value = false
+    }
   })
 }
 
-const requestRevision = () => {
+const requestRevision = async () => {
   ElMessageBox.prompt('请输入修改建议', '要求修改', {
     inputType: 'textarea',
     inputPlaceholder: '请详细说明需要修改的地方...',
     confirmButtonText: '发送修改要求',
     cancelButtonText: '取消'
-  }).then(({ value }) => {
+  }).then(async ({ value }) => {
     if (value) {
-      emit('revision', { paperId: props.paperId, suggestion: value })
-      ElMessage.success('修改要求已发送给学生')
+      loading.value = true
+      try {
+        // 获取最新报告ID
+        const reportListRes = await getSimpleCheckReport(props.paperId)
+        if (reportListRes.code === 200 && reportListRes.data && reportListRes.data.length > 0) {
+          const latestReport = reportListRes.data[0]
+          const res = await requestRevisionAPI(latestReport.id, value)
+          if (res.code === 200) {
+            emit('revision', { paperId: props.paperId, suggestion: value })
+            ElMessage.success('修改要求已发送给学生')
+          } else {
+            ElMessage.error(res.message || '发送修改要求失败')
+          }
+        } else {
+          ElMessage.error('未找到该论文的查重报告')
+        }
+      } catch (error) {
+        console.error('发送修改要求失败:', error)
+        ElMessage.error('发送修改要求失败')
+      } finally {
+        loading.value = false
+      }
     }
   })
 }
 
-const contactStudent = () => {
+const contactStudent = async () => {
   ElMessageBox.prompt('请输入联系内容', '联系学生', {
     inputType: 'textarea',
     inputPlaceholder: '请输入要传达给学生的信息...',
     confirmButtonText: '发送',
     cancelButtonText: '取消'
-  }).then(({ value }) => {
+  }).then(async ({ value }) => {
     if (value) {
-      ElMessage.success('消息已发送')
+      loading.value = true
+      try {
+        // 获取最新报告ID
+        const reportListRes = await getSimpleCheckReport(props.paperId)
+        if (reportListRes.code === 200 && reportListRes.data && reportListRes.data.length > 0) {
+          const latestReport = reportListRes.data[0]
+          const res = await contactStudentReport(latestReport.id, value)
+          if (res.code === 200) {
+            ElMessage.success('消息已发送')
+          } else {
+            ElMessage.error(res.message || '发送消息失败')
+          }
+        } else {
+          ElMessage.error('未找到该论文的查重报告')
+        }
+      } catch (error) {
+        console.error('发送消息失败:', error)
+        ElMessage.error('发送消息失败')
+      } finally {
+        loading.value = false
+      }
     }
   })
+}
+
+// 根据相似度生成修改建议
+const generateSuggestions = (similarity) => {
+  const suggestions = [];
+  
+  if (similarity >= 30) {
+    // 高相似度情况
+    suggestions.push({
+      priority: 'high',
+      location: '全文',
+      description: '论文整体相似度较高，存在大量与已有文献相似的内容',
+      suggestedAction: '建议对论文进行全面修改，重新组织语言表达，增加原创性分析和观点'
+    });
+    suggestions.push({
+      priority: 'high',
+      location: '引言部分',
+      description: '引言部分与已有文献存在高度相似',
+      suggestedAction: '建议重新撰写引言，突出研究的创新性和意义'
+    });
+  } else if (similarity >= 15) {
+    // 中等相似度情况
+    suggestions.push({
+      priority: 'medium',
+      location: '研究方法部分',
+      description: '研究方法描述与已有文献存在相似',
+      suggestedAction: '建议详细描述本研究的独特方法和步骤，避免与已有文献雷同'
+    });
+  } else {
+    // 低相似度情况
+    suggestions.push({
+      priority: 'low',
+      location: '参考文献部分',
+      description: '参考文献格式可能需要优化',
+      suggestedAction: '建议检查并规范参考文献格式，确保引用的完整性'
+    });
+  }
+  
+  // 通用建议
+  suggestions.push({
+    priority: 'medium',
+    location: '实验结果部分',
+    description: '实验结果分析可以更加详细',
+    suggestedAction: '建议增加实验结果的深入分析，解释实验现象背后的原因'
+  });
+  
+  return suggestions;
 }
 
 // 初始化数据
 const loadReportData = async () => {
   loading.value = true
   try {
-    // 模拟API调用
-    setTimeout(() => {
-      reportData.value = {
-        paperTitle: '基于深度学习的图像识别技术研究',
-        studentName: '张三',
-        submitTime: '2024-01-15 14:30',
-        similarity: 23,
-        checkTime: '2024-01-15 15:45',
-        checkScope: '中国知网、万方数据、维普资讯',
-        citations: 12,
-        webSources: 8,
-        totalWords: 15680,
-        similarWords: 3607,
-        uniqueSentences: 89,
-        similarSources: 5
+    // 先获取论文的最新报告ID
+    const reportListRes = await getSimpleCheckReport(props.paperId);
+    if (reportListRes.code === 200 && reportListRes.data && reportListRes.data.length > 0) {
+      const latestReport = reportListRes.data[0];
+      // 获取报告详情
+      const reportRes = await getPaperReport(latestReport.id);
+      if (reportRes.code === 200) {
+        const data = reportRes.data;
+        // 处理后端返回的ReportPreviewDTO数据结构
+        const baseInfo = data.baseInfo || {};
+        const rateStat = data.rateStat || {};
+        const similarity = rateStat.repeatRate ? rateStat.repeatRate.toString() : '0';
+        
+        // 计算总字数和相似字数
+        let totalWords = 0;
+        let similarWords = 0;
+        if (data.paragraphs && data.paragraphs.length > 0) {
+          data.paragraphs.forEach(paragraph => {
+            if (paragraph.content) {
+              totalWords += paragraph.content.length;
+              if (paragraph.isRepeat) {
+                similarWords += paragraph.content.length;
+              }
+            }
+          });
+        }
+        
+        reportData.value = {
+          paperTitle: baseInfo.paperTitle || '暂无标题',
+          studentName: baseInfo.studentName || baseInfo.author || '未知',
+          submitTime: baseInfo.generateTime || '',
+          similarity: parseFloat(similarity) || 0,
+          checkTime: baseInfo.generateTime || '',
+          checkScope: baseInfo.checkRuleName || '',
+          citations: baseInfo.citations || 0,
+          totalWords: baseInfo.totalWords || totalWords,
+          similarWords: baseInfo.similarWords || similarWords,
+          uniqueSentences: baseInfo.uniqueSentences || (data.paragraphs ? data.paragraphs.length : 0),
+          similarSources: data.similarSources ? data.similarSources.filter(source => source.sourceName !== null && source.sourceName !== '').length : 0
+        }
+
+        // 构建相似来源列表（后端不提供author/year/matchedWords字段）
+        if (data.similarSources && data.similarSources.length > 0) {
+          similarSources.value = data.similarSources.filter(source => source.sourceName !== null && source.sourceName !== '')
+            .map((source, index) => ({
+              id: source.sourceId || index + 1,
+              title: source.sourceName || '未知来源',
+              author: source.author || '',
+              year: source.year || '',
+              type: source.sourceType || 'academic',
+              similarity: source.maxSimilarity || 0,
+              matchedWords: source.matchedParagraphs || ''
+            }));
+        }
+
+        // 基于报告数据的修改建议（后端暂无建议接口，基于相似度自动评级）
+        suggestions.value = generateSuggestions(reportData.value.similarity);
+        
+        // 加载历史记录
+        loadHistoryRecords(reportListRes.data);
+      } else {
+        ElMessage.error(reportRes.message || '获取报告详情失败');
       }
-      
-      similarSources.value = [
-        {
-          id: '1',
-          title: '深度学习在图像识别中的应用研究',
-          author: '李四',
-          year: '2023',
-          type: 'academic',
-          similarity: 45,
-          matchedWords: 1623
-        },
-        {
-          id: '2',
-          title: '卷积神经网络图像分类算法优化',
-          author: '王五',
-          year: '2022',
-          type: 'thesis',
-          similarity: 32,
-          matchedWords: 1156
-        },
-        {
-          id: '3',
-          title: '机器学习图像处理技术综述',
-          author: '赵六',
-          year: '2023',
-          type: 'web',
-          similarity: 28,
-          matchedWords: 892
-        }
-      ]
-      
-      suggestions.value = [
-        {
-          priority: 'high',
-          location: '第3章 第2节',
-          description: '关于CNN网络结构的描述与已有文献高度相似',
-          suggestedAction: '建议重新组织语言表达，增加原创性分析'
-        },
-        {
-          priority: 'medium',
-          location: '第4章 实验部分',
-          description: '实验参数设置描述过于简单',
-          suggestedAction: '补充详细的实验参数和设置说明'
-        },
-        {
-          priority: 'low',
-          location: '参考文献部分',
-          description: '缺少最近两年的相关文献引用',
-          suggestedAction: '建议补充最新的研究成果引用'
-        }
-      ]
-      
-      loading.value = false
-    }, 1000)
+    } else {
+      ElMessage.error('未找到该论文的查重报告');
+    }
   } catch (error) {
     console.error('加载报告数据失败:', error)
     ElMessage.error('加载报告数据失败')
+  } finally {
     loading.value = false
   }
+}
+
+const loadHistoryRecords = (reports) => {
+  if (reports && reports.length > 0) {
+    // 按时间倒序排序，最新的在前面
+    const sortedReports = [...reports].sort((a, b) => {
+      return new Date(b.createTime) - new Date(a.createTime);
+    });
+    
+    // 转换为前端需要的格式
+    historyRecords.value = sortedReports.map((report, index) => {
+      // 计算版本号（从1开始）
+      const version = sortedReports.length - index;
+      // 根据查重率计算类型
+      let type = 'success';
+      let similarityType = 'success';
+      if (report.checkRate >= 30) {
+        type = 'danger';
+        similarityType = 'danger';
+      } else if (report.checkRate >= 15) {
+        type = 'warning';
+        similarityType = 'warning';
+      }
+      
+      return {
+        version: version,
+        id: report.id,
+        checkRate: report.checkRate,
+        createTime: new Date(report.createTime).toLocaleString('zh-CN'),
+        type: type,
+        similarityType: similarityType,
+        description: `进行了查重，相似度为 ${report.checkRate}%`,
+        icon: 'Check'
+      };
+    });
+  }
+}
+
+const viewHistoryReport = (record) => {
+  // 加载历史报告数据
+  loading.value = true;
+  getPaperReport(record.id).then(reportRes => {
+    loading.value = false;
+    if (reportRes.code === 200) {
+      const data = reportRes.data;
+      // 处理后端返回的ReportPreviewDTO数据结构
+      const baseInfo = data.baseInfo || {};
+      const rateStat = data.rateStat || {};
+      const similarity = rateStat.repeatRate ? rateStat.repeatRate.toString() : '0';
+      
+      reportData.value = {
+        paperTitle: baseInfo.paperTitle || '暂无标题',
+        studentName: baseInfo.studentName || baseInfo.author || '未知',
+        submitTime: baseInfo.generateTime || '',
+        similarity: parseFloat(similarity) || 0,
+        checkTime: baseInfo.generateTime || '',
+        checkScope: baseInfo.checkRuleName || '',
+        citations: baseInfo.citations || 0,
+        totalWords: baseInfo.totalWords || 0,
+        similarWords: baseInfo.similarWords || 0,
+        uniqueSentences: baseInfo.uniqueSentences || 0,
+        similarSources: data.similarSources ? data.similarSources.filter(s => s.sourceName).length : 0
+      };
+
+      // 构建相似来源列表
+        if (data.similarSources && data.similarSources.length > 0) {
+          similarSources.value = data.similarSources.filter(s => s.sourceName).map((source, index) => ({
+            id: source.sourceId || index + 1,
+            title: source.sourceName,
+            author: source.author || '',
+            year: source.year || '',
+            type: source.sourceType || 'academic',
+            similarity: source.maxSimilarity || 0,
+            matchedWords: source.matchedParagraphs || ''
+          }));
+        }
+
+        // 基于报告数据的修改建议
+        suggestions.value = generateSuggestions(reportData.value.similarity);
+        
+        ElMessage.success('历史报告加载成功');
+    } else {
+      ElMessage.error(reportRes.message || '加载历史报告失败');
+    }
+  }).catch(error => {
+    loading.value = false;
+    ElMessage.error('加载历史报告失败');
+  });
 }
 
 onMounted(() => {
@@ -671,15 +924,15 @@ onMounted(() => {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: #f5f7fa;
+  background-color: #f5f5f7;
 }
 
 /* 报告头部 */
 .report-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #0066cc;
   color: white;
   padding: 24px;
-  border-radius: 8px 8px 0 0;
+  border-radius: 11px 11px 0 0;
 }
 
 .header-main {
@@ -702,7 +955,6 @@ onMounted(() => {
 }
 
 .header-actions .el-button-group {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* 相似度概览 */
@@ -733,7 +985,7 @@ onMounted(() => {
 }
 
 .similarity-label {
-  font-size: 14px;
+  font-size: 17px;
   opacity: 0.9;
 }
 
@@ -747,7 +999,7 @@ onMounted(() => {
 .detail-item {
   background: rgba(255, 255, 255, 0.1);
   padding: 12px;
-  border-radius: 8px;
+  border-radius: 11px;
   backdrop-filter: blur(10px);
 }
 
@@ -809,20 +1061,20 @@ onMounted(() => {
 
 .bar-label {
   width: 80px;
-  font-size: 14px;
+  font-size: 17px;
 }
 
 .bar-track {
   flex: 1;
   height: 24px;
   background: #e6e8eb;
-  border-radius: 12px;
+  border-radius: 18px;
   overflow: hidden;
 }
 
 .bar-fill {
   height: 100%;
-  border-radius: 12px;
+  border-radius: 18px;
   transition: width 0.5s ease;
 }
 
@@ -842,19 +1094,19 @@ onMounted(() => {
 .stat-item {
   text-align: center;
   padding: 16px;
-  background: #f8f9fa;
-  border-radius: 8px;
+  background: #f5f5f7;
+  border-radius: 11px;
 }
 
 .stat-value {
   font-size: 24px;
   font-weight: 700;
-  color: #409eff;
+  color: #0066cc;
   margin-bottom: 8px;
 }
 
 .stat-label {
-  font-size: 14px;
+  font-size: 17px;
   color: #606266;
 }
 
@@ -921,12 +1173,12 @@ onMounted(() => {
 .comparison-panel {
   flex: 1;
   border: 1px solid #e6e8eb;
-  border-radius: 8px;
+  border-radius: 11px;
   overflow: hidden;
 }
 
 .panel-header {
-  background: #f5f7fa;
+  background: #f5f5f7;
   padding: 16px;
   border-bottom: 1px solid #e6e8eb;
 }
@@ -945,13 +1197,13 @@ onMounted(() => {
 .text-segment {
   margin-bottom: 12px;
   padding: 12px;
-  border-radius: 4px;
+  border-radius: 8px;
   line-height: 1.6;
 }
 
 .text-segment.highlight {
   background: #fef0f0;
-  border-left: 3px solid #f56c6c;
+  border-color: #fecaca;
 }
 
 /* 建议列表 */
@@ -963,18 +1215,18 @@ onMounted(() => {
 
 .suggestion-item {
   padding: 16px;
-  border-radius: 8px;
-  border-left: 4px solid;
+  border-radius: var(--apple-rounded-lg);
+  border: 1px solid var(--apple-hairline);
 }
 
 .suggestion-item.priority-high {
   background: #fef0f0;
-  border-color: #f56c6c;
+  border-color: #fecaca;
 }
 
 .suggestion-item.priority-medium {
   background: #fdf6ec;
-  border-color: #e6a23c;
+  border-color: #fde4b2;
 }
 
 .suggestion-item.priority-low {
@@ -1004,9 +1256,9 @@ onMounted(() => {
 }
 
 .suggestion-action {
-  font-size: 14px;
-  color: #409eff;
-  font-weight: 500;
+  font-size: 17px;
+  color: #0066cc;
+  font-weight: 400;
 }
 
 /* 总结卡片 */
@@ -1023,7 +1275,7 @@ onMounted(() => {
 }
 
 .summary-label {
-  font-size: 14px;
+  font-size: 17px;
   color: #606266;
 }
 
@@ -1034,12 +1286,11 @@ onMounted(() => {
 
 /* 快速操作 */
 .quick-actions .el-button {
-  transition: all 0.3s ease;
+  transition: border-color 0.2s ease;
 }
 
-.quick-actions .el-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+.quick-actions .el-button:active {
+  transform: scale(0.985);
 }
 
 /* 加载状态 */

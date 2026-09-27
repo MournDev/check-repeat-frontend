@@ -2,45 +2,65 @@
   <div class="check-history-page">
     <!-- 页面头部 -->
     <div class="page-header">
-      <el-page-header @back="goBack">
-        <template #content>
-          <span class="page-title">查重历史记录</span>
-        </template>
-        <template #extra>
-          <div class="header-actions">
-            <el-button :icon="Refresh" @click="refreshHistory">刷新</el-button>
-          </div>
-        </template>
-      </el-page-header>
+      <div class="header-content">
+        <div class="header-left">
+          <button class="back-button" @click="goBack">
+            <el-icon><ArrowLeft /></el-icon>
+            <span>返回</span>
+          </button>
+          <h1 class="page-title">查重历史记录</h1>
+        </div>
+        <div class="header-actions">
+          <button class="refresh-button" @click="refreshHistory">
+            <el-icon><Refresh /></el-icon>
+            <span>刷新</span>
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- 论文信息 -->
-    <el-card class="paper-info-card" shadow="never">
+    <div class="paper-info-card">
       <div class="paper-header">
-        <div class="paper-title">{{ paperInfo.title }}</div>
+        <h2 class="paper-title">{{ paperInfo.title }}</h2>
         <div class="paper-stats">
-          <span>当前相似度: <strong :class="getCurrentSimilarityClass(paperInfo.currentSimilarity)">{{ paperInfo.currentSimilarity }}%</strong></span>
-          <span>历史最低: <strong class="lowest">{{ paperInfo.lowestSimilarity }}%</strong></span>
-          <span>版本数: <strong>{{ paperInfo.versionCount }}</strong></span>
-        </div>
-      </div>
-    </el-card>
-
-    <!-- 相似度趋势图 -->
-    <el-card class="trend-card" shadow="never">
-      <template #header>
-        <div class="card-header">
-          <el-icon><DataLine /></el-icon>
-          <span>相似度趋势</span>
-          <div class="trend-controls">
-            <el-radio-group v-model="trendPeriod" size="small" @change="loadTrendData">
-              <el-radio-button label="7">近7天</el-radio-button>
-              <el-radio-button label="30">近30天</el-radio-button>
-              <el-radio-button label="90">近90天</el-radio-button>
-            </el-radio-group>
+          <div class="stat-item">
+            <div class="stat-label">当前相似度</div>
+            <div class="stat-value" :class="getCurrentSimilarityClass(paperInfo.currentSimilarity)">{{ paperInfo.currentSimilarity }}%</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">历史最低</div>
+            <div class="stat-value lowest">{{ paperInfo.lowestSimilarity }}%</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">版本数</div>
+            <div class="stat-value">{{ paperInfo.versionCount }}</div>
           </div>
         </div>
-      </template>
+      </div>
+    </div>
+
+    <!-- 相似度趋势图 -->
+    <div class="trend-card">
+      <div class="card-header">
+        <div class="card-title">
+          <el-icon><DataLine /></el-icon>
+          <span>相似度趋势</span>
+        </div>
+        <div class="trend-controls">
+          <div class="radio-group">
+            <label 
+              v-for="period in ['7', '30', '90']" 
+              :key="period"
+              class="radio-button"
+              :class="{ active: trendPeriod === period }"
+              @click="trendPeriod = period; loadTrendData()"
+            >
+              近{{ period }}天
+            </label>
+          </div>
+        </div>
+      </div>
       
       <div class="trend-chart-container">
         <div class="chart-wrapper">
@@ -73,93 +93,105 @@
           </div>
         </div>
       </div>
-    </el-card>
+    </div>
 
     <!-- 版本历史时间轴 -->
-    <el-card class="history-card" shadow="never">
-      <template #header>
-        <div class="card-header">
+    <div class="history-card">
+      <div class="card-header">
+        <div class="card-title">
           <el-icon><Timer /></el-icon>
           <span>版本历史</span>
-          <el-button text @click="toggleCompactView">
-            {{ compactView ? '展开详情' : '紧凑显示' }}
-          </el-button>
         </div>
-      </template>
+        <button class="text-button" @click="toggleCompactView">
+          {{ compactView ? '展开详情' : '紧凑显示' }}
+        </button>
+      </div>
       
       <div class="timeline-container">
-        <el-timeline>
-          <el-timeline-item
-            v-for="(record, index) in historyRecords"
+        <div class="timeline">
+          <div 
+            v-for="(record, index) in historyRecords" 
             :key="record.version"
-            :timestamp="formatDateTime(record.checkTime)"
-            :type="getTimelineType(record.rating)"
-            :hollow="index !== 0"
-            placement="top"
+            class="timeline-item"
           >
-            <div class="history-record" :class="{ 'current-version': record.isCurrent }">
-              <div class="record-header">
-                <div class="version-info">
-                  <el-tag 
-                    :type="record.isCurrent ? 'primary' : 'info'" 
-                    size="large"
-                    effect="dark"
-                  >
-                    V{{ record.version }}
-                  </el-tag>
-                  <span class="similarity-badge" :class="getSimilarityClass(record.similarity)">
-                    {{ record.similarity }}%
-                  </span>
-                  <el-tag :type="getRatingType(record.rating)" size="small">
-                    {{ getRatingText(record.rating) }}
-                  </el-tag>
-                </div>
-                <div class="record-actions" v-if="!compactView">
-                  <el-button 
-                    text 
-                    size="small" 
-                    @click="viewReport(record.reportId)"
-                  >
-                    查看报告
-                  </el-button>
-                  <el-button 
-                    text 
-                    size="small" 
-                    @click="compareWithCurrent(record.version)"
-                    v-if="!record.isCurrent"
-                  >
-                    对比当前
-                  </el-button>
-                </div>
-              </div>
-              
-              <div class="record-content" v-if="!compactView">
-                <div class="changes-description">
-                  <el-icon><EditPen /></el-icon>
-                  <span>{{ record.changes }}</span>
-                </div>
-                
-                <div class="improvement-info" v-if="record.improvementFromPrevious !== undefined">
-                  <div class="improvement-badge" :class="getImprovementClass(record.improvementFromPrevious)">
-                    {{ record.improvementFromPrevious > 0 ? '+' : '' }}{{ record.improvementFromPrevious.toFixed(1) }}%
-                  </div>
-                  <span>相比上一版本</span>
-                </div>
-                
-                <div class="section-changes" v-if="record.sectionChanges">
-                  <div class="section-change" v-for="(change, section) in record.sectionChanges" :key="section">
-                    <span class="section-name">{{ getSectionName(section) }}:</span>
-                    <span class="change-value" :class="getChangeClass(change.change)">
-                      {{ change.to }}% ({{ change.change > 0 ? '+' : '' }}{{ change.change.toFixed(1) }}%)
+            <div class="timeline-node" :class="getTimelineType(record.rating)"></div>
+            <div class="timeline-line" v-if="index < historyRecords.length - 1"></div>
+            <div class="timeline-content">
+              <div class="timeline-timestamp">{{ formatDateTime(record.checkTime) }}</div>
+              <div class="history-record" :class="{ 'current-version': record.isCurrent }">
+                <div class="record-header">
+                  <div class="version-info">
+                    <el-tag 
+                      :type="record.isCurrent ? 'primary' : 'info'" 
+                      size="large"
+                      effect="dark"
+                    >
+                      V{{ record.version }}
+                    </el-tag>
+                    <span class="similarity-badge" :class="getSimilarityClass(record.similarity)">
+                      {{ record.similarity }}%
                     </span>
+                    <el-tag :type="getRatingType(record.rating)" size="small">
+                      {{ getRatingText(record.rating) }}
+                    </el-tag>
+                  </div>
+                  <div class="record-actions" v-if="!compactView">
+                    <el-button
+                      v-if="record.reportId"
+                      text
+                      size="small"
+                      @click="viewReport(record.reportId)"
+                    >
+                      查看报告
+                    </el-button>
+                    <el-button
+                      v-if="record.reportId"
+                      text
+                      size="small"
+                      @click="downloadPdfReport(record.reportId)"
+                    >
+                      <el-icon><Download /></el-icon>
+                      下载PDF
+                    </el-button>
+                    <el-button 
+                      text 
+                      size="small" 
+                      @click="compareWithCurrent(record)"
+                      v-if="!record.isCurrent"
+                    >
+                      对比当前
+                    </el-button>
+                  </div>
+                </div>
+                
+                <div class="record-content" v-if="!compactView">
+                  <div class="changes-description">
+                    <el-icon><EditPen /></el-icon>
+                    <span>{{ record.changes }}</span>
+                  </div>
+                  
+                  <div class="improvement-info" v-if="record.improvementFromPrevious != null">
+                    <div class="improvement-badge" :class="getImprovementClass(record.improvementFromPrevious)">
+                      {{ record.improvementFromPrevious > 0 ? '+' : '' }}{{ (record.improvementFromPrevious || 0).toFixed(1) }}%
+                    </div>
+                    <span>相比上一版本</span>
+                  </div>
+                  
+                  <div class="section-changes" v-if="record.sectionChanges">
+                    <div class="section-change" v-for="(change, section) in record.sectionChanges" :key="section">
+                      <span class="section-name">{{ getSectionName(section) }}:</span>
+                      <span class="change-value" :class="getChangeClass(change.change)">
+                        {{ change.to || 0 }}% ({{ (change.change || 0) > 0 ? '+' : '' }}{{ (change.change || 0).toFixed(1) }}%)
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </el-timeline-item>
-        </el-timeline>
+          </div>
+        </div>
       </div>
-    </el-card>
+    </div>
 
     <!-- 版本对比面板 -->
     <el-drawer
@@ -171,102 +203,95 @@
       <div class="compare-content" v-if="compareData">
         <div class="compare-header">
           <div class="version-tags">
-            <el-tag type="info">V{{ compareData.fromVersion }}</el-tag>
+            <span class="version-tag old">V{{ compareData.fromVersion }}</span>
             <span class="vs">VS</span>
-            <el-tag type="primary">V{{ compareData.toVersion }}</el-tag>
+            <span class="version-tag current">V{{ compareData.toVersion }}</span>
           </div>
           <div class="overall-change" :class="getImprovementClass(compareData.overallChange)">
-            总体变化: {{ compareData.overallChange > 0 ? '+' : '' }}{{ compareData.overallChange.toFixed(1) }}%
+            总体变化: {{ (compareData.overallChange || 0) > 0 ? '+' : '' }}{{ (compareData.overallChange || 0).toFixed(1) }}%
           </div>
         </div>
         
         <div class="compare-sections">
-          <el-card 
+          <div 
             v-for="section in compareData.sectionComparison" 
             :key="section.name"
             class="section-compare-card"
-            shadow="hover"
           >
-            <template #header>
-              <div class="section-header">
-                <span>{{ section.name }}</span>
-                <el-tag :type="getChangeTagType(section.change)" size="small">
-                  {{ section.change > 0 ? '+' : '' }}{{ section.change.toFixed(1) }}%
-                </el-tag>
-              </div>
-            </template>
+            <div class="section-header">
+              <span class="section-name">{{ section.name }}</span>
+              <span class="change-tag" :class="getChangeTagType(section.change)">
+                {{ section.change > 0 ? '+' : '' }}{{ section.change.toFixed(1) }}%
+              </span>
+            </div>
             
             <div class="section-details">
               <div class="similarity-compare">
                 <div class="similarity-item">
                   <div class="version-label">V{{ compareData.fromVersion }}</div>
-                  <el-progress 
-                    :percentage="section.from" 
-                    :stroke-width="8"
-                    :color="getSimilarityColor(section.from)"
-                    :show-text="false"
-                  />
+                  <div class="progress-container">
+                    <div 
+                      class="progress-bar" 
+                      :style="{ width: section.from + '%' }"
+                      :class="getSimilarityClass(section.from)"
+                    ></div>
+                  </div>
                   <span class="similarity-value">{{ section.from }}%</span>
                 </div>
                 <div class="similarity-item">
                   <div class="version-label">V{{ compareData.toVersion }}</div>
-                  <el-progress 
-                    :percentage="section.to" 
-                    :stroke-width="8"
-                    :color="getSimilarityColor(section.to)"
-                    :show-text="false"
-                  />
+                  <div class="progress-container">
+                    <div 
+                      class="progress-bar" 
+                      :style="{ width: section.to + '%' }"
+                      :class="getSimilarityClass(section.to)"
+                    ></div>
+                  </div>
                   <span class="similarity-value">{{ section.to }}%</span>
                 </div>
               </div>
             </div>
-          </el-card>
+          </div>
         </div>
       </div>
     </el-drawer>
 
     <!-- 统计分析卡片 -->
-    <el-row :gutter="20" class="stats-row">
-      <el-col :span="8">
-        <el-card class="stat-card" shadow="never">
-          <div class="stat-content">
-            <div class="stat-icon" :style="{ backgroundColor: '#67c23a' }">
-              <el-icon><TrendCharts /></el-icon>
-            </div>
-            <div class="stat-info">
-              <div class="stat-number">{{ stats.improvementRate }}%</div>
-              <div class="stat-label">改进效率</div>
-            </div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-content">
+          <div class="stat-icon improvement-icon">
+            <el-icon><TrendCharts /></el-icon>
           </div>
-        </el-card>
-      </el-col>
-      <el-col :span="8">
-        <el-card class="stat-card" shadow="never">
-          <div class="stat-content">
-            <div class="stat-icon" :style="{ backgroundColor: '#409eff' }">
-              <el-icon><DataAnalysis /></el-icon>
-            </div>
-            <div class="stat-info">
-              <div class="stat-number">{{ stats.averageSimilarity }}%</div>
-              <div class="stat-label">平均相似度</div>
-            </div>
+          <div class="stat-info">
+            <div class="stat-number">{{ stats.improvementRate }}%</div>
+            <div class="stat-label">改进效率</div>
           </div>
-        </el-card>
-      </el-col>
-      <el-col :span="8">
-        <el-card class="stat-card" shadow="never">
-          <div class="stat-content">
-            <div class="stat-icon" :style="{ backgroundColor: '#e6a23c' }">
-              <el-icon><Lightning /></el-icon>
-            </div>
-            <div class="stat-info">
-              <div class="stat-number">{{ stats.improvementSpeed }}</div>
-              <div class="stat-label">改进速度</div>
-            </div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-content">
+          <div class="stat-icon average-icon">
+            <el-icon><DataAnalysis /></el-icon>
           </div>
-        </el-card>
-      </el-col>
-    </el-row>
+          <div class="stat-info">
+            <div class="stat-number">{{ stats.averageSimilarity }}%</div>
+            <div class="stat-label">平均相似度</div>
+          </div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-content">
+          <div class="stat-icon speed-icon">
+            <el-icon><Lightning /></el-icon>
+          </div>
+          <div class="stat-info">
+            <div class="stat-number">{{ stats.improvementSpeed }}</div>
+            <div class="stat-label">改进速度</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -276,11 +301,12 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { 
   Refresh, DataLine, Timer, EditPen, TrendCharts, 
-  DataAnalysis, Lightning, ArrowRight
+  DataAnalysis, Lightning, ArrowRight, ArrowLeft, Download
 } from '@element-plus/icons-vue'
-// ECharts 通过 CDN 引入，全局 window.echarts 可用
 
-import { getCheckHistory, getSimilarityTrend, comparePaperVersions } from '@/api/student'
+import { getCheckHistory, getSimilarityTrend, compareVersionHistory } from '@/api/student'
+import { getSimilarityColor } from '@/utils/dataType.js'
+import * as echarts from 'echarts'
 
 const route = useRoute()
 const router = useRouter()
@@ -302,10 +328,10 @@ const chartInstance = ref(null)
 const historyRecords = ref([])
 
 const trendAnalysis = ref({
-  direction: 'decreasing',
-  totalImprovement: -27.1,
-  averageImprovementPerVersion: -13.55,
-  bestVersion: 3
+  direction: 'stable',
+  totalImprovement: 0,
+  averageImprovementPerVersion: 0,
+  bestVersion: 0
 })
 
 const compareData = ref(null)
@@ -341,28 +367,51 @@ const refreshHistory = async () => {
     if (res.code === 200) {
       // 处理历史记录数据
       historyRecords.value = res.data.history || []
-      
-      // 处理趋势分析数据
-      trendAnalysis.value = res.data.trendAnalysis || {
-        direction: 'decreasing',
-        totalImprovement: 0,
-        averageImprovementPerVersion: 0,
-        bestVersion: 1
+
+      // 处理趋势分析数据 — 优先使用后端数据，否则从历史记录计算
+      if (res.data.trendAnalysis) {
+        trendAnalysis.value = res.data.trendAnalysis
+      } else {
+        computeTrendFromRecords(historyRecords.value)
       }
       
-      // 处理论文信息
-      paperInfo.value = {
-        title: res.data.paperInfo?.title || '',
-        currentSimilarity: res.data.paperInfo?.currentSimilarity || 0,
-        lowestSimilarity: res.data.paperInfo?.lowestSimilarity || 0,
-        versionCount: res.data.paperInfo?.versionCount || 0
+      // 处理论文信息 — 优先使用后端数据，否则从历史记录计算
+      const records = historyRecords.value
+      if (res.data.paperInfo) {
+        paperInfo.value = {
+          title: res.data.paperInfo.title || '',
+          currentSimilarity: res.data.paperInfo.currentSimilarity || 0,
+          lowestSimilarity: res.data.paperInfo.lowestSimilarity || 0,
+          versionCount: res.data.paperInfo.versionCount || 0
+        }
+      } else if (records.length > 0) {
+        const similarities = records.map(r => Number(r.similarity) || 0)
+        paperInfo.value = {
+          title: route.query.paperTitle || '',
+          currentSimilarity: similarities[0] || 0,
+          lowestSimilarity: Math.min(...similarities),
+          versionCount: records.length
+        }
       }
-      
-      // 处理统计数据
-      stats.value = {
-        improvementRate: res.data.statistics?.improvementRate || 0,
-        averageSimilarity: res.data.statistics?.averageSimilarity || 0,
-        improvementSpeed: res.data.statistics?.improvementSpeed || ''
+
+      // 处理统计数据 — 优先使用后端数据，否则从历史记录计算
+      if (res.data.statistics) {
+        stats.value = {
+          improvementRate: res.data.statistics.improvementRate || 0,
+          averageSimilarity: res.data.statistics.averageSimilarity || 0,
+          improvementSpeed: res.data.statistics.improvementSpeed || ''
+        }
+      } else if (records.length > 0) {
+        const similarities = records.map(r => Number(r.similarity) || 0)
+        const avgSim = similarities.reduce((a, b) => a + b, 0) / similarities.length
+        const firstSim = similarities[similarities.length - 1]
+        const lastSim = similarities[0]
+        const improvementRate = firstSim > 0 ? Math.round((firstSim - lastSim) / firstSim * 100) : 0
+        stats.value = {
+          improvementRate,
+          averageSimilarity: Math.round(avgSim * 10) / 10,
+          improvementSpeed: records.length > 1 ? `${(records.length - 1)}个版本` : '首个版本'
+        }
       }
       
       ElMessage.success('历史记录已刷新')
@@ -437,7 +486,7 @@ const renderTrendChart = (data) => {
           }
         },
         axisLabel: {
-          color: '#606266'
+          color: '#86868b'
         },
         splitLine: {
           show: false
@@ -451,7 +500,7 @@ const renderTrendChart = (data) => {
           show: false
         },
         axisLabel: {
-          color: '#606266',
+          color: '#86868b',
           formatter: '{value}%'
         },
         splitLine: {
@@ -469,10 +518,10 @@ const renderTrendChart = (data) => {
         symbolSize: 8,
         lineStyle: {
           width: 3,
-          color: '#409eff'
+          color: '#0066cc'
         },
         itemStyle: {
-          color: '#409eff',
+          color: '#0066cc',
           borderColor: '#fff',
           borderWidth: 2
         },
@@ -481,8 +530,8 @@ const renderTrendChart = (data) => {
             type: 'linear',
             x: 0, y: 0, x2: 0, y2: 1,
             colorStops: [
-              { offset: 0, color: 'rgba(64, 158, 255, 0.3)' },
-              { offset: 1, color: 'rgba(64, 158, 255, 0.05)' }
+              { offset: 0, color: 'rgba(0, 102, 204, 0.3)' },
+              { offset: 1, color: 'rgba(0, 102, 204, 0.05)' }
             ]
           }
         }
@@ -493,9 +542,7 @@ const renderTrendChart = (data) => {
     chartInstance.value.setOption(option)
     
     // 响应式调整
-    window.addEventListener('resize', () => {
-      chartInstance.value?.resize()
-    })
+    window.addEventListener('resize', handleResize)
   })
 }
 
@@ -504,25 +551,52 @@ const toggleCompactView = () => {
 }
 
 const viewReport = (reportId) => {
-  router.push(`/student/plagiarism-report/${reportId}`)
+  router.push(`/student/plagiarism-report/${route.params.paperId}?reportId=${reportId}`)
 }
 
-const compareWithCurrent = async (version) => {
+const downloadPdfReport = (reportId) => {
+  try {
+    // 构建PDF下载URL
+    const downloadUrl = `/api/v1/detection/report/pdf/${reportId}`
+    
+    // 创建下载链接
+    const link = document.createElement('a')
+    link.href = downloadUrl
+    link.download = `plagiarism_report_${reportId}_${Date.now()}.pdf`
+    
+    // 触发下载
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    
+    ElMessage.success('PDF报告下载已开始')
+  } catch (error) {
+    console.error('下载PDF报告失败:', error)
+    ElMessage.error('下载PDF报告失败: ' + (error.message || '网络错误'))
+  }
+}
+
+const compareWithCurrent = async (record) => {
   const paperId = route.params.paperId
-  
+
   // 参数验证
   if (!paperId || paperId === 'undefined') {
     ElMessage.error('缺少论文ID参数')
     return
   }
-  
+
+  // 获取当前版本的 submitVersion
+  const currentRecord = historyRecords.value.find(r => r.isCurrent)
+  const fromSubmitVersion = record.submitVersion ?? record.version
+  const toSubmitVersion = currentRecord?.submitVersion ?? paperInfo.value.versionCount
+
   try {
-    const res = await comparePaperVersions(paperId, [version, paperInfo.value.versionCount])
-    
+    const res = await compareVersionHistory(paperId, fromSubmitVersion, toSubmitVersion)
+
     if (res.code === 200) {
       compareData.value = {
-        fromVersion: version,
-        toVersion: paperInfo.value.versionCount,
+        fromVersion: record.version,
+        toVersion: currentRecord?.version || paperInfo.value.versionCount,
         overallChange: res.data.overallChange || 0,
         sectionComparison: res.data.sectionComparison || []
       }
@@ -588,19 +662,21 @@ const getRatingText = (rating) => {
 }
 
 const getSimilarityClass = (similarity) => {
-  if (similarity < 20) return 'excellent'
-  if (similarity < 40) return 'good'
-  if (similarity < 60) return 'warning'
+  if (similarity < 15) return 'excellent'
+  if (similarity < 30) return 'good'
+  if (similarity < 50) return 'warning'
   return 'danger'
 }
 
 const getImprovementClass = (improvement) => {
+  if (improvement == null) return 'unchanged'
   if (improvement < 0) return 'improved'
   if (improvement > 0) return 'regressed'
   return 'unchanged'
 }
 
 const getChangeClass = (change) => {
+  if (change == null) return 'unchanged'
   if (change < 0) return 'decreased'
   if (change > 0) return 'increased'
   return 'unchanged'
@@ -632,10 +708,39 @@ const getTrendText = (direction) => {
   return textMap[direction] || '波动'
 }
 
-const getSimilarityColor = (similarity) => {
-  if (similarity < 20) return '#67c23a'
-  if (similarity < 40) return '#e6a23c'
-  return '#f56c6c'
+const computeTrendFromRecords = (records) => {
+  if (!records || records.length === 0) {
+    trendAnalysis.value = { direction: 'stable', totalImprovement: 0, averageImprovementPerVersion: 0, bestVersion: 0 }
+    return
+  }
+
+  const similarities = records.map(r => Number(r.similarity) || 0)
+  const firstSim = similarities[similarities.length - 1]
+  const lastSim = similarities[0]
+  const totalImprovement = firstSim - lastSim
+
+  let direction = 'stable'
+  if (totalImprovement > 3) direction = 'decreasing'
+  else if (totalImprovement < -3) direction = 'increasing'
+
+  const versionCount = similarities.length
+  const averageImprovementPerVersion = versionCount > 1 ? totalImprovement / (versionCount - 1) : 0
+
+  let bestVersion = 0
+  let bestSim = Infinity
+  similarities.forEach((sim, i) => {
+    if (sim < bestSim) {
+      bestSim = sim
+      bestVersion = versionCount - i
+    }
+  })
+
+  trendAnalysis.value = {
+    direction,
+    totalImprovement: Math.round(totalImprovement * 10) / 10,
+    averageImprovementPerVersion: Math.round(averageImprovementPerVersion * 100) / 100,
+    bestVersion
+  }
 }
 
 const formatDateTime = (date) => {
@@ -656,91 +761,219 @@ onMounted(async () => {
   await loadStatistics()
 })
 
+const handleResize = () => {
+  chartInstance.value?.resize()
+}
+
 onUnmounted(() => {
   if (chartInstance.value) {
     chartInstance.value.dispose()
     chartInstance.value = null
   }
-  window.removeEventListener('resize', () => {
-    chartInstance.value?.resize()
-  })
+  window.removeEventListener('resize', handleResize)
 })
 </script>
 
 <style lang="scss" scoped>
+// 全局样式
 .check-history-page {
-  padding: 20px;
-  background-color: #f5f7fa;
+  padding: 24px;
   min-height: 100vh;
+  background: #f5f5f7; // Slate-50
+  color: #0f172a; // Slate-900
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
+  // 页面头部
   .page-header {
-    margin-bottom: 20px;
+    margin-bottom: 32px;
     
-    .page-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: #303133;
-    }
-  }
-
-  .paper-info-card {
-    margin-bottom: 20px;
-    border-radius: 12px;
-    
-    .paper-header {
-      .paper-title {
-        font-size: 20px;
-        font-weight: 600;
-        color: #303133;
-        margin-bottom: 16px;
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        
+        .back-button {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 8px 16px;
+          border: 1px solid #e2e8f0;
+          border-radius: 11px;
+          background: white;
+          color: #475569;
+          font-size: 0.875rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          
+          &:hover {
+            border-color: #cbd5e1;
+            background: #f5f5f7;
+            /* translateY removed */
+          }
+        }
+        
+        .page-title {
+          font-size: 1.5rem;
+          font-weight: 600;
+          color: #0f172a;
+          margin: 0;
+        }
       }
       
-      .paper-stats {
-        display: flex;
-        gap: 24px;
-        flex-wrap: wrap;
-        
-        span {
-          color: #606266;
+      .header-actions {
+        .refresh-button {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 8px 16px;
+          border: 1px solid #e2e8f0;
+          border-radius: 11px;
+          background: white;
+          color: #475569;
+          font-size: 0.875rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
           
-          strong {
-            color: #303133;
-            font-weight: 600;
-            
-            &.excellent { color: #67c23a; }
-            &.good { color: #409eff; }
-            &.warning { color: #e6a23c; }
-            &.lowest { color: #67c23a; }
+          &:hover {
+            border-color: #cbd5e1;
+            background: #f5f5f7;
+            /* translateY removed */
           }
         }
       }
     }
   }
 
+  // 论文信息卡片
+  .paper-info-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 24px;
+    margin-bottom: 24px;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      border-color: #cbd5e1;
+    }
+    
+    .paper-header {
+      .paper-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #0f172a;
+        margin-bottom: 20px;
+        line-height: 1.3;
+      }
+      
+      .paper-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 20px;
+        
+        .stat-item {
+          .stat-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-bottom: 6px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+          
+          .stat-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0f172a;
+            
+            &.excellent { color: #10b981; }
+            &.good { color: #0ea5e9; }
+            &.warning { color: #f59e0b; }
+            &.lowest { color: #10b981; }
+          }
+        }
+      }
+    }
+  }
+
+  // 趋势卡片
   .trend-card {
-    margin-bottom: 20px;
-    border-radius: 12px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 24px;
+    margin-bottom: 24px;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      border-color: #cbd5e1;
+    }
     
     .card-header {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 8px;
-      font-weight: 600;
-      color: #303133;
+      margin-bottom: 24px;
+      
+      .card-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #0f172a;
+        
+        .el-icon {
+          color: #64748b;
+        }
+      }
       
       .trend-controls {
-        margin-left: auto;
+        .radio-group {
+          display: flex;
+          gap: 4px;
+          background: #f5f5f7;
+          border: 1px solid #e2e8f0;
+          border-radius: 11px;
+          padding: 4px;
+          
+          .radio-button {
+            padding: 6px 16px;
+            border-radius: 11px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            
+            &.active {
+              background: white;
+              color: #0f172a;
+            }
+            
+            &:hover:not(.active) {
+              color: #334155;
+            }
+          }
+        }
       }
     }
     
     .trend-chart-container {
-      display: flex;
-      gap: 30px;
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 24px;
       
       .chart-wrapper {
-        flex: 1;
-        background: #f8f9fa;
-        border-radius: 8px;
+        background: #f5f5f7;
+        border-radius: 11px;
         padding: 20px;
         min-height: 400px;
         display: flex;
@@ -749,151 +982,308 @@ onUnmounted(() => {
       }
       
       .trend-summary {
-        width: 280px;
         display: flex;
         flex-direction: column;
         gap: 20px;
         
         .summary-item {
           .summary-label {
-            font-size: 14px;
-            color: #606266;
+            font-size: 0.75rem;
+            color: #64748b;
             margin-bottom: 6px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
           }
           
           .summary-value {
-            font-size: 18px;
-            font-weight: 700;
+            font-size: 1.25rem;
+            font-weight: 600;
             
-            &.decreasing { color: #67c23a; }
-            &.increasing { color: #f56c6c; }
-            &.stable { color: #909399; }
-            &.improvement { color: #67c23a; }
-            &.best { color: #409eff; }
+            &.decreasing { color: #10b981; }
+            &.increasing { color: #ef4444; }
+            &.stable { color: #94a3b8; }
+            &.improvement { color: #10b981; }
+            &.best { color: #8b5cf6; }
           }
         }
       }
     }
   }
 
+  // 历史卡片
   .history-card {
-    margin-bottom: 20px;
-    border-radius: 12px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 24px;
+    margin-bottom: 24px;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      border-color: #cbd5e1;
+    }
     
     .card-header {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 8px;
-      font-weight: 600;
-      color: #303133;
-    }
-    
-    .timeline-container {
-      :deep(.el-timeline) {
-        .el-timeline-item {
-          .el-timeline-item__tail {
-            border-left: 2px solid #e4e7ed;
-          }
-          
-          .el-timeline-item__node {
-            width: 16px;
-            height: 16px;
-          }
+      margin-bottom: 24px;
+      
+      .card-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #0f172a;
+        
+        .el-icon {
+          color: #64748b;
         }
       }
       
-      .history-record {
-        padding: 20px;
-        background: #f8f9fa;
-        border-radius: 12px;
-        border: 1px solid #e4e7ed;
-        transition: all 0.3s ease;
+      .text-button {
+        padding: 6px 12px;
+        background: transparent;
+        border: none;
+        color: #64748b;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
         
-        &.current-version {
-          border-color: #409eff;
-          background: #ecf5ff;
+        &:hover {
+          color: #0f172a;
+          background: #f5f5f7;
+          border-radius: 11px;
+        }
+      }
+    }
+    
+    .timeline-container {
+      .timeline {
+        position: relative;
+        padding-left: 24px;
+        
+        &::before {
+          content: '';
+          position: absolute;
+          left: 8px;
+          top: 0;
+          bottom: 0;
+          width: 2px;
+          background: #e2e8f0;
         }
         
-        .record-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 16px;
+        .timeline-item {
+          position: relative;
+          margin-bottom: 32px;
           
-          .version-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            
-            .similarity-badge {
-              padding: 4px 12px;
-              border-radius: 16px;
+          &:last-child {
+            margin-bottom: 0;
+          }
+          
+          .timeline-node {
+            position: absolute;
+            left: -24px;
+            top: 4px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #cbd5e1;
+            border: 2px solid white;
+
+            &.success {
+              background: #10b981;
+            }
+            &.primary {
+              background: #0ea5e9;
+            }
+            &.warning {
+              background: #f59e0b;
+            }
+            &.danger {
+              background: #ef4444;
+            }
+            &.info {
+              background: #64748b;
+            }
+          }
+          
+          .timeline-line {
+            position: absolute;
+            left: -23px;
+            top: 20px;
+            bottom: -32px;
+            width: 2px;
+            background: #e2e8f0;
+          }
+          
+          .timeline-content {
+            .timeline-timestamp {
+              font-size: 0.75rem;
+              color: #94a3b8;
+              margin-bottom: 8px;
               font-weight: 600;
-              font-size: 14px;
-              
-              &.excellent { background: #f0f9ff; color: #67c23a; }
-              &.good { background: #f0f7ff; color: #409eff; }
-              &.warning { background: #fdf6ec; color: #e6a23c; }
-              &.danger { background: #fef0f0; color: #f56c6c; }
             }
-          }
-        }
-        
-        .record-content {
-          .changes-description {
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-            margin-bottom: 16px;
-            color: #606266;
-            line-height: 1.5;
             
-            .el-icon {
-              margin-top: 3px;
-              color: #409eff;
-            }
-          }
-          
-          .improvement-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 16px;
-            
-            .improvement-badge {
-              padding: 4px 12px;
-              border-radius: 16px;
-              font-weight: 600;
-              font-size: 12px;
+            .history-record {
+              padding: 20px;
+              background: #f5f5f7;
+              border: 1px solid #e2e8f0;
+              border-radius: 11px;
+              transition: all 0.2s ease;
               
-              &.improved { background: #f0f9ff; color: #67c23a; }
-              &.regressed { background: #fef0f0; color: #f56c6c; }
-              &.unchanged { background: #f4f4f5; color: #909399; }
-            }
-          }
-          
-          .section-changes {
-            .section-change {
-              display: flex;
-              justify-content: space-between;
-              padding: 8px 0;
-              border-bottom: 1px solid #e4e7ed;
-              
-              &:last-child {
-                border-bottom: none;
+              &:hover {
+                border-color: #cbd5e1;
+              }
+
+              &:active {
+                transform: scale(0.95);
+              }
+
+              &.current-version {
+                border-color: #8b5cf6;
+                background: rgba(139, 92, 246, 0.05);
               }
               
-              .section-name {
-                color: #606266;
-                font-size: 14px;
-              }
-              
-              .change-value {
-                font-weight: 500;
+              .record-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 16px;
                 
-                &.decreased { color: #67c23a; }
-                &.increased { color: #f56c6c; }
-                &.unchanged { color: #909399; }
+                .version-info {
+                  display: flex;
+                  align-items: center;
+                  gap: 12px;
+                  flex-wrap: wrap;
+                  
+                  .version-tag {
+                    padding: 4px 12px;
+                    border-radius: 16px;
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    background: #e2e8f0;
+                    color: #64748b;
+                    
+                    &.current {
+                      background: #8b5cf6;
+                      color: white;
+                    }
+                  }
+                  
+                  .similarity-badge {
+                    padding: 4px 12px;
+                    border-radius: 16px;
+                    font-weight: 600;
+                    font-size: 0.75rem;
+                    
+                    &.excellent { background: #d1fae5; color: #10b981; }
+                    &.good { background: #e0f2fe; color: #0ea5e9; }
+                    &.warning { background: #fef3c7; color: #f59e0b; }
+                    &.danger { background: #fee2e2; color: #ef4444; }
+                  }
+                  
+                  .rating-tag {
+                    padding: 2px 8px;
+                    border-radius: 18px;
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    
+                    &.success { background: #d1fae5; color: #10b981; }
+                    &.primary { background: #e0f2fe; color: #0ea5e9; }
+                    &.warning { background: #fef3c7; color: #f59e0b; }
+                    &.danger { background: #fee2e2; color: #ef4444; }
+                    &.info { background: #f1f5f9; color: #64748b; }
+                  }
+                }
+                
+                .record-actions {
+                  display: flex;
+                  gap: 8px;
+                  
+                  .action-button {
+                    padding: 6px 12px;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 11px;
+                    background: white;
+                    color: #64748b;
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    
+                    &:hover {
+                      border-color: #cbd5e1;
+                      color: #0f172a;
+                      /* translateY removed */
+                    }
+                  }
+                }
+              }
+              
+              .record-content {
+                .changes-description {
+                  display: flex;
+                  align-items: flex-start;
+                  gap: 8px;
+                  margin-bottom: 16px;
+                  color: #475569;
+                  line-height: 1.5;
+                  font-size: 0.875rem;
+                  
+                  .el-icon {
+                    margin-top: 3px;
+                    color: #8b5cf6;
+                  }
+                }
+                
+                .improvement-info {
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  margin-bottom: 16px;
+                  
+                  .improvement-badge {
+                    padding: 4px 12px;
+                    border-radius: 16px;
+                    font-weight: 600;
+                    font-size: 0.75rem;
+                    
+                    &.improved { background: #d1fae5; color: #10b981; }
+                    &.regressed { background: #fee2e2; color: #ef4444; }
+                    &.unchanged { background: #f1f5f9; color: #64748b; }
+                  }
+                }
+                
+                .section-changes {
+                  .section-change {
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 8px 0;
+                    border-bottom: 1px solid #e2e8f0;
+                    
+                    &:last-child {
+                      border-bottom: none;
+                    }
+                    
+                    .section-name {
+                      color: #64748b;
+                      font-size: 0.875rem;
+                    }
+                    
+                    .change-value {
+                      font-weight: 600;
+                      font-size: 0.875rem;
+                      
+                      &.decreased { color: #10b981; }
+                      &.increased { color: #ef4444; }
+                      &.unchanged { color: #94a3b8; }
+                    }
+                  }
+                }
               }
             }
           }
@@ -902,6 +1292,7 @@ onUnmounted(() => {
     }
   }
 
+  // 对比内容
   .compare-content {
     .compare-header {
       display: flex;
@@ -909,59 +1300,120 @@ onUnmounted(() => {
       align-items: center;
       margin-bottom: 30px;
       padding-bottom: 20px;
-      border-bottom: 2px solid #f0f2f5;
+      border-bottom: 1px solid #e2e8f0;
       
       .version-tags {
         display: flex;
         align-items: center;
         gap: 12px;
         
+        .version-tag {
+          padding: 4px 12px;
+          border-radius: 16px;
+          font-size: 0.875rem;
+          font-weight: 600;
+          
+          &.old {
+            background: #f1f5f9;
+            color: #64748b;
+          }
+          &.current {
+            background: #0ea5e9;
+            color: white;
+          }
+        }
+        
         .vs {
           font-weight: 600;
-          color: #606266;
+          color: #94a3b8;
         }
       }
       
       .overall-change {
-        font-size: 18px;
-        font-weight: 700;
+        font-size: 1rem;
+        font-weight: 600;
         
-        &.improved { color: #67c23a; }
-        &.regressed { color: #f56c6c; }
-        &.unchanged { color: #909399; }
+        &.improved { color: #10b981; }
+        &.regressed { color: #ef4444; }
+        &.unchanged { color: #94a3b8; }
       }
     }
     
     .compare-sections {
       .section-compare-card {
-        margin-bottom: 20px;
-        border-radius: 12px;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 11px;
+        padding: 20px;
+        margin-bottom: 16px;
+        transition: all 0.2s ease;
         
+        &:hover {
+          border-color: #cbd5e1;
+        }
+
         .section-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          font-weight: 600;
-          color: #303133;
+          margin-bottom: 16px;
+          
+          .section-name {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 0.875rem;
+          }
+          
+          .change-tag {
+            padding: 2px 8px;
+            border-radius: 18px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            
+            &.success { background: #d1fae5; color: #10b981; }
+            &.danger { background: #fee2e2; color: #ef4444; }
+            &.info { background: #f1f5f9; color: #64748b; }
+          }
         }
         
         .similarity-compare {
           .similarity-item {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
             margin-bottom: 12px;
             
             .version-label {
               width: 60px;
-              font-size: 14px;
-              color: #606266;
+              font-size: 0.75rem;
+              color: #64748b;
+              font-weight: 600;
+            }
+            
+            .progress-container {
+              flex: 1;
+              height: 8px;
+              background: #e2e8f0;
+              border-radius: 11px;
+              overflow: hidden;
+              
+              .progress-bar {
+                height: 100%;
+                border-radius: 11px;
+                transition: width 0.3s ease;
+                
+                &.excellent { background: #10b981; }
+                &.good { background: #0ea5e9; }
+                &.warning { background: #f59e0b; }
+                &.danger { background: #ef4444; }
+              }
             }
             
             .similarity-value {
               min-width: 50px;
               font-weight: 600;
-              color: #303133;
+              color: #0f172a;
+              font-size: 0.875rem;
             }
           }
         }
@@ -969,40 +1421,69 @@ onUnmounted(() => {
     }
   }
 
-  .stats-row {
+  // 统计卡片网格
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    
     .stat-card {
-      border-radius: 12px;
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 20px;
+      transition: all 0.2s ease;
       
+      &:hover {
+        border-color: #cbd5e1;
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+
       .stat-content {
         display: flex;
         align-items: center;
         gap: 16px;
         
         .stat-icon {
-          width: 56px;
-          height: 56px;
-          border-radius: 12px;
+          width: 48px;
+          height: 48px;
+          border-radius: 18px;
           display: flex;
           align-items: center;
           justify-content: center;
-          color: white;
+          font-size: 20px;
+          flex-shrink: 0;
           
-          .el-icon {
-            font-size: 24px;
+          &.improvement-icon {
+            background: #d1fae5;
+            color: #10b981;
+          }
+          &.average-icon {
+            background: #e0f2fe;
+            color: #0ea5e9;
+          }
+          &.speed-icon {
+            background: #fef3c7;
+            color: #f59e0b;
           }
         }
         
         .stat-info {
           .stat-number {
-            font-size: 24px;
-            font-weight: 700;
-            color: #303133;
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #0f172a;
+            line-height: 1.2;
             margin-bottom: 4px;
           }
           
           .stat-label {
-            font-size: 14px;
-            color: #606266;
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 600;
           }
         }
       }
@@ -1011,29 +1492,98 @@ onUnmounted(() => {
 }
 
 // 响应式设计
+@media (max-width: 1200px) {
+  .check-history-page {
+    .trend-card {
+      .trend-chart-container {
+        grid-template-columns: 1fr;
+        
+        .trend-summary {
+          flex-direction: row;
+          justify-content: space-around;
+          flex-wrap: wrap;
+          gap: 16px;
+        }
+      }
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .check-history-page {
-    padding: 12px;
+    padding: 16px;
     
-    .trend-chart-container {
-      flex-direction: column;
-      
-      .trend-summary {
-        width: 100%;
-        flex-direction: row;
-        justify-content: space-around;
+    .page-header {
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        
+        .header-actions {
+          align-self: stretch;
+        }
       }
     }
     
-    .record-header {
-      flex-direction: column;
-      align-items: flex-start !important;
-      gap: 12px;
+    .paper-info-card {
+      padding: 20px;
+      
+      .paper-stats {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
     }
     
-    .paper-stats {
-      flex-direction: column;
-      gap: 12px !important;
+    .trend-card {
+      padding: 20px;
+      
+      .trend-chart-container {
+        gap: 16px;
+        
+        .chart-wrapper {
+          padding: 16px;
+          min-height: 300px;
+        }
+      }
+    }
+    
+    .history-card {
+      padding: 20px;
+      
+      .timeline-container {
+        .timeline {
+          padding-left: 20px;
+          
+          .timeline-item {
+            .timeline-node {
+              left: -20px;
+            }
+            
+            .timeline-line {
+              left: -19px;
+            }
+            
+            .history-record {
+              padding: 16px;
+              
+              .record-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+                
+                .record-actions {
+                  align-self: stretch;
+                  justify-content: space-between;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    .stats-grid {
+      grid-template-columns: 1fr;
     }
   }
 }

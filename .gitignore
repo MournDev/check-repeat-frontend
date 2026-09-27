@@ -11,15 +11,9 @@ node_modules
 dist
 dist-ssr
 *.local
-
-# Nginx runtime (local Windows distribution)
-nginx-1.28.0/
-
-# Accidental empty file
-/npm
-
-# Claude Code local settings
-.claude/settings.json
+.env
+.env.development
+.env.production
 
 # Editor directories and files
 .vscode/*

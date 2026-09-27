@@ -1,517 +1,286 @@
 <template>
-  <div class="help-center-page">
-    <!-- 页面标题 -->
-    <div class="page-header">
-      <h1 class="page-title">帮助中心</h1>
-      <p class="page-desc">获取论文提交、查重、审核等相关帮助</p>
+  <div class="knowledge-base">
+    <!-- 搜索栏 -->
+    <div class="search-bar">
+      <el-input
+        v-model="keyword"
+        size="large"
+        placeholder="搜索帮助文档..."
+        :prefix-icon="Search"
+        clearable
+        @keyup.enter="onSearch"
+        @clear="onSearch"
+      >
+        <template #append>
+          <el-button :icon="Search" :loading="loading" @click="onSearch">搜索</el-button>
+        </template>
+      </el-input>
     </div>
 
-    <!-- 搜索框 -->
-    <el-card class="search-card" shadow="never">
-      <el-input
-        v-model="searchKeyword"
-        placeholder="搜索帮助文档，如：如何提交论文？"
-        :prefix-icon="Search"
-        size="large"
-        clearable
-        @input="filterHelpContent"
-      />
-    </el-card>
-
-    <el-row :gutter="20" class="main-content">
-      <!-- 左侧导航 -->
-      <el-col :xs="24" :sm="8" :lg="6">
-        <el-card class="nav-card" shadow="hover">
-          <el-menu
-            :default-active="activeCategory"
-            class="help-menu"
-            @select="handleMenuSelect"
+    <div class="kb-body" v-loading="loading">
+      <!-- 左侧：分类 + 热门 -->
+      <aside class="kb-sidebar">
+        <!-- 分类导航 -->
+        <el-card shadow="never" class="category-card">
+          <template #header><span class="card-title">分类导航</span></template>
+          <div
+            v-for="cat in categories"
+            :key="cat.code"
+            :class="['category-item', { active: activeCategory === cat.code }]"
+            @click="selectCategory(cat.code)"
           >
-            <el-menu-item index="beginner">
-              <el-icon><User /></el-icon>
-              <span>新手指南</span>
-            </el-menu-item>
-            <el-menu-item index="submit">
-              <el-icon><Upload /></el-icon>
-              <span>论文提交</span>
-            </el-menu-item>
-            <el-menu-item index="check">
-              <el-icon><Search /></el-icon>
-              <span>查重说明</span>
-            </el-menu-item>
-            <el-menu-item index="review">
-              <el-icon><Document /></el-icon>
-              <span>审核流程</span>
-            </el-menu-item>
-            <el-menu-item index="faq">
-              <el-icon><QuestionFilled /></el-icon>
-              <span>常见问题</span>
-            </el-menu-item>
-            <el-menu-item index="contact">
-              <el-icon><Service /></el-icon>
-              <span>联系我们</span>
-            </el-menu-item>
-          </el-menu>
+            <el-icon v-if="cat.icon"><component :is="cat.icon" /></el-icon>
+            <span class="cat-name">{{ cat.name }}</span>
+            <el-badge :value="cat.articleCount" :max="99" class="cat-badge" />
+          </div>
+          <div v-if="activeCategory" class="clear-filter" @click="selectCategory('')">
+            清除筛选
+          </div>
         </el-card>
-      </el-col>
 
-      <!-- 右侧内容 -->
-      <el-col :xs="24" :sm="16" :lg="18">
-        <!-- 新手指南 -->
-        <div v-show="activeCategory === 'beginner'" class="help-content">
-          <el-card class="content-card" shadow="hover">
-            <template #header>
-              <div class="card-header">
-                <el-icon><User /></el-icon>
-                <span>新手指南</span>
-              </div>
-            </template>
-            
-            <el-timeline>
-              <el-timeline-item timestamp="第 1 步" placement="top" size="large">
-                <el-card>
-                  <h4>注册账号</h4>
-                  <p>使用学号和身份证号注册个人账号</p>
-                  <el-image 
-                    src="/images/help/register.png" 
-                    fit="cover"
-                    class="guide-image"
-                  />
-                </el-card>
-              </el-timeline-item>
-              
-              <el-timeline-item timestamp="第 2 步" placement="top" size="large">
-                <el-card>
-                  <h4>完善个人信息</h4>
-                  <p>填写学院、专业、班级等基本信息</p>
-                </el-card>
-              </el-timeline-item>
-              
-              <el-timeline-item timestamp="第 3 步" placement="top" size="large">
-                <el-card>
-                  <h4>提交论文</h4>
-                  <p>上传论文文件并填写相关信息</p>
-                </el-card>
-              </el-timeline-item>
-              
-              <el-timeline-item timestamp="第 4 步" placement="top" size="large">
-                <el-card>
-                  <h4>等待分配导师</h4>
-                  <p>系统会自动分配指导老师</p>
-                </el-card>
-              </el-timeline-item>
-              
-              <el-timeline-item timestamp="第 5 步" placement="top" size="large">
-                <el-card>
-                  <h4>查看审核结果</h4>
-                  <p>在"我的论文"中查看审核状态和导师反馈</p>
-                </el-card>
-              </el-timeline-item>
-            </el-timeline>
-          </el-card>
-        </div>
+        <!-- 热门文章 -->
+        <el-card shadow="never" class="popular-card">
+          <template #header><span class="card-title">热门文章</span></template>
+          <div
+            v-for="item in popularArticles"
+            :key="item.id"
+            class="popular-item"
+            @click="openDetail(item.id)"
+          >
+            <el-icon><Notebook /></el-icon>
+            <span class="pop-title">{{ item.title }}</span>
+            <span class="pop-views">{{ item.viewCount }}次</span>
+          </div>
+        </el-card>
+      </aside>
 
-        <!-- 论文提交 -->
-        <div v-show="activeCategory === 'submit'" class="help-content">
-          <el-card class="content-card" shadow="hover">
-            <template #header>
-              <div class="card-header">
-                <el-icon><Upload /></el-icon>
-                <span>论文提交指南</span>
+      <!-- 右侧：文章列表 / 文章详情 -->
+      <main class="kb-main">
+        <!-- 列表视图 -->
+        <template v-if="!detailId">
+          <div class="list-toolbar" v-if="articles.length > 0">
+            <span class="list-info">共 {{ total }} 篇文章</span>
+          </div>
+          <div class="article-grid" v-if="articles.length > 0">
+            <el-card
+              v-for="item in articles"
+              :key="item.id"
+              shadow="hover"
+              class="article-card"
+              @click="openDetail(item.id)"
+            >
+              <h3 class="article-title">{{ item.title }}</h3>
+              <p class="article-summary">{{ item.summary || item.content?.replace(/[#*>`\-\s]/g, '').slice(0, 120) }}</p>
+              <div class="article-meta">
+                <span><el-icon><View /></el-icon> {{ item.viewCount }}</span>
+                <span><el-icon><Clock /></el-icon> {{ formatDate(item.createTime) }}</span>
               </div>
-            </template>
-            
-            <el-collapse accordion>
-              <el-collapse-item title="支持的文件格式有哪些？" name="1">
-                <div class="guide-content">
-                  <el-alert 
-                    title="支持的格式：PDF、DOC、DOCX" 
-                    type="info" 
-                    :closable="false" 
-                    show-icon 
-                  />
-                  <p style="margin-top: 12px;">
-                    建议使用 PDF 格式，可以保证排版不变形。文件大小不超过 50MB。
-                  </p>
-                </div>
-              </el-collapse-item>
-              
-              <el-collapse-item title="如何提交论文？" name="2">
-                <div class="guide-content">
-                  <ol>
-                    <li>进入"论文提交"页面</li>
-                    <li>点击上传区域或拖拽文件到上传框</li>
-                    <li>填写论文标题、摘要等信息</li>
-                    <li>选择论文类型（本科/硕士/博士）</li>
-                    <li>点击"提交"按钮</li>
-                  </ol>
-                  <el-image 
-                    src="/images/help/submit-flow.png" 
-                    fit="contain"
-                    class="guide-image"
-                  />
-                </div>
-              </el-collapse-item>
-              
-              <el-collapse-item title="提交后可以修改吗？" name="3">
-                <div class="guide-content">
-                  <el-alert 
-                    title="提交后如需修改，可申请撤回或申请修改" 
-                    type="warning" 
-                    :closable="false" 
-                    show-icon 
-                  />
-                  <ul style="margin-top: 12px;">
-                    <li><strong>撤回：</strong>论文待审核前可申请撤回，撤回后可直接修改重新提交</li>
-                    <li><strong>申请修改：</strong>已通过审核的论文需申请修改，说明原因后由导师审批</li>
-                  </ul>
-                </div>
-              </el-collapse-item>
-              
-              <el-collapse-item title="提交次数有限制吗？" name="4">
-                <div class="guide-content">
-                  <p>每篇论文最多提交 <strong>5 个版本</strong>，请谨慎操作。</p>
-                  <p>建议每次提交前仔细检查，避免重复提交。</p>
-                </div>
-              </el-collapse-item>
-            </el-collapse>
-          </el-card>
-        </div>
+            </el-card>
+          </div>
+          <el-empty v-else description="暂无相关内容" :image-size="80" />
 
-        <!-- 查重说明 -->
-        <div v-show="activeCategory === 'check'" class="help-content">
-          <el-card class="content-card" shadow="hover">
-            <template #header>
-              <div class="card-header">
-                <el-icon><Search /></el-icon>
-                <span>查重系统说明</span>
-              </div>
-            </template>
-            
-            <el-descriptions :column="1" border>
-              <el-descriptions-item label="检测范围">
-                学术期刊、学位论文、会议论文、网络资源等
-              </el-descriptions-item>
-              <el-descriptions-item label="检测语言">
-                中文、英文及其他小语种
-              </el-descriptions-item>
-              <el-descriptions-item label="检测时间">
-                一般 10-30 分钟，高峰期可能延长
-              </el-descriptions-item>
-              <el-descriptions-item label="合格标准">
-                本科≤30%，硕士≤20%，博士≤10%（仅供参考，以学校要求为准）
-              </el-descriptions-item>
-              <el-descriptions-item label="报告内容">
-                总文字复制比、去除引用复制比、章节复制比、相似文献列表
-              </el-descriptions-item>
-            </el-descriptions>
-            
-            <div class="tips-section">
-              <h4>降低重复率的方法：</h4>
-              <ul>
-                <li>用自己的话复述原文观点</li>
-                <li>适当增加原创性分析</li>
-                <li>规范引用格式</li>
-                <li>对图表进行重新绘制</li>
-                <li>调整句式结构和段落顺序</li>
-              </ul>
-            </div>
-          </el-card>
-        </div>
+          <!-- 分页 -->
+          <div class="kb-pagination" v-if="total > pageSize">
+            <el-pagination
+              v-model:current-page="currentPage"
+              :page-size="pageSize"
+              :total="total"
+              layout="prev, pager, next"
+              @current-change="fetchArticles"
+            />
+          </div>
+        </template>
 
-        <!-- 审核流程 -->
-        <div v-show="activeCategory === 'review'" class="help-content">
-          <el-card class="content-card" shadow="hover">
-            <template #header>
-              <div class="card-header">
-                <el-icon><Document /></el-icon>
-                <span>审核流程说明</span>
+        <!-- 详情视图 -->
+        <template v-else>
+          <div class="detail-header">
+            <el-button :icon="ArrowLeft" @click="closeDetail" type="primary" link>返回列表</el-button>
+          </div>
+          <el-card shadow="never" class="detail-card" v-loading="detailLoading">
+            <template v-if="detail">
+              <h1 class="detail-title">{{ detail.title }}</h1>
+              <div class="detail-meta">
+                <span><el-icon><Clock /></el-icon> {{ formatDate(detail.createTime) }}</span>
+                <span><el-icon><View /></el-icon> {{ detail.viewCount }} 次浏览</span>
+                <span><el-icon><User /></el-icon> {{ detail.authorName }}</span>
               </div>
+              <el-divider />
+              <div class="markdown-body" v-html="renderedContent"></div>
             </template>
-            
-            <el-steps direction="vertical" :active="3">
-              <el-step 
-                title="提交成功" 
-                description="论文提交后进入待分配状态"
-                status="finish"
-              />
-              <el-step 
-                title="分配导师" 
-                description="系统根据专业方向自动分配指导老师"
-                status="finish"
-              />
-              <el-step 
-                title="导师审核" 
-                description="导师对论文进行评审并提出修改意见"
-                status="process"
-              />
-              <el-step 
-                title="审核通过" 
-                description="审核通过后可参加答辩"
-                status="wait"
-              />
-            </el-steps>
-            
-            <div class="review-tips">
-              <h4>审核时间说明：</h4>
-              <p>一般情况下，导师会在 <strong>3-5 个工作日</strong>内完成审核。</p>
-              <p>如遇高峰期（如毕业季），审核时间可能延长至 7-10 个工作日。</p>
-            </div>
           </el-card>
-        </div>
-
-        <!-- 常见问题 -->
-        <div v-show="activeCategory === 'faq'" class="help-content">
-          <el-card class="content-card" shadow="hover">
-            <template #header>
-              <div class="card-header">
-                <el-icon><QuestionFilled /></el-icon>
-                <span>常见问题 FAQ</span>
-              </div>
-            </template>
-            
-            <el-collapse accordion>
-              <el-collapse-item title="忘记密码怎么办？" name="1">
-                <p>可在登录页面点击"忘记密码"，通过注册时预留的邮箱重置密码。</p>
-              </el-collapse-item>
-              
-              <el-collapse-item title="论文提交失败怎么办？" name="2">
-                <p>可能原因：</p>
-                <ul>
-                  <li>文件格式不支持 → 转换为 PDF/DOC/DOCX 格式</li>
-                  <li>文件过大 → 压缩至 50MB 以内</li>
-                  <li>网络问题 → 检查网络连接后重试</li>
-                </ul>
-              </el-collapse-item>
-              
-              <el-collapse-item title="查重报告在哪里查看？" name="3">
-                <p>进入"我的论文"页面，找到对应论文，点击"查看报告"即可查看详细的查重报告。</p>
-              </el-collapse-item>
-              
-              <el-collapse-item title="相似度多少算合格？" name="4">
-                <p>不同学历层次要求不同：</p>
-                <ul>
-                  <li>本科生：一般≤30%</li>
-                  <li>硕士研究生：一般≤20%</li>
-                  <li>博士研究生：一般≤10%</li>
-                </ul>
-                <p><em>具体标准请以学校最新文件为准</em></p>
-              </el-collapse-item>
-              
-              <el-collapse-item title="如何联系导师？" name="5">
-                <p>在"师生互动"页面可以看到导师的联系方式和留言功能。</p>
-              </el-collapse-item>
-              
-              <el-collapse-item title="系统支持手机访问吗？" name="6">
-                <p>系统已做响应式设计，支持手机、平板等移动设备访问。</p>
-              </el-collapse-item>
-            </el-collapse>
-          </el-card>
-        </div>
-
-        <!-- 联系我们 -->
-        <div v-show="activeCategory === 'contact'" class="help-content">
-          <el-card class="content-card" shadow="hover">
-            <template #header>
-              <div class="card-header">
-                <el-icon><Service /></el-icon>
-                <span>联系我们</span>
-              </div>
-            </template>
-            
-            <el-result icon="success" title="技术支持" sub-title="工作日 9:00-18:00 在线服务">
-              <template #extra>
-                <el-descriptions :column="1" border>
-                  <el-descriptions-item label="联系电话">
-                    400-XXX-XXXX
-                  </el-descriptions-item>
-                  <el-descriptions-item label="客服邮箱">
-                    support@example.com
-                  </el-descriptions-item>
-                  <el-descriptions-item label="QQ 群">
-                    123456789
-                  </el-descriptions-item>
-                  <el-descriptions-item label="办公地址">
-                    XX 大学信息中心 X 楼
-                  </el-descriptions-item>
-                </el-descriptions>
-                
-                <div class="feedback-section">
-                  <h4>问题反馈</h4>
-                  <p>如果您遇到任何问题，请扫描下方二维码加入 QQ 群咨询：</p>
-                  <el-image 
-                    src="/images/help/qq-group.png" 
-                    fit="contain"
-                    class="qr-code"
-                  />
-                </div>
-              </template>
-            </el-result>
-          </el-card>
-        </div>
-      </el-col>
-    </el-row>
+        </template>
+      </main>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { Search, User, Upload, Document, QuestionFilled, Service } from '@element-plus/icons-vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
+import {
+  Search, Notebook, View, Clock, ArrowLeft, User,
+  Document, QuestionFilled, Service, Upload
+} from '@element-plus/icons-vue'
+import {
+  getCategories, getArticles, getPopular, getArticle, searchArticles
+} from '@/api/knowledge'
+import { renderMarkdown } from '@/utils/markdown'
 
-const activeCategory = ref('beginner')
-const searchKeyword = ref('')
+// 状态
+const keyword = ref('')
+const categories = ref([])
+const articles = ref([])
+const total = ref(0)
+const popularArticles = ref([])
+const activeCategory = ref('')
+const currentPage = ref(1)
+const pageSize = 12
+const loading = ref(false)
+const detailId = ref(null)
+const detail = ref(null)
+const detailLoading = ref(false)
 
-const handleMenuSelect = (index) => {
-  activeCategory.value = index
+const renderedContent = computed(() => {
+  if (!detail.value?.content) return ''
+  return renderMarkdown(detail.value.content)
+})
+
+onMounted(async () => {
+  await Promise.all([fetchCategories(), fetchPopular(), fetchArticles()])
+})
+
+async function fetchCategories() {
+  try {
+    const res = await getCategories()
+    if (res?.code === 200) categories.value = res.data || []
+  } catch { /* ignore */ }
 }
 
-const filterHelpContent = () => {
-  // TODO: 实现搜索功能
-  console.log('搜索关键词:', searchKeyword.value)
+async function fetchPopular() {
+  try {
+    const res = await getPopular()
+    if (res?.code === 200) popularArticles.value = res.data || []
+  } catch { /* ignore */ }
+}
+
+async function fetchArticles() {
+  loading.value = true
+  try {
+    const params = { page: currentPage.value, size: pageSize }
+    if (activeCategory.value) params.category = activeCategory.value
+    if (keyword.value) params.keyword = keyword.value
+    const fn = keyword.value ? searchArticles : getArticles
+    const res = await fn(params)
+    if (res?.code === 200) {
+      articles.value = res.data?.items || []
+      total.value = res.data?.total || 0
+    }
+  } catch { /* ignore */ }
+  finally { loading.value = false }
+}
+
+function selectCategory(code) {
+  activeCategory.value = activeCategory.value === code ? '' : code
+  currentPage.value = 1
+  fetchArticles()
+}
+
+function onSearch() {
+  currentPage.value = 1
+  fetchArticles()
+}
+
+async function openDetail(id) {
+  detailId.value = id
+  detailLoading.value = true
+  try {
+    const res = await getArticle(id)
+    if (res?.code === 200) detail.value = res.data
+  } catch { detail.value = null }
+  finally { detailLoading.value = false }
+}
+
+function closeDetail() {
+  detailId.value = null
+  detail.value = null
+}
+
+function formatDate(d) {
+  if (!d) return ''
+  return new Date(d).toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })
 }
 </script>
 
-<style lang="scss" scoped>
-.help-center-page {
-  padding: 20px;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #e4edf9 100%);
-}
+<style scoped>
+.knowledge-base { max-width: 1100px; margin: 0 auto; padding: 16px 24px; }
+.search-bar { margin-bottom: 20px; }
+.search-bar :deep(.el-input-group__append) { background: #2997ff; border-color: #2997ff; color: #fff; }
 
-.page-header {
-  margin-bottom: 24px;
-  
-  .page-title {
-    margin: 0 0 8px 0;
-    font-size: 2rem;
-    color: #2c3e50;
-  }
-  
-  .page-desc {
-    margin: 0;
-    color: #7f8c8d;
-    font-size: 1rem;
-  }
-}
+.kb-body { display: flex; gap: 20px; align-items: flex-start; }
+.kb-sidebar { width: 240px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; }
+.kb-main { flex: 1; min-width: 0; }
 
-.search-card {
-  margin-bottom: 20px;
-  border-radius: 12px;
-  
-  :deep(.el-input__wrapper) {
-    padding: 12px 16px;
-  }
-}
+.card-title { font-weight: 600; font-size: 14px; }
 
-.main-content {
-  .nav-card {
-    border-radius: 12px;
-    
-    .help-menu {
-      border-right: none;
-      
-      .el-menu-item {
-        height: 50px;
-        line-height: 50px;
-        border-radius: 8px;
-        margin-bottom: 8px;
-        
-        &:hover {
-          background-color: #f5f7fa;
-        }
-        
-        &.is-active {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-        }
-      }
-    }
-  }
-  
-  .content-card {
-    border-radius: 12px;
-    margin-bottom: 20px;
-    
-    .card-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 600;
-      color: #2c3e50;
-      
-      .el-icon {
-        font-size: 1.25rem;
-      }
-    }
-    
-    .guide-content {
-      ol, ul {
-        margin: 12px 0;
-        padding-left: 24px;
-        
-        li {
-          margin-bottom: 8px;
-          line-height: 1.6;
-        }
-      }
-      
-      p {
-        line-height: 1.8;
-        color: #5a6c7d;
-      }
-    }
-    
-    .guide-image {
-      width: 100%;
-      max-width: 600px;
-      margin: 16px 0;
-      border-radius: 8px;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-    }
-    
-    .tips-section, .review-tips {
-      margin-top: 24px;
-      padding: 16px;
-      background: #f8f9fa;
-      border-radius: 8px;
-      
-      h4 {
-        margin-bottom: 12px;
-        color: #2c3e50;
-      }
-      
-      ul {
-        padding-left: 20px;
-        
-        li {
-          margin-bottom: 8px;
-          line-height: 1.6;
-        }
-      }
-    }
-    
-    .feedback-section {
-      margin-top: 24px;
-      text-align: center;
-      
-      h4 {
-        margin-bottom: 16px;
-      }
-      
-      .qr-code {
-        width: 200px;
-        height: 200px;
-        margin-top: 16px;
-      }
-    }
-  }
+.category-item {
+  display: flex; align-items: center; gap: 8px; padding: 8px 10px;
+  border-radius: 8px; cursor: pointer; transition: background 0.15s;
+  font-size: 13px;
 }
+.category-item:hover { background: #f5f5f7; }
+.category-item.active { background: #e8f0fe; color: #2997ff; font-weight: 500; }
+.cat-name { flex: 1; }
+.clear-filter { text-align: center; color: #999; font-size: 12px; cursor: pointer; margin-top: 8px; }
+
+.popular-item {
+  display: flex; align-items: center; gap: 8px; padding: 7px 0;
+  cursor: pointer; font-size: 13px; border-bottom: 1px solid #f0f0f0;
+}
+.popular-item:last-child { border-bottom: none; }
+.popular-item:hover { color: #2997ff; }
+.pop-title { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pop-views { color: #999; font-size: 12px; flex-shrink: 0; }
+
+.list-toolbar { margin-bottom: 12px; }
+.list-info { font-size: 13px; color: #999; }
+
+.article-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.article-card { cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
+.article-card:hover { transform: translateY(-2px); }
+.article-title { font-size: 15px; margin: 0 0 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.article-summary { font-size: 13px; color: #666; margin: 0 0 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.article-meta { display: flex; gap: 16px; font-size: 12px; color: #999; }
+.article-meta span { display: flex; align-items: center; gap: 4px; }
+
+.kb-pagination { display: flex; justify-content: center; margin-top: 24px; }
+
+.detail-header { margin-bottom: 12px; }
+.detail-card { padding: 24px; }
+.detail-title { font-size: 22px; margin: 0 0 12px; }
+.detail-meta { display: flex; gap: 20px; font-size: 13px; color: #999; }
+.detail-meta span { display: flex; align-items: center; gap: 4px; }
+
+/* 通用样式 */
+.markdown-body { font-size: 15px; line-height: 1.8; color: #333; }
+.markdown-body :deep(h2) { font-size: 18px; margin: 24px 0 12px; padding-bottom: 8px; border-bottom: 1px solid #eee; }
+.markdown-body :deep(h3) { font-size: 16px; margin: 20px 0 8px; }
+.markdown-body :deep(p) { margin: 0 0 12px; }
+.markdown-body :deep(ul), .markdown-body :deep(ol) { padding-left: 20px; margin: 0 0 12px; }
+.markdown-body :deep(li) { margin-bottom: 4px; }
+.markdown-body :deep(table) { width: 100%; border-collapse: collapse; margin: 12px 0; }
+.markdown-body :deep(th), .markdown-body :deep(td) { border: 1px solid #e8e8e8; padding: 8px 12px; text-align: left; font-size: 14px; }
+.markdown-body :deep(th) { background: #fafafa; font-weight: 600; }
+.markdown-body :deep(code) { background: #f5f5f5; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+.markdown-body :deep(pre) { background: #1e1e1e; color: #d4d4d4; padding: 16px; border-radius: 8px; overflow-x: auto; }
+.markdown-body :deep(pre code) { background: none; padding: 0; }
+.markdown-body :deep(blockquote) { border-left: 4px solid #2997ff; padding: 8px 16px; margin: 12px 0; background: #f0f6ff; color: #555; }
+.markdown-body :deep(a) { color: #2997ff; }
+.markdown-body :deep(hr) { border: none; border-top: 1px solid #eee; margin: 20px 0; }
 
 @media (max-width: 768px) {
-  .main-content {
-    .nav-card {
-      margin-bottom: 16px;
-    }
-  }
+  .knowledge-base { padding: 12px 16px; }
+  .kb-body { flex-direction: column; }
+  .kb-sidebar { width: 100%; flex-direction: row; gap: 12px; overflow-x: auto; }
+  .kb-sidebar > * { min-width: 200px; }
+  .article-grid { grid-template-columns: 1fr; }
 }
 </style>

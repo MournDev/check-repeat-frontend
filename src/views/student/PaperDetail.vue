@@ -5,7 +5,7 @@
             <div class="header-content">
                 <div class="back-section">
                     <el-button :icon="ArrowLeft" text @click="goBack" class="back-btn">
-                        返回论文列表
+                        {{ getBackButtonText }}
                     </el-button>
                 </div>
 
@@ -33,26 +33,6 @@
                     </div>
                 </div>
 
-                <div class="action-section">
-                    <el-button-group class="header-actions">
-                        <el-button type="primary" :icon="Edit" @click="editPaper" size="large">
-                            修改
-                        </el-button>
-                        <el-button :icon="Download" @click="downloadPaper" size="large">
-                            下载
-                        </el-button>
-                        <el-dropdown @command="handleMoreActions">
-                            <el-button :icon="More" size="large" />
-                            <template #dropdown>
-                                <el-dropdown-menu>
-                                    <el-dropdown-item :icon="Share" command="share">分享</el-dropdown-item>
-                                    <el-dropdown-item :icon="Printer" command="print">打印</el-dropdown-item>
-                                    <el-dropdown-item :icon="Delete" command="delete" divided>删除</el-dropdown-item>
-                                </el-dropdown-menu>
-                            </template>
-                        </el-dropdown>
-                    </el-button-group>
-                </div>
             </div>
         </div>
 
@@ -61,421 +41,234 @@
             <el-row :gutter="24">
                 <!-- 左侧：论文核心信息 -->
                 <el-col :xs="24" :lg="16">
-                    <!-- 论文摘要 -->
-                    <el-card class="section-card" shadow="hover">
+                    <!-- 论文信息（摘要 + 详情合并） -->
+                    <el-card class="section-card" shadow="never">
                         <template #header>
                             <div class="section-header">
-                                <el-icon>
-                                    <Document />
-                                </el-icon>
-                                <span class="section-title">论文摘要</span>
+                                <el-icon><Document /></el-icon>
+                                <span class="section-title">论文信息</span>
                             </div>
                         </template>
 
-                        <div class="abstract-content">
-                            {{ paperDetails.paperAbstract }}
+                        <div class="info-section">
+                            <div class="info-label">论文摘要</div>
+                            <div class="info-value abstract-text">{{ paperDetails.paperAbstract || '暂无摘要' }}</div>
                         </div>
 
-                        <div class="abstract-footer">
-                            <div class="word-count-info">
-                                <span class="count-label">字数统计：</span>
-                                <span class="count-value">{{ paperDetails.wordCount || 0 }}</span>
-                                <span class="count-unit">字</span>
-                                <el-progress :percentage="getWordCountPercentage(paperDetails.wordCount)"
-                                    :stroke-width="6" :show-text="false" class="count-progress" />
-                            </div>
-                        </div>
-                    </el-card>
+                        <div class="info-divider"></div>
 
-                    <!-- 论文详情 -->
-                    <el-card class="section-card" shadow="hover">
-                        <template #header>
-                            <div class="section-header">
-                                <el-icon>
-                                    <List />
-                                </el-icon>
-                                <span class="section-title">论文详情</span>
+                        <div class="info-grid">
+                            <div class="info-cell">
+                                <span class="info-label">学科领域</span>
+                                <span class="info-value">{{ findSubjectLabelByCode(paperDetails.subjectCode) }}</span>
                             </div>
-                        </template>
-
-                        <div class="details-grid">
-                            <div class="detail-item">
-                                <span class="detail-label">学科领域：</span>
-                                <span class="detail-value">
-                                    {{ findSubjectLabelByCode(paperDetails.subjectCode) }}
-                                </span>
+                            <div class="info-cell">
+                                <span class="info-label">论文类型</span>
+                                <span class="info-value">{{ getPaperTypeText(paperDetails.paperType) }}</span>
                             </div>
-                            <div class="detail-item">
-                                <span class="detail-label">论文类型：</span>
-                                <el-tag :type="getPaperTypeTag(paperDetails.paperType)" size="small">
-                                    {{ getPaperTypeText(paperDetails.paperType) }}
-                                </el-tag>
+                            <div class="info-cell">
+                                <span class="info-label">字数统计</span>
+                                <span class="info-value">{{ paperDetails.wordCount || 0 }} 字</span>
                             </div>
-                            <div class="detail-item">
-                                <span class="detail-label">文档格式：</span>
-                                <span class="detail-value">{{ paperDetails.fileFormat || '.docx' }}</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">文件大小：</span>
-                                <span class="detail-value">{{ fileInfo?.fileSizeDesc }}</span>
+                            <div class="info-cell">
+                                <span class="info-label">文件大小</span>
+                                <span class="info-value">{{ fileInfo?.fileSizeDesc || '--' }}</span>
                             </div>
                         </div>
 
-                        <div class="keywords-section">
-                            <span class="keywords-label">关键词：</span>
-                            <div class="keywords-container">
-                                <el-tag v-for="keyword in paperDetails.keywords" :key="keyword" type="info" size="small"
-                                    class="keyword-tag">
+                        <div v-if="paperDetails.keywords?.length" class="info-divider"></div>
+
+                        <div v-if="paperDetails.keywords?.length" class="info-section">
+                            <div class="info-label">关键词</div>
+                            <div class="keywords-list">
+                                <el-tag v-for="keyword in paperDetails.keywords" :key="keyword" size="small" effect="plain">
                                     {{ keyword }}
                                 </el-tag>
-                                <span v-if="!paperDetails.keywords?.length" class="no-keywords">未设置关键词</span>
                             </div>
                         </div>
                     </el-card>
 
                     <!-- 相似度检测 -->
-                    <el-card class="section-card similarity-card" shadow="hover">
+                    <el-card class="section-card" shadow="never">
                         <template #header>
                             <div class="section-header">
-                                <el-icon>
-                                    <TrendCharts />
-                                </el-icon>
+                                <el-icon><TrendCharts /></el-icon>
                                 <span class="section-title">相似度检测</span>
-                                <el-tag v-if="checkTask" :type="getCheckStatusTag(checkTask.checkStatus)" size="small">
+                                <el-tag v-if="checkTask" :type="getCheckStatusTag(checkTask.checkStatus)" size="small" class="header-tag">
                                     {{ getCheckStatusText(checkTask.checkStatus) }}
                                 </el-tag>
-                                <el-tag v-else type="info" size="small">未检测</el-tag>
+                                <el-tag v-else type="info" size="small" class="header-tag">未检测</el-tag>
                             </div>
                         </template>
 
-                        <div class="similarity-content">
-                            <div class="similarity-main">
-                                <div class="similarity-value">
-                                    <el-progress type="dashboard" :percentage="getSimilarityRate" :width="100"
-                                        :stroke-width="10" :color="getSimilarityColor(getSimilarityRate)">
-                                        <template #default="{ percentage }">
-                                            <span class="percentage-value">{{ percentage }}%</span>
-                                        </template>
-                                    </el-progress>
-                                </div>
-                                <div class="similarity-info">
-                                    <div class="similarity-status">
-                                        <el-tag :type="getSimilarityTagType(getSimilarityRate)" size="large"
-                                            effect="light">
-                                            {{ getSimilarityStatus(getSimilarityRate) }}
-                                        </el-tag>
-                                    </div>
-                                    <!-- 显示检测任务详情 -->
-                                    <div v-if="checkTask" class="similarity-details">
-                                        <div class="detail-item">
-                                            <span class="detail-label">任务编号：</span>
-                                            <span class="detail-value">{{ checkTask.taskNo || '--' }}</span>
-                                        </div>
-                                        <div class="detail-item" v-if="checkTask.startTime">
-                                            <span class="detail-label">开始时间：</span>
-                                            <span class="detail-value">{{ formatDateTime(checkTask.startTime) }}</span>
-                                        </div>
-                                        <div class="detail-item" v-if="checkTask.endTime">
-                                            <span class="detail-label">结束时间：</span>
-                                            <span class="detail-value">{{ formatDateTime(checkTask.endTime) }}</span>
-                                        </div>
-                                        <div class="detail-item" v-if="checkTask.failReason">
-                                            <span class="detail-label">失败原因：</span>
-                                            <span class="detail-value error-text">{{ checkTask.failReason }}</span>
-                                        </div>
-                                    </div>
-                                    <div class="similarity-tips">
-                                        <el-icon>
-                                            <InfoFilled />
-                                        </el-icon>
-                                        <span>{{ getSimilarityTips(getSimilarityRate) }}</span>
-                                    </div>
-                                    <div class="similarity-actions">
-                                        <el-button type="primary" :icon="Refresh" size="small"
-                                            @click="recheckSimilarity">
-                                            重新检测
-                                        </el-button>
+                        <div class="similarity-row">
+                            <div class="similarity-rate" :style="{ color: getSimilarityColor(getSimilarityRate) }">
+                                {{ getSimilarityRate }}%
+                            </div>
+                            <div class="similarity-detail">
+                                <el-tag :type="getSimilarityTagType(getSimilarityRate)" size="small" effect="light">
+                                    {{ getSimilarityStatus(getSimilarityRate) }}
+                                </el-tag>
+                                <span class="similarity-tip">{{ getSimilarityTips(getSimilarityRate) }}</span>
+                            </div>
+                            <div class="similarity-actions">
+                                <el-button type="primary" plain :icon="Refresh" size="small" @click="recheckSimilarity">重新检测</el-button>
+                                <el-button type="success" plain :icon="View" size="small" @click="viewSimilarityReport" :disabled="!checkTask">查看报告</el-button>
+                            </div>
+                        </div>
 
-                                        <el-button type="success" :icon="View" size="small"
-                                            @click="viewSimilarityReport">
-                                            查看报告
-                                        </el-button>
-                                    </div>
-
-                                    <!-- 独立出来的弹窗（放在相似度卡片外面） -->
-                                    <el-dialog v-model="similarityPreviewVisible" title="相似度报告预览" width="90%" top="5vh"
-                                        destroy-on-close @closed="closeSimilarityPreview">
-                                        <div class="preview-wrapper" v-loading="similarityPreviewLoading">
-                                            <iframe v-if="similarityPreviewUrl && !similarityPreviewError"
-                                                :src="similarityPreviewUrl" class="preview-iframe"
-                                                @load="onSimilarityIframeLoad"
-                                                @error="onSimilarityIframeError"></iframe>
-
-                                            <div v-if="similarityPreviewError" class="preview-error">
-                                                <el-empty description="报告加载失败">
-                                                    <p class="error-detail">{{ similarityErrorMessage }}</p>
-                                                    <div style="margin-top: 16px;">
-                                                        <el-button type="primary" @click="retrySimilarityPreview">
-                                                            <el-icon>
-                                                                <Refresh />
-                                                            </el-icon>
-                                                            重新加载
-                                                        </el-button>
-                                                        <el-button @click="closeSimilarityPreview">关闭</el-button>
-                                                    </div>
-                                                </el-empty>
-                                            </div>
-                                        </div>
-
-                                        <template #footer>
-                                            <div class="preview-footer">
-                                                <div class="file-info">
-                                                    <span class="file-name">相似度检测报告</span>
-                                                    <span class="file-size" v-if="currentSimilarityFileSize">
-                                                        • {{ currentSimilarityFileSize }}
-                                                    </span>
-                                                </div>
-                                                <div class="footer-actions">
-                                                    <el-button @click="downloadSimilarityReport">
-                                                        <el-icon>
-                                                            <Download />
-                                                        </el-icon>
-                                                        下载报告
-                                                    </el-button>
-                                                    <el-button @click="openReportInNewWindow">
-                                                        <el-icon>
-                                                            <FullScreen />
-                                                        </el-icon>
-                                                        新窗口
-                                                    </el-button>
-                                                    <el-button @click="closeSimilarityReport">
-                                                        关闭</el-button>
-                                                </div>
-                                            </div>
-                                        </template>
-                                    </el-dialog>
-                                </div>
+                        <!-- 检测任务详情 -->
+                        <div v-if="checkTask" class="check-task-info">
+                            <div class="task-row">
+                                <span class="task-label">任务编号</span>
+                                <span class="task-value">{{ checkTask.taskNo || '--' }}</span>
+                            </div>
+                            <div class="task-row" v-if="checkTask.startTime">
+                                <span class="task-label">开始时间</span>
+                                <span class="task-value">{{ formatDateTime(checkTask.startTime) }}</span>
+                            </div>
+                            <div class="task-row" v-if="checkTask.endTime">
+                                <span class="task-label">结束时间</span>
+                                <span class="task-value">{{ formatDateTime(checkTask.endTime) }}</span>
+                            </div>
+                            <div class="task-row" v-if="checkTask.failReason">
+                                <span class="task-label">失败原因</span>
+                                <span class="task-value error-text">{{ checkTask.failReason }}</span>
                             </div>
                         </div>
                     </el-card>
 
+                    <!-- 相似度报告预览弹窗 -->
+                    <el-dialog v-model="similarityPreviewVisible" title="相似度报告预览" width="90%" top="5vh"
+                        destroy-on-close @closed="closeSimilarityPreview">
+                        <div class="preview-wrapper" v-loading="similarityPreviewLoading">
+                            <iframe v-if="similarityPreviewUrl && !similarityPreviewError"
+                                :src="similarityPreviewUrl" class="preview-iframe"
+                                @load="onSimilarityIframeLoad"
+                                @error="onSimilarityIframeError"></iframe>
+
+                            <div v-if="similarityPreviewError" class="preview-error">
+                                <el-empty description="报告加载失败">
+                                    <p class="error-detail">{{ similarityErrorMessage }}</p>
+                                    <div style="margin-top: 16px;">
+                                        <el-button type="primary" @click="retrySimilarityPreview">
+                                            <el-icon><Refresh /></el-icon> 重新加载
+                                        </el-button>
+                                        <el-button @click="closeSimilarityPreview">关闭</el-button>
+                                    </div>
+                                </el-empty>
+                            </div>
+                        </div>
+
+                        <template #footer>
+                            <div class="preview-footer">
+                                <div class="file-info">
+                                    <span class="file-name">相似度检测报告</span>
+                                </div>
+                                <div class="footer-actions">
+                                    <el-button @click="downloadSimilarityReport">
+                                        <el-icon><Download /></el-icon> 下载报告
+                                    </el-button>
+                                    <el-button @click="openReportInNewWindow">
+                                        <el-icon><FullScreen /></el-icon> 新窗口
+                                    </el-button>
+                                    <el-button @click="closeSimilarityReport">关闭</el-button>
+                                </div>
+                            </div>
+                        </template>
+                    </el-dialog>
+
                     <!-- 审核进度 -->
-                    <el-card class="section-card" shadow="hover">
+                    <el-card class="section-card" shadow="never">
                         <template #header>
                             <div class="section-header">
-                                <el-icon>
-                                    <Timer />
-                                </el-icon>
+                                <el-icon><Timer /></el-icon>
                                 <span class="section-title">审核进度</span>
                             </div>
                         </template>
 
-                        <div class="progress-section">
-                            <el-steps :active="getActiveStep(paperDetails.paperStatus)" finish-status="success"
-                                align-center>
-                                <el-step title="提交论文" :description="formatDate(paperDetails.submitTime)" />
-                                <el-step :title="paperDetails.teacherName ? '分配导师' : '等待分配'"
-                                    :description="paperDetails.teacherName || '处理中'" />
-                                <el-step :title="getReviewStepTitle(paperDetails.paperStatus)"
-                                    :description="getReviewStepDesc(paperDetails)" />
-                                <el-step title="审核完成" description="--" />
-                            </el-steps>
-                        </div>
-                    </el-card>
-
-                    <!-- 导师反馈 -->
-                    <el-card v-if="paperDetails.feedback" class="section-card feedback-card" shadow="hover">
-                        <template #header>
-                            <div class="section-header">
-                                <div class="feedback-header-left">
-                                    <el-icon>
-                                        <ChatLineRound />
-                                    </el-icon>
-                                    <span class="section-title">导师反馈</span>
-                                </div>
-                                <div class="feedback-header-right">
-                                    <span class="advisor-name">{{ paperDetails.teacherName }}</span>
-                                    <span class="feedback-time">{{ formatDate(paperDetails.feedbackTime) }}</span>
-                                </div>
-                            </div>
-                        </template>
-
-                        <div class="feedback-content">
-                            {{ paperDetails.feedback }}
-                        </div>
-
-                        <div class="feedback-actions">
-                            <el-button :icon="ChatDotRound" @click="contactAdvisor">
-                                联系导师
-                            </el-button>
-                            <el-button :icon="Edit" @click="replyToFeedback">
-                                回复反馈
-                            </el-button>
-                        </div>
+                        <el-steps :active="getActiveStep(paperDetails.paperStatus)" finish-status="success" align-center>
+                            <el-step title="提交论文" :description="formatDate(paperDetails.submitTime)" />
+                            <el-step :title="paperDetails.teacherName ? '分配导师' : '等待分配'"
+                                :description="paperDetails.teacherName || '处理中'" />
+                            <el-step :title="getReviewStepTitle(paperDetails.paperStatus)"
+                                :description="getReviewStepDesc(paperDetails)" />
+                            <el-step title="审核完成"
+                                :description="paperDetails.paperStatus === 'completed' ? formatDate(paperDetails.reviewTime) : '--'" />
+                        </el-steps>
                     </el-card>
                 </el-col>
 
                 <!-- 右侧：相关信息 -->
                 <el-col :xs="24" :lg="8">
-                    <!-- 指导老师 -->
-                    <el-card class="sidebar-card" shadow="hover">
+                    <!-- 论文文件 -->
+                    <el-card class="section-card" shadow="never">
                         <template #header>
                             <div class="section-header">
-                                <el-icon>
-                                    <UserFilled />
-                                </el-icon>
-                                <span class="section-title">指导老师</span>
-                            </div>
-                        </template>
-
-                        <div v-if="paperDetails.teacherName" class="advisor-info">
-                            <div class="advisor-avatar-section">
-                                <el-avatar :size="60" :src="getAvatarUrl(paperDetails.advisorAvatar)" class="advisor-avatar">
-                                    {{ paperDetails.advisorName?.charAt(0) }}
-                                </el-avatar>
-                                <div class="advisor-basic">
-                                    <h4 class="advisor-name">{{ paperDetails.teacherName }}</h4>
-                                    <p class="advisor-title">{{ paperDetails.advisorTitle || '教授' }}</p>
-                                </div>
-                            </div>
-
-                            <div class="advisor-contact">
-                                <div class="contact-item">
-                                    <el-icon>
-                                        <Phone />
-                                    </el-icon>
-                                    <span>{{ advisorInfo?.phone }}</span>
-                                </div>
-                                <div class="contact-item">
-                                    <el-icon>
-                                        <Message />
-                                    </el-icon>
-                                    <span>{{ advisorInfo?.email }}</span>
-                                </div>
-                                <div class="contact-item">
-                                    <el-icon>
-                                        <OfficeBuilding />
-                                    </el-icon>
-                                    <span>{{ paperDetails.advisorOffice || '--' }}</span>
-                                </div>
-                            </div>
-
-                            <div class="advisor-actions">
-                                <el-button type="primary" :icon="ChatDotRound" @click="contactAdvisor"
-                                    class="contact-btn">
-                                    联系导师
-                                </el-button>
-                            </div>
-                        </div>
-
-                        <div v-else class="no-advisor">
-                            <el-empty description="暂未分配指导老师" :image-size="60" />
-                            <p class="no-advisor-tips">系统将在论文提交后自动分配</p>
-                        </div>
-                    </el-card>
-
-
-                    <!-- 论文附件 -->
-                    <el-card class="sidebar-card" shadow="hover">
-                        <template #header>
-                            <div class="section-header">
-                                <el-icon>
-                                    <Paperclip />
-                                </el-icon>
+                                <el-icon><Paperclip /></el-icon>
                                 <span class="section-title">论文文件</span>
-                                <el-button v-if="!fileInfo" text size="small" :icon="Plus" @click="uploadFile"
-                                    class="add-file" />
                             </div>
                         </template>
 
-                        <!-- 文件信息展示 -->
                         <div v-if="fileInfo && fileInfo.id" class="file-info-container">
-                            <!-- 文件基本信息 -->
                             <div class="file-card">
                                 <div class="file-header">
                                     <div class="file-icon-wrapper" :class="getFileIconClass(fileInfo.originalFilename)">
-                                        <el-icon :size="28">
+                                        <el-icon :size="24">
                                             <component :is="getFileIcon(fileInfo.originalFilename)" />
                                         </el-icon>
                                     </div>
                                     <div class="file-main-info">
-                                        <div class="file-name" :title="fileInfo.originalFilename">
-                                            {{ fileInfo.originalFilename }}
-                                        </div>
+                                        <div class="file-name" :title="fileInfo.originalFilename">{{ fileInfo.originalFilename }}</div>
                                         <div class="file-meta">
-                                            <span class="meta-item">
-                                                <el-icon size="12">
-                                                    <Document />
-                                                </el-icon>
-                                                {{ fileInfo.fileSizeDesc }}
-                                            </span>
-                                            <span class="meta-item" v-if="fileInfo.wordCount > 0">
-                                                <el-icon size="12">
-                                                    <EditPen />
-                                                </el-icon>
-                                                {{ fileInfo.wordCount }}字
-                                            </span>
-                                            <span class="meta-item">
-                                                <el-icon size="12">
-                                                    <Clock />
-                                                </el-icon>
-                                                {{ formatDate(fileInfo.uploadTime) }}
-                                            </span>
+                                            <span>{{ fileInfo.fileSizeDesc }}</span>
+                                            <span v-if="fileInfo.wordCount > 0">{{ fileInfo.wordCount }}字</span>
+                                            <span>{{ formatDate(fileInfo.uploadTime) }}</span>
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- 文件操作 -->
                                 <div class="file-actions">
-                                    <el-button-group>
-                                        <el-tooltip content="下载文件" placement="top">
-                                            <el-button type="primary" :icon="Download" @click="downloadFile(fileInfo)"
-                                                circle size="small" />
-                                        </el-tooltip>
-                                        <el-tooltip content="在线预览" placement="top">
-                                            <el-button :icon="View" @click="previewFile(fileInfo)" circle
-                                                size="small" />
-                                        </el-tooltip>
-                                        <el-tooltip content="替换文件" placement="top">
-                                            <el-button :icon="Refresh" @click="replaceFile(fileInfo)" circle
-                                                size="small" />
-                                        </el-tooltip>
-                                        <el-tooltip content="删除文件" placement="top">
-                                            <el-button :icon="Delete" @click="deleteFile(fileInfo)" circle size="small"
-                                                type="danger" />
-                                        </el-tooltip>
-                                    </el-button-group>
+                                    <el-button type="primary" plain :icon="Download" size="small" @click="downloadFile(fileInfo)">下载</el-button>
+                                    <el-button plain :icon="View" size="small" @click="previewFile(fileInfo)">预览</el-button>
                                 </div>
                             </div>
-
-                            <!-- 文件状态提示 -->
-                            <div class="file-status-tip" v-if="fileInfo.wordCount === 0">
-                                <el-alert title="字数统计未完成" type="info" :closable="false" show-icon
-                                    description="系统正在统计文件字数，请稍后刷新查看" size="small" />
+                            <div v-if="fileInfo.wordCount === 0" class="file-status-tip">
+                                <el-alert title="字数统计未完成" type="info" :closable="false" show-icon size="small" />
                             </div>
                         </div>
-
-                        <!-- 无文件时的显示 -->
                         <div v-else class="no-file">
-                            <div class="empty-state">
-                                <el-icon :size="48" color="#c0c4cc">
-                                    <Document />
-                                </el-icon>
-                                <p class="empty-text">暂无论文文件</p>
-                                <el-button type="primary" :icon="Upload" @click="uploadFile" size="large">
-                                    上传论文文件
-                                </el-button>
+                            <el-empty description="暂无论文文件" :image-size="48">
+                                <el-button type="primary" :icon="Upload" @click="uploadFile">上传论文文件</el-button>
+                            </el-empty>
+                        </div>
+                    </el-card>
+
+                    <!-- 导师反馈 -->
+                    <el-card class="section-card" shadow="never">
+                        <template #header>
+                            <div class="section-header">
+                                <el-icon><ChatLineRound /></el-icon>
+                                <span class="section-title">导师反馈</span>
+                                <span v-if="paperDetails.teacherName" class="header-tag advisor-name">{{ paperDetails.teacherName }}</span>
                             </div>
+                        </template>
+
+                        <div v-if="paperDetails.feedback" class="feedback-text">{{ paperDetails.feedback }}</div>
+                        <div v-else class="no-feedback">
+                            <el-empty description="导师暂未给出反馈" :image-size="48" />
+                        </div>
+
+                        <div class="feedback-actions">
+                            <el-button :icon="ChatDotRound" size="small" @click="contactAdvisor">联系导师</el-button>
+                            <el-button :icon="ChatDotRound" size="small" @click="replyToFeedback">回复反馈</el-button>
                         </div>
                     </el-card>
 
                     <!-- 审核历史 -->
-                    <el-card v-if="paperDetails.reviewHistory?.length" class="sidebar-card" shadow="hover">
+                    <el-card v-if="paperDetails.reviewHistory?.length" class="section-card" shadow="never">
                         <template #header>
                             <div class="section-header">
-                                <el-icon>
-                                    <History />
-                                </el-icon>
+                                <el-icon><Timer /></el-icon>
                                 <span class="section-title">审核历史</span>
                             </div>
                         </template>
@@ -484,19 +277,17 @@
                             <div v-for="review in paperDetails.reviewHistory" :key="review.id" class="review-item">
                                 <div class="review-header">
                                     <div class="reviewer-info">
-                                        <el-avatar :size="24" :src="getAvatarUrl(review.reviewerAvatar)" class="reviewer-avatar">
+                                        <el-avatar :size="20" :src="getAvatarUrl(review.reviewerAvatar)">
                                             {{ review.reviewerName?.charAt(0) }}
                                         </el-avatar>
                                         <span class="reviewer-name">{{ review.reviewerName }}</span>
-                                        <el-tag size="mini" :type="getReviewTypeTag(review.type)">
+                                        <el-tag size="small" :type="getReviewTypeTag(review.type)">
                                             {{ getReviewTypeText(review.type) }}
                                         </el-tag>
                                     </div>
-                                    <div class="review-time">{{ formatDate(review.reviewTime) }}</div>
+                                    <span class="review-time">{{ formatDate(review.reviewTime) }}</span>
                                 </div>
-                                <div class="review-content">
-                                    {{ review.comments }}
-                                </div>
+                                <div class="review-content">{{ review.comments }}</div>
                             </div>
                         </div>
                     </el-card>
@@ -555,24 +346,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, defineProps } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { ElMessage, ElMessageBox, ElLoading } from 'element-plus'
-import { getPaperDetails, deleteFile as deleteFileAPI, deletePaper as deletePaperAPI, createCheckTask, getCheckTaskDetail } from "@/api/student.js"
+import { getPaperDetails, deleteFile as deleteFileAPI, createCheckTask, getCheckTaskDetail } from "@/api/student.js"
 import { getAvatarUrl } from '@/utils/avatar'
+import { getSimilarityColor, getSimilarityTagType as baseGetSimilarityTagType } from '@/utils/reviewStatus.js'
 
 // 图标引入
 import {
-    ArrowLeft, Edit, Download, Share, Printer, Delete, More,
-    Calendar, Document, List, TrendCharts, InfoFilled, Timer,
-    ChatLineRound, ChatDotRound, UserFilled, Phone, Message,
-    OfficeBuilding, Paperclip, Plus, View, Refresh,
+    ArrowLeft, Download, Document, TrendCharts, Timer,
+    ChatLineRound, ChatDotRound, Paperclip, Upload, View, Refresh,
     DocumentChecked, DocumentAdd, Picture, VideoPlay, EditPen, FullScreen
 } from '@element-plus/icons-vue'
-import { getAdvisorInfo, getFileInfo } from "@/api/student.js"
+import { getFileInfo } from "@/api/student.js"
 import { getSubjectFieldTree } from '@/api/user.js'
-import { tr } from 'element-plus/es/locales.mjs'
 const props = defineProps({
   paperId: {
     type: [String, Number],
@@ -586,12 +375,10 @@ const userStore = useUserStore()
 
 // 响应式数据
 const paperDetails = ref({})
-const advisorInfo = ref(null)
 const fileInfo = ref(null)
 const loading = ref(false)
 // 优先使用 props 传递的 ID，其次使用路由参数
 const paperId = computed(() => props.paperId || route.query.id)
-console.log('论文ID:', paperId.value)
 const subjectTree = ref([]); // 学科领域树形结构
 const checkTask = ref(null)  // 存储检测任务信息
 const checkTaskLoading = ref(false)
@@ -601,14 +388,14 @@ const previewVisible = ref(false)
 const previewUrl = ref('')
 const previewLoading = ref(false)
 const previewError = ref(false)
-const previewMode = ref('')
 const errorMessage = ref('')
 // 相似度报告预览相关数据
 const similarityPreviewVisible = ref(false)
 const similarityPreviewUrl = ref('')
-const reportLoading = ref(false)
-const reportError = ref(false)
-const reportErrorMessage = ref('')
+const similarityPreviewLoading = ref(false)
+const similarityPreviewError = ref(false)
+const similarityErrorMessage = ref('')
+const currentSimilarityFileSize = ref('')
 
 // 当前文件信息
 const currentFileId = ref('')
@@ -621,20 +408,6 @@ const previewTitle = computed(() => {
     return currentFileName.value ? `预览 - ${currentFileName.value}` : '文件预览'
 })
 
-const hasReport = computed(() => {
-    return checkTask.value?.checkStatus === 'completed' &&
-        checkTask.value?.reportId
-})
-
-// 是否可以查看报告
-const canViewReport = computed(() => {
-    return hasReport.value
-})
-
-// 是否可以下载报告
-const canDownloadReport = computed(() => {
-    return hasReport.value
-})
 // 相似度报告当前相似度
 // 后端 checkRate 可能是小数(0.23)或整数(23)，统一转为整数百分比
 const getSimilarityRate = computed(() => {
@@ -662,17 +435,16 @@ const previewFile = async (file) => {
     currentFileType.value = getFileExtension(file.originalFilename)
 
     // 2. 构建后端智能预览接口路径（和Controller完全匹配，无额外前缀）
-    const previewApiUrl = `/check/api/file/smartPreview?fileId=${file.id}`
+    const previewApiUrl = `/check/api/v1/file/smartPreview?fileId=${file.id}`
 
     // 3. 显示预览弹框，开始加载
     previewVisible.value = true
     previewLoading.value = true
     previewError.value = false
     previewUrl.value = ''
-    previewMode.value = ''
 
     try {
-        const previewApiUrl = `/check/api/file/smartPreview?fileId=${file.id}`
+        const previewApiUrl = `/check/api/v1/file/smartPreview?fileId=${file.id}`
         previewUrl.value = previewApiUrl
     } catch (error) {
         handlePreviewError(error)
@@ -682,7 +454,6 @@ const previewFile = async (file) => {
 // iframe加载完成
 const onIframeLoad = () => {
     previewLoading.value = false
-    console.log('预览加载完成')
 }
 
 // iframe加载错误
@@ -715,7 +486,7 @@ const retryPreview = () => {
         previewLoading.value = true
         previewError.value = false
         // 直接调用 /smartPreview
-        const previewApiUrl = `/check/api/file/smartPreview?fileId=${currentFileId.value}`
+        const previewApiUrl = `/check/api/v1/file/smartPreview?fileId=${currentFileId.value}`
         previewUrl.value = previewApiUrl // 重新赋值触发iframe刷新
     }
 }
@@ -723,7 +494,7 @@ const retryPreview = () => {
 // 新窗口打开
 const openInNewWindow = () => {
     if (currentFileId.value) {
-        const previewApiUrl = `/check/api/file/smartPreview?fileId=${currentFileId.value}`
+        const previewApiUrl = `/check/api/v1/file/smartPreview?fileId=${currentFileId.value}`
         window.open(previewApiUrl, '_blank', 'width=1200,height=800');
         closePreview()
     }
@@ -731,7 +502,11 @@ const openInNewWindow = () => {
 
 // 下载代替预览
 const downloadInstead = () => {
-    downloadCurrentFile()
+    if (currentFileId.value) {
+        const encodedFileName = encodeURIComponent(currentFileName.value || 'document')
+        const downloadUrl = `/check/api/v1/file/download/${currentFileId.value}/${encodedFileName}`
+        window.open(downloadUrl, '_blank')
+    }
     closePreview()
 }
 
@@ -747,8 +522,7 @@ const downloadFile = async (file) => {
     try {
         // 根据后端代码构建下载URL
         const encodedFileName = encodeURIComponent(file.originalFilename || 'document');
-        const downloadUrl = `/check/api/file/download/${file.id}/${encodedFileName}`;
-        console.log('下载URL:', downloadUrl);
+        const downloadUrl = `/check/api/v1/file/download/${file.id}/${encodedFileName}`;
         window.open(downloadUrl, '_blank');
         ElMessage.success('开始下载文件');
     } catch (error) {
@@ -759,107 +533,17 @@ const downloadFile = async (file) => {
 
 // 处理预览错误
 const handlePreviewError = (error) => {
-    console.error('预览失败:', error);
     previewLoading.value = false;
     previewError.value = true;
     errorMessage.value = error.message || '文件预览失败，请尝试下载文件查看';
 }
 
-const openSimilarityReport = async () => {
-    const paper = paperDetails.value
-    const checkTask = paper?.checkTask
-    if (!checkTask) {
-        ElMessage.warning('暂无检测记录')
-        return
-    }
-    if (checkTask.checkStatus !== 'completed') {
-        if (checkTask.checkStatus === 'checking') {
-            ElMessage.warning('检测正在进行中，请稍后再查看报告')
-        } else if (checkTask.checkStatus === 'failure') {
-            ElMessage.error(`检测失败`)
-        } else {
-            ElMessage.warning('请先完成相似度检测')
-        }
-        return
-    }
-    //2. 检查报告ID
-    // if (!checkTask.value.reportSummary.reportId) {
-    //     ElMessage.warning('报告生成中，请稍后重试')
-    //     return
-    // }
-    if (!checkTask.reportSummary?.reportId) {
-        ElMessage.warning('报告生成中，请稍后重试')
-        return
-    }
-    // 3.显示弹窗
-    similarityPreviewVisible.value = true
-    reportLoading.value = true
-    reportError.value = false
-    reportErrorMessage.value = ''
-
-    try {
-        const currentPaperId = paperId.value
-        console.log('开始获取报告预览，论文ID:', currentPaperId)
-        // 调用API获取预览URL
-        const response = await getSimilarityReportPreview(currentPaperId)
-
-        if (response.code === 200 && response.data) {
-            similarityPreviewUrl.value = response.data
-            ElMessage.success('报告加载成功')
-        } else {
-            throw new Error(response.message || '获取报告失败')
-        }
-    } catch (error) {
-        console.error('打开相似度报告失败:', error)
-        reportError.value = true
-        reportErrorMessage.value = error.message || '报告加载失败，请稍后重试'
-        ElMessage.error('加载报告失败')
-    } finally {
-        reportLoading.value = false
-    }
-}
-
-// 获取相似度报告预览URL的API
-const getSimilarityReportPreview = async (paperIdParam) => {
-    try {
-        console.log('获取报告预览，paperId:', paperIdParam);
-
-        // 这个接口返回的是PDF文件，不是JSON
-        const url = `/check/api/file/smartPreviewReport?paperId=${paperIdParam}`;
-
-        // 直接返回URL，让iframe加载
-        return {
-            code: 200,
-            data: url, // 直接返回URL
-            message: 'success'
-        };
-
-    } catch (error) {
-        console.error('API请求失败:', error);
-        throw error;
-    }
-};
-
-// iframe加载完成
-const onReportIframeLoad = () => {
-    reportLoading.value = false
-    reportError.value = false
-    console.log('报告iframe加载完成')
-}
-
-// iframe加载错误
-const onReportIframeError = () => {
-    reportLoading.value = false
-    reportError.value = true
-    reportErrorMessage.value = '报告预览加载失败，可能是文件格式不支持或服务异常'
-}
-
 // 重试预览
 const retryReportPreview = () => {
-    if (paperDetails.value?.checkTask?.reportId) {
-        reportLoading.value = true
-        reportError.value = false
-        openSimilarityReport() // 重新调用打开方法
+    if (checkTask.value?.reportSummary?.reportId) {
+        similarityPreviewLoading.value = true
+        similarityPreviewError.value = false
+        viewSimilarityReport()
     }
 }
 
@@ -867,9 +551,6 @@ const retryReportPreview = () => {
 const downloadSimilarityReport = async () => {
     let loadingInstance = null
     try {
-        console.log('=== 下载报告开始 ===')
-        console.log('当前检测任务:', checkTask.value)
-
         // 1. 检查检测任务
         if (!checkTask.value) {
             ElMessage.warning('暂无检测记录，请先进行相似度检测')
@@ -883,19 +564,15 @@ const downloadSimilarityReport = async () => {
         }
 
         // 3. 检查报告ID
-        const reportId = checkTask.value.reportSummary.reportId
+        const reportId = checkTask.value.reportSummary?.reportId
         if (!reportId) {
             ElMessage.warning('报告ID不存在，无法下载')
             return
         }
 
-        console.log('使用reportId下载:', reportId)
-
         // 4. 构建下载URL（根据后端接口）
         // 使用reportId
-        const downloadUrl = `/check/api/file/downloadReport/${reportId}`
-
-        console.log('下载URL:', downloadUrl)
+        const downloadUrl = `/check/api/v1/file/downloadReport/${reportId}`
 
         // 5. 显示加载提示
         loadingInstance = ElLoading.service({
@@ -909,12 +586,9 @@ const downloadSimilarityReport = async () => {
             const response = await fetch(downloadUrl, {
                 method: 'GET',
                 headers: {
-                    'Accept': 'application/pdf',
-                    // 'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+                    'Accept': 'application/pdf'
                 }
             })
-
-            console.log('下载响应状态:', response.status)
 
             if (!response.ok) {
                 throw new Error(`下载失败: HTTP ${response.status}`)
@@ -943,7 +617,6 @@ const downloadSimilarityReport = async () => {
 
         } catch (fetchError) {
             loadingInstance.close()
-            console.error('Fetch下载失败:', fetchError)
 
             // 降级方案：直接打开
             window.open(downloadUrl, '_blank')
@@ -951,7 +624,6 @@ const downloadSimilarityReport = async () => {
         }
 
     } catch (error) {
-        console.error('下载报告失败:', error)
         ElMessage.error(`下载失败: ${error.message}`)
     }finally {
         // 关闭加载提示
@@ -974,9 +646,9 @@ const openReportInNewWindow = () => {
 const closeSimilarityReport = () => {
     similarityPreviewVisible.value = false
     similarityPreviewUrl.value = ''
-    reportLoading.value = false
-    reportError.value = false
-    reportErrorMessage.value = ''
+    similarityPreviewLoading.value = false
+    similarityPreviewError.value = false
+    similarityErrorMessage.value = ''
 }
 
 const deleteFile = async (file) => {
@@ -987,43 +659,155 @@ const deleteFile = async (file) => {
             await loadPaperDetails()
         }
     } catch (error) {
-        console.log('删除文件失败:', error)
         ElMessage.error('网络错误，请检查连接后重试')
     }
 }
 
-const loadAdvisorData = async () => {
-    loading.value = true
+const replaceFile = async (file) => {
     try {
-        const [advisorRes] = await Promise.all([
-            getAdvisorInfo()
-        ])
-        if (advisorRes.code === 200) {
-            advisorInfo.value = advisorRes.data
-            // 如果没有导师信息，显示默认状态
-            if (!advisorInfo.value) {
-                advisorInfo.value = {
-                    name: '暂未分配',
-                    title: '待分配',
-                    researchField: '待分配导师后显示',
-                    phone: '',
-                    email: '',
-                    office: '待分配',
-                    avatar: '',
-                    expertise: []
+        // 创建一个文件选择器
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.doc,.docx,.pdf,.txt';
+        input.style.display = 'none';
+        document.body.appendChild(input);
+        
+        // 触发文件选择
+        input.click();
+        
+        // 监听文件选择事件
+        input.onchange = async (e) => {
+            const selectedFile = e.target.files[0];
+            if (selectedFile) {
+                // 创建FormData对象
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+                formData.append('userId', localStorage.getItem('userId') || 1);
+                
+                // 显示加载提示
+                const loading = ElLoading.service({
+                    lock: true,
+                    text: '正在上传文件...',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+                
+                try {
+                    // 调用上传接口
+                    const uploadRes = await uploadFileAPI(formData);
+                    if (uploadRes.code === 200) {
+                        // 上传成功后，调用替换文件接口
+                        const replaceRes = await updatePaperFile(paperId.value, uploadRes.data.fileId, uploadRes.data.md5);
+                        if (replaceRes.code === 200) {
+                            ElMessage.success('文件替换成功');
+                            // 重新加载论文详情
+                            await loadPaperDetails();
+                        } else {
+                            ElMessage.error(replaceRes.message || '文件替换失败');
+                        }
+                    } else {
+                        ElMessage.error(uploadRes.message || '文件上传失败');
+                    }
+                } catch (error) {
+            ElMessage.error('网络错误，请检查连接后重试');
+        } finally {
+                    // 关闭加载提示
+                    loading.close();
+                    // 移除临时创建的input元素
+                    document.body.removeChild(input);
                 }
             }
-        } else {
-            ElMessage.error(advisorRes.message || '获取导师信息失败')
-        }
+        };
     } catch (error) {
-        console.error('加载导师信息数据失败:', error)
-        ElMessage.error('网络错误，请检查连接后重试')
-    }
-    finally {
-        loading.value = false
+        console.error('文件替换失败:', error);
+        ElMessage.error('网络错误，请检查连接后重试');
     }
 }
+
+// 上传文件操作（打开文件选择器）
+const uploadFile = () => {
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.accept = '.doc,.docx,.pdf,.txt'
+    input.style.display = 'none'
+    document.body.appendChild(input)
+    input.click()
+
+    input.onchange = async (e) => {
+        const selectedFile = e.target.files[0]
+        if (!selectedFile) {
+            document.body.removeChild(input)
+            return
+        }
+
+        const loading = ElLoading.service({
+            lock: true,
+            text: '正在上传文件...',
+            background: 'rgba(0, 0, 0, 0.7)'
+        })
+
+        try {
+            const formData = new FormData()
+            formData.append('file', selectedFile)
+            formData.append('userId', localStorage.getItem('userId') || '1')
+
+            const uploadRes = await uploadFileAPI(formData)
+            if (uploadRes.code === 200) {
+                const replaceRes = await updatePaperFile(paperId.value, uploadRes.data.fileId, uploadRes.data.md5)
+                if (replaceRes.code === 200) {
+                    ElMessage.success('文件上传成功')
+                    await loadPaperDetails()
+                } else {
+                    ElMessage.error(replaceRes.message || '关联文件失败')
+                }
+            } else {
+                ElMessage.error(uploadRes.message || '文件上传失败')
+            }
+        } catch (error) {
+            ElMessage.error('网络错误，请检查连接后重试')
+        } finally {
+            loading.close()
+            document.body.removeChild(input)
+        }
+    }
+}
+
+// 上传文件的API调用
+const uploadFileAPI = async (formData) => {
+    const token = userStore.token || ''
+    const response = await fetch('/check/api/v1/file/upload', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        },
+        body: formData
+    })
+    return await response.json()
+}
+
+// 更新论文文件的API调用
+const updatePaperFile = async (paperId, fileId, fileMd5) => {
+    const token = userStore.token || ''
+    const response = await fetch(`/check/api/v1/papers/${paperId}/update`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            subjectCode: paperDetails.value.subjectCode || '',
+            paperTitle: paperDetails.value.paperTitle || '',
+            collegeId: paperDetails.value.collegeId || 1,
+            majorId: paperDetails.value.majorId || 1,
+            paperType: paperDetails.value.paperType || 'graduation',
+            paperAbstract: paperDetails.value.paperAbstract || '',
+            fileId: fileId,
+            fileMd5: fileMd5
+        })
+    })
+    return await response.json()
+}
+
+
 const loadPaperDetails = async () => {
     loading.value = true
     try {
@@ -1039,41 +823,7 @@ const loadPaperDetails = async () => {
             ElMessage.error(res.message || '获取论文详情失败')
         }
     } catch (error) {
-        console.error('加载论文详情失败:', error)
         ElMessage.error('网络错误，请检查连接后重试')
-        // 使用模拟数据作为fallback
-        paperDetails.value = {
-            id: paperId.value,
-            subjectCode: '',
-            paperTitle: '',
-            paperStatus: '',
-            allocationStatus: '',
-            submitTime: '',
-            subject: '计算机科学',
-            paperType: '',
-            keywords: ['深度学习', '图像识别', '卷积神经网络'],
-            wordCount: '',
-            similarityRate: '',
-            paperAbstract: '',
-            teacherName: '',
-            advisorTitle: '计算机科学教授',
-            advisorEmail: 'zhang@university.edu',
-            advisorOffice: '信息楼 301室',
-            feedback: '论文结构合理，实验设计完整，但文献综述部分需要补充最新的研究成果。建议在第三章增加对比实验，进一步验证模型性能。',
-            feedbackTime: '2024-01-18T14:20:00',
-            fileFormat: '.docx',
-            fileSizeDesc: '',
-            reviewHistory: [
-                {
-                    id: 1,
-                    reviewerName: '张教授',
-                    reviewerAvatar: '',
-                    type: 'advisor',
-                    reviewTime: '2024-01-18T14:20:00',
-                    comments: '论文初审通过，部分内容需要修改'
-                }
-            ]
-        }
     } finally {
         loading.value = false
     }
@@ -1083,17 +833,13 @@ const loadCheckTask = async () => {
     checkTaskLoading.value = true
     try {
         const res = await getCheckTaskDetail(paperId.value)
-        console.log('检测任务响应:', res)
 
         if (res.code === 200 && res.data) {
             checkTask.value = res.data
-            console.log('检测任务加载成功:', checkTask.value)
         } else {
-            console.warn('未找到检测任务:', res.message)
             checkTask.value = null
         }
     } catch (error) {
-        console.error('加载检测任务失败:', error)
         checkTask.value = null
     } finally {
         checkTaskLoading.value = false
@@ -1105,64 +851,37 @@ const loadFileInfo = async (fileId) => {
         const fileRes = await getFileInfo(fileId)
         if (fileRes.code === 200 && fileRes.data) {
             fileInfo.value = fileRes.data
-            console.log('文件信息加载成功:', fileInfo.value)
         } else {
-            console.warn('获取文件信息失败:', fileRes.message)
             fileInfo.value = null
         }
     } catch (error) {
-        console.error('加载文件信息失败:', error)
         fileInfo.value = null
     }
 }
 
 const goBack = () => {
-    router.push('/student/my-papers')
-}
-
-const editPaper = () => {
-    if (paperDetails.value.status === 'rejected' || paperDetails.value.status === 'pending') {
-        router.push(`/student/paper-edit/${paperId.value}`)
+    if (userStore.isStudent) {
+        router.replace('/student/my-papers')
+    } else if (userStore.isTeacher) {
+        router.push('/teacher/paper-review/audit-records')
+    } else if (userStore.isAdmin) {
+        router.replace('/admin/paper-assignment')
     } else {
-        ElMessage.warning('当前状态下不可修改论文')
+        router.replace('/')
     }
 }
 
-const downloadPaper = () => {
-    ElMessage.info('开始下载论文文档...')
-}
-
-const handleMoreActions = (command) => {
-    switch (command) {
-        case 'share':
-            ElMessage.info('生成分享链接')
-            break
-        case 'print':
-            window.print()
-            break
-        case 'delete':
-            deletePaper()
-            break
+const getBackButtonText = computed(() => {
+    if (userStore.isStudent) {
+        return '返回我的论文'
+    } else if (userStore.isTeacher) {
+        return '返回审核记录'
+    } else if (userStore.isAdmin) {
+        return '返回论文分配'
+    } else {
+        return '返回首页'
     }
-}
-
-const deletePaper = async () => {
-    ElMessageBox.confirm('确定要删除这篇论文吗？删除后不可恢复！', '删除确认', {
-        confirmButtonText: '确定删除',
-        cancelButtonText: '取消',
-        type: 'warning'
-    }).then(async () => {
-        const deleteRes = await deletePaperAPI(paperId.value)
-        if (deleteRes.code === 200) {
-            ElMessage.success('论文删除成功')
-            goBack()
-        } else {
-            ElMessage.error(deleteRes.message || '删除论文失败')
-        }
-    }).catch(() => {
-        ElMessage.info('已取消删除')
-    })
-}
+})
 
 const recheckSimilarity = async () => {
     const currentPaperId = paperId.value
@@ -1199,68 +918,94 @@ const recheckSimilarity = async () => {
 
     } catch (error) {
         // 用户取消
-        console.log('用户取消重新检测')
     }
 }
 
 const viewSimilarityReport = async () => {
     const idToUse = paperId.value
-    console.log('=== 查看相似度报告开始 ===', checkTask.value)
-    if (!checkTask.value) {
-        ElMessage.warning('暂无检测记录，请先进行相似度检测')
+    
+    // 检查paperId是否存在
+    if (!idToUse) {
+        ElMessage.error('论文ID不存在，无法查看报告')
         return
     }
-    if (checkTask.value.checkStatus !== 'completed') {
+    
+    if (!checkTask.value) {
+        // 检查paperDetails中是否有相似度数据
+        if (paperDetails.value.similarityRate || paperDetails.value.similarity) {
+            similarityPreviewVisible.value = true
+            similarityPreviewLoading.value = true
+            similarityPreviewError.value = false
+            similarityErrorMessage.value = ''
+            try {
+                similarityPreviewUrl.value = `/check/api/v1/file/smartPreviewReport?paperId=${idToUse}`
+            } catch (error) {
+                console.error('打开相似度报告失败:', error)
+                similarityPreviewError.value = true
+                similarityErrorMessage.value = error.message || '报告加载失败，请稍后重试'
+                ElMessage.error('加载报告失败: ' + error.message)
+            } finally {
+                similarityPreviewLoading.value = false
+            }
+        } else {
+            ElMessage.warning('暂无检测记录，请先进行相似度检测')
+            return
+        }
+    } else if (checkTask.value.checkStatus.toLowerCase() !== 'completed') {
         const statusMap = {
             'checking': '检测正在进行中，请稍后再查看报告',
             'failure': '检测失败，无法查看报告',
             'pending': '检测排队中'
         }
-        ElMessage.warning(statusMap[checkTask.value.checkStatus] || '检测未完成')
+        ElMessage.warning(statusMap[checkTask.value.checkStatus.toLowerCase()] || '检测未完成')
         return
-    }
-    if (!checkTask.value.reportSummary.reportId) {
+    } else if (!checkTask.value.reportSummary?.reportId) {
         ElMessage.warning('报告生成中，请稍后重试')
         return
+    } else {
+        similarityPreviewVisible.value = true
+        similarityPreviewLoading.value = true
+        similarityPreviewError.value = false
+        similarityErrorMessage.value = ''
+        try {
+            similarityPreviewUrl.value = `/check/api/v1/file/smartPreviewReport?paperId=${idToUse}`
+        } catch (error) {
+            console.error('打开相似度报告失败:', error)
+            similarityPreviewError.value = true
+            similarityErrorMessage.value = error.message || '报告加载失败，请稍后重试'
+            ElMessage.error('加载报告失败: ' + error.message)
+        } finally {
+            similarityPreviewLoading.value = false
+        }
     }
-    similarityPreviewVisible.value = true
-    reportLoading.value = true
-    reportError.value = false
-    reportErrorMessage.value = ''
-    try {
-        console.log('开始获取报告预览，reportId:', checkTask.value.reportSummary.reportId)
-        // 调用API获取预览URL
-        similarityPreviewUrl.value = `/check/api/file/smartPreviewReport?paperId=${idToUse}`;
-        ElMessage.success('报告加载成功');
-    } catch (error) {
-    console.error('打开相似度报告失败:', error)
-    reportError.value = true
-    reportErrorMessage.value = error.message || '报告加载失败，请稍后重试'
-    ElMessage.error('加载报告失败: ' + error.message)
-} finally {
-    reportLoading.value = false
-}
 };
 const onSimilarityIframeLoad = () => {
-    reportLoading.value = false
+    similarityPreviewLoading.value = false
 }
 const onSimilarityIframeError = () => {
-    reportLoading.value = false
-    reportError.value = true
-    reportErrorMessage.value = '报告加载失败，可能文件不存在或格式错误'
+    similarityPreviewLoading.value = false
+    similarityPreviewError.value = true
+    similarityErrorMessage.value = '报告加载失败，可能文件不存在或格式错误'
 }
+const retrySimilarityPreview = () => {
+    similarityPreviewLoading.value = true
+    similarityPreviewError.value = false
+    similarityErrorMessage.value = ''
+    viewSimilarityReport()
+}
+
 const closeSimilarityPreview = () => {
     similarityPreviewVisible.value = false
     similarityPreviewUrl.value = ''
-    reportLoading.value = false
-    reportError.value = false
-    reportErrorMessage.value = ''
+    similarityPreviewLoading.value = false
+    similarityPreviewError.value = false
+    similarityErrorMessage.value = ''
 }
 
 const contactAdvisor = () => {
     if (paperDetails.value && paperDetails.value.teacherName) {
-        const phone = advisorInfo.value.phone
-        const email = advisorInfo.value.email
+        const phone = paperDetails.value.teacherPhone || '未提供'
+        const email = paperDetails.value.teacherEmail || '未提供'
 
         ElMessageBox.alert(
             `联系 ${paperDetails.value.teacherName} 老师\n\n电话：${phone}\n邮箱：${email}`,
@@ -1282,12 +1027,15 @@ const replyToFeedback = async () => {
         });
         
         if (value) {
-            // TODO: 调用回复接口
-            // await replyFeedbackApi(paperDetails.value.id, value)
-            
-            ElMessage.success('回复已发送给导师');
-            // 刷新数据
-            loadPaperDetails();
+            // 引导用户到导师互动页面发送消息
+            const confirmed = await ElMessageBox.confirm(
+              '回复导师反馈请前往"导师互动"页面发送消息，是否立即跳转？',
+              '提示',
+              { confirmButtonText: '立即前往', cancelButtonText: '稍后', type: 'info' }
+            ).catch(() => false)
+            if (confirmed) {
+              router.push('/student/advisor-interaction')
+            }
         }
     } catch (error) {
         if (error !== 'cancel') {
@@ -1359,27 +1107,29 @@ const getPaperTypeTag = (type) => {
 }
 
 const getWordCountPercentage = (wordCount) => {
-    const target = 8000
     if (!wordCount) return 0
+    const type = paperDetails.value?.paperType
+    const targetMap = {
+        'graduation': 10000,
+        'course': 3000,
+        'other': 5000
+    }
+    const target = targetMap[type] || 8000
     return Math.min(Math.round((wordCount / target) * 100), 100)
-}
-
-const getSimilarityColor = (similarity) => {
-    if (!similarity) return '#909399'
-    if (similarity === 0) return '#909399'
-    if (similarity < 15) return '#52c41a'
-    if (similarity < 30) return '#faad14'
-    return '#ff4d4f'
 }
 
 const getSimilarityTagType = (similarity) => {
     if (!similarity) return 'info'
-    if (similarity < 15) return 'success'
-    if (similarity < 30) return 'warning'
-    return 'danger'
+    return baseGetSimilarityTagType(similarity)
 }
 
 const getSimilarityStatus = (similarity) => {
+    // 如果检测任务状态为已完成，即使相似度为0，也应该显示相应状态
+    if (checkTask.value?.checkStatus === 'completed') {
+        if (similarity < 15) return '通过'
+        if (similarity < 30) return '警告'
+        return '过高'
+    }
     if (!similarity) return '未检测'
     if (similarity < 15) return '通过'
     if (similarity < 30) return '警告'
@@ -1387,6 +1137,12 @@ const getSimilarityStatus = (similarity) => {
 }
 
 const getSimilarityTips = (similarity) => {
+    // 如果检测任务状态为已完成，即使相似度为0，也应该显示相应提示
+    if (checkTask.value?.checkStatus === 'completed') {
+        if (similarity < 15) return '相似度符合要求'
+        if (similarity < 30) return '相似度较高，建议修改'
+        return '相似度过高，需要大幅修改'
+    }
     if (!similarity) return '请进行相似度检测'
     if (similarity < 15) return '相似度符合要求'
     if (similarity < 30) return '相似度较高，建议修改'
@@ -1432,6 +1188,9 @@ const getReviewStepDesc = (paper) => {
         if (paper.allocationStatus === 'confirmed') {
             return `${paper.teacherName} 老师正在审核`
         }
+        if (paper.allocationStatus === 'pending_reassign') {
+            return `${paper.teacherName} 拒绝接收，正在重新分配`
+        }
         if (paper.allocationStatus === 'rejected') {
             return `${paper.teacherName} 拒绝接收，等待重新分配`
         }
@@ -1457,6 +1216,9 @@ const getReviewStepDesc = (paper) => {
 
 const getReviewTypeTag = (type) => {
     const tagMap = {
+        'completed': 'success',
+        'approved': 'success',
+        'rejected': 'danger',
         'advisor': 'primary',
         'committee': 'success'
     }
@@ -1465,6 +1227,9 @@ const getReviewTypeTag = (type) => {
 
 const getReviewTypeText = (type) => {
     const textMap = {
+        'completed': '审核通过',
+        'approved': '审核通过',
+        'rejected': '审核不通过',
         'advisor': '导师',
         'committee': '委员会'
     }
@@ -1572,857 +1337,294 @@ const getCheckStatusIcon = (status) => {
 
 onMounted(() => {
     loadPaperDetails(),
-        loadAdvisorData(),
         subjectField()
 });
 </script>
 
 <style lang="scss" scoped>
-.similarity-card {
-    margin-bottom: 16px;
-
-    .section-header {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-
-        .similarity-rate-tag {
-            margin-left: auto;
-        }
-    }
-
-    .similarity-content {
-        .similarity-main {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-            margin-bottom: 16px;
-
-            @media (max-width: 768px) {
-                flex-direction: column;
-                gap: 16px;
-            }
-
-            .similarity-value {
-                flex-shrink: 0;
-
-                .percentage-value {
-                    display: block;
-                    font-size: 1.25rem;
-                    font-weight: 700;
-                    text-align: center;
-                    margin-top: 8px;
-                }
-            }
-
-            .similarity-info {
-                flex: 1;
-
-                .similarity-status {
-                    margin-bottom: 12px;
-                }
-
-                .similarity-details {
-                    .detail-item {
-                        display: flex;
-                        align-items: center;
-                        margin-bottom: 6px;
-                        font-size: 14px;
-
-                        .detail-label {
-                            color: #7f8c8d;
-                            min-width: 80px;
-                        }
-
-                        .detail-value {
-                            color: #2c3e50;
-                        }
-                    }
-                }
-            }
-        }
-
-        .similarity-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 16px;
-
-            .el-button {
-                flex: 1;
-            }
-        }
-    }
-}
-
-// 相似度报告弹窗样式
-.similarity-report-dialog {
-    :deep(.el-dialog) {
-        border-radius: 12px;
-        overflow: hidden;
-        max-width: 1200px;
-    }
-
-    :deep(.el-dialog__header) {
-        padding: 16px 20px;
-        border-bottom: 1px solid #e4e7ed;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        margin-right: 0;
-
-        .el-dialog__title {
-            color: white;
-            font-weight: 600;
-        }
-
-        .el-dialog__headerbtn {
-            top: 16px;
-
-            .el-dialog__close {
-                color: white;
-
-                &:hover {
-                    color: rgba(255, 255, 255, 0.8);
-                }
-            }
-        }
-    }
-
-    :deep(.el-dialog__body) {
-        padding: 0;
-    }
-
-    :deep(.el-dialog__footer) {
-        padding: 12px 20px;
-        border-top: 1px solid #e4e7ed;
-        background: #fafafa;
-    }
-}
-
-// 预览容器
-.preview-wrapper {
-    height: 70vh;
-    position: relative;
-    background: #f5f7fa;
-
-    .preview-iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
-        background: white;
-    }
-
-    .preview-error,
-    .no-report {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: white;
-
-        .error-detail {
-            margin-top: 8px;
-            color: #909399;
-            font-size: 14px;
-            max-width: 400px;
-            text-align: center;
-            line-height: 1.4;
-        }
-
-        .error-actions {
-            margin-top: 16px;
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-        }
-
-        .empty-tip {
-            margin-top: 8px;
-            color: #909399;
-            max-width: 300px;
-            text-align: center;
-        }
-    }
-}
-
-// 预览页脚
-.preview-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-
-    .report-info {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        flex: 1;
-        min-width: 0;
-
-        .report-name {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-weight: 500;
-            color: #2c3e50;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-
-            .el-icon {
-                color: #667eea;
-                flex-shrink: 0;
-            }
-        }
-
-        .report-meta {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #5a6c7d;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-    }
-
-    .footer-actions {
-        display: flex;
-        gap: 8px;
-        flex-shrink: 0;
-    }
-}
-
 .paper-details-container {
-    padding: 20px;
+    padding: 24px;
     min-height: 100vh;
-    background: linear-gradient(135deg, #667eea0d 0%, #764ba20d 100%);
+    background: #f5f5f7;
 }
 
 // 页面头部
 .paper-header {
     margin-bottom: 24px;
-    background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+    background: #0066cc;
     border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 2px 12px rgba(102, 126, 234, 0.1);
+    padding: 28px 32px;
 
     .header-content {
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: 12px;
 
-        .back-section {
-            .back-btn {
-                padding-left: 0;
-                color: #667eea;
-                font-weight: 500;
+        .back-btn {
+            padding-left: 0;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 500;
 
-                &:hover {
-                    color: #5a67d8;
-                }
+            &:hover {
+                color: white;
             }
         }
 
-        .title-section {
-            .paper-title {
-                margin: 0 0 16px 0;
-                font-size: 1.75rem;
-                font-weight: 700;
-                color: #2c3e50;
-                line-height: 1.3;
-            }
+        .paper-title {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: white;
+            line-height: 1.4;
+        }
 
-            .paper-status-row {
+        .paper-status-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+
+            .paper-meta {
                 display: flex;
-                align-items: center;
-                gap: 24px;
+                gap: 20px;
                 flex-wrap: wrap;
 
-                .status-tag {
-                    font-weight: 600;
-                }
-
-                .paper-meta {
+                .meta-item {
                     display: flex;
-                    gap: 24px;
-                    flex-wrap: wrap;
-
-                    .meta-item {
-                        display: flex;
-                        align-items: center;
-                        gap: 6px;
-                        font-size: 14px;
-                        color: #5a6c7d;
-
-                        .el-icon {
-                            color: #667eea;
-                        }
-                    }
+                    align-items: center;
+                    gap: 6px;
+                    font-size: 13px;
+                    color: rgba(255, 255, 255, 0.8);
                 }
-            }
-        }
-
-        .action-section {
-            .header-actions {
-                display: flex;
-                gap: 8px;
             }
         }
     }
 }
 
-// 主要内容区域
+// 内容区域
 .paper-content {
     .section-card {
-        margin-bottom: 16px;
+        margin-bottom: 20px;
         border-radius: 12px;
-        border: none;
-        transition: all 0.3s ease;
-
-        &:hover {
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-        }
+        border: 1px solid #e8ecf1;
 
         :deep(.el-card__header) {
-            padding: 16px 20px;
-            border-bottom: 1px solid #f1f2f6;
+            padding: 14px 20px;
+            border-bottom: 1px solid #f0f2f5;
+            background: #fafbfc;
         }
 
         :deep(.el-card__body) {
             padding: 20px;
         }
     }
-
-    .sidebar-card {
-        margin-bottom: 16px;
-        border-radius: 12px;
-        border: none;
-
-        :deep(.el-card__header) {
-            padding: 16px;
-            border-bottom: 1px solid #f1f2f6;
-        }
-
-        :deep(.el-card__body) {
-            padding: 16px;
-        }
-    }
 }
 
-// 通用样式
 .section-header {
     display: flex;
     align-items: center;
     gap: 8px;
     font-weight: 600;
-    color: #2c3e50;
+    color: #1d1d1f;
+    font-size: 15px;
 
     .el-icon {
-        color: #667eea;
+        color: #0066cc;
     }
 
-    .section-title {
-        font-size: 1.125rem;
+    .header-tag {
+        margin-left: auto;
     }
-}
 
-// 论文摘要部分
-.abstract-content {
-    line-height: 1.6;
-    color: #5a6c7d;
-    margin-bottom: 20px;
-    padding: 8px 0;
-}
-
-.abstract-footer {
-    .word-count-info {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        flex-wrap: wrap;
-
-        .count-label {
-            color: #7f8c8d;
-        }
-
-        .count-value {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #667eea;
-        }
-
-        .count-unit {
-            color: #7f8c8d;
-        }
-
-        .count-progress {
-            flex: 1;
-            max-width: 200px;
-        }
+    .advisor-name {
+        margin-left: auto;
+        color: #0066cc;
+        font-size: 13px;
+        font-weight: 500;
     }
 }
 
-// 论文详情部分
-.details-grid {
+// 论文信息卡片
+.info-section {
+    margin-bottom: 0;
+
+    .info-label {
+        font-size: 13px;
+        color: #86868b;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+
+    .info-value {
+        color: #1d1d1f;
+        line-height: 1.6;
+    }
+
+    .abstract-text {
+        color: #4a5568;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+}
+
+.info-divider {
+    height: 1px;
+    background: #f0f2f5;
+    margin: 16px 0;
+}
+
+.info-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    margin-bottom: 20px;
+    gap: 12px;
 
-    .detail-item {
+    .info-cell {
         display: flex;
-        align-items: center;
-        gap: 8px;
+        flex-direction: column;
+        gap: 4px;
 
-        .detail-label {
-            color: #7f8c8d;
-            white-space: nowrap;
+        .info-label {
+            font-size: 12px;
+            color: #86868b;
         }
 
-        .detail-value {
-            color: #2c3e50;
+        .info-value {
+            font-size: 14px;
+            color: #1d1d1f;
             font-weight: 500;
         }
     }
 }
 
-.keywords-section {
+.keywords-list {
     display: flex;
-    align-items: flex-start;
-    gap: 12px;
+    flex-wrap: wrap;
+    gap: 6px;
+}
 
-    .keywords-label {
-        color: #7f8c8d;
-        white-space: nowrap;
-        padding-top: 4px;
+// 相似度检测
+.similarity-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+
+    .similarity-rate {
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 1;
     }
 
-    .keywords-container {
+    .similarity-detail {
+        flex: 1;
         display: flex;
-        flex-wrap: wrap;
+        flex-direction: column;
         gap: 6px;
 
-        .keyword-tag {
-            font-size: 12px;
-        }
-
-        .no-keywords {
-            color: #999;
-            font-style: italic;
+        .similarity-tip {
+            font-size: 13px;
+            color: #86868b;
         }
     }
-}
 
-// 相似度检测部分
-.similarity-card {
-    .similarity-content {
-        .similarity-main {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-
-            .similarity-value {
-                flex-shrink: 0;
-
-                .percentage-value {
-                    display: block;
-                    font-size: 1.5rem;
-                    font-weight: 700;
-                    text-align: center;
-                    margin-top: 8px;
-                }
-            }
-
-            .similarity-info {
-                flex: 1;
-
-                .similarity-status {
-                    margin-bottom: 12px;
-                }
-
-                .similarity-tips {
-                    display: flex;
-                    align-items: center;
-                    gap: 6px;
-                    margin-bottom: 16px;
-                    color: #7f8c8d;
-
-                    .el-icon {
-                        color: #faad14;
-                    }
-                }
-
-                .similarity-actions {
-                    display: flex;
-                    gap: 8px;
-                }
-            }
-        }
-    }
-}
-
-// 审核进度部分
-.progress-section {
-    padding: 8px 0;
-
-    :deep(.el-steps) {
-        .el-step__head {
-            .el-step__icon {
-                width: 32px;
-                height: 32px;
-                font-size: 14px;
-            }
-        }
-
-        .el-step__title {
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .el-step__description {
-            font-size: 12px;
-            color: #7f8c8d;
-        }
-    }
-}
-
-// 导师反馈部分
-.feedback-card {
-    .section-header {
+    .similarity-actions {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        .feedback-header-left {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .feedback-header-right {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 14px;
-
-            .advisor-name {
-                color: #667eea;
-                font-weight: 500;
-            }
-
-            .feedback-time {
-                color: #7f8c8d;
-            }
-        }
-    }
-
-    .feedback-content {
-        line-height: 1.6;
-        color: #5a6c7d;
-        padding: 16px;
-        background: #f8f9fa;
-        border-radius: 8px;
-        margin-bottom: 20px;
-    }
-
-    .feedback-actions {
-        display: flex;
-        gap: 12px;
-        justify-content: flex-end;
+        gap: 8px;
     }
 }
 
-// 指导老师部分（侧边栏）
-.advisor-info {
-    .advisor-avatar-section {
+.check-task-info {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #f0f2f5;
+
+    .task-row {
         display: flex;
         align-items: center;
-        gap: 16px;
-        margin-bottom: 20px;
+        padding: 6px 0;
+        font-size: 13px;
 
-        .advisor-avatar {
-            flex-shrink: 0;
-            border: 3px solid #fff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        .task-label {
+            color: #86868b;
+            min-width: 70px;
         }
 
-        .advisor-basic {
-            .advisor-name {
-                margin: 0 0 4px 0;
-                font-size: 1.125rem;
-                color: #2c3e50;
-            }
-
-            .advisor-title {
-                margin: 0;
-                color: #667eea;
-                font-size: 14px;
-            }
+        .task-value {
+            color: #1d1d1f;
         }
-    }
 
-    .advisor-contact {
-        margin-bottom: 20px;
-
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-            color: #5a6c7d;
-            font-size: 14px;
-
-            .el-icon {
-                color: #667eea;
-                width: 16px;
-            }
-        }
-    }
-
-    .advisor-actions {
-        .contact-btn {
-            width: 100%;
+        .error-text {
+            color: #f56c6c;
         }
     }
 }
 
-.no-advisor {
-    text-align: center;
-    padding: 20px 0;
-
-    .no-advisor-tips {
-        margin-top: 12px;
-        color: #7f8c8d;
+// 审核进度
+:deep(.el-steps) {
+    .el-step__title {
         font-size: 14px;
+        font-weight: 600;
+    }
+
+    .el-step__description {
+        font-size: 12px;
+        color: #86868b;
     }
 }
 
-// 论文附件部分
-.attachments-list {
-    .attachment-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 12px 0;
-        border-bottom: 1px solid #f1f2f6;
-
-        &:last-child {
-            border-bottom: none;
-        }
-
-        .file-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex: 1;
-
-            .file-icon {
-                flex-shrink: 0;
-            }
-
-            .file-details {
-                flex: 1;
-                min-width: 0;
-
-                .file-name {
-                    font-weight: 500;
-                    color: #2c3e50;
-                    margin-bottom: 4px;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                }
-
-                .file-meta {
-                    display: flex;
-                    gap: 12px;
-                    font-size: 12px;
-                    color: #7f8c8d;
-                }
-            }
-        }
-
-        .file-actions {
-            flex-shrink: 0;
-            display: flex;
-            gap: 4px;
-        }
-    }
-
-    .no-attachments {
-        padding: 20px 0;
-        text-align: center;
-    }
+// 导师反馈
+.feedback-text {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #4a5568;
+    padding: 16px;
+    background: #f8f9fb;
+    border-radius: 8px;
+    border-left: 3px solid #0066cc;
+    margin-bottom: 16px;
 }
 
-.add-attachment {
-    margin-left: auto;
+.no-feedback {
+    padding: 16px 0;
 }
 
-// 审核历史部分
-.review-history {
-    .review-item {
-        padding: 12px 0;
-        border-bottom: 1px solid #f1f2f6;
-
-        &:last-child {
-            border-bottom: none;
-        }
-
-        .review-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-
-            .reviewer-info {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-
-                .reviewer-avatar {
-                    flex-shrink: 0;
-                }
-
-                .reviewer-name {
-                    font-weight: 500;
-                    color: #2c3e50;
-                }
-            }
-
-            .review-time {
-                font-size: 12px;
-                color: #7f8c8d;
-            }
-        }
-
-        .review-content {
-            font-size: 14px;
-            color: #5a6c7d;
-            line-height: 1.4;
-            padding-left: 32px;
-        }
-    }
+.feedback-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
 }
 
-// 响应式设计
-@media (max-width: 768px) {
-    .paper-header {
-        padding: 16px;
-
-        .header-content {
-            .title-section {
-                .paper-title {
-                    font-size: 1.5rem;
-                }
-
-                .paper-status-row {
-                    flex-direction: column;
-                    align-items: flex-start;
-                    gap: 12px;
-                }
-            }
-
-            .action-section {
-                .header-actions {
-                    flex-wrap: wrap;
-                }
-            }
-        }
-    }
-
-    .details-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .similarity-card {
-        .similarity-content {
-            .similarity-main {
-                flex-direction: column;
-                text-align: center;
-                gap: 16px;
-
-                .similarity-info {
-                    .similarity-actions {
-                        justify-content: center;
-                    }
-                }
-            }
-        }
-    }
-
-    .feedback-card {
-        .section-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 8px;
-
-            .feedback-header-right {
-                width: 100%;
-                justify-content: space-between;
-            }
-        }
-    }
-}
-
-/* 文件信息样式 */
+// 论文文件
 .file-info-container {
     .file-card {
-        padding: 16px;
+        padding: 14px;
         border-radius: 8px;
-        background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
-        border: 1px solid #e0e6ef;
-        margin-bottom: 16px;
+        background: #f8f9fb;
+        border: 1px solid #e8ecf1;
     }
 
     .file-header {
         display: flex;
         align-items: center;
-        gap: 16px;
-        margin-bottom: 16px;
+        gap: 12px;
+        margin-bottom: 12px;
     }
 
     .file-icon-wrapper {
-        width: 56px;
-        height: 56px;
-        border-radius: 12px;
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
 
-        &.file-icon-doc {
-            background: linear-gradient(135deg, #1890ff20 0%, #1890ff40 100%);
-            color: #1890ff;
-        }
-
-        &.file-icon-pdf {
-            background: linear-gradient(135deg, #ff4d4f20 0%, #ff4d4f40 100%);
-            color: #ff4d4f;
-        }
-
-        &.file-icon-excel {
-            background: linear-gradient(135deg, #52c41a20 0%, #52c41a40 100%);
-            color: #52c41a;
-        }
-
-        &.file-icon-ppt {
-            background: linear-gradient(135deg, #722ed120 0%, #722ed140 100%);
-            color: #722ed1;
-        }
-
-        &.file-icon-txt {
-            background: linear-gradient(135deg, #faad1420 0%, #faad1440 100%);
-            color: #faad14;
-        }
-
-        &.file-icon-default {
-            background: linear-gradient(135deg, #667eea20 0%, #764ba240 100%);
-            color: #667eea;
-        }
+        &.file-icon-doc { background: rgba(0, 102, 204, 0.1); color: #0066cc; }
+        &.file-icon-pdf { background: rgba(255, 77, 79, 0.08); color: #ff4d4f; }
+        &.file-icon-excel { background: rgba(82, 196, 26, 0.08); color: #52c41a; }
+        &.file-icon-ppt { background: rgba(114, 46, 209, 0.08); color: #722ed1; }
+        &.file-icon-txt { background: rgba(250, 173, 20, 0.08); color: #faad14; }
+        &.file-icon-default { background: rgba(0, 102, 204, 0.1); color: #0066cc; }
     }
 
     .file-main-info {
@@ -2431,255 +1633,148 @@ onMounted(() => {
 
         .file-name {
             font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 8px;
+            color: #1d1d1f;
+            margin-bottom: 4px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            font-size: 1.1rem;
+            font-size: 14px;
         }
 
         .file-meta {
             display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-
-            .meta-item {
-                display: flex;
-                align-items: center;
-                gap: 4px;
-                font-size: 12px;
-                color: #5a6c7d;
-
-                .el-icon {
-                    color: #667eea;
-                }
-            }
+            gap: 12px;
+            font-size: 12px;
+            color: #86868b;
         }
     }
 
     .file-actions {
         display: flex;
-        justify-content: center;
-
-        .el-button-group {
-            display: flex;
-            gap: 8px;
-
-            .el-button {
-                transition: all 0.3s ease;
-
-                &:hover {
-                    transform: translateY(-2px);
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-                }
-            }
-        }
+        gap: 8px;
     }
 
     .file-status-tip {
         margin-top: 12px;
-
-        :deep(.el-alert) {
-            border-radius: 8px;
-            border: 1px solid #e0e6ef;
-        }
-    }
-
-    /* 无文件状态 */
-    .no-file {
-        .empty-state {
-            text-align: center;
-            padding: 32px 0;
-
-            .empty-text {
-                margin: 16px 0 8px;
-                color: #2c3e50;
-                font-weight: 500;
-            }
-
-            .empty-tip {
-                color: #7f8c8d;
-                margin-bottom: 24px;
-                font-size: 14px;
-            }
-        }
     }
 }
 
-.add-file {
-    margin-left: auto;
+.no-file {
+    padding: 16px 0;
 }
 
-.file-preview-dialog {
-    .el-dialog__body {
-        padding: 0;
-    }
+// 审核历史
+.review-history {
+    .review-item {
+        padding: 12px;
+        background: #f8f9fb;
+        border-radius: 8px;
+        margin-bottom: 10px;
 
-    .preview-wrapper {
-        height: 70vh;
-        position: relative;
-        background: #f5f7fa;
-        border-radius: 4px;
-        overflow: hidden;
-
-        .preview-iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
+        &:last-child {
+            margin-bottom: 0;
         }
 
-        .word-preview {
-            height: 100%;
+        .review-header {
             display: flex;
-            flex-direction: column;
-
-            .word-preview-tip {
-                padding: 12px;
-                background: white;
-                border-top: 1px solid #e4e7ed;
-            }
-        }
-
-        .preview-error {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            background: white;
+            margin-bottom: 6px;
 
-            .error-detail {
-                margin-top: 8px;
-                color: #909399;
-                font-size: 14px;
-            }
-        }
-    }
+            .reviewer-info {
+                display: flex;
+                align-items: center;
+                gap: 6px;
 
-    .preview-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        .file-info {
-            .file-name {
-                font-weight: 500;
-                color: #2c3e50;
+                .reviewer-name {
+                    font-weight: 600;
+                    color: #1d1d1f;
+                    font-size: 13px;
+                }
             }
 
-            .file-size {
-                color: #909399;
+            .review-time {
                 font-size: 12px;
-                margin-left: 8px;
+                color: #86868b;
             }
         }
 
-        .footer-actions {
-            display: flex;
-            gap: 8px;
+        .review-content {
+            font-size: 13px;
+            color: #4a5568;
+            line-height: 1.5;
+            padding-left: 26px;
         }
     }
 }
 
-/* 响应式调整 */
-@media (max-width: 768px) {
-    .file-info-container {
-        .file-header {
-            flex-direction: column;
+// 预览弹窗
+.preview-wrapper {
+    height: 70vh;
+    position: relative;
+    background: #f5f5f7;
+
+    .preview-iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        background: white;
+    }
+
+    .preview-error {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+
+        .error-detail {
+            margin-top: 8px;
+            color: #86868b;
+            font-size: 14px;
             text-align: center;
-            gap: 12px;
-        }
-
-        .file-meta {
-            justify-content: center;
-        }
-
-        .file-actions {
-            .el-button-group {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-        }
-    }
-
-    .file-preview-dialog {
-        .el-dialog {
-            width: 95% !important;
-            margin-top: 10vh !important;
-        }
-
-        .preview-wrapper {
-            height: 60vh;
-        }
-
-        .preview-footer {
-            flex-direction: column;
-            gap: 12px;
-
-            .file-info {
-                width: 100%;
-                text-align: center;
-            }
-
-            .footer-actions {
-                width: 100%;
-                justify-content: center;
-            }
         }
     }
 }
 
-@media (max-width: 1200px) {
-    .paper-content {
-        .el-col {
-            &:first-child {
-                margin-bottom: 16px;
-            }
-        }
-    }
-}
+.preview-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-@media (max-width: 768px) {
-    .similarity-actions {
-        flex-direction: column;
-
-        .el-button {
-            width: 100%;
-        }
+    .file-info .file-name {
+        font-weight: 600;
+        color: #1d1d1f;
     }
 
-    .preview-footer {
-        flex-direction: column;
-        align-items: stretch;
+    .footer-actions {
+        display: flex;
         gap: 8px;
+    }
+}
 
-        .report-info {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 4px;
-        }
-
-        .footer-actions {
-            width: 100%;
-            justify-content: flex-end;
-        }
+// 响应式
+@media (max-width: 768px) {
+    .paper-details-container {
+        padding: 16px;
     }
 
-    .similarity-report-dialog {
-        width: 95% !important;
-        margin-top: 2vh !important;
-
-        :deep(.el-dialog__body) {
-            height: 60vh;
-        }
+    .paper-header {
+        padding: 20px;
     }
 
-    .preview-wrapper {
-        height: 60vh;
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .similarity-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .feedback-actions {
+        flex-direction: column;
     }
 }
 </style>

@@ -7,21 +7,21 @@
 const ThirdPartyServices = {
   CNKI: {
     name: '中国知网',
-    apiUrl: '/api/thirdparty/cnki/check',
+    apiUrl: '/api/v1/thirdparty/cnki/check',
     maxFileSize: 50 * 1024 * 1024, // 50MB
     supportedFormats: ['.doc', '.docx', '.pdf', '.txt'],
     timeout: 300000 // 5分钟超时
   },
   WANFANG: {
     name: '万方数据',
-    apiUrl: '/api/thirdparty/wanfang/check',
+    apiUrl: '/api/v1/thirdparty/wanfang/check',
     maxFileSize: 30 * 1024 * 1024, // 30MB
     supportedFormats: ['.doc', '.docx', '.pdf'],
     timeout: 180000 // 3分钟超时
   },
   VIP: {
     name: '维普网',
-    apiUrl: '/api/thirdparty/vip/check',
+    apiUrl: '/api/v1/thirdparty/vip/check',
     maxFileSize: 20 * 1024 * 1024, // 20MB
     supportedFormats: ['.doc', '.docx', '.pdf', '.txt'],
     timeout: 120000 // 2分钟超时

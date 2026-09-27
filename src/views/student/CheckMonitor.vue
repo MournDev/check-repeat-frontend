@@ -54,7 +54,7 @@
         />
         <div class="progress-stages">
           <div 
-            v-for="(stage, index) in checkStages" 
+            v-for="stage in checkStages"
             :key="stage.key"
             class="stage-item"
             :class="{
@@ -127,8 +127,8 @@
           <div class="estimate-value">{{ completedStages }}/{{ totalStages }}</div>
         </div>
         <div class="estimate-item">
-          <div class="estimate-label">平均处理速度</div>
-          <div class="estimate-value">{{ averageSpeed }}篇/分钟</div>
+          <div class="estimate-label">已用时间</div>
+          <div class="estimate-value">{{ elapsedTime }}</div>
         </div>
         <div class="estimate-item">
           <div class="estimate-label">预计剩余时间</div>
@@ -160,7 +160,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, reactive, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { 
@@ -177,39 +177,52 @@ const router = useRouter()
 const currentStatus = ref({
   status: 'processing',
   currentStage: 'internal_check',
-  overallProgress: 45,
-  stageProgress: 65,
-  elapsedTime: 1680, // 秒
-  estimatedRemainingTime: 1800, // 秒
+  overallProgress: 0,
+  stageProgress: 0,
+  elapsedTime: 0, // 秒
+  estimatedRemainingTime: 0, // 秒
   stages: {
     upload: { status: 'completed', duration: 120 },
-    internal_check: { status: 'processing', progress: 65, duration: 900 },
+    internal_check: { status: 'processing', progress: 0, duration: 0 },
     third_party_check: { status: 'pending' },
     report_generation: { status: 'pending' }
   }
 })
 
-const logs = ref([
-  { time: '15:42:30', message: '开始校内查重检测', level: 'info' },
-  { time: '15:43:15', message: '已比对文献库中 1,250 篇论文', level: 'info' },
-  { time: '15:44:02', message: '发现 8 篇高相似度文献', level: 'warning' },
-  { time: '15:45:20', message: '正在进行详细段落比对...', level: 'info' }
-])
+const logs = ref([])
 
 const showCompletionDialog = ref(false)
-const finalSimilarity = ref(23.5)
+const finalSimilarity = ref(0)
 const logContainer = ref(null)
 
-// WebSocket（STOMP）
-const { connect: wsConnect, disconnect: wsDisconnect, isConnected: wsConnected } = useCheckProgress()
+// 使用实时推送 Hook
+const { connect, disconnect, progress: checkProgress, isConnected } = useCheckProgress();
 
-// 计算属性
-const checkStages = ref([
-  { key: 'upload', name: '文件上传', status: 'completed', progress: 100, duration: 120 },
-  { key: 'internal_check', name: '校内查重', status: 'processing', progress: 65, duration: 900 },
-  { key: 'third_party_check', name: '第三方查重', status: 'pending', progress: 0 },
-  { key: 'report_generation', name: '报告生成', status: 'pending', progress: 0 }
-])
+// 根据后端status映射阶段状态: 0-待执行 1-执行中 2-执行成功 3-执行失败
+const mapCheckStatusToStages = (checkStatus) => {
+  if (checkStatus === '0') return [
+    { key: 'upload', name: '文件上传', status: 'pending', progress: 0 },
+    { key: 'check', name: '论文查重', status: 'pending', progress: 0 },
+    { key: 'report', name: '报告生成', status: 'pending', progress: 0 }
+  ]
+  if (checkStatus === '1') return [
+    { key: 'upload', name: '文件上传', status: 'completed', progress: 100 },
+    { key: 'check', name: '论文查重', status: 'processing', progress: 0 },
+    { key: 'report', name: '报告生成', status: 'pending', progress: 0 }
+  ]
+  if (checkStatus === '2') return [
+    { key: 'upload', name: '文件上传', status: 'completed', progress: 100 },
+    { key: 'check', name: '论文查重', status: 'completed', progress: 100 },
+    { key: 'report', name: '报告生成', status: 'completed', progress: 100 }
+  ]
+  return [
+    { key: 'upload', name: '文件上传', status: 'failed', progress: 0 },
+    { key: 'check', name: '论文查重', status: 'failed', progress: 0 },
+    { key: 'report', name: '报告生成', status: 'failed', progress: 0 }
+  ]
+}
+
+const checkStages = ref(mapCheckStatusToStages('0'))
 
 const completedStages = computed(() => {
   return checkStages.value.filter(stage => stage.status === 'completed').length
@@ -219,10 +232,16 @@ const totalStages = computed(() => {
   return checkStages.value.length
 })
 
-const averageSpeed = computed(() => {
-  const completedDocs = 1 // 假设处理了1篇文档
-  const totalTime = currentStatus.value.elapsedTime / 60 // 转换为分钟
-  return totalTime > 0 ? (completedDocs / totalTime).toFixed(2) : '0.00'
+const elapsedTime = computed(() => {
+  const start = currentStatus.value.startTime
+  if (!start) return '--'
+  const diff = Date.now() - new Date(start).getTime()
+  const minutes = Math.floor(diff / 60000)
+  if (minutes < 1) return '小于1分钟'
+  if (minutes < 60) return `${minutes}分钟`
+  const hours = Math.floor(minutes / 60)
+  const remainMin = minutes % 60
+  return `${hours}小时${remainMin}分钟`
 })
 
 const getProgressColor = computed(() => {
@@ -252,25 +271,60 @@ const refreshStatus = async () => {
 const updateStatus = (data) => {
   currentStatus.value = {
     ...currentStatus.value,
-    ...data
+    ...data,
+    status: data.checkStatus || data.status || currentStatus.value.status
   }
-  
-  // 更新阶段状态
-  checkStages.value = checkStages.value.map(stage => ({
-    ...stage,
-    ...data.stages[stage.key]
-  }))
-  
+
+  // 根据后端checkStatus更新阶段状态
+  if (data.checkStatus) {
+    checkStages.value = mapCheckStatusToStages(data.checkStatus)
+  } else if (data.stages) {
+    checkStages.value = checkStages.value.map(stage => ({
+      ...stage,
+      ...data.stages[stage.key]
+    }))
+  }
+
+  // 更新WebSocket实时进度（处理中时）
+  if (data.checkStatus === '1' && data.checkRate != null) {
+    const progress = Math.min(data.checkRate * 3, 99) // 将查重率映射为进度
+    const checkStage = checkStages.value.find(s => s.key === 'check')
+    if (checkStage) checkStage.progress = progress
+  }
+
   // 添加日志
   if (data.logs) {
     logs.value = [...logs.value, ...data.logs]
     scrollToBottom()
   }
-  
-  // 检查是否完成
-  if (data.status === 'completed') {
-    finalSimilarity.value = data.finalSimilarity || 23.5
+
+  // 检查是否完成（checkStatus=2 表示成功）
+  if (data.checkStatus === '2' || data.status === 'completed') {
+    finalSimilarity.value = data.checkRate || 0
     showCompletionDialog.value = true
+  }
+}
+
+const updateStatusFromHook = (progressData) => {
+  const statusMap = {
+    'STARTED': 'processing',
+    'PROCESSING': 'processing',
+    'COMPLETED': 'completed',
+    'FAILED': 'failed'
+  }
+
+  currentStatus.value = {
+    ...currentStatus.value,
+    status: statusMap[progressData.stage] || 'processing',
+    overallProgress: progressData.percent,
+    estimatedRemainingTime: progressData.estimatedRemainingSeconds
+  }
+
+  // 根据WebSocket数据更新阶段进度
+  checkStages.value = mapCheckStatusToStages(progressData.stage === 'COMPLETED' ? '2' : '1')
+  const checkStage = checkStages.value.find(s => s.key === 'check')
+  if (checkStage && progressData.percent != null) {
+    checkStage.progress = progressData.percent
   }
 }
 
@@ -287,13 +341,13 @@ const getStatusMessage = (status) => {
 
 const getStatusColor = (status) => {
   const colors = {
-    'pending': '#909399',
-    'processing': '#409eff',
+    'pending': '#86868b',
+    'processing': '#0066cc',
     'completed': '#67c23a',
     'failed': '#f56c6c',
     'cancelled': '#e6a23c'
   }
-  return colors[status] || '#909399'
+  return colors[status] || '#86868b'
 }
 
 const getStatusIcon = (status) => {
@@ -355,26 +409,52 @@ const closeCompletionDialog = () => {
 }
 
 const connectWebSocket = () => {
-  const paperId = route.query.paperId || route.params.taskId
-  wsConnect(
-    paperId,
-    (data) => {
-      if (data.type === 'status_update') {
-        updateStatus(data.data)
-        addLog('info', data.data.message || '状态更新')
-      }
-    },
-    (err) => {
-      console.error('WebSocket连接失败，降级到轮询:', err)
-      addLog('warning', 'WebSocket连接失败，切换为轮询模式')
-      startPolling()
+  const paperId = route.query.paperId || route.params.taskId;
+  
+  // 使用新的 Hook 连接
+  connect(paperId, (data) => {
+    // 处理收到的消息
+    if (data.type === 'START') {
+      addLog('info', data.message || '查重任务已启动');
+      currentStatus.value.overallProgress = data.progress || 0;
+    } else if (data.type === 'PROGRESS') {
+      addLog('info', data.message || '查重进度更新');
+      currentStatus.value.overallProgress = data.progress || 0;
+      currentStatus.value.elapsedTime = Math.floor((Date.now() - new Date().getTime()) / 1000);
+    } else if (data.type === 'COMPLETE') {
+      addLog('success', data.message || '查重完成');
+      currentStatus.value.overallProgress = 100;
+      currentStatus.value.status = 'completed';
+      finalSimilarity.value = data.similarity || 0;
+      showCompletionDialog.value = true;
+    } else if (data.type === 'ERROR') {
+      addLog('error', data.message || '查重失败');
+      currentStatus.value.status = 'failed';
     }
-  )
-}
+  });
+  
+  // 监听进度变化
+  watch(() => checkProgress.percent, (newPercent) => {
+    if (newPercent !== undefined) {
+      currentStatus.value.overallProgress = newPercent;
+    }
+  });
+  
+  watch(() => checkProgress.status, (newStatus) => {
+    if (newStatus === 'success') {
+      addLog('success', '查重完成！');
+      finalSimilarity.value = checkProgress.similarity || 0;
+      showCompletionDialog.value = true;
+    } else if (newStatus === 'exception') {
+      addLog('error', checkProgress.message || '查重失败');
+      currentStatus.value.status = 'failed';
+    }
+  });
+};
 
 const disconnectWebSocket = () => {
-  wsDisconnect()
-}
+  disconnect();
+};
 
 const pollingTimer = ref(null)
 const startPolling = () => {
@@ -439,7 +519,7 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .check-monitor-page {
   padding: 20px;
-  background-color: #f5f7fa;
+  background-color: #f5f5f7;
   min-height: 100vh;
 
   .page-header {
@@ -448,13 +528,13 @@ onUnmounted(() => {
     .page-title {
       font-size: 18px;
       font-weight: 600;
-      color: #303133;
+      color: #1d1d1f;
     }
   }
 
   .status-card {
     margin-bottom: 20px;
-    border-radius: 12px;
+    border-radius: 18px;
     
     .current-status {
       display: flex;
@@ -463,8 +543,8 @@ onUnmounted(() => {
       
       .status-icon {
         padding: 16px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 16px;
+        background: #0066cc;
+        border-radius: 18px;
         color: white;
       }
       
@@ -475,14 +555,14 @@ onUnmounted(() => {
           margin: 0 0 12px 0;
           font-size: 20px;
           font-weight: 600;
-          color: #303133;
+          color: #1d1d1f;
         }
         
         .status-details {
           display: flex;
           gap: 24px;
-          color: #606266;
-          font-size: 14px;
+          color: #86868b;
+          font-size: 17px;
         }
       }
       
@@ -496,14 +576,14 @@ onUnmounted(() => {
 
   .progress-card {
     margin-bottom: 20px;
-    border-radius: 12px;
+    border-radius: 18px;
     
     .card-header {
       display: flex;
       align-items: center;
       gap: 8px;
       font-weight: 600;
-      color: #303133;
+      color: #1d1d1f;
       
       .el-tag {
         margin-left: auto;
@@ -544,7 +624,7 @@ onUnmounted(() => {
           
           &.current {
             .stage-icon {
-              background: #409eff;
+              background: #0066cc;
               color: white;
               animation: pulse 2s infinite;
             }
@@ -553,7 +633,7 @@ onUnmounted(() => {
           &.pending {
             .stage-icon {
               background: #e4e7ed;
-              color: #909399;
+              color: #86868b;
             }
           }
           
@@ -573,14 +653,14 @@ onUnmounted(() => {
             
             .stage-name {
               font-size: 12px;
-              color: #606266;
+              color: #86868b;
               margin-bottom: 4px;
             }
             
             .stage-progress, .stage-duration {
               font-size: 11px;
-              font-weight: 500;
-              color: #409eff;
+              font-weight: 600;
+              color: #0066cc;
             }
           }
         }
@@ -590,18 +670,18 @@ onUnmounted(() => {
 
   .log-card {
     margin-bottom: 20px;
-    border-radius: 12px;
+    border-radius: 18px;
     
     .card-header {
       display: flex;
       align-items: center;
       gap: 8px;
       font-weight: 600;
-      color: #303133;
+      color: #1d1d1f;
       
       .el-button {
         margin-left: auto;
-        color: #909399;
+        color: #86868b;
         
         .el-icon {
           margin-right: 4px;
@@ -612,8 +692,8 @@ onUnmounted(() => {
     .log-container {
       max-height: 300px;
       overflow-y: auto;
-      background: #f8f9fa;
-      border-radius: 8px;
+      background: #f5f5f7;
+      border-radius: 11px;
       padding: 16px;
       
       .log-item {
@@ -627,7 +707,7 @@ onUnmounted(() => {
         }
         
         &.log-info {
-          color: #409eff;
+          color: #0066cc;
         }
         
         &.log-warning {
@@ -650,7 +730,7 @@ onUnmounted(() => {
         
         .log-content {
           flex: 1;
-          font-size: 14px;
+          font-size: 17px;
           line-height: 1.4;
         }
       }
@@ -658,7 +738,7 @@ onUnmounted(() => {
       .no-logs {
         text-align: center;
         padding: 40px 0;
-        color: #909399;
+        color: #86868b;
         
         .el-icon {
           font-size: 24px;
@@ -669,14 +749,14 @@ onUnmounted(() => {
   }
 
   .estimate-card {
-    border-radius: 12px;
+    border-radius: 18px;
     
     .card-header {
       display: flex;
       align-items: center;
       gap: 8px;
       font-weight: 600;
-      color: #303133;
+      color: #1d1d1f;
     }
     
     .estimate-content {
@@ -687,15 +767,15 @@ onUnmounted(() => {
         text-align: center;
         
         .estimate-label {
-          font-size: 14px;
-          color: #606266;
+          font-size: 17px;
+          color: #86868b;
           margin-bottom: 8px;
         }
         
         .estimate-value {
           font-size: 18px;
-          font-weight: 700;
-          color: #667eea;
+          font-weight: 600;
+          color: #0066cc;
         }
       }
     }
@@ -711,10 +791,10 @@ onUnmounted(() => {
     
     p {
       margin: 8px 0;
-      color: #606266;
+      color: #86868b;
       
       strong {
-        color: #303133;
+        color: #1d1d1f;
         font-size: 18px;
       }
     }
@@ -725,15 +805,15 @@ onUnmounted(() => {
 @keyframes pulse {
   0% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(64, 158, 255, 0.7);
+    box-shadow: 0 0 0 0 rgba(0, 102, 204, 0.7);
   }
   70% {
     transform: scale(1.05);
-    box-shadow: 0 0 0 10px rgba(64, 158, 255, 0);
+    box-shadow: 0 0 0 10px rgba(0, 102, 204, 0);
   }
   100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(64, 158, 255, 0);
+    box-shadow: 0 0 0 0 rgba(0, 102, 204, 0);
   }
 }
 

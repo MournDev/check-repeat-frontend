@@ -55,63 +55,47 @@
     </el-alert>
 
     <!-- 统计卡片 -->
-    <el-row :gutter="16" class="stats-row">
-      <el-col :xs="24" :sm="12" :lg="6">
-        <el-card class="stat-card" shadow="hover">
-          <div class="stat-content">
-            <div class="stat-icon-wrapper" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-              <el-icon><Clock /></el-icon>
-            </div>
-            <div class="stat-info">
-              <div class="stat-number">{{ stats.totalPending }}</div>
-              <div class="stat-label">待审核总数</div>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon pending-icon">
+          <el-icon><Clock /></el-icon>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">{{ stats.totalPending }}</div>
+          <div class="stat-label">待审核总数</div>
+        </div>
+      </div>
 
-      <el-col :xs="24" :sm="12" :lg="6">
-        <el-card class="stat-card" shadow="hover">
-          <div class="stat-content">
-            <div class="stat-icon-wrapper" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-              <el-icon><Warning /></el-icon>
-            </div>
-            <div class="stat-info">
-              <div class="stat-number">{{ stats.urgentPending }}</div>
-              <div class="stat-label">紧急待审</div>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
+      <div class="stat-card">
+        <div class="stat-icon urgent-icon">
+          <el-icon><Warning /></el-icon>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">{{ stats.urgentPending }}</div>
+          <div class="stat-label">紧急待审</div>
+        </div>
+      </div>
 
-      <el-col :xs="24" :sm="12" :lg="6">
-        <el-card class="stat-card" shadow="hover">
-          <div class="stat-content">
-            <div class="stat-icon-wrapper" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-              <el-icon><Timer /></el-icon>
-            </div>
-            <div class="stat-info">
-              <div class="stat-number">{{ stats.avgWaitingTime }}天</div>
-              <div class="stat-label">平均等待时间</div>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
+      <div class="stat-card">
+        <div class="stat-icon time-icon">
+          <el-icon><Timer /></el-icon>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">{{ stats.avgWaitingTime }}天</div>
+          <div class="stat-label">平均等待时间</div>
+        </div>
+      </div>
 
-      <el-col :xs="24" :sm="12" :lg="6">
-        <el-card class="stat-card" shadow="hover">
-          <div class="stat-content">
-            <div class="stat-icon-wrapper" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
-              <el-icon><Check /></el-icon>
-            </div>
-            <div class="stat-info">
-              <div class="stat-number">{{ stats.todayReviewed }}</div>
-              <div class="stat-label">今日已审</div>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
+      <div class="stat-card">
+        <div class="stat-icon reviewed-icon">
+          <el-icon><Check /></el-icon>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">{{ stats.todayReviewed }}</div>
+          <div class="stat-label">今日已审</div>
+        </div>
+      </div>
+    </div>
 
     <!-- 筛选和操作栏 -->
     <el-card class="action-card" shadow="never">
@@ -127,10 +111,7 @@
             
             <el-select v-model="filterCollege" placeholder="学院" clearable>
               <el-option label="全部学院" value="" />
-              <el-option label="计算机学院" value="computer" />
-              <el-option label="电子信息学院" value="electronic" />
-              <el-option label="机械工程学院" value="mechanical" />
-              <el-option label="管理学院" value="management" />
+              <el-option v-for="college in collegeList" :key="college.value" :label="college.label" :value="college.value" />
             </el-select>
             
             <el-select v-model="filterSimilarity" placeholder="相似度" clearable>
@@ -158,13 +139,13 @@
     <!-- 论文列表 -->
     <el-card class="list-card enhanced-table-card" shadow="never">
       <el-table
+        ref="tableRef"
         :data="filteredPapers"
         class="enhanced-table"
         row-class-name="table-row"
         style="width: 100%"
         v-loading="loading"
         @selection-change="handleSelectionChange"
-        @row-click="handleRowClick"
       >
         <el-table-column type="selection" width="55" />
         
@@ -174,14 +155,9 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="studentName" label="学生信息" width="220">
+        <el-table-column prop="studentName" label="学生信息" min-width="250">
           <template #default="{ row }">
             <div class="student-info-enhanced">
-              <div class="student-avatar">
-                <el-avatar :size="32" :src="getAvatarUrl(row.avatar)">
-                  {{ row.studentName.charAt(0) }}
-                </el-avatar>
-              </div>
               <div class="student-details">
                 <div class="student-main-info">
                   <span class="student-name">{{ row.studentName }}</span>
@@ -202,7 +178,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="paperTitle" label="论文信息" min-width="280">
+        <el-table-column prop="paperTitle" label="论文信息" min-width="320">
           <template #default="{ row }">
             <div class="paper-info-enhanced">
               <div class="paper-title-section">
@@ -213,7 +189,7 @@
                   <el-tag size="small" type="primary" effect="dark">V{{ row.version }}</el-tag>
                   <el-tag size="small" type="success" effect="plain">
                     <el-icon><Calendar /></el-icon>
-                    {{ formatDate(row.submitTime) }}
+                    {{ formatDateTime(row.submitTime, 'YYYY-MM-DD HH:mm:ss') }}
                   </el-tag>
                 </div>
               </div>
@@ -231,7 +207,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="similarity" label="查重结果" width="200">
+        <el-table-column prop="similarity" label="查重结果" min-width="220">
           <template #default="{ row }">
             <div class="similarity-info-enhanced">
               <div class="similarity-header">
@@ -310,7 +286,7 @@
         <el-table-column prop="deadline" label="截止时间" width="150">
           <template #default="{ row }">
             <div class="deadline-cell">
-              <div>{{ formatDateTime(row.deadline) }}</div>
+              <div>{{ formatDateTime(row.deadline, 'YYYY-MM-DD HH:mm:ss') }}</div>
               <div v-if="isOverdue(row)" class="deadline-overdue">
                 <el-icon><Warning /></el-icon>
                 <span>已超时</span>
@@ -419,8 +395,9 @@
     <ReviewDialog
       v-model="reviewDialogVisible"
       :paper-id="currentPaperId"
-      :selected-papers="selectedPapers"
-      @review-completed="handleReviewCompleted"
+      :is-batch="selectedPapers.length > 1"
+      :papers="selectedPapers"
+      @review-complete="handleReviewCompleted"
     />
 
     <!-- 相似度报告对话框 -->
@@ -463,11 +440,6 @@
       @close="closePreview"
     >
       <div class="preview-container">
-        <!-- 调试信息 -->
-        <div style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.8); color: white; padding: 5px; z-index: 1000; font-size: 12px;">
-          调试: loading={{ previewLoading }}, error={{ previewError }}, url={{ !!previewUrl }}, fullscreen={{ isFullscreen }}
-        </div>
-        
         <div v-if="previewLoading" class="loading-placeholder">
           <el-skeleton animated>
             <template #template>
@@ -499,15 +471,8 @@
               <li v-if="currentPaper.pageCount">页数：{{ currentPaper.pageCount }}</li>
             </ul>
           </div>
-          <div style="margin-top: 10px; padding: 10px; background: #f5f5f5; border-radius: 4px;">
-            <p><strong>调试信息：</strong></p>
-            <p>预览URL: {{ previewUrl || '无' }}</p>
-            <p>加载状态: {{ previewLoading ? '加载中' : '已完成' }}</p>
-            <p>错误状态: {{ previewError ? '有错误' : '无错误' }}</p>
-          </div>
-          
           <!-- 备用操作 -->
-          <div style="margin-top: 15px; padding: 15px; background: #fff3cd; border-radius: 4px; border: 1px solid #ffeaa7;">
+          <div style="margin-top: 15px; padding: 15px; background: #fff3cd; border-radius: 8px; border: 1px solid #ffeaa7;">
             <p><strong>🔧 备用方案：</strong></p>
             <el-button 
               type="warning" 
@@ -544,16 +509,849 @@
   </div>
 </template>
 
+<style scoped>
+.teacher-pending {
+  min-height: 100vh;
+  background: var(--apple-canvas-parchment);
+  color: var(--apple-ink);
+  font-family: var(--apple-font-text);
+}
+
+.page-header {
+  margin-bottom: 32px;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--apple-surface);
+  padding: var(--apple-spacing-xl);
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-xl);
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: var(--apple-hairline);
+  }
+}
+
+.page-title {
+  margin: 0 0 8px 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--apple-ink);
+  line-height: 1.2;
+}
+
+.page-subtitle {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--apple-ink-muted-48);
+}
+
+.urgent-alert {
+  margin-bottom: var(--apple-spacing-xl);
+
+  :deep(.el-alert) {
+    border-radius: var(--apple-rounded-lg);
+    border-left: none;
+  }
+  
+  :deep(.el-alert__content) {
+    font-size: 0.875rem;
+  }
+  
+  :deep(.el-alert__closebtn) {
+    font-size: 16px;
+  }
+  
+  :deep(.el-button) {
+    font-size: 0.75rem;
+    padding: 4px 12px;
+    border-radius: 8px;
+    
+    &:hover {
+      /* translateY removed for Apple HIG */;
+    }
+  }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-xl);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: var(--apple-hairline);
+  }
+  
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+    
+    &.pending-icon {
+      background: #fef3c7;
+      color: var(--apple-warning);
+    }
+
+    &.urgent-icon {
+      background: #fee2e2;
+      color: var(--apple-danger);
+    }
+
+    &.time-icon {
+      background: #dbeafe;
+      color: var(--apple-primary);
+    }
+
+    &.reviewed-icon {
+      background: #d1fae5;
+      color: var(--apple-success);
+    }
+  }
+  
+  .stat-content {
+    flex: 1;
+    
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--apple-ink);
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: var(--apple-ink-muted-48);
+    }
+  }
+}
+
+.action-card {
+  margin-bottom: var(--apple-spacing-xl);
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-xl);
+  padding: 20px;
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: var(--apple-hairline);
+  }
+}
+
+.action-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.action-left, .action-right {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  
+  @media (max-width: 1200px) {
+    width: 100%;
+  }
+}
+
+:deep(.el-select) {
+  width: 180px;
+  
+  :deep(.el-input__wrapper) {
+    border-radius: 11px;
+    
+    &:hover {
+      box-shadow: none;
+      border-color: var(--apple-hairline);
+    }
+
+    &.is-focus {
+      box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
+    }
+  }
+}
+
+:deep(.el-button) {
+  border-radius: var(--apple-rounded-lg);
+  font-size: 0.875rem;
+  padding: 8px 16px;
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    /* translateY removed for Apple HIG */;
+  }
+
+  &:active {
+    transform: scale(0.985);
+  }
+
+  &.el-button--primary {
+    background: var(--apple-primary);
+    border-color: var(--apple-primary);
+
+    &:hover {
+      background: var(--apple-primary-hover);
+      border-color: var(--apple-primary-hover);
+    }
+  }
+}
+
+.list-card {
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-xl);
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: var(--apple-hairline);
+  }
+}
+
+:deep(.el-table) {
+  border-radius: var(--apple-rounded-xl);
+  overflow: hidden;
+
+  .el-table__header-wrapper {
+    .el-table__header {
+      background: var(--apple-canvas-parchment);
+
+      th {
+        background: var(--apple-canvas-parchment);
+        color: var(--apple-ink-muted-48);
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--apple-hairline);
+      }
+    }
+  }
+
+  .el-table__body-wrapper {
+    .el-table__row {
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: var(--apple-canvas-parchment) !important;
+      }
+
+      td {
+        padding: 16px;
+        border-bottom: 1px solid var(--apple-hairline);
+        font-size: 0.875rem;
+        color: var(--apple-ink);
+      }
+    }
+  }
+
+  .el-table__empty-block {
+    padding: 64px 0;
+
+    .el-empty__description {
+      color: var(--apple-ink-muted-48);
+    }
+
+    .el-button {
+      border-radius: var(--apple-rounded-lg);
+
+      &:hover {
+        /* translateY removed for Apple HIG */;
+      }
+    }
+  }
+}
+
+.student-info-enhanced {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.student-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.student-main-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  
+  @media (max-width: 1200px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+
+.student-name {
+  font-weight: 600;
+  color: var(--apple-ink);
+  font-size: 0.875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+  
+  @media (max-width: 1200px) {
+    max-width: 100%;
+  }
+}
+
+:deep(.el-tag) {
+  border-radius: 8px;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  
+  &.el-tag--info {
+    background: #e0f2fe;
+    border-color: #e0f2fe;
+    color: var(--apple-info);
+  }
+  
+  &.el-tag--primary {
+    background: #dbeafe;
+    border-color: #dbeafe;
+    color: var(--apple-primary);
+  }
+  
+  &.el-tag--success {
+    background: #d1fae5;
+    border-color: #d1fae5;
+    color: var(--apple-success);
+  }
+  
+  &.el-tag--warning {
+    background: #fef3c7;
+    border-color: #fef3c7;
+    color: var(--apple-warning);
+  }
+  
+  &.el-tag--danger {
+    background: #fee2e2;
+    border-color: #fee2e2;
+    color: var(--apple-danger);
+  }
+}
+
+.student-secondary-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.college-tag, .contact-info {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: var(--apple-ink-muted-48);
+
+  .el-icon {
+    font-size: 17px;
+  }
+}
+
+.paper-info-enhanced {
+  padding: 8px 0;
+}
+
+.paper-title-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 8px;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+
+.paper-title {
+  font-weight: 600;
+  color: var(--apple-ink);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  flex: 1;
+  min-width: 0;
+}
+
+.paper-tags {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  
+  @media (max-width: 768px) {
+    align-self: flex-start;
+  }
+}
+
+.paper-meta-enhanced {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.meta-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: var(--apple-ink-muted-48);
+  background: var(--apple-canvas-parchment);
+  padding: 4px 12px;
+  border-radius: var(--apple-rounded-lg);
+  
+  .el-icon {
+    font-size: 17px;
+  }
+}
+
+.similarity-info-enhanced {
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.similarity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.similarity-score-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.similarity-percentage {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--apple-ink);
+
+  &.high {
+    color: var(--apple-danger);
+  }
+
+  &.medium {
+    color: var(--apple-warning);
+  }
+
+  &.low {
+    color: var(--apple-success);
+  }
+}
+
+.similarity-visual {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+:deep(.el-progress) {
+  width: 100%;
+  
+  .el-progress__bar {
+    border-radius: 3px;
+    
+    .el-progress__inner {
+      border-radius: 3px;
+    }
+  }
+}
+
+.similarity-indicators {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 4px;
+}
+
+.indicator-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--apple-hairline);
+  transition: transform 0.2s ease;
+  
+  &.active {
+    transform: scale(1.2);
+  }
+  
+  &.current {
+    transform: scale(1.4);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8), 0 0 0 4px currentColor;
+  }
+}
+
+.similarity-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+:deep(.el-button--small) {
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 8px;
+  
+  &:hover {
+    /* translateY removed for Apple HIG */;
+  }
+}
+
+.waiting-time {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--apple-ink);
+  text-align: center;
+  padding: 8px 0;
+
+  &.urgent {
+    color: var(--apple-danger);
+  }
+
+  &.high {
+    color: var(--apple-warning);
+  }
+
+  &.normal {
+    color: var(--apple-success);
+  }
+}
+
+.deadline-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 0;
+}
+
+.deadline-overdue, .deadline-warning {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 4px;
+  
+  .el-icon {
+    font-size: 17px;
+  }
+}
+
+.deadline-overdue {
+  color: var(--apple-danger);
+}
+
+.deadline-warning {
+  color: var(--apple-warning);
+}
+
+.action-buttons-enhanced {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+:deep(.el-button-group) {
+  @media (max-width: 768px) {
+    width: 100%;
+    
+    .el-button {
+      flex: 1;
+      text-align: center;
+    }
+  }
+}
+
+.more-dropdown {
+  flex-shrink: 0;
+  
+  @media (max-width: 768px) {
+    width: 100%;
+    
+    .more-btn {
+      width: 100%;
+    }
+  }
+}
+
+:deep(.el-dropdown-menu) {
+  border-radius: 11px;
+  /* box-shadow removed for Apple HIG */
+  border: 1px solid var(--apple-hairline);
+
+  .el-dropdown-menu__item {
+    font-size: 0.875rem;
+    padding: 8px 16px;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background: var(--apple-canvas-parchment);
+      color: var(--apple-ink);
+    }
+  }
+}
+
+.batch-actions {
+  padding: 16px;
+  background: var(--apple-canvas-parchment);
+  border-top: 1px solid var(--apple-hairline);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.preview-dialog {
+  border-radius: var(--apple-rounded-xl);
+  overflow: hidden;
+
+  :deep(.el-dialog__header) {
+    background: var(--apple-canvas-parchment);
+    border-bottom: 1px solid var(--apple-hairline);
+    padding: 20px var(--apple-spacing-xl);
+
+    .el-dialog__title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--apple-ink);
+    }
+
+    .el-dialog__headerbtn {
+      top: 20px;
+
+      .el-dialog__close {
+        font-size: 20px;
+        color: var(--apple-ink-muted-48);
+
+        &:hover {
+          color: var(--apple-ink);
+        }
+      }
+    }
+  }
+  
+  :deep(.el-dialog__body) {
+    padding: 0;
+  }
+}
+
+.preview-container {
+  position: relative;
+  width: 100%;
+  height: 70vh;
+  min-height: 500px;
+}
+
+.preview-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 0;
+}
+
+.loading-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--apple-canvas-parchment);
+}
+
+.error-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  text-align: center;
+  color: var(--apple-ink-muted-48);
+  background: var(--apple-canvas-parchment);
+  padding: 48px;
+  
+  .el-icon {
+    font-size: 48px;
+    color: #94a3b8;
+  }
+  
+  p {
+    margin: 0;
+    line-height: 1.5;
+  }
+  
+  ul {
+    text-align: left;
+    margin: 16px 0;
+    padding-left: 24px;
+  }
+  
+  li {
+    margin-bottom: 8px;
+  }
+}
+
+.report-dialog {
+  border-radius: var(--apple-rounded-xl);
+  overflow: hidden;
+
+  :deep(.el-dialog__header) {
+    background: var(--apple-canvas-parchment);
+    border-bottom: 1px solid var(--apple-hairline);
+    padding: 20px var(--apple-spacing-xl);
+
+    .el-dialog__title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--apple-ink);
+    }
+  }
+  
+  :deep(.el-dialog__body) {
+    padding: 0;
+  }
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px var(--apple-spacing-xl);
+  border-top: 1px solid var(--apple-hairline);
+  background: var(--apple-canvas-parchment);
+
+  :deep(.el-button) {
+    font-size: 0.875rem;
+    padding: 8px 16px;
+    border-radius: var(--apple-rounded-lg);
+    
+    &:hover {
+      /* translateY removed for Apple HIG */;
+    }
+  }
+}
+
+/* 响应式调整 */
+@media (max-width: 1200px) {
+  .action-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .action-left, .action-right {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  
+  .stats-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .teacher-pending {
+    padding: 16px;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .stats-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .action-left, .action-right {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  :deep(.el-select) {
+    width: 100%;
+  }
+  
+  :deep(.el-button) {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .page-title {
+    font-size: 1.25rem;
+  }
+  
+  .preview-container {
+    height: 60vh;
+    min-height: 400px;
+  }
+}
+</style>
+
 <script setup>
 import { ref, reactive, computed, onMounted, onUnmounted } from 'vue'
 import { ElMessage, ElMessageBox, ElLoading } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import ReviewDialog from '@/views/teacher/ReviewDialog.vue'
-import PlagiarismReportViewer from '@/views/teacher/PlagiarismReportViewer.vue'
-// import SimilarityReportDialog from './components/SimilarityReportDialog.vue'
+import PlagiarismReportViewer from '@/views/teacher/PlagiarismReportViewer.vue'// import SimilarityReportDialog from './components/SimilarityReportDialog.vue'
 import PriorityBadge from '@/views/teacher/PriorityBadge.vue'
-import { getAvatarUrl } from '@/utils/avatar'
-import { 
+import { formatDateTime } from '@/utils/dataType.js'
+import { getAllColleges } from '@/api/user'
+
+import {
   getPendingReviewList, 
   doReview, 
   getPendingStats, 
@@ -565,11 +1363,10 @@ import {
   delegateReview,
   getPaperContent,
   getPaperPreviewUrl,
-  getReviewHistory,
-  getTeacherReviewHistory,
-  getDetailedPlagiarismReport
+  getDetailedPlagiarismReport,
+  downloadPaper
 } from '@/api/teacher.js'
-import { convertToBackendStatus } from '@/utils/reviewStatus.js'
+import { convertToBackendStatus, getSimilarityColor, getSimilarityClass, getSimilarityTagType } from '@/utils/reviewStatus.js'
 import {
   Bell,
   Clock,
@@ -586,7 +1383,9 @@ import {
   Download,
   User,
   DocumentChecked,
-  ArrowDown
+  ArrowDown,
+  FullScreen,
+  OfficeBuilding
 } from '@element-plus/icons-vue'
 
 // 统计数据
@@ -605,9 +1404,14 @@ const filterPriority = ref('')
 const filterCollege = ref('')
 const filterSimilarity = ref('')
 const sortDesc = ref(true)
+const collegeList = ref([])
 
 // 加载状态
 const loading = ref(false)
+let loadingInstance = null
+
+// 表格引用
+const tableRef = ref(null)
 
 // 选择的行
 const selectedPapers = ref([])
@@ -632,24 +1436,39 @@ const papers = ref([])
 const showOnlyOverdue = ref(false)
 
 // 论文预览功能
+const buildPreviewUrl = (rawUrl) => {
+  if (!rawUrl) return ''
+  if (rawUrl.includes('onlinePreview')) return rawUrl
+  try {
+    if (rawUrl.includes('url=')) {
+      const urlParam = new URLSearchParams(rawUrl.split('?')[1]).get('url')
+      if (urlParam) {
+        const decodedUrl = decodeURIComponent(atob(urlParam))
+        const previewBase = import.meta.env.VITE_KKFILEVIEW_BASE_URL || ''
+        return `${previewBase}/onlinePreview?url=${btoa(decodedUrl)}`
+      }
+    }
+  } catch (e) {
+    console.warn('URL处理失败:', e)
+  }
+  return rawUrl
+}
+
 const viewPaper = async (paper) => {
   try {
-    console.log('查看论文:', paper)
-    
     // 重置所有状态
     previewLoading.value = true
     previewError.value = false
     previewUrl.value = ''
     currentPaper.value = null
     
-    const loading = ElLoading.service({
+    loadingInstance = ElLoading.service({
       lock: true,
       text: '正在加载论文信息...',
       background: 'rgba(0,0,0,0.4)'
     })
     
     const paperId = paper.paperId || paper.id || paper.paperBaseInfo?.paperId
-    console.log('论文ID:', paperId)
     
     if (!paperId) {
       ElMessage.error('论文ID不存在')
@@ -663,20 +1482,16 @@ const viewPaper = async (paper) => {
       getPaperPreviewUrl(paperId)
     ])
     
-    console.log('论文内容响应:', contentRes)
-    console.log('预览URL响应:', previewRes)
     
     // 处理论文内容
     if (contentRes.code === 200 && contentRes.data) {
       currentPaper.value = contentRes.data
-      console.log('当前论文数据:', currentPaper.value)
     } else {
       console.warn('获取论文内容失败:', contentRes.message)
     }
     
     // 处理预览URL
     if (previewRes.code === 200 && previewRes.data) {
-      console.log('预览响应完整数据:', previewRes)
       
       // 检查多种可能的数据结构
       const rawUrl = previewRes.data.previewUrl || 
@@ -685,7 +1500,6 @@ const viewPaper = async (paper) => {
                     previewRes.data.preview_url ||
                     (typeof previewRes.data === 'string' ? previewRes.data : null)
       
-      console.log('提取的原始URL:', rawUrl)
       
       // 检查是否为null值
       if (rawUrl === null || rawUrl === undefined) {
@@ -709,35 +1523,7 @@ const viewPaper = async (paper) => {
         return
       }
       
-      let finalUrl = rawUrl
-      
-      // 如果是KKFileView的onlinePreview URL，直接使用
-      if (rawUrl && rawUrl.includes('onlinePreview')) {
-        finalUrl = rawUrl
-        console.log('使用KKFileView预览URL:', finalUrl)
-      } else {
-        // 如果是文件下载URL，尝试包装成KKFileView格式
-        try {
-          if (rawUrl && rawUrl.includes('url=')) {
-            const urlParam = new URLSearchParams(rawUrl.split('?')[1]).get('url')
-            if (urlParam) {
-              finalUrl = decodeURIComponent(atob(urlParam))
-              console.log('解码后的文件URL:', finalUrl)
-              
-              // 重新包装为KKFileView格式
-              const encodedFileUrl = btoa(finalUrl)
-              finalUrl = `http://192.168.30.138:8080/onlinePreview?url=${encodedFileUrl}`
-              console.log('重新包装的KKFileView URL:', finalUrl)
-            }
-          }
-        } catch (decodeError) {
-          console.warn('URL处理失败:', decodeError)
-          finalUrl = rawUrl
-        }
-      }
-      
-      previewUrl.value = finalUrl
-      console.log('最终预览URL:', previewUrl.value)
+      previewUrl.value = buildPreviewUrl(rawUrl)
       
       if (previewUrl.value) {
         previewVisible.value = true
@@ -780,7 +1566,8 @@ const viewPaper = async (paper) => {
     ElMessage.error('获取论文信息失败: ' + error.message)
   } finally {
     setTimeout(() => {
-      ElLoading.service().close()
+      loadingInstance?.close()
+      loadingInstance = null
     }, 500)
   }
 }
@@ -797,7 +1584,6 @@ const closePreview = () => {
 }
 
 const handlePreviewLoad = () => {
-  console.log('iframe加载完成')
   previewLoading.value = false
   
   // 显示成功信息
@@ -808,7 +1594,6 @@ const handlePreviewLoad = () => {
 
 const handlePreviewError = (event) => {
   console.error('iframe加载错误:', event)
-  console.log('当前previewUrl:', previewUrl.value)
   previewLoading.value = false
   previewError.value = true
   
@@ -822,7 +1607,6 @@ const handlePreviewError = (event) => {
 
 // 重试预览
 const retryPreview = async (paper) => {
-  console.log('重新加载预览:', paper)
   previewError.value = false
   previewLoading.value = true
   previewUrl.value = ''
@@ -833,28 +1617,7 @@ const retryPreview = async (paper) => {
     
     if (res.code === 200 && res.data) {
       const rawUrl = res.data.previewUrl || res.data.url
-      let finalUrl = rawUrl
-      
-      // 使用相同的URL处理逻辑
-      if (rawUrl && rawUrl.includes('onlinePreview')) {
-        finalUrl = rawUrl
-      } else {
-        try {
-          if (rawUrl && rawUrl.includes('url=')) {
-            const urlParam = new URLSearchParams(rawUrl.split('?')[1]).get('url')
-            if (urlParam) {
-              const decodedUrl = decodeURIComponent(atob(urlParam))
-              const encodedFileUrl = btoa(decodedUrl)
-              finalUrl = `http://192.168.30.138:8080/onlinePreview?url=${encodedFileUrl}`
-            }
-          }
-        } catch (decodeError) {
-          console.warn('URL处理失败:', decodeError)
-        }
-      }
-      
-      previewUrl.value = finalUrl
-      console.log('重试预览URL:', previewUrl.value)
+      previewUrl.value = buildPreviewUrl(rawUrl)
       
       if (previewUrl.value) {
         previewError.value = false
@@ -922,7 +1685,6 @@ const computeDeadlineFromSubmit = (submitTime, days = 7) => {
 }
 
 const filteredPapers = computed(() => {
-  // 确保papers.value是数组
   if (showOnlyOverdue.value) {
     const list = overduePapers.value.slice()
     list.sort((a, b) => new Date(b.submitTime) - new Date(a.submitTime))
@@ -930,53 +1692,38 @@ const filteredPapers = computed(() => {
   }
   const papersArray = Array.isArray(papers.value) ? [...papers.value] : []
   let result = papersArray
-  
-  // 按优先级筛选
+
+  // 按优先级筛选（兼容字符串和数字）
   if (filterPriority.value) {
-    result = result.filter(paper => paper.priority === filterPriority.value)
+    const priorityMap = { urgent: ['urgent', 2], high: ['high', 1], normal: ['normal', 0] }
+    const match = priorityMap[filterPriority.value] || []
+    result = result.filter(paper => match.includes(paper.priority))
   }
-  
-  // 按学院筛选
+
+  // 按学院筛选（精确匹配）
   if (filterCollege.value) {
-    result = result.filter(paper => paper.college.includes(filterCollege.value))
+    result = result.filter(paper => paper.college === filterCollege.value)
   }
-  
+
   // 按相似度筛选
   if (filterSimilarity.value) {
     result = result.filter(paper => {
-      const similarity = paper.similarity
-      if (filterSimilarity.value === 'low') return similarity < 15
-      if (filterSimilarity.value === 'medium') return similarity >= 15 && similarity < 30
-      if (filterSimilarity.value === 'high') return similarity >= 30
+      const s = paper.similarity
+      if (filterSimilarity.value === 'low') return s < 15
+      if (filterSimilarity.value === 'medium') return s >= 15 && s < 30
+      if (filterSimilarity.value === 'high') return s >= 30
       return true
     })
   }
-  
+
   // 排序
-  result.sort((a, b) => {
-    if (sortDesc.value) {
-      return new Date(b.submitTime) - new Date(a.submitTime)
-    } else {
-      return new Date(a.submitTime) - new Date(b.submitTime)
-    }
-  })
-  
+  result.sort((a, b) => sortDesc.value
+    ? new Date(b.submitTime) - new Date(a.submitTime)
+    : new Date(a.submitTime) - new Date(b.submitTime)
+  )
+
   return result
 })
-
-// 工具函数
-const getSimilarityColor = (similarity) => {
-  if (!similarity) return '#909399'
-  if (similarity < 15) return '#52c41a'
-  if (similarity < 30) return '#faad14'
-  return '#ff4d4f'
-}
-
-const getSimilarityClass = (similarity) => {
-  if (similarity < 15) return 'similarity-low'
-  if (similarity < 30) return 'similarity-medium'
-  return 'similarity-high'
-}
 
 const getWaitingTimeClass = (days) => {
   if (days >= 3) return 'waiting-long'
@@ -1010,20 +1757,7 @@ const urgentPapers = computed(() => {
   return papers.value.filter(p => !isOverdue(p) && isUrgent(p))
 })
 
-const formatDate = (dateString) => {
-  const datePart = dateString?.split(' ')[0];
-  return datePart ?? '-';
-};
-
-const formatDateTime = (dateString) => {
-  const date = new Date(dateString)
-  return date.toLocaleString('zh-CN', {
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
-}
+// 使用导入的 formatDateTime 函数
 
 const truncateText = (text, maxLength = 50) => {
   if (text == null) return '';
@@ -1035,11 +1769,6 @@ const truncateText = (text, maxLength = 50) => {
 // 事件处理
 const handleSelectionChange = (selection) => {
   selectedPapers.value = selection
-}
-
-const handleRowClick = (row) => {
-  // 可以选择查看详情
-  console.log('点击行:', row)
 }
 
 const toggleSort = () => {
@@ -1057,26 +1786,25 @@ const refreshList = async () => {
     
     const raw = listResponse?.data?.records || []
 
-    // 将 paperBaseInfo 展平并做字段兜底
+    // 增强的 normalize 函数，支持从嵌套结构中获取字段
     const normalize = (item) => {
+      // 从嵌套结构中获取数据
       const base = item?.paperBaseInfo || {}
-      const submit = item.submitTime ?? base.submitTime ?? base.createTime ?? null
-      const backendDeadline = item.deadline ?? base.deadline ?? item.taskBaseInfo?.deadline ?? item.reviewOperateInfo?.deadline ?? null
-      const reviewDays = item.reviewDays ?? base.reviewDays ?? 7
-      const finalDeadline = backendDeadline ?? computeDeadlineFromSubmit(submit, reviewDays)
-
+      const task = item?.taskBaseInfo || {}
+      
       return {
         ...item,
-        paperId: item.paperId ?? base.paperId ?? base.paperId ?? null,
-        paperTitle: item.paperTitle ?? base.paperTitle ?? base.paperName ?? '',
-        studentName: item.studentName ?? base.studentName ?? base.realName ?? '',
-        studentId: item.studentId ?? base.studentId ?? base.studentNo ?? item.studentNo ?? '',
+        // 保持兼容性，确保所有字段都有合理的默认值
+        paperId: item.paperId ?? base.paperId ?? item.id ?? null,
+        paperTitle: item.paperTitle ?? base.paperTitle ?? '',
+        studentName: item.studentName ?? base.studentName ?? '',
+        studentId: item.studentId ?? base.studentId ?? '',
         studentNo: item.studentNo ?? base.studentNo ?? '',
-        submitTime: submit,
-        similarity: item.similarity ?? base.similarity ?? base.similarityRate ?? 0,
-        waitingTime: item.waitingTime ?? item.daysWaiting ?? 0,
+        submitTime: item.submitTime ?? base.submitTime ?? null,
+        similarity: item.similarity ?? task.checkRate ?? 0,
+        waitingTime: item.waitingTime ?? 0,
         priority: item.priority ?? 'normal',
-        deadline: finalDeadline,
+        deadline: item.deadline ?? null,
         college: item.college ?? base.college ?? '未知学院',
         email: item.email ?? base.email ?? ''
       }
@@ -1133,15 +1861,9 @@ const similarityLevels = [
   { value: 'high', label: '高风险', min: 30, max: 100, color: '#F56C6C' }
 ]
 
-const getSimilarityTagType = (similarity) => {
-  if (similarity <= 15) return 'success'
-  if (similarity <= 30) return 'warning'
-  return 'danger'
-}
-
 const getSimilarityLevel = (similarity) => {
-  if (similarity <= 15) return '低风险'
-  if (similarity <= 30) return '中风险'
+  if (similarity < 15) return '低风险'
+  if (similarity < 30) return '中风险'
   return '高风险'
 }
 
@@ -1183,7 +1905,6 @@ const viewSimilarityReport = (paper) => {
 
 const toggleFullscreen = () => {
   isFullscreen.value = !isFullscreen.value
-  console.log('全屏状态切换:', isFullscreen.value)
   
   // 给用户明确的视觉反馈
   if (isFullscreen.value) {
@@ -1201,13 +1922,13 @@ const toggleFullscreen = () => {
 const handleReportApprove = (paperId) => {
   ElMessage.success('论文审核已通过')
   reportDialogVisible.value = false
-  loadPendingPapers()
+  refreshList()
 }
 
 const handleReportRevision = ({ paperId, suggestion }) => {
   ElMessage.success('修改要求已发送')
   reportDialogVisible.value = false
-  loadPendingPapers()
+  refreshList()
 }
 
 const contactStudent = async (paper) => {
@@ -1248,8 +1969,20 @@ const handleMoreAction = async (paper, command) => {
       break
     case 'download':
       try {
-        // 这里应该调用下载接口
-        ElMessage.success('开始下载论文文件')
+        const paperId = paper.paperId ?? paper.paperBaseInfo?.paperId ?? paper.id
+        if (!paperId) {
+          ElMessage.error('无法获取论文ID')
+          return
+        }
+        const res = await downloadPaper(paperId)
+        const blob = res.data instanceof Blob ? res.data : new Blob([res.data])
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = `论文_${paper.paperTitle || paperId}.docx`
+        link.click()
+        window.URL.revokeObjectURL(url)
+        ElMessage.success('论文下载成功')
       } catch (error) {
         console.error('下载失败:', error)
         ElMessage.error('下载失败，请重试')
@@ -1289,14 +2022,24 @@ const handleMoreAction = async (paper, command) => {
           confirmButtonText: '确认委托',
           cancelButtonText: '取消'
         })
-        
+
         if (reason) {
-          // 这里需要选择委托教师，简化处理
-          ElMessage.info('委托审核功能开发中')
+          const paperId = paper.paperId || paper.paperBaseInfo?.paperId || paper.id
+          const res = await delegateReview({
+            paperId: String(paperId),
+            reason,
+            studentId: String(paper.studentId ?? paper.studentNo ?? '')
+          })
+          if (res?.code === 200) {
+            ElMessage.success(res.message || '委托审核请求已提交')
+          } else {
+            ElMessage.error(res?.message || '委托审核请求提交失败')
+          }
         }
       } catch (error) {
         if (error !== 'cancel') {
-          ElMessage.error('委托操作失败')
+          console.error('委托操作失败:', error)
+          ElMessage.error('委托操作失败，请重试')
         }
       }
       break
@@ -1311,25 +2054,20 @@ const batchReview = async () => {
     ElMessage.warning('请先选择要审核的论文')
     return
   }
-  
+
   try {
-    // 弹出审核对话框进行审核决策
-    ElMessageBox.confirm(
+    await ElMessageBox.confirm(
       `确定要批量审核 ${selectedPapers.value.length} 篇论文吗？`,
       '批量审核',
-      {
-        type: 'warning',
-        confirmButtonText: '开始审核',
-        cancelButtonText: '取消'
-      }
-    ).then(() => {
-      // 打开审核对话框，传递多个论文ID以支持批量操作
-      currentPaperId.value = selectedPapers.value[0]?.paperId || selectedPapers.value[0]?.id || null
-      reviewDialogVisible.value = true
-    })
+      { type: 'warning', confirmButtonText: '开始审核', cancelButtonText: '取消' }
+    )
+    currentPaperId.value = selectedPapers.value[0]?.paperId || selectedPapers.value[0]?.id || null
+    reviewDialogVisible.value = true
   } catch (error) {
-    console.error('批量审核操作失败:', error)
-    ElMessage.error('批量审核操作失败，请重试')
+    if (error !== 'cancel') {
+      console.error('批量审核操作失败:', error)
+      ElMessage.error('批量审核操作失败，请重试')
+    }
   }
 }
 
@@ -1372,6 +2110,7 @@ const batchRemind = async () => {
 }
 
 const clearSelection = () => {
+  tableRef.value?.clearSelection()
   selectedPapers.value = []
 }
 
@@ -1395,48 +2134,33 @@ const getTodayReviewedCountLocal = async () => {
 
 const handleReviewCompleted = async (reviewResult) => {
   try {
-    // 如果有审核结果，则调用doReview接口
-    if (reviewResult) {
-      // 根据是否有选中论文来决定是单个审核还是批量审核
-      let paperIds = []
-      
-      if (selectedPapers.value.length > 1) {
-        // 批量审核：使用选中的论文ID
-        paperIds = selectedPapers.value.map(paper => paper.paperId || paper.id)
-      } else {
-        // 单个审核：使用当前论文ID
-        paperIds = [currentPaperId.value]
-      }
-      
-      const reviewData = {
-        paperIds: paperIds,
-        reviewStatus: convertToBackendStatus(statusValue), // 统一转换为后端期望的整型状态
-        reviewOpinion: reviewResult.opinion || '',
-        reviewAttach: reviewResult.attach || null
-      }
-      
-      await doReview(reviewData)
-      
-      if (paperIds.length > 1) {
-        ElMessage.success(`成功审核 ${paperIds.length} 篇论文`)
-        // 批量审核后清空选择
-        clearSelection()
-      } else {
-        ElMessage.success('论文审核成功')
-      }
-    }
-    
     // 刷新列表并关闭对话框
     await refreshList()
     reviewDialogVisible.value = false
+    
+    // 批量审核后清空选择
+    if (reviewResult && reviewResult.batch) {
+      clearSelection()
+    }
   } catch (error) {
     console.error('审核操作失败:', error)
     ElMessage.error('审核操作失败，请重试')
   }
 }
 
+const loadColleges = async () => {
+  try {
+    const res = await getAllColleges()
+    if (res.code === 200) {
+      collegeList.value = res.data || []
+    }
+  } catch (e) {
+    console.error('获取学院列表失败:', e)
+  }
+}
+
 onMounted(async () => {
-  await refreshList()
+  await Promise.all([refreshList(), loadColleges()])
 })
 
 onUnmounted(() => {
@@ -1446,573 +2170,3 @@ onUnmounted(() => {
   }
 })
 </script>
-
-<style scoped>
-.teacher-pending {
-  padding: 20px;
-  background-color: #f5f7fa;
-}
-
-.page-header {
-  margin-bottom: 24px;
-}
-
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
-.header-left .page-title {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 600;
-  color: #303133;
-}
-
-.header-left .page-subtitle {
-  margin: 8px 0 0;
-  font-size: 14px;
-  color: #909399;
-}
-
-.urgent-alert {
-  margin-bottom: 16px;
-}
-
-.stats-row {
-  margin-bottom: 16px;
-}
-
-.stat-card {
-  height: 100%;
-}
-
-.stat-content {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.stat-icon-wrapper {
-  width: 56px;
-  height: 56px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 24px;
-}
-
-.stat-info {
-  flex: 1;
-}
-
-.stat-number {
-  font-size: 28px;
-  font-weight: 700;
-  color: #303133;
-  line-height: 1.2;
-}
-
-.stat-label {
-  font-size: 14px;
-  color: #909399;
-  margin: 4px 0;
-}
-
-.action-card {
-  margin-bottom: 16px;
-}
-
-.action-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
-.action-left,
-.action-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.list-card {
-  margin-bottom: 20px;
-}
-
-.student-info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.student-main {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.student-name {
-  font-weight: 500;
-  color: #303133;
-}
-
-.student-college {
-  font-size: 12px;
-  color: #909399;
-}
-
-.student-contact {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  color: #606266;
-}
-
-.paper-info {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.paper-title {
-  font-weight: 500;
-  color: #303133;
-  line-height: 1.4;
-  cursor: pointer;
-}
-
-.paper-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.meta-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: #909399;
-}
-
-.similarity-info {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.similarity-score {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.similarity-bar {
-  flex: 1;
-}
-
-.similarity-value {
-  min-width: 45px;
-  text-align: right;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.similarity-low {
-  color: #52c41a;
-}
-
-.similarity-medium {
-  color: #faad14;
-}
-
-.similarity-high {
-  color: #ff4d4f;
-}
-
-.similarity-detail {
-  text-align: right;
-}
-
-.waiting-time {
-  font-weight: 500;
-  font-size: 14px;
-}
-
-.waiting-short {
-  color: #52c41a;
-}
-
-.waiting-medium {
-  color: #faad14;
-}
-
-.waiting-long {
-  color: #ff4d4f;
-}
-
-.deadline-cell {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 14px;
-}
-
-.deadline-warning {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  color: #ff4d4f;
-  font-size: 12px;
-}
-
-.enhanced-table-card {
-  border: 1px solid #e4e7ed;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
-}
-
-.enhanced-table .table-row:hover {
-  background-color: #f5f7fa;
-  transition: background-color 0.3s ease;
-}
-
-/* 学生信息增强样式 */
-.student-info-enhanced {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.student-avatar {
-  flex-shrink: 0;
-}
-
-.student-details {
-  flex: 1;
-  min-width: 0;
-}
-
-.student-main-info {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
-}
-
-.student-name {
-  font-weight: 600;
-  color: #303133;
-  font-size: 14px;
-}
-
-.student-secondary-info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 12px;
-  color: #909399;
-}
-
-.college-tag, .contact-info {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-/* 论文信息增强样式 */
-.paper-info-enhanced {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.paper-title-section {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.paper-title {
-  font-weight: 600;
-  color: #303133;
-  font-size: 14px;
-  line-height: 1.4;
-}
-
-.paper-tags {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.paper-meta-enhanced {
-  display: flex;
-  gap: 12px;
-}
-
-.meta-chip {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
-  background-color: #f0f2f5;
-  border-radius: 12px;
-  font-size: 12px;
-  color: #606266;
-}
-
-/* 相似度信息增强样式 */
-.similarity-info-enhanced {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.similarity-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.similarity-score-display {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.similarity-percentage {
-  font-size: 18px;
-  font-weight: 700;
-  transition: all 0.3s ease;
-}
-
-.similarity-low {
-  color: #67c23a;
-}
-
-.similarity-medium {
-  color: #e6a23c;
-}
-
-.similarity-high {
-  color: #f56c6c;
-}
-
-.similarity-visual {
-  position: relative;
-}
-
-.similarity-progress {
-  border-radius: 6px;
-}
-
-.similarity-indicators {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 8px;
-}
-
-.indicator-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  opacity: 0.3;
-  transition: all 0.3s ease;
-}
-
-.indicator-dot.active {
-  opacity: 1;
-  transform: scale(1.2);
-}
-
-.indicator-dot.current {
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8);
-}
-
-.similarity-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.report-btn, .recheck-btn {
-  flex: 1;
-  justify-content: center;
-}
-
-/* 操作按钮增强样式 */
-.action-buttons-enhanced {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.action-btn {
-  transition: all 0.3s ease;
-}
-
-.primary-action:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(64, 158, 255, 0.3);
-}
-
-.secondary-action:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(103, 194, 58, 0.3);
-}
-
-.more-dropdown {
-  margin-left: 8px;
-}
-
-.more-btn {
-  transition: all 0.3s ease;
-}
-
-.more-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* 报告对话框样式 */
-.report-dialog {
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.report-dialog :deep(.el-dialog__body) {
-  padding: 0;
-  height: calc(100vh - 200px);
-}
-
-.dialog-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  padding: 16px 20px;
-  border-top: 1px solid #e6e8eb;
-  background: #f5f7fa;
-}
-
-/* 论文预览对话框样式 */
-.preview-dialog {
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.preview-dialog :deep(.el-dialog__body) {
-  padding: 0;
-  height: v-bind('isFullscreen ? "100vh" : "calc(100vh - 200px)"');
-}
-
-.preview-dialog.fullscreen :deep(.el-dialog__body) {
-  height: 100vh;
-}
-
-.preview-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.preview-frame {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-
-.loading-placeholder {
-  padding: 20px;
-}
-
-.error-placeholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  color: #909399;
-}
-
-.error-placeholder p {
-  margin: 16px 0;
-  font-size: 16px;
-}
-
-.batch-actions {
-  padding: 16px;
-  background-color: #f8f9fa;
-  border-radius: 4px;
-  margin-top: 20px;
-  border: 1px solid #ebeef5;
-}
-
-/* 响应式设计 */
-@media (max-width: 768px) {
-  .teacher-pending {
-    padding: 12px;
-  }
-  
-  .header-content {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .header-right {
-    display: flex;
-    justify-content: center;
-  }
-  
-  .action-content {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .action-left,
-  .action-right {
-    width: 100%;
-    justify-content: center;
-  }
-  
-  .action-buttons {
-    flex-direction: column;
-    gap: 4px;
-  }
-  
-  .batch-actions {
-    padding: 12px;
-  }
-  
-  .batch-actions .el-space {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-  }
-}
-
-@media (max-width: 480px) {
-  .student-main,
-  .paper-meta {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .similarity-score {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-  }
-  
-  .similarity-bar {
-    width: 100%;
-  }
-}
-</style>

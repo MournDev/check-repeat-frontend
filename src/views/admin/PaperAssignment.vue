@@ -88,6 +88,25 @@
         />
       </div>
     </el-card>
+
+    <!-- 学生详情对话框 -->
+    <el-dialog v-model="detailDialogVisible" title="学生详细信息" width="600px" destroy-on-close>
+      <template v-if="studentDetail">
+        <el-descriptions :column="2" border>
+          <el-descriptions-item label="姓名">{{ studentDetail.realName || studentDetail.username || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="学号">{{ studentDetail.username || studentDetail.studentNo || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="学院">{{ studentDetail.collegeName || studentDetail.college || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="专业">{{ studentDetail.majorName || studentDetail.major || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="年级">{{ studentDetail.grade || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="邮箱">{{ studentDetail.email || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="手机号">{{ studentDetail.phone || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="论文数">{{ studentDetail.paperCount ?? '-' }}</el-descriptions-item>
+        </el-descriptions>
+      </template>
+      <template #footer>
+        <el-button @click="detailDialogVisible = false">关闭</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -97,11 +116,11 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 
 // 导入管理员API
 import {
-  getAssignmentStats,
-  getUnassignedStudents as getPendingStudents,
-  getAvailableTeachers as getAvailableAdvisors,
-  assignBatchStudents as autoAssign,
-  assignSingleStudent as manualAssign
+  getAssignmentStats, 
+  getUnassignedStudents, 
+  getAvailableTeachers,
+  assignSingleStudent,
+  assignBatchStudents
 } from '@/api/admin/assignment'
 
 // 导入其他必要API
@@ -117,6 +136,8 @@ const loading = ref(false)
 const assignmentStats = ref({})
 const pendingStudents = ref([])
 const availableAdvisors = ref([])
+const studentDetail = ref(null)
+const detailDialogVisible = ref(false)
 
 // 分页
 const pagination = reactive({
@@ -155,11 +176,11 @@ const loadPendingStudents = async () => {
   loading.value = true
   try {
     const params = {
-      page: pagination.currentPage,
-      size: pagination.pageSize
+      pageNum: pagination.currentPage,
+      pageSize: pagination.pageSize
     }
-    const response = await getPendingStudents(params)
-    pendingStudents.value = response.data.list || []
+    const response = await getUnassignedStudents(params)
+    pendingStudents.value = response.data.records || []
     pagination.total = response.data.total || 0
     loading.value = false
   } catch (error) {
@@ -174,7 +195,7 @@ const loadPendingStudents = async () => {
 
 const loadAvailableAdvisors = async () => {
   try {
-    const response = await getAvailableAdvisors()
+    const response = await getAvailableTeachers()
     availableAdvisors.value = response.data || []
   } catch (error) {
     console.error('加载可用导师失败:', error)
@@ -194,7 +215,7 @@ const handleAutoAssign = async () => {
       }
     )
     
-    const response = await autoAssign({ algorithm: 'balanced' })
+    const response = await assignBatchStudents({ algorithm: 'balanced' })
     ElMessage.success(`自动分配完成，共分配 ${response.data.assignedCount} 名学生`)
     refreshData()
   } catch (error) {
@@ -258,9 +279,12 @@ const assignAdvisor = async (student) => {
 const viewDetails = async (student) => {
   try {
     const response = await getStudentDetail(student.id)
-    ElMessage.success(`学生详细信息已加载`)
-    console.log('学生详情:', response.data)
-    // 这里可以打开详情对话框显示更多信息
+    if (response.code === 200 && response.data) {
+      studentDetail.value = response.data
+      detailDialogVisible.value = true
+    } else {
+      ElMessage.error(response.message || '获取学生详情失败')
+    }
   } catch (error) {
     console.error('获取学生详情失败:', error)
     ElMessage.error('获取学生详情失败')
@@ -304,12 +328,12 @@ onMounted(() => {
       margin: 0 0 0.5rem 0; 
       font-size: 1.75rem; 
       font-weight: 600; 
-      color: #2c3e50; 
+      color: #1d1d1f; 
     }
     
     .page-desc { 
       margin: 0; 
-      color: #7f8c8d; 
+      color: #86868b; 
       font-size: 0.95rem; 
     }
   }
@@ -322,7 +346,7 @@ onMounted(() => {
 
 .stats-card {
   margin-bottom: 1.5rem;
-  border-radius: 12px;
+  border-radius: 18px;
   
   :deep(.el-card__body) {
     padding: 1.5rem;
@@ -337,24 +361,24 @@ onMounted(() => {
   :deep(.el-statistic) {
     .el-statistic__head {
       font-size: 0.875rem;
-      color: #7f8c8d;
+      color: #86868b;
       margin-bottom: 0.5rem;
     }
     
     .el-statistic__content {
       font-size: 1.5rem;
       font-weight: 700;
-      color: #2c3e50;
+      color: #1d1d1f;
     }
   }
 }
 
 .students-card {
-  border-radius: 12px;
+  border-radius: 18px;
   
   :deep(.el-card__header) {
     padding: 1rem 1.25rem;
-    border-bottom: 1px solid #f1f2f6;
+    border-bottom: 1px solid #d2d2d7;
     
     .card-header {
       display: flex;
@@ -365,11 +389,11 @@ onMounted(() => {
         display: flex;
         align-items: center;
         font-weight: 600;
-        color: #2c3e50;
+        color: #1d1d1f;
         
         .el-icon {
           margin-right: 0.5rem;
-          color: #667eea;
+          color: #0066cc;
         }
       }
     }
@@ -384,7 +408,7 @@ onMounted(() => {
   padding: 1rem;
   display: flex;
   justify-content: flex-end;
-  border-top: 1px solid #f1f2f6;
+  border-top: 1px solid #d2d2d7;
 }
 
 @media (max-width: 768px) {

@@ -3,7 +3,7 @@ import request from '../request'
 // 获取分配记录统计信息
 export const getHistoryStats = () => {
   return request({
-    url: '/api/admin/assignment/history/stats',
+    url: '/api/v1/admin/assignment/history/stats',
     method: 'get'
   })
 }
@@ -11,7 +11,7 @@ export const getHistoryStats = () => {
 // 获取分配记录列表
 export const getHistoryList = (params) => {
   return request({
-    url: '/api/admin/assignment/history/list',
+    url: '/api/v1/admin/assignment/history/list',
     method: 'get',
     params
   })
@@ -20,7 +20,7 @@ export const getHistoryList = (params) => {
 // 删除分配记录
 export const deleteHistoryRecords = (data) => {
   return request({
-    url: '/api/admin/assignment/history',
+    url: '/api/v1/admin/assignment/history',
     method: 'delete',
     data
   })
@@ -29,7 +29,7 @@ export const deleteHistoryRecords = (data) => {
 // 撤销分配
 export const revokeAssignment = (data) => {
   return request({
-    url: '/api/admin/assignment/history/revoke',
+    url: '/api/v1/admin/assignment/history/revoke',
     method: 'post',
     data
   })
@@ -38,7 +38,7 @@ export const revokeAssignment = (data) => {
 // 重新分配指导老师
 export const reassignTeacher = (data) => {
   return request({
-    url: '/api/admin/assignment/history/reassign',
+    url: '/api/v1/admin/assignment/history/reassign',
     method: 'post',
     data
   })
@@ -47,7 +47,7 @@ export const reassignTeacher = (data) => {
 // 获取可用教师列表
 export const getAvailableTeachers = () => {
   return request({
-    url: '/api/admin/assignment/history/available-teachers',
+    url: '/api/v1/admin/assignment/history/available-teachers',
     method: 'get'
   })
 }
@@ -55,7 +55,7 @@ export const getAvailableTeachers = () => {
 // 导出分配记录
 export const exportHistory = (params) => {
   return request({
-    url: '/api/admin/assignment/history/export',
+    url: '/api/v1/admin/assignment/history/export',
     method: 'get',
     params,
     responseType: 'blob'
@@ -65,7 +65,7 @@ export const exportHistory = (params) => {
 // 刷新分配记录数据
 export const refreshHistoryData = () => {
   return request({
-    url: '/api/admin/assignment/history/refresh',
+    url: '/api/v1/admin/assignment/history/refresh',
     method: 'post'
   })
 }

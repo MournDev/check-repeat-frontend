@@ -3,7 +3,7 @@ import request from '../request'
 // 获取算法配置
 export const getAlgorithmConfig = () => {
   return request({
-    url: '/api/admin/auto-assignment/config',
+    url: '/api/v1/admin/auto-assignment/config',
     method: 'get'
   })
 }
@@ -11,7 +11,7 @@ export const getAlgorithmConfig = () => {
 // 保存算法配置
 export const saveAlgorithmConfig = (data) => {
   return request({
-    url: '/api/admin/auto-assignment/config',
+    url: '/api/v1/admin/auto-assignment/config',
     method: 'post',
     data
   })
@@ -20,7 +20,7 @@ export const saveAlgorithmConfig = (data) => {
 // 获取分配预览数据
 export const getAssignmentPreview = () => {
   return request({
-    url: '/api/admin/auto-assignment/preview',
+    url: '/api/v1/admin/auto-assignment/preview',
     method: 'get'
   })
 }
@@ -28,7 +28,7 @@ export const getAssignmentPreview = () => {
 // 启动自动分配
 export const startAutoAssignment = (data) => {
   return request({
-    url: '/api/admin/auto-assignment/start',
+    url: '/api/v1/admin/auto-assignment/start',
     method: 'post',
     data
   })
@@ -37,7 +37,7 @@ export const startAutoAssignment = (data) => {
 // 查询分配进度
 export const getAssignmentProgress = (taskId) => {
   return request({
-    url: `/api/admin/auto-assignment/progress/${taskId}`,
+    url: `/api/v1/admin/auto-assignment/progress/${taskId}`,
     method: 'get'
   })
 }
@@ -45,7 +45,7 @@ export const getAssignmentProgress = (taskId) => {
 // 取消分配任务
 export const cancelAssignmentTask = (taskId) => {
   return request({
-    url: `/api/admin/auto-assignment/cancel/${taskId}`,
+    url: `/api/v1/admin/auto-assignment/cancel/${taskId}`,
     method: 'post'
   })
 }
@@ -53,7 +53,7 @@ export const cancelAssignmentTask = (taskId) => {
 // 获取执行历史列表
 export const getAssignmentHistory = (params) => {
   return request({
-    url: '/api/admin/auto-assignment/history',
+    url: '/api/v1/admin/auto-assignment/history',
     method: 'get',
     params
   })
@@ -62,7 +62,7 @@ export const getAssignmentHistory = (params) => {
 // 获取执行详情
 export const getAssignmentDetail = (id) => {
   return request({
-    url: `/api/admin/auto-assignment/history/${id}/detail`,
+    url: `/api/v1/admin/auto-assignment/history/${id}/detail`,
     method: 'get'
   })
 }
@@ -70,7 +70,7 @@ export const getAssignmentDetail = (id) => {
 // 应用分配结果
 export const applyAssignmentResult = (id) => {
   return request({
-    url: `/api/admin/auto-assignment/history/${id}/apply`,
+    url: `/api/v1/admin/auto-assignment/history/${id}/apply`,
     method: 'post'
   })
 }
@@ -78,7 +78,7 @@ export const applyAssignmentResult = (id) => {
 // 刷新基础数据
 export const refreshAssignmentData = () => {
   return request({
-    url: '/api/admin/auto-assignment/refresh',
+    url: '/api/v1/admin/auto-assignment/refresh',
     method: 'post'
   })
 }

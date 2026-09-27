@@ -29,10 +29,10 @@
     <!-- 主要统计卡片 -->
     <el-row :gutter="16" class="stats-row">
       <el-col :xs="24" :sm="12" :lg="6">
-        <el-card class="stat-card" shadow="hover">
+        <el-card class="stat-card" shadow="never">
           <div class="stat-content">
-            <div class="stat-icon-wrapper" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-              <span style="color: white; font-size: 24px;">📄</span>
+            <div class="stat-icon-wrapper" style="background: var(--apple-primary)">
+              <el-icon color="white" size="24"><Document /></el-icon>
             </div>
             <div class="stat-info">
               <div class="stat-number">{{ stats.totalReviews }}</div>
@@ -47,10 +47,10 @@
       </el-col>
 
       <el-col :xs="24" :sm="12" :lg="6">
-        <el-card class="stat-card" shadow="hover">
+        <el-card class="stat-card" shadow="never">
           <div class="stat-content">
-            <div class="stat-icon-wrapper" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-              <span style="color: white; font-size: 24px;">⏰</span>
+            <div class="stat-icon-wrapper" style="background: var(--apple-primary)">
+              <el-icon color="white" size="24"><Clock /></el-icon>
             </div>
             <div class="stat-info">
               <div class="stat-number">{{ stats.pendingReviews }}</div>
@@ -65,10 +65,10 @@
       </el-col>
 
       <el-col :xs="24" :sm="12" :lg="6">
-        <el-card class="stat-card" shadow="hover">
+        <el-card class="stat-card" shadow="never">
           <div class="stat-content">
-            <div class="stat-icon-wrapper" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-              <span style="color: white; font-size: 24px;">✅</span>
+            <div class="stat-icon-wrapper" style="background: var(--apple-primary)">
+              <el-icon color="white" size="24"><CircleCheck /></el-icon>
             </div>
             <div class="stat-info">
               <div class="stat-number">{{ stats.approvedReviews }}</div>
@@ -83,10 +83,10 @@
       </el-col>
 
       <el-col :xs="24" :sm="12" :lg="6">
-        <el-card class="stat-card" shadow="hover">
+        <el-card class="stat-card" shadow="never">
           <div class="stat-content">
-            <div class="stat-icon-wrapper" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
-              <span style="color: white; font-size: 24px;">👨‍🎓</span>
+            <div class="stat-icon-wrapper" style="background: var(--apple-primary)">
+              <el-icon color="white" size="24"><User /></el-icon>
             </div>
             <div class="stat-info">
               <div class="stat-number">{{ stats.currentStudents }}</div>
@@ -203,7 +203,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { ElMessage, ElLoading } from 'element-plus'
-// ECharts 通过 CDN 引入，全局 window.echarts 可用
+import { getSimilarityTagType } from '@/utils/reviewStatus.js'
 
 // API 接口导入
 import {
@@ -215,10 +215,12 @@ import {
   getCollegeDistribution,
   exportData as exportTeacherData
 } from '@/api/teacher'
+import * as echarts from 'echarts'
 
 // 图标导入
 import {
-  TrendCharts, PieChart as PieChartIcon, Histogram, OfficeBuilding, List, Download
+  TrendCharts, PieChart as PieChartIcon, Histogram, OfficeBuilding, List, Download,
+  Document, Clock, CircleCheck, User
 } from '@element-plus/icons-vue'
 
 // Store
@@ -248,34 +250,38 @@ const handleTimeRangeChange = (range) => {
 }
 
 const loadData = async () => {
+  const loadingInstance = ElLoading.service({
+    lock: true,
+    text: '正在加载数据...',
+    background: 'rgba(0, 0, 0, 0.7)'
+  })
+
   try {
-    // 显示加载状态
-    const loadingInstance = ElLoading.service({
-      lock: true,
-      text: '正在加载数据...',
-      background: 'rgba(0, 0, 0, 0.7)'
-    })
-    
     // 并行加载统计数据和详细数据
     await Promise.all([
       loadStats(),
       loadDetailData()
     ])
-    
+
     // 初始化图表
     await initCharts()
-    
-    loadingInstance.close()
+
     ElMessage.success('数据加载完成')
   } catch (error) {
     console.error('加载数据失败:', error)
     ElMessage.error('加载数据失败: ' + error.message)
+  } finally {
+    loadingInstance.close()
   }
 }
 
 const loadStats = async () => {
   try {
-    const res = await getReviewStats(userStore.userInfo?.userId, timeRange.value)
+    const params = {
+      teacherId: userStore.userInfo?.userId,
+      timeRange: timeRange.value
+    }
+    const res = await getReviewStats(params)
     if (res.code === 200) {
       stats.value = {
         totalReviews: res.data.totalReviews || 0,
@@ -401,7 +407,11 @@ const initStatusDistributionChart = async () => {
   if (!statusDistributionChart.value) return
   
   try {
-    const res = await getReviewStatusDistribution(userStore.userInfo?.userId, timeRange.value)
+    const params = {
+      teacherId: userStore.userInfo?.userId,
+      timeRange: timeRange.value
+    }
+    const res = await getReviewStatusDistribution(params)
     if (res.code === 200) {
       const chart = echarts.init(statusDistributionChart.value)
       chartInstances.value.statusDistribution = chart
@@ -426,9 +436,9 @@ const initStatusDistributionChart = async () => {
             ],
             emphasis: {
               itemStyle: {
-                shadowBlur: 10,
+                shadowBlur: 0,
                 shadowOffsetX: 0,
-                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                shadowColor: 'transparent'
               }
             }
           }
@@ -474,7 +484,11 @@ const initSimilarityChart = async () => {
   if (!similarityChart.value) return
   
   try {
-    const res = await getSimilarityDistribution(userStore.userInfo?.userId, timeRange.value)
+    const params = {
+      teacherId: userStore.userInfo?.userId,
+      timeRange: timeRange.value
+    }
+    const res = await getSimilarityDistribution(params)
     if (res.code === 200) {
       const chart = echarts.init(similarityChart.value)
       chartInstances.value.similarity = chart
@@ -496,11 +510,7 @@ const initSimilarityChart = async () => {
             type: 'bar',
             data: [45, 32, 28, 15, 8],
             itemStyle: {
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 0, color: '#83bff6' },
-                { offset: 0.5, color: '#188df0' },
-                { offset: 1, color: '#188df0' }
-              ])
+              color: '#0066cc'
             }
           }
         ]
@@ -525,9 +535,9 @@ const initSimilarityChart = async () => {
           data: [45, 32, 28, 15, 8],
           itemStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              { offset: 0, color: '#83bff6' },
-              { offset: 0.5, color: '#188df0' },
-              { offset: 1, color: '#188df0' }
+              { offset: 0, color: '#0066cc' },
+              { offset: 0.5, color: '#0066cc' },
+              { offset: 1, color: '#0066cc' }
             ])
           }
         }
@@ -541,7 +551,11 @@ const initCollegeChart = async () => {
   if (!collegeChart.value) return
   
   try {
-    const res = await getCollegeDistribution(userStore.userInfo?.userId, timeRange.value)
+    const params = {
+      teacherId: userStore.userInfo?.userId,
+      timeRange: timeRange.value
+    }
+    const res = await getCollegeDistribution(params)
     if (res.code === 200) {
       const chart = echarts.init(collegeChart.value)
       chartInstances.value.college = chart
@@ -563,7 +577,7 @@ const initCollegeChart = async () => {
             type: 'bar',
             data: [25, 18, 12, 8],
             itemStyle: {
-              color: '#409eff'
+              color: '#0066cc'
             }
           }
         ]
@@ -587,7 +601,7 @@ const initCollegeChart = async () => {
           type: 'bar',
           data: [25, 18, 12, 8],
           itemStyle: {
-            color: '#409eff'
+            color: '#0066cc'
           }
         }
       ]
@@ -615,43 +629,38 @@ const getTrendIcon = (type) => {
   return icons[type] || '→'
 }
 
-const getSimilarityTagType = (similarity) => {
-  if (similarity >= 30) return 'danger'
-  if (similarity >= 20) return 'warning'
-  return 'success'
-}
-
 const exportData = async () => {
+  const loadingInstance = ElLoading.service({
+    lock: true,
+    text: '正在导出数据...',
+    background: 'rgba(0, 0, 0, 0.7)'
+  })
+
   try {
-    const loadingInstance = ElLoading.service({
-      lock: true,
-      text: '正在导出数据...',
-      background: 'rgba(0, 0, 0, 0.7)'
-    })
-    
     const params = {
       teacherId: userStore.userInfo?.userId,
       timeRange: timeRange.value,
       exportFormat: 'excel',
       includeCharts: true
     }
-    
+
     const res = await exportTeacherData(params)
-    
+
     // 创建下载链接
-    const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+    const blob = res.data instanceof Blob ? res.data : new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
     const url = window.URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
     link.download = `教师数据统计_${new Date().toISOString().slice(0, 10)}.xlsx`
     link.click()
     window.URL.revokeObjectURL(url)
-    
-    loadingInstance.close()
+
     ElMessage.success('数据导出成功')
   } catch (error) {
     console.error('导出数据失败:', error)
     ElMessage.error('导出数据失败: ' + error.message)
+  } finally {
+    loadingInstance.close()
   }
 }
 
@@ -697,7 +706,7 @@ onUnmounted(() => {
       
       .page-subtitle {
         margin: 0;
-        color: #606266;
+        color: var(--apple-ink-muted-48);
       }
     }
   }
@@ -716,7 +725,7 @@ onUnmounted(() => {
           justify-content: center;
           width: 56px;
           height: 56px;
-          border-radius: 12px;
+          border-radius: 18px;
           margin-right: 16px;
         }
         
@@ -724,13 +733,13 @@ onUnmounted(() => {
           .stat-number {
             font-size: 28px;
             font-weight: 700;
-            color: #303133;
+            color: var(--apple-ink);
             line-height: 1;
           }
           
           .stat-label {
-            font-size: 14px;
-            color: #909399;
+            font-size: 17px;
+            color: var(--apple-ink-muted-48);
             margin: 8px 0 4px 0;
           }
           
@@ -738,15 +747,15 @@ onUnmounted(() => {
             font-size: 12px;
             
             &.trend-up {
-              color: #67c23a;
+              color: var(--apple-success);
             }
             
             &.trend-down {
-              color: #f56c6c;
+              color: var(--apple-danger);
             }
             
             &.trend-flat {
-              color: #909399;
+              color: var(--apple-ink-muted-48);
             }
             
             .trend-icon {

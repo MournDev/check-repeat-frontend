@@ -3,7 +3,7 @@ import request from '../request'
 // 获取学校概览数据
 export const getSchoolOverview = () => {
   return request({
-    url: '/api/admin/school/overview',
+    url: '/api/v1/admin/school/overview',
     method: 'get'
   })
 }
@@ -11,7 +11,7 @@ export const getSchoolOverview = () => {
 // 获取学院论文分布
 export const getCollegeDistribution = () => {
   return request({
-    url: '/api/admin/school/college-distribution',
+    url: '/api/v1/admin/school/college-distribution',
     method: 'get'
   })
 }
@@ -19,7 +19,7 @@ export const getCollegeDistribution = () => {
 // 获取月度论文趋势
 export const getMonthlyTrend = () => {
   return request({
-    url: '/api/admin/school/monthly-trend',
+    url: '/api/v1/admin/school/monthly-trend',
     method: 'get'
   })
 }
@@ -27,7 +27,7 @@ export const getMonthlyTrend = () => {
 // 获取查重结果分布
 export const getSimilarityDistribution = () => {
   return request({
-    url: '/api/admin/school/similarity-distribution',
+    url: '/api/v1/admin/school/similarity-distribution',
     method: 'get'
   })
 }
@@ -35,7 +35,7 @@ export const getSimilarityDistribution = () => {
 // 获取实时统计
 export const getRealtimeStats = () => {
   return request({
-    url: '/api/admin/school/realtime-stats',
+    url: '/api/v1/admin/school/realtime-stats',
     method: 'get'
   })
 }
@@ -43,7 +43,7 @@ export const getRealtimeStats = () => {
 // 获取系统通知
 export const getNotices = () => {
   return request({
-    url: '/api/admin/school/notices',
+    url: '/api/v1/notices/list',
     method: 'get'
   })
 }
@@ -51,7 +51,7 @@ export const getNotices = () => {
 // 导出学校数据报告
 export const exportSchoolReport = (params) => {
   return request({
-    url: '/api/admin/school/export-report',
+    url: '/api/v1/admin/school/export-report',
     method: 'get',
     params: params,
     responseType: 'blob'

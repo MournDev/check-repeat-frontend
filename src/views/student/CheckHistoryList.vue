@@ -19,11 +19,11 @@
             clearable
             @change="fetchPapers"
           >
-            <el-option label="草稿" value="DRAFT"></el-option>
-            <el-option label="已提交" value="SUBMITTED"></el-option>
-            <el-option label="审核中" value="UNDER_REVIEW"></el-option>
-            <el-option label="通过" value="PASSED"></el-option>
-            <el-option label="驳回" value="REJECTED"></el-option>
+            <el-option label="待分配" value="pending"></el-option>
+            <el-option label="待查重" value="checking"></el-option>
+            <el-option label="待审核" value="auditing"></el-option>
+            <el-option label="审核通过" value="completed"></el-option>
+            <el-option label="审核驳回" value="rejected"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="论文类型">
@@ -103,7 +103,7 @@
         <el-table-column prop="similarityRate" label="相似度" width="100">
           <template #default="{ row }">
             <span :class="getSimilarityClass(row.similarityRate)">
-              {{ row.similarityRate }}%
+              {{ row.similarityRate != null ? row.similarityRate + '%' : '未检测' }}
             </span>
           </template>
         </el-table-column>
@@ -262,6 +262,9 @@ const getPaperTypeTagType = (type) => {
 
 const getPaperTypeText = (type) => {
   const textMap = {
+    'THESIS': '学位论文',
+    'JOURNAL': '期刊论文',
+    'CONFERENCE': '会议论文',
     'graduation': '毕业论文',
     'course': '课程论文',
     'other': '其他'
@@ -271,30 +274,42 @@ const getPaperTypeText = (type) => {
 
 const getStatusTagType = (status) => {
   const statusMap = {
-    'DRAFT': 'info',
-    'SUBMITTED': 'primary',
-    'UNDER_REVIEW': 'warning',
-    'PASSED': 'success',
-    'REJECTED': 'danger'
+    'draft': 'info',
+    'pending': 'info',
+    'assigned': '',
+    'submitted': 'info',
+    'checking': 'primary',
+    'auditing': 'warning',
+    'reviewed': 'warning',
+    'completed': 'success',
+    'rejected': 'danger',
+    'revised': 'warning',
+    'withdrawn': 'info'
   }
   return statusMap[status] || 'info'
 }
 
 const getStatusText = (status) => {
   const textMap = {
-    'auditing': '待审核',
+    'draft': '草稿',
     'pending': '待分配',
+    'assigned': '已分配',
+    'submitted': '已提交',
     'checking': '待查重',
+    'auditing': '待审核',
+    'reviewed': '已审核',
     'completed': '审核通过',
-    'rejected': '审核驳回'
+    'rejected': '审核驳回',
+    'revised': '需修改',
+    'withdrawn': '已撤回'
   }
   return textMap[status] || '未知状态'
 }
 
 const getSimilarityClass = (rate) => {
-  if (rate < 20) return 'similarity-excellent'
-  if (rate < 40) return 'similarity-good'
-  if (rate < 60) return 'similarity-warning'
+  if (rate < 15) return 'similarity-excellent'
+  if (rate < 30) return 'similarity-good'
+  if (rate < 50) return 'similarity-warning'
   return 'similarity-danger'
 }
 
@@ -318,7 +333,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 .check-history-list-page {
   padding: 20px;
-  background-color: #f5f7fa;
+  background-color: #f5f5f7;
   min-height: 100vh;
 
   .page-header {
@@ -327,13 +342,13 @@ onMounted(() => {
     .page-title {
       font-size: 18px;
       font-weight: 600;
-      color: #303133;
+      color: #1d1d1f;
     }
   }
 
   .filter-card {
     margin-bottom: 20px;
-    border-radius: 12px;
+    border-radius: 18px;
     
     :deep(.el-card__body) {
       padding: 20px;
@@ -341,7 +356,7 @@ onMounted(() => {
   }
 
   .papers-card {
-    border-radius: 12px;
+    border-radius: 18px;
     
     .card-header {
       display: flex;
@@ -349,12 +364,12 @@ onMounted(() => {
       justify-content: space-between;
       gap: 8px;
       font-weight: 600;
-      color: #303133;
-      
+      color: #1d1d1f;
+
       .header-right {
         .total-count {
-          font-size: 14px;
-          color: #909399;
+          font-size: 17px;
+          color: #86868b;
           font-weight: normal;
         }
       }
@@ -371,18 +386,18 @@ onMounted(() => {
     gap: 8px;
     
     .paper-title {
-      font-weight: 500;
-      color: #303133;
+      font-weight: 600;
+      color: #1d1d1f;
       cursor: pointer;
-      
+
       &:hover {
-        color: #409eff;
+        color: #0066cc;
       }
     }
   }
 
   .similarity-excellent { color: #67c23a; }
-  .similarity-good { color: #409eff; }
+  .similarity-good { color: #0066cc; }
   .similarity-warning { color: #e6a23c; }
   .similarity-danger { color: #f56c6c; }
   

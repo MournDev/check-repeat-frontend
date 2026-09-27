@@ -1,0 +1,175 @@
+// ============================================================
+// Apple Design Language — Typography System
+// 18-level type scale with SF Pro Display / SF Pro Text
+// Fallback: Inter (Google Fonts) for non-Apple platforms
+// ============================================================
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+// ── Font Family Utility ───────────────────────────────────
+.font-display {
+  font-family: var(--apple-font-display);
+}
+
+.font-text {
+  font-family: var(--apple-font-text);
+}
+
+// ── Typography Scale ──────────────────────────────────────
+
+.text-hero-display {
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-hero);
+  font-weight: 600;
+  line-height: var(--apple-lh-hero);
+  letter-spacing: var(--apple-ls-hero);
+}
+
+.text-display-lg {
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-display-lg);
+  font-weight: 600;
+  line-height: var(--apple-lh-display-lg);
+  letter-spacing: var(--apple-ls-display-lg);
+}
+
+.text-display-md {
+  font-family: var(--apple-font-text);
+  font-size: var(--apple-fs-display-md);
+  font-weight: 600;
+  line-height: var(--apple-lh-display-md);
+  letter-spacing: var(--apple-ls-display-md);
+}
+
+.text-lead {
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-lead);
+  font-weight: 400;
+  line-height: var(--apple-lh-lead);
+  letter-spacing: var(--apple-ls-lead);
+}
+
+.text-lead-airy {
+  font-family: var(--apple-font-text);
+  font-size: var(--apple-fs-lead-airy);
+  font-weight: 300;
+  line-height: var(--apple-lh-lead-airy);
+  letter-spacing: var(--apple-ls-lead-airy);
+}
+
+.text-tagline {
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-tagline);
+  font-weight: 600;
+  line-height: var(--apple-lh-tagline);
+  letter-spacing: var(--apple-ls-tagline);
+}
+
+.text-body-strong {
+  font-family: var(--apple-font-text);
+  font-size: var(--apple-fs-body-strong);
+  font-weight: 600;
+  line-height: var(--apple-lh-body-strong);
+  letter-spacing: var(--apple-ls-body-strong);
+}
+
+.text-body {
+  font-family: var(--apple-font-text);
+  font-size: var(--apple-fs-body);
+  font-weight: 400;
+  line-height: var(--apple-lh-body);
+  letter-spacing: var(--apple-ls-body);
+}
+
+.text-dense-link {
+  font-family: var(--apple-font-text);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 2.41;
+  letter-spacing: 0;
+}
+
+.text-caption {
+  font-family: var(--apple-font-text);
+  font-size: var(--apple-fs-caption);
+  font-weight: 400;
+  line-height: var(--apple-lh-caption);
+  letter-spacing: var(--apple-ls-caption);
+}
+
+.text-caption-strong {
+  font-family: var(--apple-font-text);
+  font-size: var(--apple-fs-caption-strong);
+  font-weight: 600;
+  line-height: var(--apple-lh-caption-strong);
+  letter-spacing: var(--apple-ls-caption-strong);
+}
+
+.text-button-large {
+  font-family: var(--apple-font-text);
+  font-size: var(--apple-fs-button-large);
+  font-weight: 300;
+  line-height: var(--apple-lh-button-large);
+  letter-spacing: var(--apple-ls-button-large);
+}
+
+.text-button-utility {
+  font-family: var(--apple-font-text);
+  font-size: var(--apple-fs-button-utility);
+  font-weight: 400;
+  line-height: var(--apple-lh-button-utility);
+  letter-spacing: var(--apple-ls-button-utility);
+}
+
+.text-fine-print {
+  font-family: var(--apple-font-text);
+  font-size: var(--apple-fs-fine-print);
+  font-weight: 400;
+  line-height: var(--apple-lh-fine-print);
+  letter-spacing: var(--apple-ls-fine-print);
+}
+
+.text-micro-legal {
+  font-family: var(--apple-font-text);
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.08px;
+}
+
+.text-nav-link {
+  font-family: var(--apple-font-text);
+  font-size: var(--apple-fs-nav-link);
+  font-weight: 400;
+  line-height: var(--apple-lh-nav-link);
+  letter-spacing: var(--apple-ls-nav-link);
+}
+
+// ── Responsive type scaling ───────────────────────────────
+@media (max-width: 1068px) {
+  .text-hero-display {
+    font-size: 40px;
+    letter-spacing: var(--apple-ls-display-lg);
+  }
+}
+
+@media (max-width: 640px) {
+  .text-hero-display {
+    font-size: 34px;
+    letter-spacing: var(--apple-ls-display-md);
+  }
+
+  .text-display-lg {
+    font-size: 34px;
+  }
+
+  .text-display-md {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 419px) {
+  .text-hero-display {
+    font-size: 28px;
+  }
+}

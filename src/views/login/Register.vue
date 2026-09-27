@@ -1,136 +1,189 @@
 <template>
-  <div class="register-container">
-    <!-- 背景遮罩层 -->
-    <div class="background-overlay"></div>
-    
-    <!-- 注册卡片 -->
-    <div class="register-content">
-      <el-card class="register-card">
-        <div class="card-header">
-          <h2 class="register-title">用户注册</h2>
-          <p class="register-subtitle">创建您的账户，开启学术之旅</p>
-        </div>
-        
-        <el-form :model="registerForm" :rules="registerRules" ref="registerFormRef" label-width="0">
-          <el-form-item prop="username">
-            <el-input 
-              v-model="registerForm.username" 
-              placeholder="请输入用户名" 
-              size="large"
-              :prefix-icon="User"
-              clearable
-            />
-          </el-form-item>
-          
-          <el-form-item prop="password">
-            <el-input 
-              v-model="registerForm.password" 
-              type="password" 
-              placeholder="请输入密码" 
-              size="large"
-              :prefix-icon="Lock"
-              show-password
-              clearable
-            />
-          </el-form-item>
-          
-          <el-form-item prop="confirmPassword">
-            <el-input 
-              v-model="registerForm.confirmPassword" 
-              type="password" 
-              placeholder="请确认密码" 
-              size="large"
-              :prefix-icon="Lock"
-              show-password
-              clearable
-            />
-          </el-form-item>
-          
-          <el-form-item prop="realName">
-            <el-input 
-              v-model="registerForm.realName" 
-              placeholder="请输入真实姓名" 
-              size="large"
-              :prefix-icon="User"
-              clearable
-            />
-          </el-form-item>
-          
-          <el-form-item prop="roleCode">
-            <el-select 
-              v-model="registerForm.roleId" 
-              placeholder="请选择用户类型" 
-              size="large"
-              style="width: 100%"
-            >
-              <el-option 
-              v-for="role in roleOptions" 
-              :key="role.value"
-              :label="role.label" 
-              :value="role.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item prop="email">
-            <el-input 
-              v-model="registerForm.email" 
-              placeholder="请输入邮箱" 
-              size="large"
-              :prefix-icon="Message"
-              clearable
-            />
-          </el-form-item>
-          <el-form-item prop="phone">
-            <el-input 
-              v-model="registerForm.phone" 
-              placeholder="请输入手机号"
-              size="large"
-              :prefix-icon="Phone"
-              clearable
-            />
-          </el-form-item>
+  <AuthLayout
+    page-type="register"
+    title="用户注册"
+    subtitle="创建您的账户，开启学术之旅"
+    :is-typing="isTyping"
+    :show-password="showPassword"
+    :password-length="passwordLength"
+    :is-error="!!error"
+  >
+    <el-form
+      :model="registerForm"
+      :rules="registerRules"
+      ref="registerFormRef"
+      size="large"
+      class="auth-form"
+    >
+      <div class="field-label">用户名</div>
+      <el-form-item prop="username">
+        <el-input
+          v-model="registerForm.username"
+          placeholder="请输入用户名"
+          @focus="isTyping = true; error = ''"
+          @blur="isTyping = false"
+        >
+          <template #prefix>
+            <el-icon><User /></el-icon>
+          </template>
+        </el-input>
+      </el-form-item>
 
-          <el-form-item>
-            <el-button 
-              type="primary" 
-              @click="handleRegister" 
-              class="register-btn" 
-              :loading="loading"
-              size="large"
-            >
-              {{ loading ? '注册中...' : '立即注册' }}
-            </el-button>
-          </el-form-item>
-        </el-form>
-        
-        <div class="register-footer">
-          <span class="footer-text">已有账号？</span>
-          <el-button type="text" @click="handleLogin" class="login-btn">
-            立即登录
-          </el-button>
-        </div>
-      </el-card>
+      <div class="field-label">密码</div>
+      <el-form-item prop="password">
+        <el-input
+          v-model="registerForm.password"
+          :type="showPassword ? 'text' : 'password'"
+          placeholder="请输入密码"
+          @focus="isTyping = true; error = ''"
+          @blur="isTyping = false"
+        >
+          <template #prefix>
+            <el-icon><Lock /></el-icon>
+          </template>
+          <template #suffix>
+            <span class="eye-toggle" @click="showPassword = !showPassword">
+              <el-icon v-if="showPassword"><View /></el-icon>
+              <el-icon v-else><Hide /></el-icon>
+            </span>
+          </template>
+        </el-input>
+      </el-form-item>
+
+      <div class="field-label">确认密码</div>
+      <el-form-item prop="confirmPassword">
+        <el-input
+          v-model="registerForm.confirmPassword"
+          :type="showPassword ? 'text' : 'password'"
+          placeholder="请确认密码"
+          @focus="isTyping = true; error = ''"
+          @blur="isTyping = false"
+        >
+          <template #prefix>
+            <el-icon><Lock /></el-icon>
+          </template>
+          <template #suffix>
+            <span class="eye-toggle" @click="showPassword = !showPassword">
+              <el-icon v-if="showPassword"><View /></el-icon>
+              <el-icon v-else><Hide /></el-icon>
+            </span>
+          </template>
+        </el-input>
+      </el-form-item>
+
+      <div class="field-label">真实姓名</div>
+      <el-form-item prop="realName">
+        <el-input
+          v-model="registerForm.realName"
+          placeholder="请输入真实姓名"
+          @focus="isTyping = true; error = ''"
+          @blur="isTyping = false"
+        >
+          <template #prefix>
+            <el-icon><User /></el-icon>
+          </template>
+        </el-input>
+      </el-form-item>
+
+      <div class="field-label">用户类型</div>
+      <el-form-item prop="roleCode">
+        <el-select
+          v-model="registerForm.roleId"
+          placeholder="请选择用户类型"
+          style="width: 100%"
+          @focus="isTyping = true"
+          @blur="isTyping = false"
+        >
+          <el-option
+            v-for="role in roleOptions"
+            :key="role.value"
+            :label="role.label"
+            :value="role.value"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
+
+      <div class="field-label">邮箱</div>
+      <el-form-item prop="email">
+        <el-input
+          v-model="registerForm.email"
+          placeholder="请输入邮箱"
+          @focus="isTyping = true; error = ''"
+          @blur="isTyping = false"
+        >
+          <template #prefix>
+            <el-icon><Message /></el-icon>
+          </template>
+        </el-input>
+      </el-form-item>
+
+      <div class="field-label">手机号</div>
+      <el-form-item prop="phone">
+        <el-input
+          v-model="registerForm.phone"
+          placeholder="请输入手机号"
+          @focus="isTyping = true; error = ''"
+          @blur="isTyping = false"
+        >
+          <template #prefix>
+            <el-icon><Phone /></el-icon>
+          </template>
+        </el-input>
+      </el-form-item>
+
+      <el-alert
+        v-if="error"
+        :title="error"
+        type="error"
+        show-icon
+        :closable="false"
+        style="margin-bottom: 16px;"
+      />
+
+      <el-form-item :style="{ marginBottom: 0 }">
+        <el-button
+          type="primary"
+          native-type="submit"
+          @click="handleRegister"
+          :loading="loading"
+          class="submit-btn"
+        >
+          {{ loading ? '注册中...' : '立即注册' }}
+        </el-button>
+      </el-form-item>
+    </el-form>
+
+    <div class="divider">
+      <span>或</span>
     </div>
-  </div>
+
+    <div class="signup-row">
+      已有账号？
+      <el-button link @click="handleLogin" class="signup-link">
+        立即登录
+      </el-button>
+    </div>
+  </AuthLayout>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { User, Lock, Phone, Message } from '@element-plus/icons-vue'
+import { User, Lock, Phone, Message, View, Hide } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
+import AuthLayout from '@/components/layout/AuthLayout.vue'
 
 const router = useRouter()
 const registerFormRef = ref(null)
 const loading = ref(false)
 const userStore = useUserStore()
 
-const roleOptions = ref([
-  { label: '学生', value: '1001', code: 'STUDENT' },    // value 是角色ID
-  { label: '指导老师', value: '2001', code: 'TEACHER' }, // value 是角色ID  
-  { label: '管理员', value: '3001', code: 'ADMIN' }      // value 是角色ID
-])
+// 新增响应式变量
+const isTyping = ref(false)
+const showPassword = ref(false)
+const error = ref('')
 
 // 注册表单
 const registerForm = ref({
@@ -142,6 +195,19 @@ const registerForm = ref({
   email: '',
   phone: ''
 })
+
+// 监听密码长度变化
+const passwordLength = ref(0)
+
+watch(() => registerForm.value.password, (newVal) => {
+  passwordLength.value = newVal ? newVal.length : 0
+})
+
+const roleOptions = ref([
+  { label: '学生', value: '1001', code: 'STUDENT' },    // value 是角色ID
+  { label: '指导老师', value: '2001', code: 'TEACHER' }, // value 是角色ID  
+  { label: '管理员', value: '3001', code: 'ADMIN' }      // value 是角色ID
+])
 
 // 表单校验规则
 const registerRules = ref({
@@ -187,17 +253,17 @@ const handleRegister = async () => {
   try {
     await registerFormRef.value.validate()
     loading.value = true
+    error.value = ''
     
     //调用注册接口
     const res = await userStore.register(registerForm.value)
-    console.log('注册数据:', registerForm.value)
     
     ElMessage.success('注册成功')
     router.push('/login')
     
-  } catch (error) {
-    console.error('注册失败：', error)
-    ElMessage.error('注册失败，请检查表单信息')
+  } catch (err) {
+    console.error('注册失败：', err)
+    error.value = err.message || '注册失败，请检查表单信息'
   } finally {
     loading.value = false
   }
@@ -210,140 +276,127 @@ const handleLogin = () => {
 </script>
 
 <style lang="scss" scoped>
-.register-container {
-  position: relative;
+.auth-form {
+  :deep(.el-form-item) {
+    margin-bottom: 20px;
+  }
+
+  :deep(.el-input__wrapper) {
+    height: 48px !important;
+    background: #f5f5f7 !important;
+    border: 1px solid #d2d2d7 !important;
+    border-radius: 9999px !important;
+    transition: border-color 0.2s, box-shadow 0.2s !important;
+  }
+
+  :deep(.el-input__wrapper:hover) {
+    border-color: #0066cc !important;
+  }
+
+  :deep(.el-input__wrapper.is-focus),
+  :deep(.el-input__wrapper:focus) {
+    border-color: #0066cc !important;
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.12) !important;
+    background: #ffffff !important;
+  }
+
+  :deep(.el-input__inner) {
+    background: transparent !important;
+    font-size: 14px !important;
+    color: #1d1d1f !important;
+  }
+
+  :deep(.el-input__inner::placeholder) {
+    color: #86868b !important;
+  }
+
+  :deep(.el-select .el-input__wrapper) {
+    height: 48px !important;
+  }
+}
+
+.field-label {
+  font-size: 13px;
+  font-weight: 400;
+  color: #1d1d1f;
+  margin-bottom: 6px;
+  letter-spacing: 0.2px;
+}
+
+.eye-toggle {
+  color: #86868b;
+  cursor: pointer;
+  font-size: 16px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  height: 100vh;
-  // 使用本地图片作为背景
-  background-image: url('@/assets/images/login.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  transition: color 0.2s;
 }
 
-// 背景遮罩层
-.background-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
+.eye-toggle:hover {
+  color: #1d1d1f;
+}
+
+.submit-btn {
   width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 1;
+  height: 48px !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  border-radius: 9999px !important;
+  background: #0066cc !important;
+  border-color: #0066cc !important;
+  letter-spacing: 1px;
+  transition: background 0.2s, opacity 0.2s !important;
+  cursor: pointer;
 }
 
-.register-content {
-  width: 100%;
-  max-width: 480px;
-  padding: 20px;
-  position: relative;
-  z-index: 2;
+.submit-btn:hover {
+  background: #0055aa !important;
+  border-color: #0055aa !important;
+  opacity: 1 !important;
 }
 
-.register-card {
-  width: 100%;
-  padding: 2.5rem;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-  background: rgba(255, 255, 255, 0.98);
-  
-  :deep(.el-card__body) {
-    padding: 0;
-  }
+.submit-btn:active {
+  opacity: 0.85 !important;
 }
 
-.card-header {
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0 0;
+  color: #d2d2d7;
+  font-size: 13px;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #d2d2d7;
+}
+
+.divider span {
+  color: #86868b;
+  white-space: nowrap;
+}
+
+.signup-row {
   text-align: center;
-  margin-bottom: 2rem;
+  font-size: 13px;
+  color: #86868b;
+  margin-top: 28px;
 }
 
-.register-title {
-  margin: 0 0 0.5rem 0;
-  color: #2c3e50;
-  font-size: 1.75rem;
-  font-weight: 600;
+.signup-link {
+  color: #0066cc !important;
+  font-weight: 400;
+  text-decoration: none;
+  cursor: pointer;
 }
 
-.register-subtitle {
-  margin: 0;
-  color: #718096;
-  font-size: 0.9rem;
-}
-
-:deep(.el-form-item) {
-  margin-bottom: 1rem;
-}
-
-:deep(.el-input__wrapper),
-:deep(.el-select .el-input__wrapper) {
-  border-radius: 8px;
-  transition: all 0.2s;
-  
-  &:hover {
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-  }
-}
-
-.register-btn {
-  width: 100%;
-  height: 44px;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 500;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border: none;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-  transition: all 0.2s;
-  margin-top: 0.5rem;
-  
-  &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
-  }
-  
-  &:active {
-    transform: translateY(0);
-  }
-}
-
-.register-footer {
-  text-align: center;
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #eaeaea;
-}
-
-.footer-text {
-  color: #a0aec0;
-  font-size: 0.9rem;
-  margin-right: 8px;
-}
-
-.login-btn {
-  color: #667eea;
-  font-weight: 500;
-  font-size: 0.95rem;
-  
-  &:hover {
-    color: #764ba2;
-  }
-}
-
-// 响应式设计
-@media (max-width: 480px) {
-  .register-content {
-    max-width: 380px;
-    padding: 15px;
-  }
-  
-  .register-card {
-    padding: 2rem 1.5rem;
-  }
-  
-  .register-title {
-    font-size: 1.6rem;
-  }
+.signup-link:hover {
+  text-decoration: underline;
+  color: #0055aa !important;
 }
 </style>

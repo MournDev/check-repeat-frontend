@@ -844,12 +844,12 @@ onMounted(() => {
       margin: 0 0 0.5rem 0;
       font-size: 1.75rem;
       font-weight: 600;
-      color: #2c3e50;
+      color: #1d1d1f;
     }
-    
+
     .page-desc {
       margin: 0;
-      color: #7f8c8d;
+      color: #86868b;
       font-size: 0.95rem;
     }
   }
@@ -865,7 +865,7 @@ onMounted(() => {
   
   .stat-card {
     border: none;
-    border-radius: 12px;
+    border-radius: 18px;
     
     .stat-content {
       display: flex;
@@ -877,23 +877,23 @@ onMounted(() => {
         justify-content: center;
         width: 48px;
         height: 48px;
-        border-radius: 12px;
+        border-radius: 18px;
         margin-right: 1rem;
         
         &.bg-primary {
-          background: linear-gradient(135deg, #667eea, #764ba2);
+          background: #0066cc;
         }
-        
+
         &.bg-success {
-          background: linear-gradient(135deg, #4facfe, #00f2fe);
+          background: #34c759;
         }
-        
+
         &.bg-warning {
-          background: linear-gradient(135deg, #f093fb, #f5576c);
+          background: #ff9500;
         }
-        
+
         &.bg-info {
-          background: linear-gradient(135deg, #43e97b, #38f9d7);
+          background: #5ac8fa;
         }
         
         .el-icon {
@@ -906,13 +906,13 @@ onMounted(() => {
         .stat-value {
           font-size: 1.75rem;
           font-weight: 700;
-          color: #2c3e50;
+          color: #1d1d1f;
           line-height: 1;
         }
-        
+
         .stat-label {
           font-size: 0.875rem;
-          color: #7f8c8d;
+          color: #86868b;
           margin-top: 0.25rem;
         }
       }
@@ -925,12 +925,12 @@ onMounted(() => {
   
   .student-card,
   .teacher-card {
-    border-radius: 12px;
+    border-radius: 18px;
     height: 500px;
     
     :deep(.el-card__header) {
       padding: 1rem 1.25rem;
-      border-bottom: 1px solid #f1f2f6;
+      border-bottom: 1px solid #d2d2d7;
       
       .card-header {
         display: flex;
@@ -941,11 +941,11 @@ onMounted(() => {
           display: flex;
           align-items: center;
           font-weight: 600;
-          color: #2c3e50;
+          color: #1d1d1f;
           
           .el-icon {
             margin-right: 0.5rem;
-            color: #667eea;
+            color: #0066cc;
           }
           
           .el-tag {
@@ -968,17 +968,17 @@ onMounted(() => {
   .student-item,
   .teacher-item {
     padding: 1rem;
-    border-bottom: 1px solid #f8f9fa;
+    border-bottom: 1px solid #f5f5f7;
     cursor: pointer;
     transition: all 0.3s ease;
     
     &:hover {
-      background-color: #f8f9fa;
+      background-color: #f5f5f7;
     }
     
     &.selected {
-      background-color: rgba(102, 126, 234, 0.1);
-      border-left: 3px solid #667eea;
+      background-color: rgba(0, 102, 204, 0.08);
+      border-left: 3px solid #0066cc;
     }
     
     .student-info,
@@ -995,13 +995,13 @@ onMounted(() => {
           margin: 0;
           font-size: 1rem;
           font-weight: 600;
-          color: #2c3e50;
+          color: #1d1d1f;
         }
         
         .student-id,
         .teacher-title {
           font-size: 0.875rem;
-          color: #7f8c8d;
+          color: #86868b;
         }
       }
       
@@ -1009,7 +1009,7 @@ onMounted(() => {
       .teacher-department {
         margin-bottom: 0.5rem;
         font-size: 0.875rem;
-        color: #5a6c7d;
+        color: #86868b;
         
         .grade {
           margin-left: 0.5rem;
@@ -1027,7 +1027,7 @@ onMounted(() => {
       .student-load,
       .teacher-load {
         font-size: 0.875rem;
-        color: #5a6c7d;
+        color: #86868b;
       }
     }
     
@@ -1045,7 +1045,7 @@ onMounted(() => {
 }
 
 .batch-actions-card {
-  border-radius: 12px;
+  border-radius: 18px;
   margin-bottom: 1.5rem;
   
   :deep(.el-card__body) {
@@ -1059,7 +1059,7 @@ onMounted(() => {
     
     .selected-info {
       font-size: 1rem;
-      color: #2c3e50;
+      color: #1d1d1f;
     }
     
     .batch-buttons {
@@ -1071,8 +1071,8 @@ onMounted(() => {
 
 .student-preview {
   padding: 0.75rem;
-  background-color: #f8f9fa;
-  border-radius: 6px;
+  background-color: #f5f5f7;
+  border-radius: 8px;
   
   div {
     margin-bottom: 0.25rem;
@@ -1098,7 +1098,7 @@ onMounted(() => {
   
   .teacher-detail {
     font-size: 0.875rem;
-    color: #7f8c8d;
+    color: #86868b;
     margin-top: 0.25rem;
   }
 }

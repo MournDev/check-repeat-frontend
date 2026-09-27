@@ -1,79 +1,267 @@
+/* ============================================================
+   Apple Design Language — Base Style Overrides
+   No decorative gradients, single Action Blue, scale(0.95) active
+   ============================================================ */
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  font-family: "SF Pro Text", "Inter", system-ui, -apple-system, sans-serif;
+  line-height: 1.47;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color-scheme: light;
+  color: #1d1d1f;
+  background-color: #f5f5f7;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.2s ease;
+  --transition-slow: 0.3s ease;
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --border-radius-sm: 5px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 18px;
 }
 
 a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+  font-weight: 400;
+  color: #0066cc;
+  text-decoration: none;
+  transition: color var(--transition-fast);
 }
 a:hover {
-  color: #535bf2;
+  color: #005bb8;
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
 
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 1.10;
 }
 
+/* ── Button: pill, scale active, no shadow ────────────── */
 button {
-  border-radius: 8px;
+  border-radius: 9999px;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
+  padding: 11px 22px;
+  font-size: 17px;
+  font-weight: 400;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #f5f5f7;
+  color: #1d1d1f;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: transform var(--transition-fast), background-color var(--transition-normal);
 }
 button:hover {
-  border-color: #646cff;
+  border-color: #0066cc;
+}
+button:active {
+  transform: scale(0.95);
 }
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 2px solid #0071e3;
+  outline-offset: 2px;
 }
 
+/* ── Card: hairline border, no shadow, no lift ────────── */
 .card {
-  padding: 2em;
+  padding: 24px;
+  border-radius: 18px;
+  border: 1px solid #e0e0e0;
+  transition: border-color var(--transition-normal);
+  background: #ffffff;
+}
+.card:hover {
+  border-color: #d0d0d0;
+}
+
+/* ── Input: clean focus ───────────────────────────────── */
+input,
+textarea,
+select {
+  transition: border-color var(--transition-fast);
+  border-radius: 9999px;
+  font-size: 17px;
+  font-family: inherit;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid #0071e3;
+  outline-offset: -2px;
+}
+
+/* ── Table row hover: no translate ────────────────────── */
+tr {
+  transition: background-color var(--transition-fast);
+}
+tr:hover {
+  background-color: #f5f5f7 !important;
+}
+
+/* ── Element Plus component overrides ─────────────────── */
+
+/* Tag: pill, no shadow hover */
+.el-tag {
+  transition: background-color var(--transition-fast);
+  border-radius: 9999px !important;
+}
+.el-tag:hover {
+  box-shadow: none;
+}
+
+/* Progress bar: clean */
+.el-progress-bar__inner {
+  transition: width var(--transition-normal);
+}
+
+/* Menu item: no translateX hover */
+.el-menu-item {
+  transition: background-color var(--transition-fast);
+}
+.el-menu-item:hover {
+  transform: none;
+}
+
+/* Dialog */
+.el-dialog {
+  border-radius: 18px;
+  box-shadow: none;
+  border: 1px solid #e0e0e0;
+}
+.el-dialog__header {
+  border-bottom: 1px solid #f0f0f0;
+  padding: 24px 24px 17px;
+}
+.el-dialog__body {
+  padding: 24px;
+}
+.el-dialog__footer {
+  border-top: 1px solid #f0f0f0;
+  padding: 17px 24px 24px;
+}
+
+/* Dropdown menu */
+.el-dropdown-menu {
+  border-radius: 8px;
+  box-shadow: none;
+  border: 1px solid #e0e0e0;
+}
+
+/* Pagination: pill buttons */
+.el-pagination__item {
+  transition: background-color var(--transition-fast);
+  border-radius: 9999px;
+}
+.el-pagination__item:hover {
+  box-shadow: none;
+}
+
+/* Upload */
+.el-upload {
+  transition: border-color var(--transition-fast);
+}
+.el-upload:hover {
+  box-shadow: none;
+}
+
+/* ── Disabled state ───────────────────────────────────── */
+[disabled] {
+  opacity: 0.48;
+  cursor: not-allowed;
+  transition: opacity var(--transition-fast);
+}
+[disabled]:hover {
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
+/* ── Scrollbar ────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d2d2d7;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b0b0b5;
+}
+
+/* ── Selection ────────────────────────────────────────── */
+::selection {
+  background: rgba(0, 102, 204, 0.2);
+  color: #1d1d1f;
+}
+
+/* ── Responsive ───────────────────────────────────────── */
+@media (max-width: 833px) {
+  h1 { font-size: 34px; }
+}
+
+@media (max-width: 640px) {
+  h1 { font-size: 28px; }
+
+  .el-dialog {
+    width: 90% !important;
+    margin: 20px auto !important;
+  }
+
+  .el-table { font-size: 14px; }
+
+  button {
+    padding: 8px 17px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 { font-size: 24px; }
+
+  .el-table { font-size: 12px; }
+
+  .el-dialog {
+    width: 95% !important;
+    margin: 10px auto !important;
+  }
+
+  button {
+    padding: 6px 14px;
+    font-size: 14px;
+  }
+}
+
+/* ── Light mode (default) ─────────────────────────────── */
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    color: #1d1d1f;
+    background-color: #f5f5f7;
   }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+  a:hover { color: #005bb8; }
+  button { background-color: #f5f5f7; }
 }

@@ -270,64 +270,64 @@
           </div>
         </el-card>
 
-    <!-- 时间节点配置 -->
-    <div v-show="activeTab === 5" class="config-tab-container">
-      <el-card class="config-card" shadow="never">
-        <h3 class="tab-title">时间节点配置</h3>
-        <el-form :model="deadlinesConfig" label-width="140px" class="config-form">
-          <el-form-item label="论文提交截止">
-            <el-date-picker
-              v-model="deadlinesConfig.submissionDeadline"
-              type="date"
-              placeholder="选择日期"
-              value-format="YYYY-MM-DD"
-              style="width: 100%"
-            ></el-date-picker>
-            <div class="form-tip">学生论文提交的最终截止时间</div>
-          </el-form-item>
-          
-          <el-form-item label="审核截止">
-            <el-date-picker
-              v-model="deadlinesConfig.reviewDeadline"
-              type="date"
-              placeholder="选择日期"
-              value-format="YYYY-MM-DD"
-              style="width: 100%"
-            ></el-date-picker>
-            <div class="form-tip">导师完成论文审核的截止时间</div>
-          </el-form-item>
-          
-          <el-form-item label="答辩时间">
-            <el-date-picker
-              v-model="deadlinesConfig.defenseDate"
-              type="date"
-              placeholder="选择日期"
-              value-format="YYYY-MM-DD"
-              style="width: 100%"
-            ></el-date-picker>
-            <div class="form-tip">论文答辩的开始时间</div>
-          </el-form-item>
-          
-          <el-form-item label="预计毕业时间">
-            <el-date-picker
-              v-model="deadlinesConfig.graduationDate"
-              type="date"
-              placeholder="选择日期"
-              value-format="YYYY-MM-DD"
-              style="width: 100%"
-            ></el-date-picker>
-            <div class="form-tip">学生预计毕业的时间</div>
-          </el-form-item>
-          
-          <el-form-item>
-            <el-button type="primary" @click="saveDeadlinesConfig" :loading="savingDeadlines">
-              保存时间节点配置
-            </el-button>
-            <el-button @click="resetDeadlinesConfig">重置</el-button>
-          </el-form-item>
-        </el-form>
-      </el-card>
-    </div>
+        <!-- 时间节点配置 -->
+        <div v-show="activeTab === 5" class="config-tab-container">
+          <el-card class="config-card" shadow="never">
+            <h3 class="tab-title">时间节点配置</h3>
+            <el-form :model="deadlinesConfig" label-width="140px" class="config-form">
+              <el-form-item label="论文提交截止">
+                <el-date-picker
+                  v-model="deadlinesConfig.submissionDeadline"
+                  type="date"
+                  placeholder="选择日期"
+                  value-format="YYYY-MM-DD"
+                  style="width: 100%"
+                ></el-date-picker>
+                <div class="form-tip">学生论文提交的最终截止时间</div>
+              </el-form-item>
+
+              <el-form-item label="审核截止">
+                <el-date-picker
+                  v-model="deadlinesConfig.reviewDeadline"
+                  type="date"
+                  placeholder="选择日期"
+                  value-format="YYYY-MM-DD"
+                  style="width: 100%"
+                ></el-date-picker>
+                <div class="form-tip">导师完成论文审核的截止时间</div>
+              </el-form-item>
+
+              <el-form-item label="答辩时间">
+                <el-date-picker
+                  v-model="deadlinesConfig.defenseDate"
+                  type="date"
+                  placeholder="选择日期"
+                  value-format="YYYY-MM-DD"
+                  style="width: 100%"
+                ></el-date-picker>
+                <div class="form-tip">论文答辩的开始时间</div>
+              </el-form-item>
+
+              <el-form-item label="预计毕业时间">
+                <el-date-picker
+                  v-model="deadlinesConfig.graduationDate"
+                  type="date"
+                  placeholder="选择日期"
+                  value-format="YYYY-MM-DD"
+                  style="width: 100%"
+                ></el-date-picker>
+                <div class="form-tip">学生预计毕业的时间</div>
+              </el-form-item>
+
+              <el-form-item>
+                <el-button type="primary" @click="saveDeadlinesConfig" :loading="savingDeadlines">
+                  保存时间节点配置
+                </el-button>
+                <el-button @click="resetDeadlinesConfig">重置</el-button>
+              </el-form-item>
+            </el-form>
+          </el-card>
+        </div>
       </el-col>
 
       <!-- 右侧配置说明 -->
@@ -401,31 +401,49 @@
           </div>
         </el-card>
 
-        <!-- 配置备份 -->
+        <!-- 数据备份 -->
         <el-card class="backup-card" shadow="never" style="margin-top: 1rem">
           <template #header>
             <div class="card-header">
               <span class="card-title">
                 <el-icon><Upload /></el-icon>
-                配置备份
+                数据备份
               </span>
             </div>
           </template>
-          
+
+          <div class="backup-settings">
+            <el-form label-width="110px" size="default">
+              <el-form-item label="自动备份">
+                <el-switch v-model="backupSettingsForm.enabled" @change="saveBackupSettings" />
+                <span class="setting-hint" style="margin-left: 0.5rem">{{ backupSettingsForm.enabled ? '每天凌晨2:00执行' : '已禁用' }}</span>
+              </el-form-item>
+              <el-form-item label="保留天数">
+                <el-input-number
+                  v-model="backupSettingsForm.retentionDays"
+                  :min="7"
+                  :max="365"
+                  :step="7"
+                  @change="saveBackupSettings"
+                />
+                <span class="setting-hint" style="margin-left: 0.5rem">超过天数的备份文件自动清理</span>
+              </el-form-item>
+            </el-form>
+          </div>
+
+          <el-divider />
+
           <div class="backup-actions">
-            <el-button type="primary" @click="exportConfig" :loading="exporting">
+            <el-button type="primary" @click="triggerDbBackup" :loading="backingUp">
+              立即备份
+            </el-button>
+            <el-button @click="exportConfig">
               导出配置
-            </el-button>
-            <el-button @click="importConfig">
-              导入配置
-            </el-button>
-            <el-button type="warning" @click="resetConfig">
-              恢复默认
             </el-button>
           </div>
           <div class="backup-info">
             <p>上次备份：{{ lastBackupTime }}</p>
-            <p>配置版本：{{ configVersion }}</p>
+            <p>备份目录：{{ backupDir }}</p>
           </div>
         </el-card>
       </el-col>
@@ -438,7 +456,7 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 // 导入管理员 API
-import { 
+import {
   getSystemConfig,
   updateBasicConfig,
   updatePlagiarismConfig,
@@ -452,6 +470,7 @@ import {
   getDeadlinesConfig,
   updateDeadlinesConfig
 } from '@/api/admin/config'
+import { triggerBackup, getBackupStatus, getBackupSettings, updateBackupSettings as updateBackupSettingsApi } from '@/api/admin/backup'
 
 
 // 图标导入
@@ -463,6 +482,7 @@ import {
 const activeTab = ref(0)
 const saving = ref(false)
 const testingEmail = ref(false)
+const backingUp = ref(false)
 const exporting = ref(false)
 
 // 配置数据
@@ -528,8 +548,15 @@ const thresholdMarks = computed(() => ({
   100: '100%'
 }))
 
-const lastBackupTime = ref('2024-01-15 14:30:25')
-const configVersion = ref('2.1.0-20240115')
+const lastBackupTime = ref('暂无')
+const backupDir = ref('—')
+const backupSettingsForm = reactive({ enabled: true, retentionDays: 30 })
+let backupSettingsLoaded = false
+
+const formatDateTime = (dateStr) => {
+  if (!dateStr) return ''
+  return new Date(dateStr).toLocaleString('zh-CN')
+}
 
 // 方法
 const refreshConfig = async () => {
@@ -679,7 +706,7 @@ const exportConfig = async () => {
     const response = await exportApiConfig()
     
     // 创建下载链接
-    const blob = new Blob([response], { type: 'application/json' })
+    const blob = response.data instanceof Blob ? response.data : new Blob([response.data], { type: 'application/json' })
     const url = window.URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
@@ -699,8 +726,60 @@ const exportConfig = async () => {
   }
 }
 
-const importConfig = () => {
-  ElMessage.info('配置导入功能开发中...')
+const triggerDbBackup = async () => {
+  backingUp.value = true
+  try {
+    const response = await triggerBackup()
+    if (response.code === 200) {
+      const result = response.data
+      if (result.status === 'SUCCESS') {
+        ElMessage.success(`备份成功: ${result.fileName}`)
+      } else {
+        ElMessage.warning(result.message || '备份未正常完成')
+      }
+    } else {
+      ElMessage.error(response.message || '备份失败')
+    }
+    await loadBackupStatus()
+  } catch {
+    ElMessage.error('备份请求失败')
+  } finally {
+    backingUp.value = false
+  }
+}
+
+const loadBackupStatus = async () => {
+  try {
+    const [statusRes, settingsRes] = await Promise.all([
+      getBackupStatus(),
+      getBackupSettings()
+    ])
+    if (statusRes.code === 200) {
+      const data = statusRes.data
+      if (data.lastBackup) {
+        lastBackupTime.value = formatDateTime(data.lastBackup.endTime || data.lastBackup.createTime)
+      }
+      backupDir.value = data.backupDir || '—'
+    }
+    if (settingsRes.code === 200 && !backupSettingsLoaded) {
+      backupSettingsForm.enabled = settingsRes.data.enabled != null ? settingsRes.data.enabled : true
+      backupSettingsForm.retentionDays = settingsRes.data.retentionDays || 30
+      backupSettingsLoaded = true
+    }
+  } catch {
+    // silently fail for backup status, not critical
+  }
+}
+
+const saveBackupSettings = async () => {
+  try {
+    await updateBackupSettingsApi({
+      enabled: backupSettingsForm.enabled,
+      retentionDays: backupSettingsForm.retentionDays
+    })
+  } catch {
+    // silently fail
+  }
 }
 
 const resetConfig = async () => {
@@ -732,44 +811,76 @@ onMounted(() => {
   refreshConfig()
   // 加载时间节点配置
   loadDeadlinesConfig()
+  // 加载备份状态
+  loadBackupStatus()
 })
 </script>
 
 <style lang="scss" scoped>
 .system-config {
-  padding: 0;
+  min-height: 100vh;
+  background: #f5f5f7; // Slate-50
+  color: #1d1d1f; // Slate-900
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 24px;
 }
 
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1.5rem;
+  margin-bottom: 24px;
+  background: #ffffff;
+  border: 1px solid #d2d2d7;
+  border-radius: 18px;
+  padding: 24px;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: #d2d2d7;
+  }
   
   .header-content {
     .page-title {
-      margin: 0 0 0.5rem 0;
+      margin: 0 0 8px 0;
       font-size: 1.75rem;
-      font-weight: 600;
-      color: #2c3e50;
+      font-weight: 700;
+      color: #1d1d1f; // Slate-900
     }
     
     .page-desc {
       margin: 0;
-      color: #7f8c8d;
+      color: #86868b; // Slate-500
       font-size: 0.95rem;
     }
   }
   
   .header-actions {
     display: flex;
-    gap: 0.75rem;
+    gap: 12px;
+    
+    .el-button {
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      border: 1px solid #d2d2d7;
+      
+      &:hover {
+        border-color: #d2d2d7;
+      }
+    }
   }
 }
 
 .nav-card {
-  margin-bottom: 1.5rem;
-  border-radius: 12px;
+  margin-bottom: 24px;
+  background: #ffffff;
+  border: 1px solid #d2d2d7;
+  border-radius: 18px;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: #d2d2d7;
+  }
   
   :deep(.el-card__body) {
     padding: 0;
@@ -781,7 +892,7 @@ onMounted(() => {
       
       &:hover {
         .el-step__title {
-          color: #667eea;
+          color: #0066cc; // Blue-500
         }
       }
     }
@@ -789,122 +900,201 @@ onMounted(() => {
 }
 
 .config-card {
-  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #d2d2d7;
+  border-radius: 18px;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: #d2d2d7;
+  }
   
   :deep(.el-card__body) {
-    padding: 1.5rem;
+    padding: 24px;
   }
   
   .config-tab {
     .tab-title {
-      margin: 0 0 1.5rem 0;
+      margin: 0 0 24px 0;
       font-size: 1.25rem;
-      color: #2c3e50;
-      padding-bottom: 0.75rem;
-      border-bottom: 2px solid #f1f2f6;
+      color: #1d1d1f; // Slate-900
+      padding-bottom: 12px;
+      border-bottom: 2px solid #d2d2d7;
     }
     
     .config-form {
       :deep(.el-form-item) {
-        margin-bottom: 1.5rem;
+        margin-bottom: 24px;
         
         .el-form-item__label {
-          font-weight: 500;
-          color: #5a6c7d;
+          font-weight: 400;
+          color: #86868b; // Slate-500
+        }
+        
+        .el-input,
+        .el-select,
+        .el-date-picker {
+          width: 100%;
+          
+          :deep(.el-input__wrapper) {
+            border-radius: 8px;
+            border: 1px solid #d2d2d7;
+            transition: all 0.2s ease;
+            
+            &:hover {
+              border-color: #d2d2d7;
+              /* box-shadow removed for Apple HIG */
+            }
+          }
+          
+          :deep(.el-select__wrapper) {
+            border-radius: 8px;
+            border: 1px solid #d2d2d7;
+            transition: all 0.2s ease;
+            
+            &:hover {
+              border-color: #d2d2d7;
+              /* box-shadow removed for Apple HIG */
+            }
+          }
+        }
+        
+        .el-button {
+          border-radius: 8px;
+          transition: all 0.2s ease;
+          border: 1px solid #d2d2d7;
+          
+          &:hover {
+            border-color: #86868b;
+          }
         }
       }
       
       .form-tip {
         font-size: 0.875rem;
-        color: #7f8c8d;
-        margin-top: 0.25rem;
+        color: #86868b; // Slate-400
+        margin-top: 4px;
         line-height: 1.4;
       }
       
       .unit {
-        margin-left: 0.5rem;
-        color: #7f8c8d;
+        margin-left: 8px;
+        color: #86868b; // Slate-400
         font-size: 0.875rem;
       }
     }
   }
 }
 
-.help-card,
-.backup-card {
-  border-radius: 12px;
-  
+.help-card {
+  background: #f9f9fb;
+  border: 1px solid #e5e5ea;
+  border-radius: 14px;
+  transition: all 0.2s ease;
+
   :deep(.el-card__header) {
-    padding: 1rem 1.25rem;
-    border-bottom: 1px solid #f1f2f6;
-    
-    .card-header {
+    padding: 12px 18px;
+    border-bottom: 1px solid #e5e5ea;
+    background: transparent;
+
+    .card-header .card-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #6e6e73;
+      .el-icon { margin-right: 6px; color: #86868b; }
+    }
+  }
+
+  :deep(.el-card__body) {
+    padding: 14px 18px;
+  }
+}
+
+.backup-card {
+  background: #ffffff;
+  border: 1px solid #d2d2d7;
+  border-radius: 18px;
+  border-top: 3px solid #0ea5e9;
+  transition: all 0.2s ease;
+
+  :deep(.el-card__header) {
+    padding: 16px 20px 12px;
+    border-bottom: none;
+    background: transparent;
+
+    .card-header .card-title {
       display: flex;
       align-items: center;
-      
-      .card-title {
-        display: flex;
-        align-items: center;
-        font-weight: 600;
-        color: #2c3e50;
-        
-        .el-icon {
-          margin-right: 0.5rem;
-          color: #667eea;
-        }
-      }
+      font-weight: 600;
+      font-size: 1rem;
+      color: #1d1d1f;
+      .el-icon { margin-right: 8px; color: #0ea5e9; }
     }
+  }
+
+  :deep(.el-card__body) {
+    padding: 0 20px 20px;
   }
 }
 
 .config-help {
   .help-content {
     h4 {
-      margin: 0 0 0.75rem 0;
-      color: #2c3e50;
-      font-size: 1rem;
+      margin: 0 0 10px 0;
+      color: #6e6e73;
+      font-size: 0.875rem;
     }
-    
     ul {
-      padding-left: 1.25rem;
+      padding-left: 18px;
       margin: 0;
-      
       li {
-        margin-bottom: 0.5rem;
+        margin-bottom: 6px;
         line-height: 1.5;
-        color: #5a6c7d;
-        
-        strong {
-          color: #2c3e50;
-        }
+        font-size: 0.8rem;
+        color: #86868b;
+        strong { color: #515154; }
       }
     }
+  }
+}
+.backup-settings {
+  margin-bottom: 0.5rem;
+
+  .setting-hint {
+    font-size: 0.8rem;
+    color: #86868b;
   }
 }
 
 .backup-actions {
   display: flex;
-  flex-direction: column;
   gap: 0.75rem;
-  margin-bottom: 1rem;
-  
+
   .el-button {
-    width: 100%;
+    border-radius: 8px;
   }
 }
 
 .backup-info {
   p {
-    margin: 0.25rem 0;
+    margin: 4px 0;
     font-size: 0.875rem;
-    color: #7f8c8d;
+    color: #86868b; // Slate-400
   }
 }
 
+.config-tab-container {
+  margin-top: 24px;
+}
+
 @media (max-width: 768px) {
+  .system-config {
+    padding: 16px;
+  }
+  
   .page-header {
     flex-direction: column;
-    gap: 1rem;
+    gap: 16px;
     
     .header-actions {
       width: 100%;
@@ -920,36 +1110,20 @@ onMounted(() => {
     
     .el-col {
       width: 100% !important;
-      margin-bottom: 1rem;
+      margin-bottom: 16px;
     }
   }
   
   .config-card {
     :deep(.el-card__body) {
-      padding: 1rem;
+      padding: 16px;
     }
   }
   
   .backup-actions {
     .el-button {
-      margin-bottom: 0.5rem;
+      margin-bottom: 8px;
     }
-  }
-}
-</style>
-
-<style lang="scss" scoped>
-.system-config {
-  padding: 0;
-}
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1.5rem;
-  .header-content {
-    .page-title { margin: 0 0 0.5rem 0; font-size: 1.75rem; font-weight: 600; color: #2c3e50; }
-    .page-desc { margin: 0; color: #7f8c8d; font-size: 0.95rem; }
   }
 }
 </style>

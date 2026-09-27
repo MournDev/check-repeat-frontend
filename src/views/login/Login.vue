@@ -1,300 +1,527 @@
 <template>
-  <div class="login-container">
-    <!-- 背景遮罩层 -->
-    <div class="background-overlay"></div>
-    
-    <!-- 登录卡片 -->
-    <div class="login-content">
-      <el-card class="login-card">
-        <div class="card-header">
-          <h2 class="login-title">学生论文管理系统</h2>
-          <p class="login-subtitle">欢迎回来，请登录您的账户</p>
+  <div class="login-page">
+    <!-- 左侧：角色视觉区 -->
+    <div class="left-panel">
+      <div class="left-top">
+        <div class="brand-mark">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <rect width="28" height="28" rx="7" fill="white" fill-opacity="0.15" />
+            <path d="M7 14L12 9L17 14L12 19L7 14Z" fill="white" fill-opacity="0.9" />
+            <path d="M13 14L18 9L21 12V16L18 19L13 14Z" fill="white" fill-opacity="0.5" />
+          </svg>
         </div>
-        
-        <el-form :model="loginForm" :rules="loginRules" ref="loginFormRef" label-width="0">
-          <el-form-item prop="username">
-            <el-input 
-              v-model="loginForm.username" 
-              placeholder="请输入用户名" 
-              size="large"
-              :prefix-icon="User"
-              clearable
-            />
-          </el-form-item>
-          
-          <el-form-item prop="password">
-            <el-input 
-              v-model="loginForm.password" 
-              type="password" 
-              placeholder="请输入密码" 
-              size="large"
-              :prefix-icon="Lock"
-              show-password
-              clearable
-            />
-          </el-form-item>
-        
-          <el-form-item>
-            <el-button 
-              type="primary" 
-              @click="handleLogin" 
-              class="login-btn" 
-              :loading="loading"
-              size="large"
+        <span class="brand-name">论文查重管理系统</span>
+      </div>
+
+      <div class="characters-area">
+        <AnimatedCharacters
+          :is-typing="isTyping"
+          :show-password="showPassword"
+          :password-length="passwordLength"
+          :is-login-failed="!!error"
+        />
+      </div>
+
+      <!-- 底部链接已移除 -->
+
+    </div>
+
+    <!-- 右侧：登录表单 -->
+    <div class="right-panel">
+      <div class="form-wrapper">
+        <div class="mobile-logo">
+          <div class="mobile-logo-icon">
+            <svg width="20" height="20" viewBox="0 0 28 28" fill="none">
+              <path d="M7 14L12 9L17 14L12 19L7 14Z" fill="#0066cc" fill-opacity="0.9" />
+              <path d="M13 14L18 9L21 12V16L18 19L13 14Z" fill="#5ac8fa" fill-opacity="0.7" />
+            </svg>
+          </div>
+          <span>论文查重管理系统</span>
+        </div>
+
+        <div class="form-header">
+          <h1 class="form-title">登录到工作台</h1>
+          <p class="form-subtitle">
+            统一接入论文管理系统
+          </p>
+        </div>
+
+        <el-form
+          name="login"
+          :model="loginForm"
+          @submit.prevent="handleLogin"
+          autocomplete="off"
+          size="large"
+          class="login-form"
+        >
+          <div class="field-label">账号</div>
+          <el-form-item
+            prop="username"
+            :rules="[
+              { required: true, message: '请输入账号' },
+              { min: 3, message: '账号长度不能少于 3 个字符' },
+            ]"
+          >
+            <el-input
+              v-model="loginForm.username"
+              placeholder="输入您的账号"
+              @focus="isTyping = true; error = ''"
+              @blur="isTyping = false"
             >
-              {{ loading ? '登录中...' : '登 录' }}
+              <template #prefix>
+                <el-icon><User /></el-icon>
+              </template>
+            </el-input>
+          </el-form-item>
+
+          <div class="field-label">密码</div>
+          <el-form-item
+            prop="password"
+            :rules="[
+              { required: true, message: '请输入密码' },
+              { min: 6, message: '密码长度不能少于 6 个字符' },
+            ]"
+          >
+            <el-input
+              v-model="loginForm.password"
+              :type="showPassword ? 'text' : 'password'"
+              placeholder="输入您的密码"
+              @focus="isTyping = true; error = ''"
+              @blur="isTyping = false"
+            >
+              <template #prefix>
+                <el-icon><Lock /></el-icon>
+              </template>
+              <template #suffix>
+                <span class="eye-toggle" @click="showPassword = !showPassword">
+                  <el-icon v-if="showPassword"><View /></el-icon>
+                  <el-icon v-else><Hide /></el-icon>
+                </span>
+              </template>
+            </el-input>
+          </el-form-item>
+
+          <el-alert
+            v-if="error"
+            :title="error"
+            type="error"
+            show-icon
+            :closable="false"
+            style="margin-bottom: 16px;"
+          />
+
+          <el-form-item :style="{ marginBottom: 0 }">
+            <el-button
+              type="primary"
+              native-type="submit"
+              :loading="loading"
+              class="submit-btn"
+            >
+              {{ loading ? '登录中...' : '登录' }}
             </el-button>
           </el-form-item>
         </el-form>
-        
-        <div class="login-footer">
-          <el-button type="text" @click="handleRegister" class="register-btn">
-            还没有账号？立即注册
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button type="text" @click="handleForgotPassword" class="forgot-btn">
+
+        <div class="password-forgot">
+          <el-button link @click="handleForgotPassword" class="forgot-link">
             忘记密码？
           </el-button>
         </div>
-      </el-card>
+
+        <div class="divider">
+          <span>或</span>
+        </div>
+
+        <div class="signup-row">
+          暂无账号？
+          <el-button link @click="handleRegister" class="signup-link">
+            前往注册
+          </el-button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { ElMessage } from 'element-plus'
-import { User, Lock } from '@element-plus/icons-vue'
+import { User, Lock, View, Hide } from '@element-plus/icons-vue'
+import AnimatedCharacters from '@/components/animated-characters/AnimatedCharacters.vue'
 
 const router = useRouter()
 const userStore = useUserStore()
-const loginFormRef = ref(null)
-const loading = ref(false)
 
-// 登录表单
+const loading = ref(false)
+const showPassword = ref(false)
+const isTyping = ref(false)
+const error = ref('')
+
 const loginForm = ref({
   username: '',
   password: ''
 })
 
-// 表单校验规则
-const loginRules = ref({
-  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-  password: [
-    { required: true, message: '请输入密码', trigger: 'blur' }
-  ],
+// 监听密码长度变化
+const passwordLength = ref(0)
+
+watch(() => loginForm.value.password, (newVal) => {
+  passwordLength.value = newVal ? newVal.length : 0
 })
 
-// 登录操作
 const handleLogin = async () => {
+  if (!loginForm.value.username || !loginForm.value.password) {
+    error.value = '请输入账号和密码'
+    return
+  }
+
+  loading.value = true
+  error.value = ''
+
   try {
-    // 表单校验
-    await loginFormRef.value.validate()
-    loading.value = true
-    // 调用登录接口
     const res = await userStore.login(loginForm.value)
 
-    if (res.data.success) {
-      console.log('🎯 登录成功，立即检查userStore:')
-      console.log('  - userStore.userInfo:', userStore.userInfo)
-      console.log('  - userStore.userInfo.userId:', userStore.userInfo.userId)
-      console.log('  - 与返回数据对比:', res.data.userId === userStore.userInfo.userId)
-      
-      // 立即检查localStorage
-      const stored = localStorage.getItem('userInfo')
-      console.log('  - localStorage userInfo:', stored)
-    }
-    ElMessage.success('登录成功')
-    // 优先从接口响应读取 roleCode，回退到 store 中的 role
-    const role = res?.data?.roleCode || userStore.role
-    console.log('用户角色:', role)
-    // 根据 role 跳转到对应仪表盘（使用 route name，避免相对路径问题）
-    try {
+    if (res.code === 200) {
+      ElMessage.success('登录成功')
+
+      const role = res.data?.roleCode || userStore.role
+
+      let targetRoute
       if (role === 'STUDENT') {
-        await router.push({ name: 'StudentDashboard' })
-        console.log('跳转到学生仪表盘')
+        targetRoute = { name: 'StudentDashboard' }
       } else if (role === 'TEACHER') {
-        await router.push({ name: 'TeacherDashboard' })
-        console.log('跳转到教师仪表盘')
+        targetRoute = { name: 'TeacherDashboard' }
       } else if (role === 'ADMIN') {
-        await router.push({ name: 'AdminDashboard' })
-        console.log('跳转到管理员仪表盘')
+        targetRoute = { name: 'SchoolOverview' }
+      } else if (role === 'SUPER_ADMIN') {
+        targetRoute = { name: 'SuperAdminDashboard' }
       } else {
-        // 默认跳到总览仪表盘
-        console.log('未知角色，跳转到总览仪表盘')
-        await router.push({ name: 'Dashboard' })
+        targetRoute = { name: 'Dashboard' }
       }
-    } catch (navErr) {
-      // 忽略重复导航等非致命错误，但在控制台记录
-      console.warn('导航失败：', navErr)
+      
+      const result = await router.push(targetRoute)
+      if (result) {
+        console.error('跳转失败：', result)
+      }
+    } else {
+      error.value = res.message || '登录失败，请检查账号密码'
     }
-  } catch (error) {
-    ElMessage.error('登录失败，请检查用户名或密码')
-    console.error('登录失败：', error)
+  } catch (err) {
+    error.value = err?.message || '账号或密码有误，请重新输入'
+    console.error('登录失败：', err)
   } finally {
     loading.value = false
   }
 }
 
-// 注册操作
 const handleRegister = () => {
-  router.push('/register');
+  router.push('/register')
 }
 
-// 忘记密码操作
 const handleForgotPassword = () => {
   router.push('/reset')
 }
 </script>
 
 <style lang="scss" scoped>
-.login-container {
+.login-page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+
+/* 左侧面板 */
+.left-panel {
   position: relative;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  // 使用本地图片作为背景
-  background-image: url('@/assets/images/login.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px;
+  background: #272729;
+  overflow: hidden;
 }
 
-// 背景遮罩层 - 让文字更清晰
-.background-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4); // 可调整透明度 0.3-0.5
-  z-index: 1;
-}
-
-// 内容区域
-.login-content {
-  width: 100%;
-  max-width: 420px;
-  padding: 20px;
-}
-
-.login-card {
-  width: 100%;
-  padding: 2.5rem;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-  background: rgba(255, 255, 255, 0.98);
+.left-top {
   position: relative;
-  z-index: 2; // 确保卡片在遮罩层之上
-  
-  :deep(.el-card__body) {
-    padding: 0;
-  }
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.5px;
 }
 
-.card-header {
+.brand-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  backdrop-filter: blur(8px);
+}
+
+.brand-name {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.characters-area {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 500px;
+}
+
+.left-footer {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.left-footer a {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.45);
+  text-decoration: none;
+  transition: color 0.2s;
+  cursor: pointer;
+}
+
+.left-footer a:hover {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* 右侧面板 */
+.right-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  background: #ffffff;
+}
+
+.form-wrapper {
+  width: 100%;
+  max-width: 400px;
+}
+
+.mobile-logo {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 48px;
+}
+
+.mobile-logo-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #eff6ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 40px;
 }
 
-.login-title {
-  margin: 0 0 0.5rem 0;
-  color: #2c3e50;
-  font-size: 1.75rem;
-  font-weight: 600;
+.form-title {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #0f172a;
+  margin: 0 0 10px 0;
+  line-height: 1.3;
 }
 
-.login-subtitle {
+.form-subtitle {
+  font-size: 14px;
+  color: #86868b;
   margin: 0;
-  color: #718096;
-  font-size: 0.9rem;
+  line-height: 1.6;
 }
 
-// 表单样式
-:deep(.el-form-item) {
-  margin-bottom: 1.25rem;
-}
+.login-form {
+  :deep(.el-form-item) {
+    margin-bottom: 20px;
+  }
 
-:deep(.el-input__wrapper) {
-  border-radius: 8px;
-  transition: all 0.2s;
-  
-  &:hover {
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  :deep(.el-input__wrapper) {
+    height: 48px !important;
+    background: #f5f5f7 !important;
+    border: 1px solid #d2d2d7 !important;
+    border-radius: 9999px !important;
+    transition: border-color 0.2s, box-shadow 0.2s !important;
+  }
+
+  :deep(.el-input__wrapper:hover) {
+    border-color: #0066cc !important;
+  }
+
+  :deep(.el-input__wrapper.is-focus),
+  :deep(.el-input__wrapper:focus) {
+    border-color: #0066cc !important;
+    outline: 2px solid #0066cc;
+    outline-offset: -2px;
+    background: #ffffff !important;
+  }
+
+  :deep(.el-input__inner) {
+    background: transparent !important;
+    font-size: 14px !important;
+    color: #1d1d1f !important;
+  }
+
+  :deep(.el-input__inner::placeholder) {
+    color: #86868b !important;
   }
 }
 
-.login-btn {
-  width: 100%;
-  height: 44px;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 500;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border: none;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-  transition: all 0.2s;
-  margin-top: 0.5rem;
-  
-  &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
-  }
-  
-  &:active {
-    transform: translateY(0);
-  }
-}
-
-// 底部链接
-.login-footer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #eaeaea;
-}
-
-.register-btn {
-  color: #667eea;
-  font-weight: 500;
-  
-  &:hover {
-    color: #764ba2;
-  }
-}
-
-.forgot-btn {
-  color: #a0aec0;
+.field-label {
+  font-size: 13px;
   font-weight: 400;
-  
-  &:hover {
-    color: #718096;
+  color: #1d1d1f;
+  margin-bottom: 6px;
+  letter-spacing: 0.2px;
+}
+
+.eye-toggle {
+  color: #86868b;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.eye-toggle:hover {
+  color: #1d1d1f;
+}
+
+.submit-btn {
+  width: 100%;
+  height: 48px !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  border-radius: 9999px !important;
+  background: #0066cc !important;
+  border-color: #0066cc !important;
+  letter-spacing: 1px;
+  transition: background 0.2s, opacity 0.2s !important;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background: #0055aa !important;
+  border-color: #0055aa !important;
+  opacity: 1 !important;
+}
+
+.submit-btn:active {
+  opacity: 0.85 !important;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0 0;
+  color: #d2d2d7;
+  font-size: 13px;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #d2d2d7;
+}
+
+.divider span {
+  color: #86868b;
+  white-space: nowrap;
+}
+
+.signup-row {
+  text-align: center;
+  font-size: 13px;
+  color: #86868b;
+  margin-top: 28px;
+}
+
+.signup-link {
+  color: #0066cc !important;
+  font-weight: 400;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.signup-link:hover {
+  text-decoration: underline;
+  color: #0055aa !important;
+}
+
+.password-forgot {
+  text-align: right;
+  margin-top: 12px;
+  margin-bottom: 16px;
+}
+
+.forgot-link {
+  color: #86868b !important;
+  font-size: 13px;
+  font-weight: 400;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.forgot-link:hover {
+  color: #0066cc !important;
+  text-decoration: underline;
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .login-page {
+    grid-template-columns: 1fr;
+  }
+
+  .left-panel {
+    display: none;
+  }
+
+  .mobile-logo {
+    display: flex;
   }
 }
 
-:deep(.el-divider--vertical) {
-  height: 1em;
-  margin: 0 12px;
-}
-
-// 响应式设计
 @media (max-width: 480px) {
-  .login-content {
-    max-width: 360px;
-    padding: 15px;
+  .right-panel {
+    padding: 20px;
   }
-  
-  .login-card {
-    padding: 2rem 1.5rem;
-  }
-  
-  .login-title {
-    font-size: 1.5rem;
+
+  .form-title {
+    font-size: 22px;
   }
 }
 </style>

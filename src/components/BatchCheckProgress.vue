@@ -99,7 +99,8 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, watch } from 'vue'
+import { ElMessage } from 'element-plus'
 import { 
   DataLine, Document, Loading, Check, Close, List, Refresh, Bell, Timer
 } from '@element-plus/icons-vue';
@@ -143,7 +144,10 @@ const formatTime = (seconds) => {
  * 刷新全部
  */
 const refreshAll = () => {
-  // TODO: 实现刷新逻辑
+  if (props.paperIds && props.paperIds.length > 0) {
+    startBatchCheck([...props.paperIds])
+    ElMessage.success('正在刷新全部任务状态')
+  }
 };
 
 // 监听 paperIds 变化，自动开始

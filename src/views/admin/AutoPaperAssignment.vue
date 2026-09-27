@@ -716,6 +716,7 @@ const getStatusText = (status) => {
   const statusMap = {
     'completed': '已完成',
     'failed': '失败',
+    'cancelled': '已取消',
     'running': '运行中'
   }
   return statusMap[status] || status
@@ -725,6 +726,7 @@ const getStatusTag = (status) => {
   const tagMap = {
     'completed': 'success',
     'failed': 'danger',
+    'cancelled': 'info',
     'running': 'warning'
   }
   return tagMap[status] || 'info'
@@ -771,12 +773,12 @@ onUnmounted(() => {
       margin: 0 0 0.5rem 0;
       font-size: 1.75rem;
       font-weight: 600;
-      color: #2c3e50;
+      color: #1d1d1f;
     }
     
     .page-desc {
       margin: 0;
-      color: #7f8c8d;
+      color: #86868b;
       font-size: 0.95rem;
     }
   }
@@ -792,11 +794,11 @@ onUnmounted(() => {
   
   .algorithm-card,
   .preview-card {
-    border-radius: 12px;
+    border-radius: 18px;
     
     :deep(.el-card__header) {
       padding: 1rem 1.25rem;
-      border-bottom: 1px solid #f1f2f6;
+      border-bottom: 1px solid #d2d2d7;
       
       .card-header {
         display: flex;
@@ -807,11 +809,11 @@ onUnmounted(() => {
           display: flex;
           align-items: center;
           font-weight: 600;
-          color: #2c3e50;
+          color: #1d1d1f;
           
           .el-icon {
             margin-right: 0.5rem;
-            color: #667eea;
+            color: #0066cc;
           }
         }
       }
@@ -830,7 +832,7 @@ onUnmounted(() => {
       justify-content: space-between;
       align-items: center;
       padding: 0.75rem 0;
-      border-bottom: 1px solid #f8f9fa;
+      border-bottom: 1px solid #f5f5f7;
       
       &:last-child {
         border-bottom: none;
@@ -838,20 +840,20 @@ onUnmounted(() => {
       
       .preview-label {
         font-size: 0.9rem;
-        color: #5a6c7d;
+        color: #86868b;
       }
       
       .preview-value {
         font-size: 1.2rem;
         font-weight: 600;
-        color: #2c3e50;
+        color: #1d1d1f;
         
         &.success {
-          color: #4facfe;
+          color: #0066cc;
         }
         
         &.warning {
-          color: #f5576c;
+          color: #ff3b30;
         }
       }
     }
@@ -860,11 +862,11 @@ onUnmounted(() => {
   .weight-distribution {
     margin-top: 1.5rem;
     padding-top: 1.5rem;
-    border-top: 1px solid #f1f2f6;
+    border-top: 1px solid #d2d2d7;
     
     h4 {
       margin: 0 0 1rem 0;
-      color: #2c3e50;
+      color: #1d1d1f;
       font-size: 1rem;
     }
     
@@ -876,7 +878,7 @@ onUnmounted(() => {
           display: block;
           margin-bottom: 0.5rem;
           font-size: 0.875rem;
-          color: #5a6c7d;
+          color: #86868b;
         }
       }
     }
@@ -884,12 +886,12 @@ onUnmounted(() => {
 }
 
 .history-card {
-  border-radius: 12px;
+  border-radius: 18px;
   margin-bottom: 1.5rem;
   
   :deep(.el-card__header) {
     padding: 1rem 1.25rem;
-    border-bottom: 1px solid #f1f2f6;
+    border-bottom: 1px solid #d2d2d7;
     
     .card-header {
       display: flex;
@@ -900,11 +902,11 @@ onUnmounted(() => {
         display: flex;
         align-items: center;
         font-weight: 600;
-        color: #2c3e50;
+        color: #1d1d1f;
         
         .el-icon {
           margin-right: 0.5rem;
-          color: #667eea;
+          color: #0066cc;
         }
       }
     }
@@ -918,24 +920,24 @@ onUnmounted(() => {
     .current-step {
       font-size: 1.1rem;
       font-weight: 600;
-      color: #2c3e50;
+      color: #1d1d1f;
       margin-bottom: 0.5rem;
     }
     
     .progress-stats {
       font-size: 0.95rem;
-      color: #5a6c7d;
+      color: #86868b;
     }
   }
   
   .step-details {
     margin-top: 1.5rem;
     padding-top: 1.5rem;
-    border-top: 1px solid #f1f2f6;
+    border-top: 1px solid #d2d2d7;
     
     h4 {
       margin: 0 0 1rem 0;
-      color: #2c3e50;
+      color: #1d1d1f;
     }
     
     .details-content {
@@ -946,25 +948,25 @@ onUnmounted(() => {
         display: flex;
         align-items: center;
         padding: 0.5rem 0;
-        border-bottom: 1px solid #f8f9fa;
+        border-bottom: 1px solid #f5f5f7;
         
         &:last-child {
           border-bottom: none;
         }
         
         .student-name {
-          font-weight: 500;
-          color: #2c3e50;
+          font-weight: 400;
+          color: #1d1d1f;
           min-width: 80px;
         }
         
         .arrow-icon {
           margin: 0 0.75rem;
-          color: #7f8c8d;
+          color: #86868b;
         }
         
         .teacher-name {
-          color: #5a6c7d;
+          color: #86868b;
           min-width: 80px;
         }
       }
@@ -978,7 +980,7 @@ onUnmounted(() => {
     
     h3 {
       margin: 0 0 1rem 0;
-      color: #2c3e50;
+      color: #1d1d1f;
       font-size: 1.1rem;
     }
   }

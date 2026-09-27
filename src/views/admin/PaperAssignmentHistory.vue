@@ -50,6 +50,7 @@
             <el-option label="已生效" value="active"></el-option>
             <el-option label="已撤销" value="revoked"></el-option>
             <el-option label="待确认" value="pending"></el-option>
+            <el-option label="待重新分配" value="pending_reassign"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="关键词">
@@ -162,15 +163,19 @@
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column prop="studentName" label="学生姓名" width="100"></el-table-column>
         <el-table-column prop="studentId" label="学号" width="120"></el-table-column>
-        <el-table-column prop="major" label="专业" width="150">
+        <el-table-column label="学院" width="150" prop="collegeName">
           <template #default="{ row }">
-            <el-tag size="small">{{ getMajorName(row.major) }}</el-tag>
+            {{ row.collegeName || '未知' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="专业" width="150" prop="majorName">
+          <template #default="{ row }">
+            {{ row.majorName || '未知' }}
           </template>
         </el-table-column>
         <el-table-column prop="grade" label="年级" width="80"></el-table-column>
         <el-table-column prop="teacherName" label="指导老师" width="100"></el-table-column>
         <el-table-column prop="teacherTitle" label="职称" width="100"></el-table-column>
-        <el-table-column prop="department" label="院系" width="120"></el-table-column>
         <el-table-column prop="assignmentType" label="分配类型" width="100">
           <template #default="{ row }">
             <el-tag :type="getTypeTag(row.assignmentType)">
@@ -226,8 +231,6 @@
           :page-sizes="[10, 20, 50, 100]"
           :total="pagination.total"
           layout="total, sizes, prev, pager, next, jumper"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
         />
       </div>
     </el-card>
@@ -242,11 +245,12 @@
         <el-descriptions :column="2" border>
           <el-descriptions-item label="学生姓名">{{ currentRecord.studentName }}</el-descriptions-item>
           <el-descriptions-item label="学号">{{ currentRecord.studentId }}</el-descriptions-item>
-          <el-descriptions-item label="专业">{{ getMajorName(currentRecord.major) }}</el-descriptions-item>
-          <el-descriptions-item label="年级">{{ currentRecord.grade }}级</el-descriptions-item>
-          <el-descriptions-item label="指导老师">{{ currentRecord.teacherName }}</el-descriptions-item>
-          <el-descriptions-item label="教师职称">{{ currentRecord.teacherTitle }}</el-descriptions-item>
-          <el-descriptions-item label="所在院系">{{ currentRecord.department }}</el-descriptions-item>
+          <el-descriptions-item label="学院">{{ currentRecord.collegeName || '未知' }}</el-descriptions-item>
+          <el-descriptions-item label="专业">{{ currentRecord.majorName || currentRecord.major || '未知' }}</el-descriptions-item>
+          <el-descriptions-item label="年级">{{ currentRecord.grade || '' }}级</el-descriptions-item>
+          <el-descriptions-item label="指导老师">{{ currentRecord.teacherName || '' }}</el-descriptions-item>
+          <el-descriptions-item label="教师职称">{{ currentRecord.teacherTitle || '' }}</el-descriptions-item>
+          <el-descriptions-item label="教师院系">{{ currentRecord.department || '未知' }}</el-descriptions-item>
           <el-descriptions-item label="分配类型">
             <el-tag :type="getTypeTag(currentRecord.assignmentType)">
               {{ getTypeName(currentRecord.assignmentType) }}
@@ -258,7 +262,7 @@
               {{ getStatusName(currentRecord.status) }}
             </el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="操作人">{{ currentRecord.operator }}</el-descriptions-item>
+          <el-descriptions-item label="操作人">{{ currentRecord.operator || '' }}</el-descriptions-item>
           <el-descriptions-item label="操作时间">{{ formatDate(currentRecord.operateTime) }}</el-descriptions-item>
         </el-descriptions>
         
@@ -520,12 +524,31 @@ const loadHistoryData = async () => {
       page: pagination.currentPage,
       size: pagination.pageSize
     }
-    
+
     const res = await getHistoryList(params)
-    if (res.code === 200) {
-      assignmentRecords.value = res.data.records || []
-      pagination.total = res.data.total || 0
+
+    let records = []
+    let total = 0
+
+    if (res?.data?.records) {
+      records = res.data.records
+      total = res.data.total ?? records.length
+    } else if (res?.data && Array.isArray(res.data)) {
+      records = res.data
+      total = res.total ?? records.length
+    } else if (Array.isArray(res.list)) {
+      records = res.list
+      total = res.total ?? records.length
+    } else if (Array.isArray(res)) {
+      records = res
+      total = records.length
+    } else {
     }
+
+    assignmentRecords.value = records
+    // 确保 total 是数字类型
+    const totalNumber = Number(total) || 0
+    pagination.total = totalNumber
   } catch (error) {
     console.error('加载记录失败:', error)
     ElMessage.error('加载记录失败: ' + error.message)
@@ -589,7 +612,8 @@ const getStatusName = (status) => {
   const statusMap = {
     'active': '已生效',
     'revoked': '已撤销',
-    'pending': '待确认'
+    'pending': '待确认',
+    'pending_reassign': '待重新分配'
   }
   return statusMap[status] || status
 }
@@ -715,7 +739,6 @@ const confirmReassign = async () => {
     }
   } catch (error) {
     if (error.validator) {
-      console.log('表单验证失败')
     } else {
       ElMessage.error('重新分配失败: ' + error.message)
     }
@@ -730,7 +753,10 @@ onMounted(() => {
     loadHistoryStats(),
     loadHistoryData(),
     loadAvailableTeachers()
-  ])
+  ]).then(() => {
+  }).catch((error) => {
+    console.error('onMounted: Error loading data:', error)
+  })
 })
 </script>
 
@@ -750,16 +776,16 @@ onMounted(() => {
       margin: 0 0 0.5rem 0;
       font-size: 1.75rem;
       font-weight: 600;
-      color: #2c3e50;
+      color: #1d1d1f;
     }
-    
+
     .page-desc {
       margin: 0;
-      color: #7f8c8d;
+      color: #86868b;
       font-size: 0.95rem;
     }
   }
-  
+
   .header-actions {
     display: flex;
     gap: 0.75rem;
@@ -768,7 +794,7 @@ onMounted(() => {
 
 .filter-card {
   margin-bottom: 1.5rem;
-  border-radius: 12px;
+  border-radius: 18px;
   
   :deep(.el-card__body) {
     padding: 1.25rem;
@@ -780,7 +806,7 @@ onMounted(() => {
   
   .stat-card {
     border: none;
-    border-radius: 12px;
+    border-radius: 18px;
     
     .stat-content {
       display: flex;
@@ -792,23 +818,23 @@ onMounted(() => {
         justify-content: center;
         width: 48px;
         height: 48px;
-        border-radius: 12px;
+        border-radius: 18px;
         margin-right: 1rem;
-        
+
         &.bg-primary {
-          background: linear-gradient(135deg, #667eea, #764ba2);
+          background: #0066cc;
         }
-        
+
         &.bg-success {
-          background: linear-gradient(135deg, #4facfe, #00f2fe);
+          background: #34c759;
         }
-        
+
         &.bg-warning {
-          background: linear-gradient(135deg, #f093fb, #f5576c);
+          background: #ff9500;
         }
-        
+
         &.bg-info {
-          background: linear-gradient(135deg, #43e97b, #38f9d7);
+          background: #5ac8fa;
         }
         
         .el-icon {
@@ -821,13 +847,13 @@ onMounted(() => {
         .stat-value {
           font-size: 1.75rem;
           font-weight: 700;
-          color: #2c3e50;
+          color: #1d1d1f;
           line-height: 1;
         }
-        
+
         .stat-label {
           font-size: 0.875rem;
-          color: #7f8c8d;
+          color: #86868b;
           margin-top: 0.25rem;
         }
       }
@@ -836,26 +862,26 @@ onMounted(() => {
 }
 
 .table-card {
-  border-radius: 12px;
-  
+  border-radius: 18px;
+
   :deep(.el-card__header) {
     padding: 1rem 1.25rem;
-    border-bottom: 1px solid #f1f2f6;
-    
+    border-bottom: 1px solid #d2d2d7;
+
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      
+
       .card-title {
         display: flex;
         align-items: center;
         font-weight: 600;
-        color: #2c3e50;
-        
+        color: #1d1d1f;
+
         .el-icon {
           margin-right: 0.5rem;
-          color: #667eea;
+          color: #0066cc;
         }
       }
     }
@@ -870,38 +896,38 @@ onMounted(() => {
   padding: 1rem;
   display: flex;
   justify-content: flex-end;
-  border-top: 1px solid #f1f2f6;
+  border-top: 1px solid #d2d2d7;
 }
 
 .record-detail {
   .detail-section {
     margin: 1.5rem 0;
-    
+
     h3 {
       margin: 0 0 1rem 0;
-      color: #2c3e50;
+      color: #1d1d1f;
       font-size: 1.1rem;
     }
-    
+
     .reason,
     .notes {
       line-height: 1.6;
-      color: #5a6c7d;
+      color: #86868b;
       padding: 0.75rem;
-      background-color: #f8f9fa;
-      border-radius: 6px;
+      background-color: #f5f5f7;
+      border-radius: 8px;
     }
   }
 }
 
 .original-info {
   padding: 0.75rem;
-  background-color: #f8f9fa;
-  border-radius: 6px;
-  
+  background-color: #f5f5f7;
+  border-radius: 8px;
+
   div {
     margin-bottom: 0.25rem;
-    
+
     &:last-child {
       margin-bottom: 0;
     }
@@ -913,10 +939,10 @@ onMounted(() => {
     font-weight: 600;
     margin-right: 0.5rem;
   }
-  
+
   .teacher-detail {
     font-size: 0.875rem;
-    color: #7f8c8d;
+    color: #86868b;
     margin-top: 0.25rem;
   }
 }
@@ -965,7 +991,9 @@ onMounted(() => {
   }
   
   .pagination-container {
+    display: flex;
     justify-content: center;
+    margin-top: 20px;
     
     :deep(.el-pagination) {
       .el-pagination__sizes,
@@ -977,18 +1005,3 @@ onMounted(() => {
 }
 </style>
 
-<style lang="scss" scoped>
-.assignment-history {
-  padding: 0;
-}
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1.5rem;
-  .header-content {
-    .page-title { margin: 0 0 0.5rem 0; font-size: 1.75rem; font-weight: 600; color: #2c3e50; }
-    .page-desc { margin: 0; color: #7f8c8d; font-size: 0.95rem; }
-  }
-}
-</style>

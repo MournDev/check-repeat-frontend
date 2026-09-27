@@ -1,159 +1,184 @@
-# 论文查重管理系统 - 前端
+# 论文查重管理系统（前端）
 
-论文查重管理系统的前端项目，提供学生、教师、管理员三类角色的论文提交、查重、审核与统计分析功能。
+## 项目简介
+
+论文查重管理系统前端，基于 Vue 3 + Element Plus 构建，为学生、教师、管理员三种角色提供完整的论文查重管理界面。支持论文提交、查重报告查看、在线审核、实时消息、系统监控等功能。
 
 ## 技术栈
 
-- **Vue 3** + **Vite**（`rolldown-vite`）
-- **Element Plus**（UI 组件库）
-- **Pinia**（状态管理）
-- **Vue Router**（路由）
-- **Axios**（HTTP 请求）
-- **ECharts**（数据可视化）
-- **STOMP / SockJS**（WebSocket 实时进度推送）
-- **Day.js**、**GSAP**、**SparkMD5** 等
+| 技术 | 版本 | 说明 |
+|------|------|------|
+| Vue | 3 | 前端框架（Composition API） |
+| rolldown-vite | — | 构建工具（Vite 替代实现） |
+| Element Plus | — | UI 组件库（自动导入） |
+| Pinia | — | 状态管理 |
+| Vue Router | — | 路由管理 |
+| Axios | — | HTTP 客户端 |
+| ECharts | — | 图表可视化 |
+| Day.js | — | 时间处理 |
+| SCSS | — | CSS 预处理器 |
 
-## 环境要求
+## 核心功能
 
-- Node.js >= 20（推荐 20.x）
+### 学生端
+- **论文提交**：支持 Word/PDF 上传，自动计算 MD5 秒传
+- **论文详情**：查看论文状态、导师反馈、审核历史、文件格式
+- **查重报告**：相似度分析、章节对比、相似来源列表
+- **查重历史**：历史查重记录、相似度趋势图
+- **版本对比**：多版本论文差异对比
+- **导师互动**：实时消息聊天、文件共享、消息撤回
+- **个人工作台**：论文统计、待办事项、重要时间节点
+
+### 教师端
+- **待审核列表**：按优先级/相似度/等待时间排序筛选
+- **论文审核**：通过/驳回/修改建议，支持批量操作
+- **审核统计**：审核趋势图、通过率分析、工作量统计
+- **学生管理**：学生分组、论文下载、联系学生
+- **消息系统**：师生私信、系统通知
+
+### 管理员端
+- **系统概览**：用户/论文/查重统计数据、系统健康度
+- **用户管理**：增删改查、角色分配、批量导入
+- **论文管理**：论文分配、状态管理、批量操作、单篇/批量审核
+- **报告管理**：查重报告查看与导出
+- **系统配置**：查重规则、分配规则、系统参数
+- **监控中心**：CPU/内存/磁盘实时监控、数据库连接池、API 响应时间趋势、ECharts 图表
+- **日志管理**：操作日志、登录日志、安全审计、统计分析（热门操作/用户活跃度/模块使用率）、批量清理
+- **数据备份**：手动/自动备份、备份恢复
+- **通知管理**：站内通知列表、已读/未读筛选、优先级筛选、批量操作、发送测试通知
+- **消息模板**：模板 CRUD、启用/禁用、变量渲染预览
+- **查重规则管理**：规则配置、启用/禁用、设置默认规则
+- **对比库管理**：对比库数据管理
 
 ## 快速开始
 
+### 环境要求
+
+- Node.js 18+
+- npm 9+（或 pnpm）
+
+### 安装依赖
+
 ```bash
-# 安装依赖
 npm install
+```
 
-# 启动开发服务器（默认端口 3000，host 0.0.0.0）
+### 开发模式
+
+```bash
 npm run dev
+```
 
-# 构建生产产物
+开发服务器运行在 `http://localhost:3000`，自动代理 `/check` 和 `/ws` 请求到后端 `http://localhost:8080`。
+
+### 构建生产版本
+
+```bash
 npm run build
+```
 
-# 本地预览构建产物
+构建产物输出到 `dist/` 目录。
+
+### 预览构建结果
+
+```bash
 npm run preview
 ```
 
-开发环境下，`/check` 开头的接口请求会通过 Vite 代理转发到后端（默认 `http://localhost:8080`），代理配置见 [vite.config.js](vite.config.js)。
+## 项目结构
+
+```
+src/
+├── api/                    # API 接口定义
+│   ├── request.js          #   Axios 实例（JWT 注入、401 拦截）
+│   ├── student.js          #   学生端接口（62 个）
+│   ├── teacher.js          #   教师端接口（78 个）
+│   ├── user.js             #   用户/认证接口（25 个）
+│   └── admin/              #   管理员接口（按模块拆分）
+│       ├── monitoring.js   #     系统监控接口
+│       ├── notices.js      #     系统通知接口
+│       ├── templates.js    #     消息模板接口
+│       ├── logs.js         #     日志管理接口（含统计分析）
+│       └── papers.js       #     论文管理接口（含审核）
+├── components/
+│   ├── layout/             #   布局组件（侧边栏、顶栏）
+│   ├── PaperPreviewDialog  #   论文预览对话框
+│   └── UnifiedPreview      #   统一文件预览组件
+├── composables/            #   组合式函数
+│   ├── useCheckProgress.js #     查重进度 WebSocket
+│   └── useMessageWebSocket.js #  消息 STOMP WebSocket
+├── directives/             #   自定义指令（v-permission）
+├── router/                 #   路由配置（角色守卫）
+├── stores/                 #   Pinia 状态
+│   ├── user.js             #     认证状态（token、角色）
+│   └── message.js          #     消息状态
+├── styles/                 #   全局样式
+├── utils/                  #   工具函数
+│   ├── jwt.js              #     JWT 解析工具
+│   ├── tokenManager.js     #     Token 管理工具
+│   └── download.js         #     文件下载工具
+├── views/
+│   ├── login/              #     登录页
+│   ├── common/             #     公共页面（用户设置）
+│   ├── student/            #     学生端页面
+│   ├── teacher/            #     教师端页面
+│   └── admin/              #     管理员页面
+│       ├── SystemNoticeManagement    # 通知管理
+│       ├── MessageTemplateManagement # 消息模板管理
+│       ├── SystemMonitoring          # 系统监控面板
+│       ├── CheckRuleManagement       # 查重规则管理
+│       ├── CompareLibManagement      # 对比库管理
+│       └── LogCenter                 # 日志中心（含统计分析）
+├── App.vue                 #   根组件
+└── main.js                 #   入口文件
+```
 
 ## 环境变量
 
-| 变量 | 说明 | 示例 |
-| --- | --- | --- |
-| `VITE_API_BASE_URL` | 接口基础路径 | `/check` |
-| `VITE_WS_BASE_URL` | WebSocket 基础路径 | `/check` |
-| `VITE_SYSTEM_NAME` | 系统名称 | 论文查重管理系统 |
-
-- 开发环境：[.env.development](.env.development)
-- 生产环境：[.env.production](.env.production)
-
-## 目录结构
-
-```
-check-repeat-frontend/
-├── src/
-│   ├── api/            # 接口封装（按角色 / 模块划分）
-│   ├── assets/         # 静态资源（图片、SCSS）
-│   ├── components/     # 公共组件
-│   ├── composables/    # 组合式函数（查重进度轮询等）
-│   ├── router/         # 路由配置
-│   ├── stores/         # Pinia 状态管理
-│   ├── utils/          # 工具函数（查重算法、状态映射等）
-│   ├── views/          # 页面
-│   │   ├── admin/      # 管理员端
-│   │   ├── teacher/    # 教师端
-│   │   ├── student/    # 学生端
-│   │   ├── login/      # 登录 / 注册 / 重置密码
-│   │   └── common/     # 404 等公共页面
-│   ├── App.vue
-│   └── main.js
-├── deploy/             # 部署与 CI/CD 制品
-│   ├── README.md                    # 完整执行手册（配置 / 切换 / 回滚 / 排错）
-│   ├── docker-compose.yml           # 本仓库编排（仅含 frontend 服务）
-│   ├── nginx-gateway.conf           # 网关主配置（交基础设施侧维护）
-│   ├── gateway-compose.yml          # 网关独立编排（不并入后端 compose）
-│   ├── nginx-jenkins.conf           # Jenkins 子域片段，阶段四才启用
-│   ├── jenkins.d/                   # 上述片段的挂载目录（初始只有占位文件）
-│   ├── deploy-frontend.sh           # 宿主机部署脚本（受限 sudo 执行）
-│   └── sudoers.deploy-frontend      # sudo 最小授权配置
-├── nginx.conf          # 前端容器 Nginx 配置（仅托管静态产物，不代理后端）
-├── Dockerfile          # Docker 多阶段构建：Node 编译 → Nginx 运行
-├── Jenkinsfile         # CI/CD 流水线（SSH 触发宿主机部署）
-├── .dockerignore       # 构建上下文排除清单
-├── vite.config.js
-└── package.json
-```
-
-## 部署
-
-### 架构与职责划分
-
-三层容器架构，前后端各自独立维护，由独立的**网关容器**统一入口：
-
-```
-                        Internet
-                           │ 80 / 443
-                           ▼
-            ┌──────────────────────────────────┐
-            │  gateway  (nginx:1.28-alpine)     │  ← 唯一入口
-            │  挂 /opt/check-repeat/nginx/conf  │     证书 + ACME webroot
-            └──────────────────────────────────┘
-                 │                      │
-          location /              location /check/ + /ws/
-                 ▼                      ▼
-       ┌──────────────────┐   ┌──────────────────┐
-       │ frontend 容器      │   │  app  后端容器    │
-       │ 纯静态，不占端口    │   │     :8080        │
-       └──────────────────┘   └──────────────────┘
-              └──────── check-repeat_app-network ────────┘
-```
-
-关键点：
-
-- **三方各自独立编排，生命周期互不影响**：后端 `/opt/check-repeat/docker-compose.yml`、
-  网关 `/opt/check-repeat/nginx/docker-compose.yml`、前端 `/opt/check-repeat-frontend/docker-compose.yml`。
-  任何一方 `docker compose down` 都不会波及其余两方。
-- **网关归基础设施目录**，不属本仓库。本仓库只含 `frontend` 服务。
-- **前端容器只做静态托管**，不承担任何后端代理。因此 [nginx.conf](nginx.conf) 中**没有也不应有** `/check/` 代理配置。
-- 前端容器**不对外发布端口**，外部流量一律经网关进入。
-- 三方通过一个**手动创建、各自以 `external: true` 引用**的网络互通
-  （`check-repeat_app-network`，见 [docker-compose.yml](docker-compose.yml)）。
-  该编排文件位于**仓库根目录**而非 [deploy/](deploy/)：它是检出目录自己的编排，
-  随 `git checkout` 一起到位，且 `build.context: .` 依赖它相对检出根解析
-  （理由详见文件头部注释）。
-  网络不归属任何一方，因此不会被谁的 `compose down` 删掉。
-- 前端容器**不需要访问后端**，它唯一需要互通的对象是网关。
-
-### CI/CD 自动发布
-
-推送到 Gitee `master` 分支后，Jenkins 自动执行 [Jenkinsfile](Jenkinsfile)，经 **SSH 最小权限**触发宿主机部署脚本：拉取代码 → 构建镜像 → 替换容器 → 健康检查，**失败自动回滚**。
-
-设计要点：
-
-- Jenkins 容器**不挂载 `docker.sock`**，不具备任何 Docker 权限
-- Jenkins **不安装 Node**，也不执行构建——构建发生在宿主机 `docker build` 内部的 `node:22-alpine` 阶段
-- 宿主机 `deploy` 用户**不在 docker 组**，其全部权限是 `sudo` 执行一个 root 所有的部署脚本
-- 镜像 tag 为 commit 短 SHA，保留最近 5 个供回滚
-
-### 手动部署（用于排查问题）
+在项目根目录创建 `.env.development` 或 `.env.production`：
 
 ```bash
-cd /opt/check-repeat-frontend
-FRONTEND_TAG=manual docker compose build frontend
-FRONTEND_TAG=manual docker compose up -d
+# 后端 API 地址
+VITE_API_BACKEND_URL=http://localhost:8080
 
-# 自检（容器不对外暴露端口，读自身健康状态）
-docker inspect --format '{{.State.Health.Status}}' check-repeat-frontend
+# 应用标题
+VITE_APP_TITLE=论文查重管理系统
 ```
 
-### 完整部署手册
+## 权限控制
 
-服务器一次性准备、**证书续期修复**、网关改造、受限 SSH 用户、Jenkins 任务配置、Gitee webhook、
-带回滚预案的切换步骤、验收清单与排错，全部见 **[deploy/README.md](deploy/README.md)**。
+- **路由守卫**：`router/index.js` 中根据 `userStore.roles` 控制页面访问
+- **元素级权限**：`v-permission` 指令控制按钮/组件显示
+- **API 拦截**：`request.js` 自动注入 JWT Token，401 时跳转登录
 
-网关配置模板见 [deploy/nginx-gateway.conf](deploy/nginx-gateway.conf)（由基础设施侧维护，非本仓库部署内容）。
-Jenkins 子域因涉及证书签发的前后依赖，拆为 [deploy/nginx-jenkins.conf](deploy/nginx-jenkins.conf) 单独启用，
-启用顺序见手册的「执行顺序总览」。
+## WebSocket
 
-## 相关链接
+系统使用两套 WebSocket：
 
-- 后端项目：论文查重管理系统后端（独立部署）
+1. **查重进度**（原生 WebSocket）：实时推送查重任务进度
+   - `useCheckProgress.js` — 单任务进度
+   - `useBatchCheckProgress.js` — 批量任务进度
+
+2. **消息系统**（STOMP + SockJS）：师生私信与系统通知
+   - `useMessageWebSocket.js`
+
+## 开发规范
+
+- 使用 Composition API（`<script setup>`）
+- 组件命名 PascalCase，变量命名 camelCase
+- Element Plus 组件通过 `unplugin-vue-components` 自动导入
+- API 统一通过 `src/api/` 模块调用，不直接使用 axios
+
+## 许可证
+
+MIT License
+
+## 联系方式
+
+- 开发者：MournDev
+- 邮箱：3070500838@qq.com
+- 问题反馈：[GitHub Issues](https://github.com/MournDev/check-repeat-frontend/issues)
+
+---
+
+**备注**：本项目为前端部分，需配合后端 API 服务使用。

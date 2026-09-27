@@ -240,6 +240,15 @@ import {
   Plus, Edit, Delete, Search
 } from '@element-plus/icons-vue'
 
+// API导入
+import {
+  getReviewTemplates,
+  createReviewTemplate,
+  updateReviewTemplate,
+  deleteReviewTemplate,
+  useReviewTemplate
+} from '@/api/teacher'
+
 // 响应式数据
 const activeCategory = ref('all')
 const templates = ref([])
@@ -342,13 +351,21 @@ const deleteTemplate = async (template) => {
     )
     
     // 删除逻辑
-    const index = templates.value.findIndex(t => t.id === template.id)
-    if (index > -1) {
-      templates.value.splice(index, 1)
+    const response = await deleteReviewTemplate(template.id)
+    if (response.success) {
+      const index = templates.value.findIndex(t => t.id === template.id)
+      if (index > -1) {
+        templates.value.splice(index, 1)
+      }
+      ElMessage.success('模板删除成功')
+    } else {
+      ElMessage.error('删除模板失败')
     }
-    ElMessage.success('模板删除成功')
-  } catch {
-    // 用户取消
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error('删除模板失败:', error)
+      ElMessage.error('删除失败')
+    }
   }
 }
 
@@ -360,29 +377,31 @@ const saveTemplate = async () => {
       try {
         if (templateForm.value.id) {
           // 更新模板
-          const index = templates.value.findIndex(t => t.id === templateForm.value.id)
-          if (index > -1) {
-            templates.value[index] = {
-              ...templateForm.value,
-              updateTime: new Date().toISOString()
+          const response = await updateReviewTemplate(templateForm.value.id, templateForm.value)
+          if (response.success) {
+            const index = templates.value.findIndex(t => t.id === templateForm.value.id)
+            if (index > -1) {
+              templates.value[index] = response.data
             }
+          } else {
+            ElMessage.error('更新模板失败')
+            return
           }
         } else {
           // 新建模板
-          const newTemplate = {
-            ...templateForm.value,
-            id: Date.now(),
-            usageCount: 0,
-            createTime: new Date().toISOString(),
-            updateTime: new Date().toISOString(),
-            lastUsed: null
+          const response = await createReviewTemplate(templateForm.value)
+          if (response.success) {
+            templates.value.push(response.data)
+          } else {
+            ElMessage.error('创建模板失败')
+            return
           }
-          templates.value.push(newTemplate)
         }
         
         templateDialogVisible.value = false
         ElMessage.success('模板保存成功')
       } catch (error) {
+        console.error('保存模板失败:', error)
         ElMessage.error('保存失败')
       }
     }
@@ -409,14 +428,27 @@ const openQuickUse = () => {
   quickUseDrawerVisible.value = true
 }
 
-const applyTemplate = (template) => {
-  // 应用模板到当前审核
-  ElMessage.success(`模板 "${template.title}" 已应用`)
-  quickUseDrawerVisible.value = false
-  
-  // 更新使用次数和最后使用时间
-  template.usageCount += 1
-  template.lastUsed = new Date().toISOString()
+const applyTemplate = async (template) => {
+  try {
+    // 应用模板到当前审核
+    const response = await useReviewTemplate(template.id)
+    if (response.success) {
+      ElMessage.success(`模板 "${template.title}" 已应用`)
+      quickUseDrawerVisible.value = false
+      
+      // 更新使用次数和最后使用时间
+      const index = templates.value.findIndex(t => t.id === template.id)
+      if (index > -1) {
+        templates.value[index].usageCount += 1
+        templates.value[index].lastUsed = new Date().toISOString()
+      }
+    } else {
+      ElMessage.error('应用模板失败')
+    }
+  } catch (error) {
+    console.error('应用模板失败:', error)
+    ElMessage.error('应用模板失败')
+  }
 }
 
 const truncateContent = (content, length = 100) => {
@@ -452,34 +484,19 @@ const getCategoryText = (category) => {
 }
 
 // 生命周期
-onMounted(() => {
+onMounted(async () => {
   // 加载模板数据
-  templates.value = [
-    {
-      id: 1,
-      title: '论文通过模板',
-      category: 'approve',
-      content: '该论文选题具有一定的理论意义和实用价值，结构完整，论证充分，语言表达较为规范，建议通过。',
-      scenarios: ['初审', '复审'],
-      isPublic: true,
-      usageCount: 25,
-      createTime: '2024-01-01T00:00:00',
-      updateTime: '2024-01-15T10:30:00',
-      lastUsed: '2024-01-15T10:30:00'
-    },
-    {
-      id: 2,
-      title: '需要修改模板',
-      category: 'modify',
-      content: '论文在以下方面需要进一步完善：1. 理论分析不够深入；2. 实验数据需要补充；3. 结论部分需要加强。',
-      scenarios: ['初审', '复审'],
-      isPublic: true,
-      usageCount: 18,
-      createTime: '2024-01-01T00:00:00',
-      updateTime: '2024-01-14T14:20:00',
-      lastUsed: '2024-01-14T14:20:00'
+  try {
+    const response = await getReviewTemplates()
+    if (response.success) {
+      templates.value = response.data
+    } else {
+      ElMessage.error('加载模板失败')
     }
-  ]
+  } catch (error) {
+    console.error('加载模板失败:', error)
+    ElMessage.error('加载模板失败')
+  }
 })
 </script>
 
@@ -518,14 +535,14 @@ onMounted(() => {
       
       .template-card {
         border: 1px solid #ebeef5;
-        border-radius: 8px;
+        border-radius: 11px;
         padding: 16px;
         cursor: pointer;
-        transition: all 0.3s;
+        transition: border-color 0.2s ease;
         
         &:hover {
-          border-color: #409eff;
-          box-shadow: 0 2px 12px 0 rgba(64, 158, 255, 0.1);
+          border-color: #0066cc;
+          /* box-shadow removed for Apple HIG */
         }
         
         .template-header {
@@ -535,7 +552,7 @@ onMounted(() => {
           margin-bottom: 12px;
           
           .template-title {
-            font-weight: 500;
+            font-weight: 400;
             font-size: 16px;
             color: #303133;
             flex: 1;
@@ -552,7 +569,7 @@ onMounted(() => {
           color: #606266;
           line-height: 1.5;
           margin-bottom: 16px;
-          font-size: 14px;
+          font-size: 17px;
         }
         
         .template-footer {
@@ -589,7 +606,7 @@ onMounted(() => {
   .template-preview {
     .preview-title {
       font-size: 18px;
-      font-weight: 500;
+      font-weight: 400;
       margin-bottom: 12px;
       color: #303133;
     }
@@ -612,7 +629,7 @@ onMounted(() => {
     
     .section-title {
       font-size: 16px;
-      font-weight: 500;
+      font-weight: 400;
       margin: 20px 0 12px 0;
       color: #303133;
       padding-bottom: 8px;
@@ -625,14 +642,14 @@ onMounted(() => {
       align-items: center;
       padding: 12px;
       border: 1px solid #ebeef5;
-      border-radius: 4px;
+      border-radius: 8px;
       margin-bottom: 8px;
       cursor: pointer;
-      transition: all 0.2s;
-      
+      transition: border-color 0.2s ease;
+
       &:hover {
-        border-color: #409eff;
-        background-color: #f5f7fa;
+        border-color: #0066cc;
+        background-color: #f5f5f7;
       }
       
       .template-info {
@@ -640,7 +657,7 @@ onMounted(() => {
         margin-right: 12px;
         
         .template-name {
-          font-weight: 500;
+          font-weight: 400;
           margin-bottom: 4px;
           color: #303133;
         }

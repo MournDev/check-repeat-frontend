@@ -118,10 +118,10 @@
           <div class="message-actions">
             <!-- 教师端论文分配消息的操作按钮 -->
             <template v-if="userStore.role === 'TEACHER' && notification.relatedId && !notification.isRead">
-              <el-button size="small" type="success" @click.stop="showConfirmDialog(notification)">
+              <el-button size="small" type="success" @click.stop="showAssignmentDialog(notification, 'confirm')">
                 确认接收
               </el-button>
-              <el-button size="small" type="danger" @click.stop="showRejectDialog(notification)">
+              <el-button size="small" type="danger" @click.stop="showAssignmentDialog(notification, 'reject')">
                 拒绝接收
               </el-button>
             </template>
@@ -152,12 +152,12 @@
     </div>
 
     <div class="pagination" v-if="total > 0">
-      <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize" :total="total"
+      <el-pagination :current-page="currentPage" :page-size="pageSize" :total="total"
         :page-sizes="[10, 20, 50, 100]" layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange"
         @current-change="handleCurrentChange" />
     </div>
     <!-- 确认接收弹框 -->
-    <el-dialog v-model="confirmDialogVisible" title="确认接收论文" width="500px" :before-close="handleConfirmDialogClose">
+    <el-dialog v-model="confirmDialogVisible" title="确认接收论文" width="500px" :before-close="handleDialogClose">
       <div class="dialog-content">
         <el-alert type="info" title="确认接收后将开始审核此论文" :closable="false" style="margin-bottom: 16px;" />
         <div class="paper-info">
@@ -188,7 +188,7 @@
       </template>
     </el-dialog>
     <!-- 拒绝接收弹框 -->
-    <el-dialog v-model="rejectDialogVisible" title="拒绝接收论文" width="500px" :before-close="handleRejectDialogClose">
+    <el-dialog v-model="rejectDialogVisible" title="拒绝接收论文" width="500px" :before-close="handleDialogClose">
       <div class="dialog-content">
         <el-alert type="warning" title="拒绝接收后该论文将重新分配" :closable="false" style="margin-bottom: 16px;" />
         <div class="paper-info">
@@ -240,6 +240,7 @@ import {
   getMessageList, markAsRead as markAsReadApi, batchMarkAsRead as batchMarkAsReadApi, deleteMessage as deleteMessageApi, deleteAllMessages,
   confirmPaper, rejectPaper as rejectAssignment, getPendingPapers, getPaperDetail
 } from '@/api/user.js'
+import { useMessageWebSocket } from '@/composables/useMessageWebSocket'
 
 const props = defineProps({
   onMessageClick: {
@@ -251,6 +252,27 @@ const props = defineProps({
 const router = useRouter()
 const userStore = useUserStore()
 const messageStore = useMessageStore()
+
+// WebSocket连接
+const { connect: wsConnect, disconnect: wsDisconnect, isConnected } = useMessageWebSocket()
+
+// 连接WebSocket接收实时通知
+const connectWebSocket = () => {
+  const userId = userStore.userInfo?.userId
+  if (!userId) return
+
+  wsConnect(userId, (data) => {
+    if (data.type === 'notification') {
+      ElMessage.success(`收到新消息: ${data.data?.title || ''}`)
+      loadMessages()
+    }
+  })
+}
+
+// 断开WebSocket连接
+const disconnectWebSocket = () => {
+  wsDisconnect()
+}
 
 // 数据
 const loading = ref(false)
@@ -328,68 +350,33 @@ const hasSelected = computed(() =>
 const selectedCount = computed(() =>
   notifications.value.filter(item => item.selected).length
 )
-//获取当前用户Id
 const getCurrentUserId = () => {
   return userStore.userInfo?.userId
 }
-// 获取当前教师ID
-const getCurrentTeacherId = () => {
-  return userStore.userInfo?.userId
-}
-// 方法
-const showConfirmDialog = async (notification) => {
-  const paperId = notification.relatedId
-  if (!paperId) {
-    ElMessage.warning('无法获取论文')
-    return
-  }
-  console.log('显示确认弹窗，paperId:', paperId)
-  //获取论文详情
-  const paperDetail = await getPaperDetail(paperId)
-  currentAssignment.value = {
-    ...notification,
-    paperId: paperId,  // 使用relatedId作为paperId
-    paperTitle: paperDetail.data.paperTitle || `论文 {paperId}`,
-    studentName: paperDetail.data.author || '待确认学生'
-  }
-  confirmDialogVisible.value = true
-}
 
-const showRejectDialog = async (notification) => {
-  // relatedId就是paperId
+const showAssignmentDialog = async (notification, type) => {
   const paperId = notification.relatedId
-
   if (!paperId) {
     ElMessage.warning('无法获取论文ID')
     return
   }
-
-  console.log('显示拒绝弹窗，paperId:', paperId)
+  console.log(`显示${type === 'confirm' ? '确认' : '拒绝'}弹窗，paperId:`, paperId)
   const paperDetail = await getPaperDetail(paperId)
   currentAssignment.value = {
     ...notification,
-    paperId: paperId,  // 使用relatedId作为paperId
-    paperTitle: paperDetail.data.paperTitle || `论文 {paperId}`,
-    studentName: paperDetail.data.author || '待确认学生'
+    paperId: paperId,
+    paperTitle: paperDetail.paperTitle || `论文 ${paperId}`,
+    studentName: paperDetail.author || paperDetail.studentName || '待确认学生'
   }
-
-  rejectForm.value.reason = ''
-  rejectDialogVisible.value = true
+  if (type === 'reject') {
+    rejectForm.value.reason = ''
+    rejectDialogVisible.value = true
+  } else {
+    confirmDialogVisible.value = true
+  }
 }
 
-const handleConfirmDialogClose = (done) => {
-  ElMessageBox.confirm('确定要关闭吗？未保存的更改将会丢失。', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  }).then(() => {
-    done()
-  }).catch(() => {
-    // 取消关闭
-  })
-}
-
-const handleRejectDialogClose = (done) => {
+const handleDialogClose = (done) => {
   ElMessageBox.confirm('确定要关闭吗？未保存的更改将会丢失。', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
@@ -405,7 +392,7 @@ const handleConfirmAssignment = async () => {
     confirmLoading.value = true
 
     const paperId = currentAssignment.value.relatedId
-    const teacherId = getCurrentTeacherId()
+    const teacherId = getCurrentUserId()
 
     if (!teacherId) {
       ElMessage.warning('教师信息不存在')
@@ -447,7 +434,7 @@ const handleRejectAssignment = async () => {
     rejectLoading.value = true
 
     const paperId = currentAssignment.value.relatedId
-    const teacherId = getCurrentTeacherId()
+    const teacherId = getCurrentUserId()
 
     if (!teacherId) {
       ElMessage.warning('教师信息不存在')
@@ -561,11 +548,11 @@ const getNotificationIcon = (messageType) => {
 const getNotificationColor = (messageType) => {
   const colorMap = {
     'SUCCESS': '#67C23A',
-    'INFO': '#409EFF',
+    'INFO': '#0066cc',
     'WARNING': '#E6A23C',
     'ERROR': '#F56C6C'
   }
-  return colorMap[messageType] || '#409EFF'
+  return colorMap[messageType] || '#0066cc'
 }
 
 const getMessageTypeText = (messageType) => {
@@ -760,6 +747,20 @@ const clearAllRead = async () => {
   }
 }
 
+// 生命周期钩子
+onMounted(async () => {
+  await loadMessages()
+  await loadPendingPapers()
+  // 连接WebSocket接收实时通知
+  connectWebSocket()
+})
+
+onUnmounted(() => {
+  // 断开WebSocket连接
+  disconnectWebSocket()
+  // 清理资源
+})
+
 const batchMarkAsRead = async () => {
   const selectedIds = notifications.value
     .filter(item => item.selected)
@@ -910,7 +911,7 @@ watch(
 
         &.deadline {
           color: #f56c6c;
-          font-weight: 500;
+          font-weight: 400;
         }
       }
     }
@@ -927,7 +928,7 @@ watch(
 
     .deadline-text {
       color: #f56c6c;
-      font-weight: 500;
+      font-weight: 600;
     }
   }
 }
@@ -966,7 +967,7 @@ watch(
       padding: 20px;
       border-radius: 8px;
       text-align: center;
-      border-left: 4px solid #409EFF;
+      border-left: 4px solid #0066cc;
 
       &.unread {
         border-left-color: #F56C6C;
@@ -1021,13 +1022,13 @@ watch(
       cursor: pointer;
 
       &:hover {
-        border-color: #409EFF;
+        border-color: #0066cc;
         box-shadow: 0 2px 8px rgba(64, 158, 255, 0.1);
       }
 
       &.unread {
         background-color: #f0f8ff;
-        border-left: 4px solid #409EFF;
+        border-left: 4px solid #0066cc;
       }
 
       .message-checkbox {
@@ -1112,8 +1113,8 @@ watch(
     margin-top: 20px;
 
     .selected-count {
-      color: #409EFF;
-      font-weight: 500;
+      color: #0066cc;
+      font-weight: 600;
     }
   }
 

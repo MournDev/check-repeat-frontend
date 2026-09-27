@@ -1,51 +1,104 @@
-// 主样式入口文件
+// ============================================================
+// Apple Design Language — Global SCSS Entry
+// ============================================================
 
-// 1. 首先导入变量和混合器
+// 1. Design tokens & variables
 @use 'variables' as *;
 
-// 2. 然后导入Element Plus主题
+// 2. Element Plus theme overrides (CSS custom properties)
+@use '@/styles/element-plus-theme.scss';
+
+// 3. Element Plus chalk theme
 @use 'element-plus/theme-chalk/src/index.scss';
 
-// 3. 最后是自定义样式
+// 4. Apple Design Tokens
+@use '@/styles/design-tokens.scss';
 
-// 全局样式重置
+// 5. Typography system
+@use '@/styles/typography.scss';
+
+// ── Global Reset ──────────────────────────────────────────
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 body {
-  font-family: $font-family;
-  background-color: #f9fafb;
-  color: #1f2937;
+  font-family: $font-text;
+  background-color: $canvas-parchment;
+  color: $ink;
   font-size: $font-size-base;
+  line-height: 1.47;
+  letter-spacing: -0.374px;
 }
 
-// 布局样式
-.el-container {
-  height: 100vh;
+// ── Page title ───────────────────────────────────────────
+h1, h2, h3, h4, h5, h6 {
+  color: $ink;
+  font-weight: 600;
 }
 
-.el-aside {
-  background-color: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+h1 {
+  font-family: $font-display;
+  font-size: 40px;
+  line-height: 1.10;
 }
 
-.el-header {
-  background-color: #fff;
-  border-bottom: 1px solid #eee;
+h2 {
+  font-size: 34px;
+  line-height: 1.47;
+  letter-spacing: -0.374px;
 }
 
-// 响应式辅助类
-.hidden-xs {
-  @media (max-width: 768px) {
-    display: none !important;
+// ── Link ──────────────────────────────────────────────────
+a {
+  color: $primary-color;
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $primary-focus;
   }
 }
 
-.hidden-sm {
-  @media (min-width: 769px) and (max-width: 992px) {
-    display: none !important;
-  }
+// ── Selection ─────────────────────────────────────────────
+::selection {
+  background: rgba(0, 102, 204, 0.2);
+  color: $ink;
+}
+
+// ── Scrollbar ─────────────────────────────────────────────
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d2d2d7;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b0b0b5;
+}
+
+// ── Responsive ────────────────────────────────────────────
+@media (max-width: 1068px) {
+  h1 { font-size: 34px; }
+}
+
+@media (max-width: 640px) {
+  body { font-size: 14px; }
+  h1 { font-size: 28px; }
+  h2 { font-size: 24px; }
 }

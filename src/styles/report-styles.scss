@@ -1,0 +1,340 @@
+// ============================================================
+// Apple Design Language — Report Page Styles
+// Reference: DESIGN.md
+// ============================================================
+
+// ── Apple Color Palette ───────────────────────────────────
+$primary-color: #0066cc;
+$primary-focus: #0071e3;
+$primary-on-dark: #2997ff;
+$secondary-color: #8b5cf6;
+$success-color: #10b981;
+$warning-color: #f59e0b;
+$danger-color: #ef4444;
+$info-color: #64748b;
+$light-bg: #f5f5f7;
+$card-bg: #ffffff;
+$text-primary: #1d1d1f;
+$text-secondary: #7a7a7a;
+$border-color: #e0e0e0;
+$divider-soft: #f0f0f0;
+
+// ── Animations (no translateY, no shadow pulse) ──────────
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+// ── Report Page Container ─────────────────────────────────
+.report-page {
+  padding: 0;
+  background: $light-bg;
+  min-height: 100vh;
+}
+
+.report-header {
+  background: $card-bg;
+  border-bottom: 1px solid $border-color;
+  padding: 32px 0;
+  margin-bottom: 32px;
+}
+
+.report-header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.report-title {
+  font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 1.47;
+  letter-spacing: -0.374px;
+  color: $text-primary;
+  margin: 0 0 8px 0;
+}
+
+.report-subtitle {
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.47;
+  letter-spacing: -0.374px;
+  color: $text-secondary;
+  margin: 0;
+}
+
+// ── Similarity Overview Card ──────────────────────────────
+.report-overview-card {
+  background: $card-bg;
+  border: 1px solid $border-color;
+  border-radius: 18px;
+  padding: 32px;
+  margin-bottom: 24px;
+  transition: border-color 0.2s ease;
+
+  &:hover { border-color: #d0d0d0; }
+}
+
+.report-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+}
+
+.report-stat-item {
+  text-align: center;
+  padding: 24px 17px;
+  background: $light-bg;
+  border-radius: 11px;
+  transition: background-color 0.2s ease;
+
+  &:hover { background: #f0f0f5; }
+}
+
+.report-stat-value {
+  font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 1.10;
+  color: $primary-color;
+  margin-bottom: 4px;
+}
+
+.report-stat-label {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.43;
+  letter-spacing: -0.224px;
+  color: $text-secondary;
+}
+
+// ── Similarity Indicator (circular) ───────────────────────
+.report-similarity-circle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.report-similarity-ring {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.report-similarity-number {
+  font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 1.10;
+  color: $text-primary;
+}
+
+.report-similarity-unit {
+  font-size: 17px;
+  font-weight: 400;
+  color: $text-secondary;
+}
+
+// ── Similar Sources Section ───────────────────────────────
+.report-sources-card {
+  background: $card-bg;
+  border: 1px solid $border-color;
+  border-radius: 18px;
+  padding: 0;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.report-sources-header {
+  padding: 24px 32px;
+  border-bottom: 1px solid $divider-soft;
+}
+
+.report-sources-title {
+  font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.19;
+  letter-spacing: 0.231px;
+  color: $text-primary;
+  margin: 0;
+}
+
+.report-source-item {
+  padding: 24px 32px;
+  border-bottom: 1px solid $divider-soft;
+  transition: background-color 0.15s ease;
+
+  &:last-child { border-bottom: none; }
+  &:hover { background-color: $light-bg; }
+}
+
+.report-source-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.report-source-name {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.24;
+  letter-spacing: -0.374px;
+  color: $text-primary;
+}
+
+.report-source-similarity {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.29;
+  letter-spacing: -0.224px;
+  color: $primary-color;
+  padding: 4px 12px;
+  background: rgba(0, 102, 204, 0.08);
+  border-radius: 9999px;
+}
+
+.report-source-excerpt {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.43;
+  color: $text-secondary;
+  padding: 12px 17px;
+  background: $light-bg;
+  border-radius: 8px;
+  border-left: 3px solid $primary-color;
+}
+
+// ── Report History Timeline ───────────────────────────────
+.report-timeline {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.report-timeline-item {
+  position: relative;
+  padding-left: 32px;
+  padding-bottom: 32px;
+  border-left: 1px solid $border-color;
+
+  &:last-child { border-left-color: transparent; padding-bottom: 0; }
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 4px;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: $primary-color;
+    border: 2px solid $card-bg;
+  }
+}
+
+.report-timeline-time {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.0;
+  letter-spacing: -0.12px;
+  color: $text-secondary;
+  margin-bottom: 4px;
+}
+
+.report-timeline-title {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.24;
+  color: $text-primary;
+  margin-bottom: 4px;
+}
+
+.report-timeline-desc {
+  font-size: 14px;
+  line-height: 1.43;
+  color: $text-secondary;
+}
+
+// ── Chart Containers ──────────────────────────────────────
+.report-chart-card {
+  background: $card-bg;
+  border: 1px solid $border-color;
+  border-radius: 18px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.report-chart-title {
+  font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.19;
+  letter-spacing: 0.231px;
+  color: $text-primary;
+  margin: 0 0 17px 0;
+}
+
+.report-chart-container {
+  width: 100%;
+  height: 400px;
+}
+
+// ── Report Actions Bar ────────────────────────────────────
+.report-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 17px 0;
+}
+
+// ── Status Tags (pill) ────────────────────────────────────
+.report-status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.0;
+
+  &.status-passed   { background: #d1fae5; color: $success-color; }
+  &.status-warning  { background: #fef3c7; color: $warning-color; }
+  &.status-failed   { background: #fee2e2; color: $danger-color; }
+  &.status-reviewing { background: #e0f2fe; color: $info-color; }
+}
+
+// ── Responsive ────────────────────────────────────────────
+@media (max-width: 833px) {
+  .report-title { font-size: 28px; }
+  .report-header { padding: 24px 0; }
+  .report-overview-card { padding: 24px; }
+  .report-sources-header { padding: 17px 24px; }
+  .report-source-item { padding: 17px 24px; }
+}
+
+@media (max-width: 640px) {
+  .report-title { font-size: 24px; }
+  .report-stat-value { font-size: 34px; }
+  .report-similarity-ring { width: 120px; height: 120px; }
+  .report-similarity-number { font-size: 34px; }
+  .report-overview-grid { grid-template-columns: repeat(2, 1fr); }
+}

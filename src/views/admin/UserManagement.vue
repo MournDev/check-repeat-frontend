@@ -148,8 +148,6 @@
           :page-sizes="[10, 20, 50, 100]"
           :total="pagination.total"
           layout="total, sizes, prev, pager, next, jumper"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
         />
       </div>
     </el-card>
@@ -293,7 +291,8 @@ import {
   updateUser, 
   deleteUser as deleteApiUser, 
   batchDeleteUsers, 
-  updateUserStatus 
+  updateUserStatus,
+  exportUsers as exportUsersApi
 } from '@/api/admin/users'
 
 // 图标导入
@@ -311,7 +310,7 @@ const userDialogVisible = ref(false)
 const isEdit = ref(false)
 const currentUser = ref({})
 // 是否一次性获取全部用户（true=获取全部，false=分页获取）
-const fetchAllUsers = ref(true)
+const fetchAllUsers = ref(false)
 
 // 筛选表单
 const filterForm = reactive({
@@ -486,9 +485,9 @@ const loadUserList = async () => {
       )
     }
     // 更新分页信息
-    pagination.currentPage = fetchAllUsers.value ? 1 : (current || pagination.currentPage)
-    pagination.pageSize = fetchAllUsers.value ? (list.length || pagination.pageSize) : (size || pagination.pageSize)
-    pagination.total = total || (list.length || 0)
+    pagination.currentPage = fetchAllUsers.value ? 1 : (Number(current) || pagination.currentPage)
+    pagination.pageSize = fetchAllUsers.value ? (list.length || pagination.pageSize) : (Number(size) || pagination.pageSize)
+    pagination.total = Number(total) || Number(list.length) || 0
     loading.value = false
   } catch (error) {
     console.error('加载用户列表失败:', error)
@@ -661,8 +660,30 @@ const batchDelete = async () => {
   }
 }
 
-const exportUsers = () => {
-  ElMessage.info('导出功能开发中...')
+const exportUsers = async () => {
+  try {
+    const params = {
+      userType: filterForm.userType || null,
+      status: filterForm.status ? toStatusNumber(filterForm.status) : null,
+      keyword: filterForm.keyword || null
+    }
+    
+    const res = await exportUsersApi(params)
+    // request 在 responseType=blob 时返回 axios response
+    const blob = res.data || res
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `users_export_${new Date().toISOString().slice(0,10)}.xlsx`
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    window.URL.revokeObjectURL(url)
+    ElMessage.success('导出已开始')
+  } catch (error) {
+    console.error('导出失败', error)
+    ElMessage.error(error.message || '导出失败')
+  }
 }
 
 const handleStatusChange = async (user, newStatus) => {
@@ -774,51 +795,139 @@ const rowKey = (row) => {
 
 <style lang="scss" scoped>
 .user-management {
-  padding: 0;
+  min-height: 100vh;
+  background: #f5f5f7; // Slate-50
+  color: #1d1d1f; // Slate-900
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 24px;
 }
 
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1.5rem;
+  margin-bottom: 24px;
+  background: #ffffff;
+  border: 1px solid #d2d2d7;
+  border-radius: 18px;
+  padding: 24px;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: #d2d2d7;
+  }
   
   .header-content {
     .page-title {
-      margin: 0 0 0.5rem 0;
+      margin: 0 0 8px 0;
       font-size: 1.75rem;
-      font-weight: 600;
-      color: #2c3e50;
+      font-weight: 700;
+      color: #1d1d1f; // Slate-900
     }
     
     .page-desc {
       margin: 0;
-      color: #7f8c8d;
+      color: #86868b; // Slate-500
       font-size: 0.95rem;
     }
   }
   
   .header-actions {
     display: flex;
-    gap: 0.75rem;
+    gap: 12px;
+    align-items: center;
+    
+    .el-button {
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      border: 1px solid #d2d2d7;
+      
+      &:hover {
+        border-color: #d2d2d7;
+      }
+    }
+    
+    .el-switch {
+      --el-switch-on-color: #0066cc; // Blue-500
+      --el-switch-off-color: #86868b; // Slate-400
+    }
   }
 }
 
 .filter-card {
-  margin-bottom: 1.5rem;
-  border-radius: 12px;
+  margin-bottom: 24px;
+  background: #ffffff;
+  border: 1px solid #d2d2d7;
+  border-radius: 18px;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: #d2d2d7;
+  }
   
   :deep(.el-card__body) {
-    padding: 1.25rem;
+    padding: 20px;
+  }
+  
+  :deep(.el-form) {
+    .el-form-item {
+      margin-bottom: 0;
+      
+      .el-input,
+      .el-select {
+        width: 100%;
+        
+        :deep(.el-input__wrapper) {
+          border-radius: 8px;
+          border: 1px solid #d2d2d7;
+          transition: all 0.2s ease;
+          
+          &:hover {
+            border-color: #d2d2d7;
+            /* box-shadow removed for Apple HIG */
+          }
+        }
+        
+        :deep(.el-select__wrapper) {
+          border-radius: 8px;
+          border: 1px solid #d2d2d7;
+          transition: all 0.2s ease;
+          
+          &:hover {
+            border-color: #d2d2d7;
+            /* box-shadow removed for Apple HIG */
+          }
+        }
+      }
+    }
+    
+    .el-button {
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      border: 1px solid #d2d2d7;
+      
+      &:hover {
+        border-color: #d2d2d7;
+      }
+    }
   }
 }
 
 .table-card {
-  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #d2d2d7;
+  border-radius: 18px;
+  transition: all 0.2s ease;
+  overflow-x: auto;
+  
+  &:hover {
+    border-color: #d2d2d7;
+  }
   
   :deep(.el-card__header) {
-    padding: 1rem 1.25rem;
-    border-bottom: 1px solid #f1f2f6;
+    padding: 16px 20px;
+    border-bottom: 1px solid #d2d2d7;
+    background: #f5f5f7;
     
     .card-header {
       display: flex;
@@ -829,17 +938,31 @@ const rowKey = (row) => {
         display: flex;
         align-items: center;
         font-weight: 600;
-        color: #2c3e50;
+        color: #1d1d1f; // Slate-900
         
         .el-icon {
-          margin-right: 0.5rem;
-          color: #667eea;
+          margin-right: 8px;
+          color: #475569; // Slate-600
         }
       }
       
       .table-actions {
         display: flex;
-        gap: 0.75rem;
+        gap: 12px;
+        
+        .el-button {
+          border-radius: 8px;
+          transition: all 0.2s ease;
+          border: 1px solid #d2d2d7;
+          
+          &:hover {
+            border-color: #86868b;
+          }
+          &:active {
+            transform: scale(0.95);
+            transition: transform 0.15s ease;
+          }
+        }
       }
     }
   }
@@ -847,24 +970,81 @@ const rowKey = (row) => {
   :deep(.el-card__body) {
     padding: 0;
   }
+  
+  :deep(.el-table) {
+    border-radius: 18px;
+    overflow: hidden;
+    
+    .el-table__header-wrapper {
+      background-color: #f5f5f7;
+      
+      th {
+        color: #1d1d1f; // Slate-900
+        font-weight: 600;
+        border-bottom: 2px solid #d2d2d7;
+        padding: 12px 16px;
+      }
+    }
+    
+    .el-table__row:hover {
+      background-color: #f5f5f7;
+      transition: background-color 0.2s ease;
+    }
+    
+    .el-table__row {
+      transition: all 0.2s ease;
+      padding: 16px 0;
+    }
+    
+    .el-table__row.el-table__row--striped {
+      background-color: #f1f5f9;
+    }
+    
+    .el-table__cell {
+      padding: 16px;
+      color: #1d1d1f; // Slate-900
+    }
+  }
 }
 
 .pagination-container {
-  padding: 1rem;
+  padding: 16px;
   display: flex;
   justify-content: flex-end;
-  border-top: 1px solid #f1f2f6;
+  border-top: 1px solid #d2d2d7;
+  background: #f5f5f7;
+  
+  :deep(.el-pagination) {
+    .el-pagination__item {
+      border-radius: 8px;
+      border: 1px solid #d2d2d7;
+      
+      &:hover {
+        color: #0066cc; // Blue-500
+        border-color: #93c5fd;
+      }
+      
+      &.is-active {
+        background-color: #0066cc;
+        border-color: #0066cc;
+      }
+    }
+  }
 }
 
 .unassigned {
-  color: #f56c6c;
+  color: #ef4444; // Red-500
   font-style: italic;
 }
 
 @media (max-width: 768px) {
+  .user-management {
+    padding: 16px;
+  }
+  
   .page-header {
     flex-direction: column;
-    gap: 1rem;
+    gap: 16px;
     
     .header-actions {
       width: 100%;
@@ -878,7 +1058,7 @@ const rowKey = (row) => {
   .filter-card {
     :deep(.el-form) {
       .el-form-item {
-        margin-bottom: 1rem;
+        margin-bottom: 16px;
         width: 100%;
         
         .el-input,

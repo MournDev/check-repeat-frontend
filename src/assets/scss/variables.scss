@@ -1,26 +1,67 @@
-// SCSS变量定义文件
+// ============================================================
+// Apple Design Language — SCSS Variables
+// Reference: DESIGN.md
+// ============================================================
 
-// 颜色变量
-$primary-color: #1989fa;
+// ── Brand Colors ──────────────────────────────────────────
+$primary-color: #0066cc;
+$primary-focus: #0071e3;
+$primary-on-dark: #2997ff;
 $success-color: #10b981;
 $warning-color: #f59e0b;
 $danger-color: #ef4444;
 $info-color: #6b7280;
 
-// 尺寸变量
-$sidebar-width: 200px;
-$header-height: 60px;
-$border-radius: 4px;
+// ── Surface ───────────────────────────────────────────────
+$canvas-white: #ffffff;
+$canvas-parchment: #f5f5f7;
+$surface-pearl: #fafafc;
+$surface-tile-1: #272729;
+$surface-tile-2: #2a2a2c;
+$surface-tile-3: #252527;
+$surface-black: #000000;
 
-// 字体变量
-$font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
-$font-size-base: 14px;
-$font-size-large: 16px;
+// ── Text / Ink ────────────────────────────────────────────
+$ink: #1d1d1f;
+$ink-muted-80: #333333;
+$ink-muted-48: #7a7a7a;
+$text-on-dark: #ffffff;
+$text-muted-dark: #cccccc;
+
+// ── Hairlines ─────────────────────────────────────────────
+$hairline: #e0e0e0;
+$hairline-alpha: rgba(0, 0, 0, 0.08);
+$divider-soft: #f0f0f0;
+
+// ── Layout Constants ──────────────────────────────────────
+$global-nav-height: 44px;
+$sub-nav-height: 52px;
+$footer-padding: 64px;
+
+// ── Typography ────────────────────────────────────────────
+$font-display: "SF Pro Display", "Inter", system-ui, -apple-system, sans-serif;
+$font-text: "SF Pro Text", "Inter", system-ui, -apple-system, sans-serif;
+$font-size-base: 17px;
+$font-size-caption: 14px;
 $font-size-small: 12px;
 
-// 间距变量
-$spacing-xs: 4px;
-$spacing-sm: 8px;
-$spacing-md: 16px;
+// ── Spacing (8px base) ────────────────────────────────────
+$spacing-xxs: 4px;
+$spacing-xs: 8px;
+$spacing-sm: 12px;
+$spacing-md: 17px;
 $spacing-lg: 24px;
 $spacing-xl: 32px;
+$spacing-xxl: 48px;
+$spacing-section: 80px;
+
+// ── Rounded ───────────────────────────────────────────────
+$rounded-none: 0px;
+$rounded-xs: 5px;
+$rounded-sm: 8px;
+$rounded-md: 11px;
+$rounded-lg: 18px;
+$rounded-pill: 9999px;
+
+// ── Shadow (the ONE) ──────────────────────────────────────
+$shadow-product: 3px 5px 30px 0 rgba(0, 0, 0, 0.22);

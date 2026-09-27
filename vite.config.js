@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [vue()],
   resolve: {
     alias: {
@@ -19,13 +19,25 @@ export default defineConfig({
         changeOrigin: true,
         // 不重写路径，保持/check 前缀
         rewrite: (path) => path
+      },
+      '/ws': {
+        target: 'http://localhost:8080',
+        ws: true,
+        changeOrigin: true,
+        // WebSocket路径需要加上/check前缀
+        rewrite: (path) => '/check' + path
       }
     }
   },
   build: {
     // 目标环境
     target: 'es2015',
-    
+
+    // 生产环境移除 console/debugger
+    esbuild: {
+      drop: mode === 'production' ? ['console', 'debugger'] : []
+    },
+
     // 代码分割优化
     rollupOptions: {
       output: {
@@ -34,16 +46,10 @@ export default defineConfig({
           if (id.includes('node_modules/element-plus')) {
             return 'element-plus'
           }
-          if (id.includes('node_modules/vue') ||
-              id.includes('node_modules/vue-router') ||
+          if (id.includes('node_modules/vue') || 
+              id.includes('node_modules/vue-router') || 
               id.includes('node_modules/pinia')) {
             return 'vue-vendor'
-          }
-          // echarts 与 zrender 需在同一 chunk，否则会因循环引用报错；
-          // 单独成块可让它长期缓存，不随业务代码发版而失效。
-          if (id.includes('node_modules/echarts') ||
-              id.includes('node_modules/zrender')) {
-            return 'echarts'
           }
         }
       }
@@ -56,7 +62,7 @@ export default defineConfig({
     cssCodeSplit: true,
     
     // CSS 压缩选项
-    cssMinify: 'lightningcss',
+    cssMinify: 'esbuild',
     
     // 生成源码映射（生产环境可关闭）
     sourcemap: false
@@ -80,9 +86,8 @@ export default defineConfig({
       'axios',
       'element-plus',
       '@element-plus/icons-vue',
-      'echarts',
       '@stomp/stompjs',
       'sockjs-client'
     ]
   }
-})
+}))

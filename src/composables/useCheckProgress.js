@@ -1,81 +1,178 @@
-import { ref, onUnmounted } from 'vue'
-import SockJS from 'sockjs-client'
-import { Client } from '@stomp/stompjs'
+import { ref, reactive, onUnmounted } from 'vue';
+import { ElMessage } from 'element-plus';
+import Cookies from 'js-cookie';
 
 /**
- * 查重进度订阅 Composable
- * 使用 STOMP over SockJS 连接后端 WebSocket
+ * 查重任务进度监听 Hook（Vue 3 Composition API）
+ * 使用原生 WebSocket 连接后端
  */
 export function useCheckProgress() {
-  let stompClient = null
-  const isConnected = ref(false)
-  const error = ref(null)
+  let ws = null;
+  let reconnectTimer = null;
+  let reconnectAttempts = 0;
+  const maxReconnectAttempts = 5;
+
+  // 响应式进度数据
+  const progress = reactive({
+    taskId: null,
+    paperId: null,
+    percent: 0,
+    message: '',
+    similarity: 0,
+    riskLevel: '',
+    status: 'active' // active | exception | success
+  });
+
+  // 连接状态
+  const isConnected = ref(false);
+  const isConnecting = ref(false);
+  const error = ref(null);
 
   /**
-   * 连接并订阅查重进度
+   * 连接 WebSocket 并订阅查重进度
    * @param {string|number} paperId - 论文ID
-   * @param {Function} onMessage - 收到消息时的回调，参数为解析后的数据对象
-   * @param {Function} [onError] - 连接失败时的回调
+   * @param {Function} [onMessage] - 收到消息时的回调
    */
-  const connect = (paperId, onMessage, onError) => {
-    const baseUrl = import.meta.env.VITE_WS_BASE_URL || 'http://localhost:8080'
+  const connect = (paperId, onMessage) => {
+    if (!paperId) {
+      console.error('paperId 不能为空');
+      return;
+    }
 
-    stompClient = new Client({
-      webSocketFactory: () => new SockJS(`${baseUrl}/ws`),
-      reconnectDelay: 5000,
-      onConnect: () => {
-        isConnected.value = true
-        error.value = null
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      console.log('WebSocket 已连接，跳过');
+      return;
+    }
 
-        stompClient.subscribe(`/topic/check-status/${paperId}`, (frame) => {
-          try {
-            const data = JSON.parse(frame.body)
-            onMessage && onMessage(data)
-          } catch (e) {
-            console.error('[useCheckProgress] 消息解析失败:', e)
+    isConnecting.value = true;
+    error.value = null;
+
+    try {
+      // 构建 WebSocket URL（自动根据页面协议选择 ws:// 或 wss://）
+      const token = Cookies.get('token') || '';
+      const wsBase = import.meta.env.VITE_WS_BASE_URL || (
+        window.location.protocol === 'https:'
+          ? `wss://${window.location.host}`
+          : `ws://${window.location.host}`
+      );
+      const wsUrl = `${wsBase}/ws/check-progress/${paperId}?token=${encodeURIComponent(token)}`;
+
+      ws = new WebSocket(wsUrl);
+
+      ws.onopen = () => {
+        console.log('WebSocket 连接成功，开始监听查重进度');
+        isConnected.value = true;
+        isConnecting.value = false;
+        reconnectAttempts = 0;
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          
+          // 根据消息类型处理
+          if (data.type === 'progress') {
+            updateProgress(data);
+          } else if (data.type === 'complete') {
+            updateProgress(data);
+            progress.status = 'success';
+            ElMessage.success('查重完成！');
+          } else if (data.type === 'error') {
+            updateProgress(data);
+            progress.status = 'exception';
+            ElMessage.error(data.message || '查重失败');
           }
-        })
-      },
-      onStompError: (frame) => {
-        console.error('[useCheckProgress] STOMP 错误:', frame)
-        error.value = frame.headers?.message || 'STOMP连接错误'
-        isConnected.value = false
-        onError && onError(error.value)
-      },
-      onDisconnect: () => {
-        isConnected.value = false
-      },
-      onWebSocketError: (evt) => {
-        console.error('[useCheckProgress] WebSocket 错误:', evt)
-        error.value = 'WebSocket连接失败'
-        isConnected.value = false
-        onError && onError(error.value)
-      }
-    })
+          
+          onMessage && onMessage(data);
+        } catch (e) {
+          console.error('[useCheckProgress] 消息解析失败:', e);
+        }
+      };
 
-    stompClient.activate()
-  }
+      ws.onerror = (evt) => {
+        console.error('[useCheckProgress] WebSocket 错误:', evt);
+        error.value = 'WebSocket连接失败';
+        isConnected.value = false;
+        isConnecting.value = false;
+        // 尝试重连
+        scheduleReconnect(paperId, onMessage);
+      };
+
+      ws.onclose = () => {
+        console.log('WebSocket 连接关闭');
+        isConnected.value = false;
+        isConnecting.value = false;
+        // 尝试重连
+        scheduleReconnect(paperId, onMessage);
+      };
+    } catch (err) {
+      console.error('创建 WebSocket 连接失败', err);
+      isConnecting.value = false;
+      error.value = '连接失败: ' + err.message;
+    }
+  };
 
   /**
-   * 断开连接
+   * 安排重连
+   */
+  const scheduleReconnect = (paperId, onMessage) => {
+    if (reconnectTimer) {
+      clearTimeout(reconnectTimer);
+    }
+
+    reconnectAttempts++;
+    if (reconnectAttempts > maxReconnectAttempts) {
+      console.error('WebSocket 重连失败次数过多，停止尝试');
+      ElMessage.error('查重进度连接失败，请刷新页面重试');
+      return;
+    }
+
+    const delay = 1000 * Math.pow(2, reconnectAttempts - 1);
+    console.log(`尝试重新连接 WebSocket (${reconnectAttempts}/${maxReconnectAttempts})，延迟 ${delay}ms`);
+    reconnectTimer = setTimeout(() => {
+      connect(paperId, onMessage);
+    }, delay);
+  };
+
+  /**
+   * 更新进度数据
+   */
+  const updateProgress = (data) => {
+    if (data.paperId != null) progress.paperId = data.paperId;
+    if (data.taskId != null) progress.taskId = data.taskId;
+    if (data.progress != null) progress.percent = data.progress;
+    if (data.message) progress.message = data.message;
+    if (data.similarity != null) progress.similarity = data.similarity;
+    if (data.riskLevel) progress.riskLevel = data.riskLevel;
+  };
+
+  /**
+   * 断开 WebSocket 连接
    */
   const disconnect = () => {
-    if (stompClient && stompClient.active) {
-      stompClient.deactivate()
+    if (reconnectTimer) {
+      clearTimeout(reconnectTimer);
+      reconnectTimer = null;
     }
-    stompClient = null
-    isConnected.value = false
-  }
+    
+    if (ws) {
+      ws.close();
+      ws = null;
+    }
+    isConnected.value = false;
+  };
 
-  // 组件卸载时自动断开
+  // 组件卸载时自动清理
   onUnmounted(() => {
-    disconnect()
-  })
+    disconnect();
+  });
 
   return {
-    isConnected,
-    error,
     connect,
-    disconnect
-  }
+    disconnect,
+    progress,
+    isConnected,
+    isConnecting,
+    error
+  };
 }
