@@ -206,9 +206,13 @@ ls -l /etc/letsencrypt/live/jenkins.check-repeat-system.xyz/fullchain.pem
 
 #### ③ 把 Jenkins 容器接入共享网络（带别名）
 
-网关里写的是 `proxy_pass http://jenkins:8080`，而 **Jenkins 是用 `docker run`
-启的，不在 compose 里，因此它在 `check-repeat_app-network` 上没有任何别名**。
-缺这步日志会报 `host not found in upstream "jenkins"`。
+网关里写的是 `proxy_pass $jenkins_upstream`（即 `http://jenkins:8080`），而
+**Jenkins 是用 `docker run` 启的，不在 compose 里，因此它在
+`check-repeat_app-network` 上没有任何别名**。
+
+缺这步**不会**让 nginx 拒绝启动 —— 上游是变量，只在请求时才解析，
+因此表现为访问子域返回 **502**，而不是启动报错。这正是容易漏掉的地方：
+网关看起来一切正常，只有 Jenkins 子域打不开。
 
 ```bash
 docker network connect --alias jenkins check-repeat_app-network jenkins
@@ -934,7 +938,7 @@ ssh -i <key> deploy@<host> "<目标commit短SHA>"
 
 | 现象 | 原因与处理 |
 | --- | --- |
-| 网关起不来，日志 `host not found in upstream` | 该上游写成了**字面主机名**，nginx 加载配置时解析不到就拒绝启动。主配置的 `/`、`/check/`、`/ws/` 都已用 `resolver`+变量规避；若仍报错，检查是不是 Jenkins 片段里的 `jenkins:8080`（那处是有意写死的，见四·4.5） |
+| 网关起不来，日志 `host not found in upstream` | 该上游写成了**字面主机名**，nginx 加载配置时解析不到就拒绝启动。主配置（`/`、`/check/`、`/ws/`）与 Jenkins 片段的上游现在**全部**是 `resolver`+变量；出现这条说明有人新加了写死的上游，改成同样的写法即可 |
 | 502 且 frontend 容器在跑 | 两者不在同一网络：`docker inspect` 确认都在 `check-repeat_app-network` |
 | `/check/` 全线 502，但后端容器 `healthy` | 后端容器刚被重建/改名，网关还没跟上。主配置已是 `resolver`+变量，正常会在 10s 内自愈；若持续 502，逐项查：① `docker exec check-repeat-gateway getent hosts check-backend` 能否解析（不能则容器名又变了，须改配置并 reload）；② 关键——**检查生效的是不是新配置**：日志里 `upstream` 的地址是否为新 IP（见 3.5 的 inode 陷阱）。根治办法是要求后端在 compose 里声明稳定的 `aliases:` —— 容器名不该成为跨方接口 |
 | 前端 compose 报 `network ... not found` | 基础设施侧 compose 尚未创建该网络，或网络名不匹配（见 2.2） |
@@ -953,7 +957,8 @@ ssh -i <key> deploy@<host> "<目标commit短SHA>"
 | `docker compose config` 校验了错误的文件 | 未显式带 `-f`，compose 向上找到了后端编排，见 2.3 |
 | `git pull` 报 `not currently on a branch` | 部署脚本把检出留在 detached HEAD。用 `git fetch --prune origin && git checkout --detach --force origin/master`，见 3.5 |
 | 改了网关配置重装后 `nginx -t` 仍报旧内容 | 两种原因，都属「失败不报错」：① 检出没同步（detached HEAD 下 `git pull` 失败），装的是旧文件；② `install` 换掉了 inode，单文件 bind mount 看不到新内容。判定与处理见 3.5 |
-| `nginx -t` 报 `host not found in upstream` 但 `getent hosts <名>` 查得到 | 该上游是**字面主机名**（现仅剩 Jenkins 片段的 `jenkins:8080`），nginx 在加载配置时解析并缓存，与运行时的 DNS 可能不一致。先 `docker network connect` 把目标容器接进共享网络，再 `nginx -t` |
+| 访问某子域/路径返回 502，但网关容器本身 `Up (healthy)` | 上游是变量（运行时才解析），因此解析失败不会体现在启动上。先 `docker exec check-repeat-gateway getent hosts <上游名>` 确认别名在不在；Jenkins 需 `docker network connect`，后端需确认容器名与配置一致 |
+| 子域 502 且 `getent hosts jenkins` 为空 | Jenkins 容器重建过 —— `docker network connect` 是运行时操作、不落盘，需重新执行（见四·4.5③） |
 | 后端重建后 `/check/` 短暂 502 后自愈 | 预期行为。上游是 `resolver`+变量，Docker DNS 每 `valid=10s` 重解析一次，最长约 10s |
 | 后端**改容器名**后 `/check/` 一直 502 | 变量只解决「IP 变化」，不解决「名字变化」——`check-backend` 这个名字写在配置里。需同步改 `nginx-gateway.conf` 两个 `set $backend_upstream`，重装配置并 reload（`/ws/` 那条容易漏） |
 
