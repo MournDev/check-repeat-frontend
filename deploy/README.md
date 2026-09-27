@@ -592,7 +592,7 @@ useradd --create-home --shell /bin/bash deploy
 ssh-keygen -t ed25519 -f /tmp/deploy_frontend_key -N "" -C "jenkins-deploy-frontend"
 ```
 
-- **私钥** `/tmp/deploy_frontend_key` → 存入 Jenkins 凭据（第 6.2 节），之后**从服务器删除**
+- **私钥** `/tmp/deploy_frontend_key` → 存入 Jenkins 凭据（第 5.2 节），之后**从服务器删除**
 - **公钥** `/tmp/deploy_frontend_key.pub` → 装进 authorized_keys
 
 ### 4.3 写入受限 authorized_keys
@@ -701,12 +701,51 @@ docker exec -u root jenkins sh -c 'apt-get update && apt-get install -y openssh-
 | 类型 | `SSH Username with private key` |
 | ID | `deploy-frontend-ssh-key`（必须与 Jenkinsfile 一致） |
 | Username | `deploy` |
-| Private Key | 粘贴 `/tmp/deploy_frontend_key` 内容 |
+| Private Key | 粘贴部署私钥内容（见下方「私钥存在哪」） |
 
-添加后**删除服务器上的私钥**：
+添加后**删除服务器上的私钥副本**：
 
 ```bash
-shred -u /tmp/deploy_frontend_key
+shred -u /tmp/deploy_frontend_key /tmp/deploy_frontend_key.pub
+```
+
+#### 私钥存在哪
+
+本方案的私钥在服务器上生成后**立即销毁**，因此它只应同时存在于两处：
+
+1. 你的**离线存储**（密码管理器 / 加密盘）
+2. **Jenkins 凭据**里
+
+服务器上、仓库里、聊天记录里都不该有。丢失第 1 份不影响运行
+（Jenkins 那份还在），但要换机器或重建凭据就拿不回来了。
+
+#### 私钥丢了怎么办
+
+**不要试图找回，重新生成一对更省事** —— 只需替换 `authorized_keys`
+里那一行，不影响部署脚本、sudoers、网关等任何其它部分。
+
+```bash
+# 1) 服务器上生成新的一对（-N '' 不设密码，Jenkins 需非交互使用）
+ssh-keygen -t ed25519 -N '' -C 'jenkins-deploy-frontend' -f /tmp/deploy_frontend_key
+
+# 2) 用新公钥【替换】authorized_keys 的内容（不是追加，避免留旧公钥）
+#    注意 command= 保持与四·4.3 完全一致：不插值 SSH_ORIGINAL_COMMAND
+cat > /home/deploy/.ssh/authorized_keys <<EOF
+command="sudo /usr/local/bin/deploy-frontend.sh",no-agent-forwarding,no-port-forwarding,no-pty,no-user-rc,no-X11-forwarding $(cat /tmp/deploy_frontend_key.pub)
+EOF
+
+chown -R deploy:deploy /home/deploy/.ssh
+chmod 0700 /home/deploy/.ssh
+chmod 0600 /home/deploy/.ssh/authorized_keys
+
+# 3) 立刻验证正常路径（会触发一次真实部署）
+ssh -i /tmp/deploy_frontend_key deploy@127.0.0.1
+
+# 4) 顺便再验一次注入防护，确认新行没写坏（预期只报参数错误，不返回 uid）
+ssh -i /tmp/deploy_frontend_key deploy@127.0.0.1 "id; whoami"
+
+# 5) 验证通过后：私钥存进 Jenkins 凭据，再销毁服务器上的副本
+shred -u /tmp/deploy_frontend_key /tmp/deploy_frontend_key.pub
 ```
 
 ### 5.3 写入 known_hosts
