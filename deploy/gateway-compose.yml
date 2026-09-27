@@ -1,0 +1,87 @@
+# ============================================================
+# 网关独立编排（基础设施侧制品）
+#
+# 部署位置：/opt/check-repeat/nginx/docker-compose.yml
+#
+# ⚠️ 为什么单独一个 compose 文件，而不是加进
+#    /opt/check-repeat/docker-compose.yml
+#
+# 那个文件是【后端自己的】编排。网关若与其同属一个 compose 项目：
+#   - 后端团队改自己的服务定义时，会连带影响网关的启动配置
+#   - 他们在该目录执行 docker compose down，会把网关一并停掉，
+#     整站入口消失（后端重启不该等于全站不可用）
+#
+# 拆开后三方的生命周期互相独立：
+#     /opt/check-repeat/docker-compose.yml         后端自己的
+#     /opt/check-repeat/nginx/docker-compose.yml   本文件（网关）
+#     /opt/check-repeat-frontend/docker-compose.yml 前端仓库的
+# 三者只通过一个 external 网络互通，没有任何启动顺序依赖。
+#
+# 又因为没有跨 compose 项目的 depends_on，网关不等待后端就绪；
+# 「上游未解析导致 nginx 拒绝启动」的问题由主配置里的
+# resolver + 变量 proxy_pass 解决（见 nginx-gateway.conf 注释）。
+#
+# 常用命令（均在 /opt/check-repeat/nginx 下执行）：
+#   docker compose up -d
+#   docker compose logs -f
+#   docker exec check-repeat-gateway nginx -t
+#   docker exec check-repeat-gateway nginx -s reload
+# ============================================================
+
+# 固定项目名，避免依赖目录名（目录改名不会导致容器/网络被重建）
+name: check-repeat-gateway
+
+services:
+  gateway:
+    image: nginx:1.28-alpine
+    container_name: check-repeat-gateway
+    restart: unless-stopped
+
+    # 全站唯一入口，仅此容器发布端口
+    ports:
+      - "80:80"
+      - "443:443"
+
+    volumes:
+      # 主配置：前端静态代理 + /check/ + /ws/ + ACME
+      - /opt/check-repeat/nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
+
+      # Jenkins 子域片段目录。初始只有纯注释的占位文件；
+      # 阶段四签发证书后才放入 10-jenkins.conf。
+      # 该挂载【不可省】：主配置里 include 了这个路径，
+      # 路径不存在时 nginx 会拒绝启动。
+      - /opt/check-repeat/nginx/conf/jenkins.d:/etc/nginx/jenkins.d:ro
+
+      # Let's Encrypt 证书，只读
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+
+      # ACME 验证文件落盘处，由宿主机上的 certbot 写入、网关读取。
+      # 容器侧只读即可，故不加 :ro 是为了让容器内也能自检写入路径；
+      # 真正的写入方是宿主机的 certbot。
+      - /opt/check-repeat/certbot-www:/var/www/certbot
+
+    healthcheck:
+      # 走主配置里专门留的 location = /healthz（精确匹配优先于 301 跳转），
+      # 因此这里拿到的是 200 而不是被重定向到 HTTPS。
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/healthz"]
+      interval: 30s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    # external：网络不由本项目创建，也不会被本项目删除。
+    # 这样任何一方执行 docker compose down 都不会带走网络，
+    # 另外两方仍能正常启动。
+    name: check-repeat_app-network
+    external: true

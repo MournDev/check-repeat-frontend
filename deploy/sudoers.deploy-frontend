@@ -1,0 +1,22 @@
+# ============================================================
+# sudo 最小授权配置
+#
+# 安装：
+#   install -m 0440 -o root -g root \
+#     /opt/check-repeat-frontend/deploy/sudoers.deploy-frontend \
+#     /etc/sudoers.d/deploy-frontend
+#   visudo -cf /etc/sudoers.d/deploy-frontend     # 必须校验通过
+#
+# 作用：deploy 用户只能在【无密码】的情况下执行这一个脚本，
+#       不能执行任意命令，也拿不到交互式 root shell。
+#
+# 注意 arguments 的写法：
+#   sudoers 默认允许该命令带【任意参数】。末尾的 [0-9a-f]* 把参数
+#   限制为「以十六进制字符开头」，只放行 commit SHA，挡掉 --flag 之类。
+#   真正的格式校验由脚本自身完成（它要求 7-40 位纯十六进制且拒绝多余参数）。
+#
+#   若要收紧到「完全不允许任何参数」，把 [0-9a-f]* 换成 ""，
+#   代价是无法指定提交，只能部署 origin/master 的当前 HEAD。
+# ============================================================
+
+deploy ALL=(root) NOPASSWD: /usr/local/bin/deploy-frontend.sh [0-9a-f]*

@@ -1,0 +1,57 @@
+# ============================================================
+# 前端仓库编排文件
+# 部署位置：/opt/check-repeat-frontend/docker-compose.yml
+#
+# 本文件【只包含 frontend 一个服务】，是三份独立编排之一：
+#     /opt/check-repeat/docker-compose.yml           后端
+#     /opt/check-repeat/nginx/docker-compose.yml     网关
+#     /opt/check-repeat-frontend/docker-compose.yml  前端（本文件）
+# 三方各自独立维护、独立部署，任何一方 compose down 都不影响其余两方。
+#
+# 前端容器不需要访问后端（请求转发全由网关负责），
+# 它唯一需要互通的对象是网关。
+# ============================================================
+
+# 固定项目名，避免依赖目录名（目录改名不会导致资源被视作另一个项目）
+name: check-repeat-frontend
+
+
+services:
+  frontend:
+    # tag 由部署脚本按 commit 短 SHA 注入，使每次发布的镜像可追溯、可回滚。
+    # 直接 docker compose up 而未设该变量时退化为 latest。
+    image: check-repeat-frontend:${FRONTEND_TAG:-latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: check-repeat-frontend
+    restart: unless-stopped
+
+    # 只声明内部端口，不发布到宿主机。
+    # 对外流量一律经 gateway 容器进入，前端端口不暴露。
+    expose:
+      - "80"
+
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:80/"]
+      interval: 30s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    # 该网络由基础设施侧【手动创建一次】(docker network create)，
+    # 三方均以此形式引用。不归属任何 compose 项目，
+    # 因此不会被谁的 docker compose down 连带删除。
+    name: check-repeat_app-network
+    external: true
