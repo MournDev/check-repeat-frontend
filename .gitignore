@@ -11,9 +11,32 @@ node_modules
 dist
 dist-ssr
 *.local
-.env
-.env.development
-.env.production
+
+# ------------------------------------------------------------
+# .env / .env.development / .env.production 【故意入库】，不要在此忽略。
+#
+# 本文件原先有三行 `.env` / `.env.development` / `.env.production`，
+# 与部署设计【直接冲突】：Dockerfile 的构建阶段依赖 .env.production 注入
+# VITE_* 变量（见 .dockerignore 末尾「以下文件必须保留」一节）。
+# 一旦它不在版本库里，Vite 会回落到 .env，把 localhost:8080 打进产物 ——
+# 构建、部署、页面全正常，只有接口指向访问者自己的电脑。
+# 留着那三行，等于给后人一个「这个文件不该入库」的错误暗示，
+# 迟早有人照着删掉，然后线上接口全挂。故移除，并在此写明原因。
+#
+# 本机私有的覆盖项请写 .env.local / .env.production.local，
+# 它们由上面的 *.local 忽略。
+# ------------------------------------------------------------
+
+# Nginx 运行时（本机调试用的 Windows 版 Nginx 发行版）
+# 部署已改为容器内 nginx:alpine，此发行版与镜像无关，不入库。
+# 本地留着自己用即可，.dockerignore 里也排除了它。
+nginx-1.28.0/
+
+# 误提交的空文件
+/npm
+
+# Claude Code 本地设置
+.claude/settings.json
 
 # Editor directories and files
 .vscode/*
