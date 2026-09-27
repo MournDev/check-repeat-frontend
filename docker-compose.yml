@@ -1,10 +1,24 @@
 # ============================================================
 # 前端仓库编排文件
+#
+# 仓库位置：仓库根目录 docker-compose.yml
 # 部署位置：/opt/check-repeat-frontend/docker-compose.yml
+#
+# ⚠️ 必须位于【仓库根目录】，不能挪进 deploy/
+#
+# deploy/ 放的是「需要安装到系统其它路径」的制品（网关配置、部署脚本等），
+# 本文件不属于那一类：它就是前端检出目录自己的编排，随 git checkout 一起到位。
+#
+# 而且它依赖这个位置：下面 build.context 是 "."，而 compose 文件中相对路径
+# 以【本文件所在目录】为基准解析。文件若在 deploy/ 下，context 会变成 deploy/
+# 子目录 —— 那里没有 Dockerfile，构建直接失败。
+# 部署脚本按 $APP_DIR/docker-compose.yml 读取它，手册里的手动命令
+# （cd /opt/check-repeat-frontend && docker compose ...）也都不带 -f，
+# 同样假定它在检出目录根。
 #
 # 本文件【只包含 frontend 一个服务】，是三份独立编排之一：
 #     /opt/check-repeat/docker-compose.yml           后端
-#     /opt/check-repeat/nginx/docker-compose.yml     网关
+#     /opt/check-repeat/nginx/docker-compose.yml     网关（由 deploy/gateway-compose.yml 安装）
 #     /opt/check-repeat-frontend/docker-compose.yml  前端（本文件）
 # 三方各自独立维护、独立部署，任何一方 compose down 都不影响其余两方。
 #

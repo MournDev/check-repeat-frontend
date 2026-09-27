@@ -116,7 +116,10 @@ check-repeat-frontend/
 - **前端容器只做静态托管**，不承担任何后端代理。因此 [nginx.conf](nginx.conf) 中**没有也不应有** `/check/` 代理配置。
 - 前端容器**不对外发布端口**，外部流量一律经网关进入。
 - 三方通过一个**手动创建、各自以 `external: true` 引用**的网络互通
-  （`check-repeat_app-network`，见 [deploy/docker-compose.yml](deploy/docker-compose.yml)）。
+  （`check-repeat_app-network`，见 [docker-compose.yml](docker-compose.yml)）。
+  该编排文件位于**仓库根目录**而非 [deploy/](deploy/)：它是检出目录自己的编排，
+  随 `git checkout` 一起到位，且 `build.context: .` 依赖它相对检出根解析
+  （理由详见文件头部注释）。
   网络不归属任何一方，因此不会被谁的 `compose down` 删掉。
 - 前端容器**不需要访问后端**，它唯一需要互通的对象是网关。
 
