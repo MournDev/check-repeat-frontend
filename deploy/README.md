@@ -866,6 +866,7 @@ ssh -i <key> deploy@<host> "<目标commit短SHA>"
 | 构建报原生模块错误 | `.dockerignore` 未生效，宿主机 `node_modules` 混入镜像 |
 | `npm ci` 报锁文件不同步 | 本地 `npm install` 后提交 `package-lock.json` |
 | 发版后用户看到旧页面 | 检查 `location = /index.html` 的禁缓存是否生效 |
+| 前端容器 `unhealthy` 但页面访问正常 | healthcheck 写成了 `localhost`：Docker 写入的 `::1 localhost` 让 BusyBox wget 解析到 IPv6，而 nginx 只绑 IPv4，连接被拒且 wget 不回退。改用 `127.0.0.1`。注意这不只影响显示——部署脚本的 `wait_healthy` 会因此判定发布失败并自动回滚 |
 | 证书续期 404 | 网关 ACME location 未指到 `/var/www/certbot`，或 webroot 目录未挂载 |
 | Jenkins 日志有 `⚠️ 部署脚本 与仓库版本不一致` | 正常告警，不是错误。改了脚本/sudoers 没重装，见 3.5 |
 | 改了网关配置但行为没变 | 网关配置不随前端部署更新，需手工重装 + reload，见 3.5 |

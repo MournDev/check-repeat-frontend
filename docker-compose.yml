@@ -47,7 +47,12 @@ services:
       - "80"
 
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:80/"]
+      # 必须写 127.0.0.1，不能写 localhost。
+      # Docker 会给容器写入 "::1 localhost"，BusyBox wget 解析 localhost 时取到
+      # IPv6 的 ::1，而 nginx 的 listen 80; 只绑 IPv4 -> Connection refused。
+      # BusyBox wget 不会回退到下一个地址，健康检查因此永远失败，
+      # 进而让部署脚本判定发布失败并自动回滚。
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:80/"]
       interval: 30s
       timeout: 3s
       start_period: 5s
