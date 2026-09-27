@@ -283,6 +283,10 @@ install -m 0644 /opt/check-repeat-frontend/deploy/nginx-gateway.conf \
 主配置已不含任何 Jenkins server 块，只留一行
 `include /etc/nginx/jenkins.d/*.conf;`，此时该目录里只有纯注释的占位文件。
 
+> ⚠️ 这里的 `install` 是**一次性**的：网关配置不随前端部署更新。
+> 之后在仓库里改了它，必须按 **3.5** 重新安装并 reload，否则改动不会生效
+> 且没有任何提示。
+
 ### 2.2 显式创建共享网络（重要）
 
 改造前后端/前端/网关三方分属**三个独立 compose 项目**，靠一个共享网络互通。
@@ -445,6 +449,60 @@ install -m 0440 -o root -g root \
 
 visudo -cf /etc/sudoers.d/deploy-frontend    # 必须通过
 ```
+
+### 3.5 ⚠️ 这四个文件改了必须重装
+
+本方案里有四个文件**在 git 仓库中**，却**不在部署流水线上**：
+
+| 文件（仓库内） | 系统上的位置 | 安装模式 |
+| --- | --- | --- |
+| `deploy/deploy-frontend.sh` | `/usr/local/bin/deploy-frontend.sh` | `0755` |
+| `deploy/sudoers.deploy-frontend` | `/etc/sudoers.d/deploy-frontend` | `0440` |
+| `deploy/nginx-gateway.conf` | `/opt/check-repeat/nginx/conf/nginx.conf` | `0644` |
+| `deploy/gateway-compose.yml` | `/opt/check-repeat/nginx/docker-compose.yml` | `0644` |
+
+**`deploy-frontend.sh` 只重建前端容器，永远不会碰这四个文件。** 所以你在仓库里改了它们、
+推送到 master、Jenkins 跑绿——**服务器上的那份仍然没变**。
+
+这就是静默漂移：改动看起来"发布了"，实际系统上跑的还是旧版，而且没有任何提示。
+其中 `deploy-frontend.sh` 和 sudoers 最危险——它们决定部署行为与权限边界，改错不生效
+会让你以为新规则已经生效。
+
+#### 已内置的自检
+
+部署脚本会在每次部署时自动比对前两个文件（系统版本 vs 本次提交里的版本），
+不一致就在日志里告警：
+
+```
+⚠️  部署脚本 与仓库版本不一致，改动【未生效】，本次仍按旧版执行：
+      运行中：/usr/local/bin/deploy-frontend.sh
+      仓库中：/opt/check-repeat-frontend/deploy/deploy-frontend.sh  （提交 a1b2c3d4 的版本）
+      重装：install -m 0755 -o root -g root .../deploy-frontend.sh /usr/local/bin/deploy-frontend.sh
+```
+
+> 只告警不阻断。同一提交若同时改了脚本与业务代码，阻断会让这次部署永远无法推进
+> （脚本要下次才生效），陷入死锁。
+>
+> 每次触发部署后翻一眼 Jenkins 控制台日志，搜 `⚠️` 即可确认有无漂移。
+
+#### 后两个文件没有自检，只能靠人工
+
+网关配置与网关编排不在部署脚本的视野内（它们跑在另一个容器里），改了必须手工重装：
+
+```bash
+install -m 0644 /opt/check-repeat-frontend/deploy/nginx-gateway.conf \
+    /opt/check-repeat/nginx/conf/nginx.conf
+install -m 0644 /opt/check-repeat-frontend/deploy/gateway-compose.yml \
+    /opt/check-repeat/nginx/docker-compose.yml
+
+# 网关配置改了就 reload（平滑重载，不断连接）；编排改了才需要 up -d
+docker exec check-repeat-gateway nginx -t \
+  && docker exec check-repeat-gateway nginx -s reload
+```
+
+> 为什么网关不并入流水线：网关同时承载前端与后端两个上游，
+> 若前端发一次版就能覆盖它，一个坏提交会连带把后端也打挂。
+> 高频变更的前端与低频变更的入口配置，发布节奏本就应当分开。
 
 ---
 
@@ -779,6 +837,12 @@ git add . && git commit -m "feat: xxx" && git push origin master
 
 Jenkins 自动执行。镜像 tag 为 commit 短 SHA，宿主机保留最近 5 个。
 
+> ⚠️ **若本次改动涉及 3.5 列出的四个文件**（`deploy-frontend.sh`、sudoers、
+> 网关配置、网关编排），push 推送后它们**不会**自动生效，必须按 3.5 手工重装。
+> 前两个会在下次部署时被自检告警出来；**后两个没有自检**，只能靠你记住。
+>
+> 判断方法：`git show --stat HEAD` 看本次提交动了哪些文件。
+
 **手工回滚到指定提交**：
 
 ```bash
@@ -803,6 +867,9 @@ ssh -i <key> deploy@<host> "<目标commit短SHA>"
 | `npm ci` 报锁文件不同步 | 本地 `npm install` 后提交 `package-lock.json` |
 | 发版后用户看到旧页面 | 检查 `location = /index.html` 的禁缓存是否生效 |
 | 证书续期 404 | 网关 ACME location 未指到 `/var/www/certbot`，或 webroot 目录未挂载 |
+| Jenkins 日志有 `⚠️ 部署脚本 与仓库版本不一致` | 正常告警，不是错误。改了脚本/sudoers 没重装，见 3.5 |
+| 改了网关配置但行为没变 | 网关配置不随前端部署更新，需手工重装 + reload，见 3.5 |
+| `docker compose config` 校验了错误的文件 | 未显式带 `-f`，compose 向上找到了后端编排，见 2.3 |
 
 ---
 

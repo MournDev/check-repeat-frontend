@@ -33,6 +33,42 @@ log() {
 }
 
 # ------------------------------------------------------------
+# 漂移自检
+#
+# 本脚本与 sudoers 由手册「三·3.4」一次性 install 到系统路径，
+# 之后【不会】随部署自动更新。若仓库里改了它们却没重装，服务器会
+# 一直按旧版执行，而且毫无提示 —— 这是本方案最容易踩的静默漂移。
+#
+# 调用点在 git checkout 之后，因此比对的是「本次要部署的那个提交
+# 里的版本」vs「系统上正在跑的版本」。
+#
+# 只告警不阻断：同一提交若同时改了脚本与业务代码，阻断会导致这次
+# 部署永远无法推进（脚本要下次才生效），陷入死锁。
+# ------------------------------------------------------------
+check_drift() {
+    local repo_file=$1 installed=$2 mode=$3 label=$4
+    local a b
+
+    [ -f "$repo_file" ] || return 0          # 该提交里没有这个文件，跳过
+
+    if [ ! -f "$installed" ]; then
+        log "⚠️  $label 在系统上不存在：$installed"
+        log "      重装：install -m $mode -o root -g root $repo_file $installed"
+        return 0
+    fi
+
+    a=$(sha256sum "$repo_file" | cut -d' ' -f1)
+    b=$(sha256sum "$installed" | cut -d' ' -f1)
+
+    if [ "$a" != "$b" ]; then
+        log "⚠️  $label 与仓库版本不一致，改动【未生效】，本次仍按旧版执行："
+        log "      运行中：$installed"
+        log "      仓库中：$repo_file  （提交 $SHORT_SHA 的版本）"
+        log "      重装：install -m $mode -o root -g root $repo_file $installed"
+    fi
+}
+
+# ------------------------------------------------------------
 # 1. 参数校验
 #    这是权限边界的关键：脚本是 deploy 用户唯一能做的事，
 #    因此参数必须严格白名单校验，且拒绝任何多余参数。
@@ -95,6 +131,13 @@ fi
 # 3. 切到目标提交并构建
 # ------------------------------------------------------------
 git checkout --detach --force "$TARGET_SHA"
+
+# 自检：系统上装的脚本 / sudoers 是否与本次提交里的版本一致。
+# 放在 checkout 之后，比对的就是「即将部署的这个提交」。
+check_drift "$APP_DIR/deploy/deploy-frontend.sh" \
+            /usr/local/bin/deploy-frontend.sh 0755 "部署脚本"
+check_drift "$APP_DIR/deploy/sudoers.deploy-frontend" \
+            /etc/sudoers.d/deploy-frontend 0440 "sudo 授权"
 
 log "构建镜像 $IMAGE:$SHORT_SHA ..."
 FRONTEND_TAG="$SHORT_SHA" docker compose -f "$COMPOSE_FILE" build frontend
