@@ -29,7 +29,7 @@ export const getApiResponseTimes = (period = '1h') => {
 // 获取系统监控概览
 export const getSystemOverview = () => {
   return request({
-    url: '/api/admin/monitoring/overview',
+    url: '/api/admin/monitor/overview',
     method: 'get'
   })
 }
@@ -37,7 +37,7 @@ export const getSystemOverview = () => {
 // 获取数据库监控
 export const getDatabaseMonitor = () => {
   return request({
-    url: '/api/admin/monitoring/database',
+    url: '/api/admin/monitor/database',
     method: 'get'
   })
 }
@@ -45,7 +45,7 @@ export const getDatabaseMonitor = () => {
 // 获取应用性能监控
 export const getApplicationMetrics = () => {
   return request({
-    url: '/api/admin/monitoring/application',
+    url: '/api/admin/monitor/application',
     method: 'get'
   })
 }
@@ -53,7 +53,7 @@ export const getApplicationMetrics = () => {
 // 获取缓存性能监控
 export const getCacheMetrics = () => {
   return request({
-    url: '/api/admin/monitoring/cache',
+    url: '/api/admin/monitor/cache',
     method: 'get'
   })
 }

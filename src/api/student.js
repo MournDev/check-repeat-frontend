@@ -43,7 +43,7 @@ export const createCheckTask = (paperId) => {
 
 export const createBatchCheckTasks = (paperIds) => {
   return request({
-    url: "/api/student/batch-check/create",
+    url: "/api/student/check-tasks/batch-create",
     method: "post",
     data: {
       paperIds: paperIds
@@ -162,7 +162,7 @@ export const getFileInfo = (fileId) => {
 
 export const getPaperReport = (reportId) => {
   return request({
-    url: '/api/student/reports/data',
+    url: '/api/student/reports/preview',
     method: "get",
     params: { reportId }
   });
@@ -188,14 +188,17 @@ export const deletePaper = (paperId) => {
 
 export const deleteCheckTask = (taskId) => {
   return request({
-    url: `/api/student/check-tasks/${taskId}/delete`,
-    method: "delete"
+    url: `/api/student/check-tasks/cancel`,
+    method: "delete",
+    params: {
+      taskId: taskId
+    }
   });
 };
 
 export const deleteFile = (fileId) => {
   return request({
-    url: `/api/file/delete/file`,
+    url: `/api/papers/delete/file`,
     method: "delete",
     params: {
       fileId: fileId
@@ -215,7 +218,7 @@ export const getCheckTaskDetail = (paperId) => {
 
 export const getCheckTaskById = (taskId) => {
   return request({
-    url: `/api/student/check-tasks/${taskId}`,
+    url: `/api/enhanced/check-tasks/${taskId}`,
     method: "get"
   });
 }
@@ -245,8 +248,7 @@ export const getSimilarityTrend = (paperId, period = 30) => {
 
 export const recheckPlagiarism = (paperId) => {
   return request({
-    url: `/api/student/check-tasks/recheck`,
-    params: { paperId },
+    url: `/api/detection/recheck/${paperId}`,
     method: "post"
   });
 };

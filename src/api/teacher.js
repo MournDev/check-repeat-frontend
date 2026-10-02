@@ -264,7 +264,7 @@ export const getStudentPaper = (studentId) => {
 // 获取学生所有论文
 export const getStudentPapers = (studentId) => {
   return request({
-    url: `/api/teacher/students/${studentId}/papers`,
+    url: `/api/teacher/students/${studentId}/paper`,
     method: 'get'
   })
 }

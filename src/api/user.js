@@ -10,7 +10,7 @@ export const getCurrentUserInfo = () => {
 
 export const updateUserInfo = (data) => {
   return request({
-    url: '/api/user/info/update-info',
+    url: '/api/user/update-info',
     method: 'post',
     data: data
   })
@@ -18,7 +18,7 @@ export const updateUserInfo = (data) => {
 
 export const uploadAvatar = (formData) => {
   return request({
-    url: '/api/user/info/upload-avatar',
+    url: '/api/user/upload-avatar',
     method: 'post',
     data: formData,
   })
@@ -26,7 +26,7 @@ export const uploadAvatar = (formData) => {
 
 export const updatePassword = (data) => {
   return request({
-    url: '/api/user/info/update-password',
+    url: '/api/user/update-password',
     method: 'put',
     data: data
   })
@@ -35,7 +35,7 @@ export const updatePassword = (data) => {
 // 验证邮箱
 export const verifyEmail = (token) => {
   return request({
-    url: '/api/user/info/verify-email',
+    url: '/api/user/verify-email',
     method: 'get',
     params: { token }
   });
@@ -76,7 +76,7 @@ export const getSubjectFieldTree = (subjectField) => {
 // 发送邮箱验证邮件
 export const sendVerifyEmail = (params) => {
   return request({
-    url: '/api/user/info/send-verify-email',
+    url: '/api/user/send-verify-email',
     method: 'post',
     params: params
   });
@@ -85,7 +85,7 @@ export const sendVerifyEmail = (params) => {
 // 发送邮箱验证码
 export const sendEmailCode = (data) => {
   return request({
-    url: '/api/user/info/send-email-code',
+    url: '/api/user/send-email-code',
     method: 'post',
     params: {
       email: data.email
@@ -96,7 +96,7 @@ export const sendEmailCode = (data) => {
 // 更新邮箱
 export const updateUserEmail = (data) => {
   return request({
-    url: '/api/user/info/update-email',
+    url: '/api/user/update-email',
     method: 'post',
     data
   });
@@ -104,7 +104,7 @@ export const updateUserEmail = (data) => {
 
 export const getLoginHistory = (params) => {
   return request({
-    url: '/api/user/info/login-history',
+    url: '/api/user/login-history',
     method: 'post',
     data: params
   })
@@ -144,7 +144,7 @@ export const markAsRead = (messageId) => {
 // 批量标记已读
 export const batchMarkAsRead = (messageIds, userId) => {
   return request({
-    url: '/api/message/batch-read',
+    url: '/api/notification/batch-mark-read',
     method: 'post',
     data: messageIds
   })
