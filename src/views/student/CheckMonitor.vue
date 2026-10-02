@@ -160,14 +160,16 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
+import { ref, reactive, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { 
   Refresh, DataLine, Tickets, Delete, InfoFilled, SuccessFilled,
   Check, Loading, Clock, Document, Files, Connection, DocumentChecked
 } from '@element-plus/icons-vue'
-import { getCheckStatus } from '@/api/student'
+// 注意：后端没有 /api/student/check-tasks/status 这个接口，
+// 任务状态要用 taskDetail（按 paperId 查），它同时带回推送订阅需要的 taskId
+import { getCheckTaskDetail } from '@/api/student'
 import { useCheckProgress } from '@/composables/useCheckProgress'
 
 const route = useRoute()
@@ -196,21 +198,25 @@ const finalSimilarity = ref(0)
 const logContainer = ref(null)
 
 // 使用实时推送 Hook
-const { connect, disconnect, progress: checkProgress, isConnected } = useCheckProgress();
+const { connect, disconnect } = useCheckProgress();
 
-// 根据后端status映射阶段状态: 0-待执行 1-执行中 2-执行成功 3-执行失败
+// 根据后端status映射阶段状态。
+// 后端 CheckTask.status 实际是字符串码（pending/checking/completed/failure/cancelled，
+// 见 CheckTaskStatusEnum），老代码只比数字码 '0'/'1'/'2' 所以永远匹配不上，
+// 这里两种写法都认。
 const mapCheckStatusToStages = (checkStatus) => {
-  if (checkStatus === '0') return [
+  const code = String(checkStatus ?? '').toLowerCase()
+  if (code === '0' || code === 'pending') return [
     { key: 'upload', name: '文件上传', status: 'pending', progress: 0 },
     { key: 'check', name: '论文查重', status: 'pending', progress: 0 },
     { key: 'report', name: '报告生成', status: 'pending', progress: 0 }
   ]
-  if (checkStatus === '1') return [
+  if (code === '1' || code === 'checking') return [
     { key: 'upload', name: '文件上传', status: 'completed', progress: 100 },
     { key: 'check', name: '论文查重', status: 'processing', progress: 0 },
     { key: 'report', name: '报告生成', status: 'pending', progress: 0 }
   ]
-  if (checkStatus === '2') return [
+  if (code === '2' || code === 'completed') return [
     { key: 'upload', name: '文件上传', status: 'completed', progress: 100 },
     { key: 'check', name: '论文查重', status: 'completed', progress: 100 },
     { key: 'report', name: '报告生成', status: 'completed', progress: 100 }
@@ -258,7 +264,7 @@ const goBack = () => {
 
 const refreshStatus = async () => {
   try {
-    const res = await getCheckStatus(route.params.taskId)
+    const res = await getCheckTaskDetail(route.params.paperId)
     if (res.code === 200) {
       updateStatus(res.data)
       ElMessage.success('状态已刷新')
@@ -268,11 +274,22 @@ const refreshStatus = async () => {
   }
 }
 
-const updateStatus = (data) => {
+/**
+ * 用任务详情刷新页面状态
+ * @param {object} data 后端返回的任务详情
+ * @param {{announce?: boolean}} [options] announce=true 时才弹"查重完成"对话框（仅实时推送用）
+ */
+const updateStatus = (data, { announce = false } = {}) => {
   currentStatus.value = {
     ...currentStatus.value,
     ...data,
     status: data.checkStatus || data.status || currentStatus.value.status
+  }
+
+  // 记录首次拿到状态的时刻，供"已用时"计算。
+  // 原先 updateStatus 从不写 startTime，而 elapsedTime 的计算恰恰依赖它。
+  if (!currentStatus.value.startTime) {
+    currentStatus.value.startTime = new Date().toISOString()
   }
 
   // 根据后端checkStatus更新阶段状态
@@ -286,7 +303,7 @@ const updateStatus = (data) => {
   }
 
   // 更新WebSocket实时进度（处理中时）
-  if (data.checkStatus === '1' && data.checkRate != null) {
+  if ((data.checkStatus === '1' || data.checkStatus === 'checking') && data.checkRate != null) {
     const progress = Math.min(data.checkRate * 3, 99) // 将查重率映射为进度
     const checkStage = checkStages.value.find(s => s.key === 'check')
     if (checkStage) checkStage.progress = progress
@@ -298,33 +315,14 @@ const updateStatus = (data) => {
     scrollToBottom()
   }
 
-  // 检查是否完成（checkStatus=2 表示成功）
-  if (data.checkStatus === '2' || data.status === 'completed') {
+  // 是否已完成（后端返回字符串码 completed，老代码只比数字码 '2'）。
+  // 只有实时推送到达的完成事件才弹完成框（announce=true）：进页面时拉详情、
+  // 手动刷新、轮询拿到的 completed 只是把状态如实显示出来，不该凭空弹模态框打断用户。
+  const completed =
+    data.checkStatus === '2' || data.checkStatus === 'completed' || data.status === 'completed'
+  if (completed) {
     finalSimilarity.value = data.checkRate || 0
-    showCompletionDialog.value = true
-  }
-}
-
-const updateStatusFromHook = (progressData) => {
-  const statusMap = {
-    'STARTED': 'processing',
-    'PROCESSING': 'processing',
-    'COMPLETED': 'completed',
-    'FAILED': 'failed'
-  }
-
-  currentStatus.value = {
-    ...currentStatus.value,
-    status: statusMap[progressData.stage] || 'processing',
-    overallProgress: progressData.percent,
-    estimatedRemainingTime: progressData.estimatedRemainingSeconds
-  }
-
-  // 根据WebSocket数据更新阶段进度
-  checkStages.value = mapCheckStatusToStages(progressData.stage === 'COMPLETED' ? '2' : '1')
-  const checkStage = checkStages.value.find(s => s.key === 'check')
-  if (checkStage && progressData.percent != null) {
-    checkStage.progress = progressData.percent
+    if (announce) announceCompletion()
   }
 }
 
@@ -408,48 +406,55 @@ const closeCompletionDialog = () => {
   showCompletionDialog.value = false
 }
 
-const connectWebSocket = () => {
-  const paperId = route.query.paperId || route.params.taskId;
-  
-  // 使用新的 Hook 连接
-  connect(paperId, (data) => {
-    // 处理收到的消息
-    if (data.type === 'START') {
-      addLog('info', data.message || '查重任务已启动');
-      currentStatus.value.overallProgress = data.progress || 0;
-    } else if (data.type === 'PROGRESS') {
+/** 弹"查重完成"框，每次进入页面最多一次（推送重复到达或重连补推都不会连弹） */
+let completionNotified = false
+const announceCompletion = () => {
+  if (completionNotified) return
+  completionNotified = true
+  showCompletionDialog.value = true
+}
+
+const connectWebSocket = (taskId) => {
+  if (!taskId) {
+    console.warn('[CheckMonitor] 未取到 taskId，跳过实时进度订阅');
+    return;
+  }
+
+  // 订阅主题是 /topic/check-progress/{taskId}，传 paperId 会永远收不到消息
+  connect(taskId, (data) => {
+    // data.type 已由 useCheckProgress 归一化为 progress | complete | error
+    if (data.type === 'progress') {
       addLog('info', data.message || '查重进度更新');
       currentStatus.value.overallProgress = data.progress || 0;
-      currentStatus.value.elapsedTime = Math.floor((Date.now() - new Date().getTime()) / 1000);
-    } else if (data.type === 'COMPLETE') {
+      // 已用时按任务开始时刻计算。原先写的是 Date.now() - new Date().getTime()，恒等于 0。
+      const startedAt = currentStatus.value.startTime;
+      if (startedAt) {
+        currentStatus.value.elapsedTime = Math.floor(
+          (Date.now() - new Date(startedAt).getTime()) / 1000
+        );
+      }
+    } else if (data.type === 'complete') {
       addLog('success', data.message || '查重完成');
       currentStatus.value.overallProgress = 100;
       currentStatus.value.status = 'completed';
-      finalSimilarity.value = data.similarity || 0;
-      showCompletionDialog.value = true;
-    } else if (data.type === 'ERROR') {
+      // 推送事件里不带相似度，完成后再查一次任务详情把查重率取回来
+      getCheckTaskDetail(route.params.paperId)
+        .then((res) => {
+          if (res.code === 200 && res.data?.checkRate != null) {
+            finalSimilarity.value = res.data.checkRate;
+            currentStatus.value.checkRate = res.data.checkRate;
+          }
+        })
+        .catch(() => {});
+      announceCompletion();
+    } else if (data.type === 'error') {
       addLog('error', data.message || '查重失败');
       currentStatus.value.status = 'failed';
     }
   });
-  
-  // 监听进度变化
-  watch(() => checkProgress.percent, (newPercent) => {
-    if (newPercent !== undefined) {
-      currentStatus.value.overallProgress = newPercent;
-    }
-  });
-  
-  watch(() => checkProgress.status, (newStatus) => {
-    if (newStatus === 'success') {
-      addLog('success', '查重完成！');
-      finalSimilarity.value = checkProgress.similarity || 0;
-      showCompletionDialog.value = true;
-    } else if (newStatus === 'exception') {
-      addLog('error', checkProgress.message || '查重失败');
-      currentStatus.value.status = 'failed';
-    }
-  });
+  // 注：这里原先还挂了两个 watch 监听 hook 的 checkProgress.percent/status，
+  // 但上面的回调已经处理了同样的事，结果每帧完成事件都会写两条日志、并重复弹框。
+  // 现在只保留回调这一条路径。
 };
 
 const disconnectWebSocket = () => {
@@ -460,7 +465,7 @@ const pollingTimer = ref(null)
 const startPolling = () => {
   pollingTimer.value = setInterval(async () => {
     try {
-      const res = await getCheckStatus(route.params.taskId)
+      const res = await getCheckTaskDetail(route.params.paperId)
       if (res.code === 200) {
         updateStatus(res.data)
       }
@@ -496,17 +501,30 @@ const addLog = (level, message) => {
 }
 
 // 生命周期
-onMounted(() => {
-  // 参数校验
-  if (!route.params.taskId || route.params.taskId === 'undefined') {
-    ElMessage.error('缺少任务ID参数');
+onMounted(async () => {
+  // 参数校验：路由定义是 /student/check-monitor/:paperId，参数名是 paperId
+  // （老代码校验的是 route.params.taskId，恒为 undefined，页面一进就退出）
+  const paperId = route.params.paperId;
+  if (!paperId || paperId === 'undefined') {
+    ElMessage.error('缺少论文ID参数');
     router.back();
     return;
   }
-  
-  connectWebSocket();
-  // 添加初始日志
+
   addLog('info', '连接到查重服务...');
+
+  // 先取一次任务详情：既作为初始状态，也拿到推送订阅需要的 taskId
+  try {
+    const res = await getCheckTaskDetail(paperId);
+    if (res.code === 200 && res.data) {
+      updateStatus(res.data);
+      connectWebSocket(res.data.taskId);
+    } else {
+      console.warn('[CheckMonitor] 获取查重任务详情失败:', res?.message);
+    }
+  } catch (error) {
+    console.error('[CheckMonitor] 获取查重任务详情异常:', error);
+  }
 })
 
 onUnmounted(() => {

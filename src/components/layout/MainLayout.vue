@@ -332,12 +332,13 @@ const { connect: wsConnect, disconnect: wsDisconnect } = useMessageWebSocket()
 const connectNotificationWebSocket = () => {
   const userId = userStore.userInfo?.userId
   if (!userId) return
-  wsConnect(userId, (data) => {
-    if (data.type === 'notification') {
-      // 实时更新未读数量
-      messageStore.setUnreadCount(messageStore.unreadCount + 1)
-      ElMessage({ message: `新通知: ${data.data?.title || ''}`, type: 'info', duration: 3000 })
-    }
+  wsConnect(userId, (payload) => {
+    // 后端推的帧：{ type: 'NOTIFICATION', content: {...SystemMessage} }
+    if (String(payload?.type || '').toUpperCase() !== 'NOTIFICATION') return
+    // 角标以服务端为准重新取一次，比本地 +1 可靠（多端登录/漏推都不会错）
+    loadUnreadCount()
+    const title = payload.content?.title
+    ElMessage({ message: title ? `新通知：${title}` : '收到一条新通知', type: 'info', duration: 3000 })
   })
 }
 
@@ -548,6 +549,9 @@ const handleResize = () => {
   if (!isMobile.value) sidebarVisible.value = false
 }
 
+// 用户信息可能在挂载之后才填好，所以用 watch(immediate) 统一在这一处触发；
+// 别再在 onMounted 里重复调一遍 —— 重复调用会重复订阅，收到一条消息弹多次提示
+// （useMessageWebSocket 内部也做了幂等，这里只是不去制造无谓的调用）。
 watch(() => userStore.userInfo?.userId, (newUserId) => {
   if (newUserId) {
     loadUnreadCount()
@@ -557,17 +561,6 @@ watch(() => userStore.userInfo?.userId, (newUserId) => {
 
 onMounted(() => {
   window.addEventListener('resize', handleResize)
-  if (userStore.userInfo?.userId) {
-    loadUnreadCount()
-    connectNotificationWebSocket()
-  } else {
-    setTimeout(() => {
-      if (userStore.userInfo?.userId) {
-        loadUnreadCount()
-        connectNotificationWebSocket()
-      }
-    }, 500)
-  }
 })
 
 onUnmounted(() => {

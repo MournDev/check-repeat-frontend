@@ -10,6 +10,12 @@ export default defineConfig(({ mode }) => ({
       '@': resolve(__dirname, 'src')
     }
   },
+  define: {
+    // sockjs-client 是 CJS 包，内部直接引用了 Node 的 global
+    // （lib/entry.js、lib/location.js、lib/main.js），浏览器里没有这个标识符，
+    // 不映射就会在建立 WebSocket 时报 "global is not defined"。
+    global: 'globalThis'
+  },
   server: {
     port: 3000,
     host: '0.0.0.0', // 允许外部访问
