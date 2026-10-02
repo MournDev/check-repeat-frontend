@@ -31,9 +31,10 @@
         <el-form-item label="查重状态">
           <el-select v-model="searchForm.checkStatus" placeholder="选择查重状态" clearable>
             <el-option label="全部" value="" />
+            <el-option label="待查重" value="pending" />
+            <el-option label="处理中" value="checking" />
             <el-option label="已完成" value="completed" />
-            <el-option label="处理中" value="processing" />
-            <el-option label="失败" value="failed" />
+            <el-option label="失败" value="failure" />
           </el-select>
         </el-form-item>
         <el-form-item label="相似度范围">
@@ -124,7 +125,7 @@
         <el-table-column prop="status" label="状态" width="100">
           <template #default="{ row }">
             <el-tag :type="getStatusTagType(row.status)">
-              {{ row.status }}
+              {{ getStatusLabel(row.status) }}
             </el-tag>
           </template>
         </el-table-column>
@@ -192,7 +193,7 @@
                 </el-form-item>
                 <el-form-item label="状态">
                   <el-tag :type="getStatusTagType(selectedReport?.status)">
-                    {{ selectedReport?.status }}
+                    {{ getStatusLabel(selectedReport?.status) }}
                   </el-tag>
                 </el-form-item>
               </el-form>
@@ -444,67 +445,101 @@ const getSimilarityRating = (similarity) => {
   return '需要修改'
 }
 
+// 查重状态词表与后端 check_task.check_status 保持一致
+// 注意：不要复用 utils/reviewStatus.js 的 getStatusText —— 那是 PaperStatusEnum，
+// 词表不同（rejected/revision_needed vs failure）
+const CHECK_STATUS_LABELS = {
+  pending: '待查重',
+  checking: '处理中',
+  completed: '已完成',
+  failure: '失败'
+}
+
+const getStatusLabel = (status) => CHECK_STATUS_LABELS[status] || status || '-'
+
 const getStatusTagType = (status) => {
   switch (status) {
-    case '已完成':
+    case 'completed':
       return 'success'
-    case '处理中':
+    case 'checking':
       return 'warning'
-    case '失败':
+    case 'failure':
       return 'danger'
     default:
       return 'info'
   }
 }
 
+// 构造列表与统计共用的查询参数（两者口径必须一致）
+const buildQueryParams = () => {
+  const params = {
+    page: currentPage.value,
+    size: pageSize.value,
+    paperTitle: searchForm.paperTitle || null,
+    studentName: searchForm.studentName || null,
+    checkStatus: searchForm.checkStatus || null
+  }
+
+  // 添加相似度范围筛选
+  if (searchForm.similarityRange) {
+    switch (searchForm.similarityRange) {
+      case '0-15':
+        params.minSimilarity = 0
+        params.maxSimilarity = 15
+        break
+      case '15-30':
+        params.minSimilarity = 15
+        params.maxSimilarity = 30
+        break
+      case '30+':
+        params.minSimilarity = 30
+        params.maxSimilarity = 100
+        break
+    }
+  }
+
+  return params
+}
+
+// 统计卡片改为由后端 /stats 返回，避免只看当前页的偏差
+const loadReportStats = async (params) => {
+  try {
+    const response = await getReportStats(params)
+    if (response.code === 200) {
+      const stats = response.data || {}
+      totalReports.value = Number(stats.totalReports) || 0
+      completedReports.value = Number(stats.completedReports) || 0
+      averageSimilarity.value = Number(stats.averageSimilarity) || 0
+      highRiskReports.value = Number(stats.highRiskReports) || 0
+    }
+  } catch (error) {
+    console.error('获取报告统计失败:', error)
+  }
+}
+
 const loadReportList = async () => {
   loading.value = true
   try {
-    const params = {
-      pageNum: currentPage.value,
-      pageSize: pageSize.value,
-      paperTitle: searchForm.paperTitle || null,
-      studentName: searchForm.studentName || null,
-      checkStatus: searchForm.checkStatus || null
-    }
-
-    // 添加相似度范围筛选
-    if (searchForm.similarityRange) {
-      switch (searchForm.similarityRange) {
-        case '0-15':
-          params.minSimilarity = 0
-          params.maxSimilarity = 15
-          break
-        case '15-30':
-          params.minSimilarity = 15
-          params.maxSimilarity = 30
-          break
-        case '30+':
-          params.minSimilarity = 30
-          params.maxSimilarity = 100
-          break
-      }
-    }
-
+    const params = buildQueryParams()
     const response = await getReportList(params)
 
     if (response.code === 200) {
       const data = response.data
       reportList.value = data.records || []
       total.value = Number(data.total) || 0
-      totalReports.value = total.value
-      completedReports.value = reportList.value.filter(r => r.status === '已完成').length
-      const sum = reportList.value.reduce((acc, r) => acc + (r.similarity || 0), 0)
-      averageSimilarity.value = reportList.value.length > 0 ? sum / reportList.value.length : 0
-      highRiskReports.value = reportList.value.filter(r => r.similarity > 30).length
     } else {
       ElMessage.error(response.message || '获取报告列表失败')
       reportList.value = []
+      total.value = 0
     }
+
+    // 统计卡片与列表用同一组筛选条件，保证两者口径一致
+    await loadReportStats(params)
   } catch (error) {
     console.error('获取报告列表失败:', error)
     ElMessage.error('获取报告列表失败')
     reportList.value = []
+    total.value = 0
   } finally {
     loading.value = false
   }
