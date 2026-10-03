@@ -262,10 +262,11 @@ const loadResponseTimeTrend = async () => {
 
 const renderRtChart = (data) => {
   if (!rtChart || !data) return
-  const times = data.times || data.timestamps || []
-  const avgData = data.avg || data.avgTime || []
-  const maxData = data.max || data.maxTime || []
-  const p99Data = data.p99 || data.p99Time || []
+  // 字段名对齐后端 /api/admin/monitoring/response-time-trend 的规范字段
+  const times = data.timestamps || []
+  const avgData = data.avgResponseTime || []
+  const maxData = data.maxResponseTime || []
+  const p99Data = data.p99ResponseTime || []
   rtChart.setOption({
     tooltip: { trigger: 'axis' },
     legend: { data: ['平均响应时间', '最大响应时间', 'P99'], bottom: 0 },
