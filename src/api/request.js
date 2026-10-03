@@ -15,6 +15,16 @@ function addRefreshSubscriber(cb) {
   refreshSubscribers.push(cb)
 }
 
+// 结束会话：清令牌并回到登录页。
+// 只在「确认令牌已过期且刷新不回来」时调用，别把它当成所有 401 的默认动作。
+function endSession(errorData) {
+  tokenManager.remove()
+  if (router.currentRoute.value.path !== '/login') {
+    router.push('/login')
+  }
+  ElMessage.error(errorData?.message || '登录已过期，请重新登录')
+}
+
 // 通用请求方法
 const service = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -150,38 +160,48 @@ service.interceptors.response.use(
       if (error.config?._skipLoginRedirect) {
         return Promise.reject(error)
       }
-      // 已重试过一次仍401，放弃
+      // 已重试过一次仍401：刷新出来的新令牌服务端也不认，此时才真正结束会话
       if (error.config?._retry) {
-        tokenManager.remove()
-        router.push('/login')
-        ElMessage.error(errorData?.message || '登录已过期，请重新登录')
+        endSession(errorData)
         return Promise.reject(error)
       }
-      // 主动刷新兜底：401时再尝试一次刷新
       const token = tokenManager.get()
       if (!token) {
-        router.push('/login')
-        ElMessage.error('登录已过期，请重新登录')
+        endSession(errorData)
         return Promise.reject(error)
       }
+      // 本地解析出令牌尚未过期，却收到 401 —— 这不是「登录过期」，而是服务端拒绝了这个会话
+      // （权限域不匹配、实例间 JWT 密钥不一致、错误页被鉴权等）。
+      // 以前这里一律清令牌并跳登录，等于把服务端的拒绝伪装成掉线：用户看不到真实原因，
+      // 还会丢掉当前页面与未保存的输入。这种情况保留会话，只把错误报出来。
+      if (!tokenManager.isExpired()) {
+        ElMessage.error(errorData?.message || '登录状态异常，请重新登录')
+        return Promise.reject(error)
+      }
+      // 确实已过期：尝试刷新一次，成功则原请求重发
       if (!isRefreshing) {
         isRefreshing = true
+        let newToken = null
         try {
-          const newToken = await tokenManager.refresh()
-          if (newToken) {
-            onTokenRefreshed(newToken)
-            isRefreshing = false
-            error.config.headers.Authorization = `Bearer ${newToken}`
-            error.config._retry = true
-            return service(error.config)
-          }
+          newToken = await tokenManager.refresh()
         } catch {
-          // 刷新失败
+          // 刷新失败，newToken 保持 null
         }
-        tokenManager.remove()
+        if (newToken) {
+          onTokenRefreshed(newToken)
+          isRefreshing = false
+          error.config.headers.Authorization = `Bearer ${newToken}`
+          error.config._retry = true
+          return service(error.config)
+        }
         onTokenRefreshed(null)
         isRefreshing = false
+        endSession(errorData)
+        return Promise.reject(error)
       }
+      // 已有刷新在进行：等它出结果再决定。
+      // 注意两条分支都必须 settle —— 刷新失败时若只 reject 内部 promise，
+      // 外层 promise 会永远悬着，调用方（await 的那些页面）就永久卡住。
       return new Promise((resolve) => {
         addRefreshSubscriber((newToken) => {
           if (newToken) {
@@ -189,9 +209,7 @@ service.interceptors.response.use(
             error.config._retry = true
             resolve(service(error.config))
           } else {
-            tokenManager.remove()
-            router.push('/login')
-            ElMessage.error('登录已过期，请重新登录')
+            endSession(errorData)
             resolve(Promise.reject(error))
           }
         })
