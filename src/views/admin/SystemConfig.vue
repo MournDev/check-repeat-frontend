@@ -74,17 +74,8 @@
           <div v-show="activeTab === 1" class="config-tab">
             <h3 class="tab-title">查重配置</h3>
             <el-form :model="plagiarismConfig" label-width="140px" class="config-form">
-              <el-form-item label="校内查重阈值">
-                <el-slider 
-                  v-model="plagiarismConfig.internalThreshold" 
-                  :min="0" 
-                  :max="100" 
-                  show-input
-                  show-stops
-                  :marks="thresholdMarks"
-                ></el-slider>
-                <div class="form-tip">超过此阈值将标记为高重复率</div>
-              </el-form-item>
+              <!-- 「校内查重阈值」已移除：它只存在 system_config 里、从不参与合格判定，
+                   真值源是「相似度阈值设置」页（/api/admin/similarity-thresholds）。 -->
               <el-form-item label="第三方查重阈值">
                 <el-slider 
                   v-model="plagiarismConfig.thirdPartyThreshold" 
@@ -452,7 +443,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 // 导入管理员 API
@@ -496,7 +487,6 @@ const basicConfig = reactive({
 })
 
 const plagiarismConfig = reactive({
-  internalThreshold: 25,
   thirdPartyThreshold: 20,
   algorithm: 'combined',
   minMatchLength: 15,
@@ -538,15 +528,6 @@ const deadlinesConfig = reactive({
 })
 
 const savingDeadlines = ref(false)
-
-// 计算属性
-const thresholdMarks = computed(() => ({
-  0: '0%',
-  20: '低',
-  50: '中',
-  80: '高',
-  100: '100%'
-}))
 
 const lastBackupTime = ref('暂无')
 const backupDir = ref('—')

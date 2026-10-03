@@ -629,22 +629,8 @@ export const getStudentsNotInGroup = (params) => {
   })
 }
 
-// 获取相似度阈值设置
-export const getSimilarityThresholds = () => {
-  return request({
-    url: '/api/teacher/similarity-thresholds',
-    method: 'get'
-  })
-}
-
-// 更新相似度阈值设置
-export const updateSimilarityThresholds = (data) => {
-  return request({
-    url: '/api/teacher/similarity-thresholds',
-    method: 'put',
-    data
-  })
-}
+// 相似度阈值设置已迁至 @/api/admin/config.js（端点为 /api/admin/similarity-thresholds）。
+// 原 /api/teacher/similarity-thresholds 在后端从未实现，留着只会再次误导调用方。
 
 // 获取审核流程配置
 export const getReviewWorkflow = () => {

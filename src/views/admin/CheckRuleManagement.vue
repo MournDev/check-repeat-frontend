@@ -39,11 +39,6 @@
         <el-table-column type="index" :index="(idx) => (currentPage - 1) * pageSize + idx + 1" label="序号" width="70" />
         <el-table-column prop="ruleName" label="规则名称" min-width="150" show-overflow-tooltip />
         <el-table-column prop="ruleCode" label="规则编码" width="160" show-overflow-tooltip />
-        <el-table-column label="通过阈值" width="100" align="center">
-          <template #default="{ row }">
-            {{ row.passThreshold }}%
-          </template>
-        </el-table-column>
         <el-table-column label="最大查重次数" width="120" align="center">
           <template #default="{ row }">
             {{ row.maxCheckCount }}次
@@ -90,9 +85,6 @@
         </el-form-item>
         <el-form-item label="规则编码" prop="ruleCode">
           <el-input v-model="form.ruleCode" placeholder="如：UNDERGRADUATE" maxlength="50" show-word-limit :disabled="!!editingId" />
-        </el-form-item>
-        <el-form-item label="通过阈值(%)" prop="passThreshold">
-          <el-input-number v-model="form.passThreshold" :min="0" :max="100" :precision="2" :step="1" style="width: 100%" />
         </el-form-item>
         <el-form-item label="最大查重次数" prop="maxCheckCount">
           <el-input-number v-model="form.maxCheckCount" :min="1" :max="100" :step="1" style="width: 100%" />
@@ -146,7 +138,6 @@ const filterForm = reactive({
 const form = reactive({
   ruleName: '',
   ruleCode: '',
-  passThreshold: 20,
   maxCheckCount: 3,
   checkInterval: 0,
   libIds: [],
@@ -157,7 +148,6 @@ const form = reactive({
 const rules = {
   ruleName: [{ required: true, message: '请输入规则名称', trigger: 'blur' }],
   ruleCode: [{ required: true, message: '请输入规则编码', trigger: 'blur' }],
-  passThreshold: [{ required: true, message: '请输入通过阈值', trigger: 'blur' }],
   maxCheckCount: [{ required: true, message: '请输入最大查重次数', trigger: 'blur' }],
   checkInterval: [{ required: true, message: '请输入查重间隔', trigger: 'blur' }],
   libIds: [{ required: true, type: 'array', min: 1, message: '请至少选择一个比对库', trigger: 'change' }],
@@ -221,7 +211,6 @@ const openDialog = async (row) => {
     editingId.value = row.id
     form.ruleName = row.ruleName
     form.ruleCode = row.ruleCode
-    form.passThreshold = row.passThreshold
     form.maxCheckCount = row.maxCheckCount
     form.checkInterval = row.checkInterval || 0
     form.isDefault = row.isDefault
@@ -241,7 +230,6 @@ const openDialog = async (row) => {
     editingId.value = null
     form.ruleName = ''
     form.ruleCode = ''
-    form.passThreshold = 20
     form.maxCheckCount = 3
     form.checkInterval = 0
     form.libIds = []

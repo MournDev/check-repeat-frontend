@@ -207,9 +207,13 @@ import {
 } from '@element-plus/icons-vue'
 
 // API导入
+// 阈值读写走管理端接口（/api/admin/similarity-thresholds）；
+// 学院/专业下拉仍是教师侧的公共下拉数据源。
 import {
   getSimilarityThresholds,
-  updateSimilarityThresholds,
+  updateSimilarityThresholds
+} from '@/api/admin/config'
+import {
   getColleges,
   getMajors
 } from '@/api/teacher'
@@ -265,18 +269,21 @@ const loadSettings = async () => {
   isLoading.value = true
   try {
     // 获取相似度阈值设置
+    // 后端 Result 只有 code/errorCode/message/data，没有 success 字段，
+    // 用 response.success 判断会恒为 undefined，成功也走 else 报"失败"。
     const response = await getSimilarityThresholds()
-    if (response.success) {
+    if (response.code === 200) {
       const data = response.data
-      thresholdForm.value.globalThreshold = data.globalThreshold || 30
+      // 用 ?? 而非 ||：阈值 0 是合法值，|| 会把它顶成默认 30
+      thresholdForm.value.globalThreshold = data.globalThreshold ?? 30
       categoryThresholds.value = data.categoryThresholds || []
     } else {
-      ElMessage.error('加载设置失败')
+      ElMessage.error(response.message || '加载设置失败')
     }
 
     // 获取学院列表
     const collegesResponse = await getColleges()
-    if (collegesResponse.success) {
+    if (collegesResponse.code === 200) {
       // 转换学院数据结构，将 value 改为 id，label 改为 name
       colleges.value = collegesResponse.data.map(college => ({
         id: college.value,
@@ -294,28 +301,40 @@ const loadSettings = async () => {
   }
 }
 
+// 组装 PUT 载荷：只保留后端认识的字段，并把空串收敛成 null。
+// 表格行是从服务端读回来的，带着后端会忽略的 id / categoryName；
+// 而表单里未选择时是 ''，别把一个空串丢给后端的 Long 字段去赌 Jackson 的强制转换配置。
+const buildSavePayload = () => ({
+  globalThreshold: thresholdForm.value.globalThreshold,
+  categoryThresholds: categoryThresholds.value.map(item => ({
+    categoryType: item.categoryType,
+    collegeId: item.collegeId === '' || item.collegeId === undefined ? null : item.collegeId,
+    majorId: item.majorId === '' || item.majorId === undefined ? null : item.majorId,
+    threshold: item.threshold
+  }))
+})
+
 const saveSettings = async () => {
   if (!thresholdFormRef.value) return
 
   isLoading.value = true
   try {
-    await thresholdFormRef.value.validate(async (valid) => {
-      if (valid) {
-        const response = await updateSimilarityThresholds({
-          globalThreshold: thresholdForm.value.globalThreshold,
-          categoryThresholds: categoryThresholds.value
-        })
+    const valid = await thresholdFormRef.value.validate().catch(() => false)
+    if (!valid) return
 
-        if (response.success) {
-          ElMessage.success('保存设置成功')
-        } else {
-          ElMessage.error('保存设置失败')
-        }
-      }
-    })
+    const response = await updateSimilarityThresholds(buildSavePayload())
+    if (response.code === 200) {
+      ElMessage.success('保存设置成功')
+      // 回读一次：新增行的 id 是本地 Date.now() 造的临时值，categoryName 也是前端拼的；
+      // 刷新后表格里才是真实雪花 id 和服务端解析出的名称。
+      await loadSettings()
+    } else {
+      ElMessage.error(response.message || '保存设置失败')
+    }
   } catch (error) {
+    // 不在这里再弹提示：底层 request 拦截器已经按 HTTP 状态码弹过了
+    // （400 会带出后端校验文案），这里再弹一次会变成两条重复提示。
     console.error('保存设置失败:', error)
-    ElMessage.error('保存设置失败')
   } finally {
     isLoading.value = false
   }
@@ -421,7 +440,7 @@ const handleCollegeChange = async (collegeId) => {
   if (collegeId) {
     try {
       const response = await getMajors(collegeId)
-      if (response.success) {
+      if (response.code === 200) {
         // 转换专业数据结构，将 value 改为 id，label 改为 name
         majors.value = response.data.map(major => ({
           id: major.value,

@@ -171,3 +171,24 @@ export const toggleLibEnabled = (libId, isEnabled) => {
     params: { libId, isEnabled }
   })
 }
+
+// ========================== 相似度阈值设置 ==========================
+// 阈值真值源：similarity_threshold / category_similarity_threshold 两张表。
+// 查重判定按 专业 > 学院 > 全局 解析，故这里的配置会直接影响合格判定。
+
+// 获取相似度阈值设置
+export const getSimilarityThresholds = () => {
+  return request({
+    url: '/api/admin/similarity-thresholds',
+    method: 'get'
+  })
+}
+
+// 更新相似度阈值设置（整体覆盖）
+export const updateSimilarityThresholds = (data) => {
+  return request({
+    url: '/api/admin/similarity-thresholds',
+    method: 'put',
+    data: data
+  })
+}
