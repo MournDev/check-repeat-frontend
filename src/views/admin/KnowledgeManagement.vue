@@ -87,7 +87,7 @@
           <el-input v-model="form.summary" type="textarea" :rows="2" placeholder="摘要（选填）" />
         </el-form-item>
         <el-form-item label="分类">
-          <el-select v-model="form.category_id" placeholder="选择分类" style="width: 100%">
+          <el-select v-model="form.categoryId" placeholder="选择分类" style="width: 100%">
             <el-option
               v-for="cat in categories"
               :key="cat.id"
@@ -146,7 +146,7 @@ const editorVisible = ref(false)
 const editingId = ref(null)
 const saving = ref(false)
 const categories = ref([])
-const form = ref({ title: '', content: '', summary: '', category_id: null, tags: '', status: 'DRAFT' })
+const form = ref({ title: '', content: '', summary: '', categoryId: null, tags: '', status: 'DRAFT' })
 
 const previewHtml = computed(() => {
   if (!form.value.content) return '<p style="color:#999">预览区域</p>'
@@ -176,7 +176,8 @@ async function fetchList() {
     if (filterStatus.value) params.status = filterStatus.value
     const res = await adminListArticles(params)
     if (res?.code === 200) {
-      articles.value = res.data?.items || []
+      // 后端统一返回 MyBatis-Plus Page：{ records, total, size, current, pages }
+      articles.value = res.data?.records || []
       total.value = res.data?.total || 0
     }
   } catch (e) {
@@ -192,13 +193,13 @@ function openEditor(row) {
       title: row.title,
       content: row.content,
       summary: row.summary,
-      category_id: row.category_id,
+      categoryId: row.categoryId,
       tags: row.tags,
       status: row.status,
     }
   } else {
     editingId.value = null
-    form.value = { title: '', content: '', summary: '', category_id: null, tags: '', status: 'DRAFT' }
+    form.value = { title: '', content: '', summary: '', categoryId: null, tags: '', status: 'DRAFT' }
   }
   editorVisible.value = true
 }

@@ -512,7 +512,7 @@ const loadData = async () => {
     
     // 处理检查清单
     if (checklistRes.code === 200) {
-      citationChecklist.value = checklistRes.data?.items || []
+      citationChecklist.value = checklistRes.data || []
     }
     
   } catch (error) {

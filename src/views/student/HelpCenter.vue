@@ -171,7 +171,8 @@ async function fetchArticles() {
     const fn = keyword.value ? searchArticles : getArticles
     const res = await fn(params)
     if (res?.code === 200) {
-      articles.value = res.data?.items || []
+      // 后端统一返回 MyBatis-Plus Page：{ records, total, size, current, pages }
+      articles.value = res.data?.records || []
       total.value = res.data?.total || 0
     }
   } catch { /* ignore */ }

@@ -76,7 +76,7 @@
           <el-input v-model="form.titleTemplate" placeholder="如: 论文提交成功通知" />
         </el-form-item>
         <el-form-item label="内容模板" prop="contentTemplate">
-          <el-input v-model="form.contentTemplate" type="textarea" :rows="6" placeholder="支持变量: ${userName}, ${paperTitle}, ${submitTime} 等" />
+          <el-input v-model="form.contentTemplate" type="textarea" :rows="6" placeholder="支持变量: {userName}, {paperTitle}, {submitTime} 等" />
         </el-form-item>
         <el-form-item label="启用状态">
           <el-switch v-model="form.isActive" :active-value="1" :inactive-value="0" />
@@ -161,12 +161,14 @@ const formatDate = (dateStr) => {
 const fetchList = async () => {
   loading.value = true
   try {
-    const params = { pageNum: currentPage.value, pageSize: pageSize.value }
+    // 参数名 page/size 对齐 admin 包主流约定（后端 MessageTemplateController 按此接收）
+    const params = { page: currentPage.value, size: pageSize.value }
     if (filterForm.templateType) params.templateType = filterForm.templateType
     if (filterForm.templateName) params.templateName = filterForm.templateName
     const res = await getTemplateList(params)
     if (res.code === 200 && res.data) {
-      templateList.value = res.data.records || res.data.list || []
+      // 后端统一返回 MyBatis-Plus Page：{ records, total, size, current, pages }
+      templateList.value = res.data.records || []
       total.value = res.data.total || 0
     }
   } catch (e) {
