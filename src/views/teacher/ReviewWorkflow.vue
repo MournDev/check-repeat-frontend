@@ -172,11 +172,13 @@ import {
 } from '@element-plus/icons-vue'
 
 // API导入
+// 走管理域：本页是超管页面，配置的是全站审核流程，
+// 端点在 /api/admin/review-workflow（理由见 @/api/admin/config.js 的注释）
 import {
   getReviewWorkflow,
   updateReviewWorkflow,
-  getTeachers
-} from '@/api/teacher'
+  getReviewWorkflowTeachers
+} from '@/api/admin/config'
 
 // 响应式数据
 const isLoading = ref(false)
@@ -221,7 +223,7 @@ const loadWorkflow = async () => {
     }
 
     // 获取教师列表
-    const teachersResponse = await getTeachers()
+    const teachersResponse = await getReviewWorkflowTeachers()
     if (teachersResponse.success) {
       teachers.value = teachersResponse.data
     } else {

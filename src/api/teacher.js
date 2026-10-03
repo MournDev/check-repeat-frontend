@@ -632,31 +632,9 @@ export const getStudentsNotInGroup = (params) => {
 // 相似度阈值设置已迁至 @/api/admin/config.js（端点为 /api/admin/similarity-thresholds）。
 // 原 /api/teacher/similarity-thresholds 在后端从未实现，留着只会再次误导调用方。
 
-// 获取审核流程配置
-export const getReviewWorkflow = () => {
-  return request({
-    url: '/api/teacher/review-workflow',
-    method: 'get'
-  })
-}
-
-// 更新审核流程配置
-export const updateReviewWorkflow = (data) => {
-  return request({
-    url: '/api/teacher/review-workflow',
-    method: 'put',
-    data
-  })
-}
-
-// 获取教师列表
-export const getTeachers = (params) => {
-  return request({
-    url: '/api/teacher/review-workflow/teachers',
-    method: 'get',
-    params
-  })
-}
+// 审核工作流配置已迁至 @/api/admin/config.js（端点为 /api/admin/review-workflow）。
+// 原 /api/teacher/review-workflow 在后端从未实现，且该页面是超管页面，
+// 走教师域只会被 hasAuthority("TEACHER") 拒掉，留着只会再次误导调用方。
 
 // 删除共享文件
 export const deleteSharedFile = (fileId) => {

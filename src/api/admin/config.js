@@ -192,3 +192,34 @@ export const updateSimilarityThresholds = (data) => {
     data: data
   })
 }
+
+// ========================== 审核工作流配置 ==========================
+// 页面是超管页面（/super-admin/review-workflow），配置的是全站审核流程，
+// 端点因此挂在 /api/admin/** 下，与相似度阈值设置同理。
+// 原先教育师域的 /api/teacher/review-workflow 后端从未实现，非 TEACHER 身份调用
+// 只会被 hasAuthority("TEACHER") 拒掉（前端表现为 401），别再往回改。
+
+// 获取审核工作流配置
+export const getReviewWorkflow = () => {
+  return request({
+    url: '/api/admin/review-workflow',
+    method: 'get'
+  })
+}
+
+// 更新审核工作流配置（整体覆盖）
+export const updateReviewWorkflow = (data) => {
+  return request({
+    url: '/api/admin/review-workflow',
+    method: 'put',
+    data: data
+  })
+}
+
+// 获取审批人候选教师列表
+export const getReviewWorkflowTeachers = () => {
+  return request({
+    url: '/api/admin/review-workflow/teachers',
+    method: 'get'
+  })
+}
