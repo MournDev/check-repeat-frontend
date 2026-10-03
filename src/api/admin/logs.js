@@ -35,15 +35,9 @@ export const getLoginLogs = (params) => {
   })
 }
 
-// 导出操作日志
-export const exportOperationLogs = (params) => {
-  return request({
-    url: '/api/admin/logs/operations/export',
-    method: 'get',
-    params,
-    responseType: 'blob'
-  })
-}
+// 导出操作日志统一用下面的 exportOperationLogsNew（后端 /api/admin/operation-logs/export）
+// 原 exportOperationLogs → /api/admin/logs/operations/export 已删除：
+// 它没有任何 import，且后端对应端点也一并移除，避免留一个指向 404 的 wrapper。
 
 // 获取智能预警配置
 export const getAlertConfig = () => {
