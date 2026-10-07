@@ -531,10 +531,18 @@ async function handleAvatarChange(event) {
   const fd = new FormData(); fd.append('file', file)
   try {
     uploading.value = true
-    const res = await uploadAvatar(fd)
-    const url = res.data
-    if (url) { userStore.updateAvatar(url); await nextTick(); ElMessage.success('头像上传成功') }
-  } catch (e) { ElMessage.error(e?.response?.data?.message || e?.message || '上传失败') }
+    // silent：失败提示统一在下面的 catch 里出一次，否则拦截器和 catch 会连弹两根红条
+    const res = await uploadAvatar(fd, { silent: true })
+    // code!==200 已经被拦截器 reject 到下面的 catch 了，这里只剩"成功但没给地址"这一种，
+    // 曾经失败时 data 就是 null，而这里不判空，结果静默什么都不做、看起来像点了没反应
+    if (!res.data) {
+      ElMessage.error('头像上传失败：服务端未返回地址')
+      return
+    }
+    userStore.updateAvatar(res.data)
+    await nextTick()
+    ElMessage.success('头像上传成功')
+  } catch (e) { ElMessage.error(e?.response?.data?.message || e?.message || '头像上传失败') }
   finally { uploading.value = false; event.target.value = '' }
 }
 

@@ -19,11 +19,13 @@ export const updateUserInfo = (data) => {
   })
 }
 
-export const uploadAvatar = (formData) => {
+// options 透传给 axios config，调用方可以传 { silent: true } 挡掉全局红条、自己提示
+export const uploadAvatar = (formData, options = {}) => {
   return request({
     url: '/api/user/upload-avatar',
     method: 'post',
     data: formData,
+    ...options
   })
 }
 
