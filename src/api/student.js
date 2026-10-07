@@ -1,4 +1,5 @@
 import request from "./request";
+import { ElMessage } from "element-plus";
 
 export const getMajorList = () => {
   return request({
@@ -398,11 +399,31 @@ export const downloadAttachment = (attachmentId) => {
   });
 };
 
-export const getAdvisorInteractionInfo = () => {
-  return request({
-    url: '/api/student/advisor/info',
-    method: 'get'
-  });
+// 学生还没被分配导师时，/api/student/advisor/info 返回的不是「200 + 空数据」，
+// 而是业务失败（code!=200，message 形如「获取导师信息失败：未找到指导老师信息」）；
+// 同页的 /api/student/dashboard/advisor 却是规规矩矩的 200 + null。
+// 而「没导师」是正常状态、不是故障——调用方本来就是按 200 + data 为空写的空态
+// （AdvisorInteraction.vue 的 no-advisor-dialog）。所以在这里把它归一成 (200, null)，
+// 顺带用 silent 挡掉全局红条；其余业务失败仍然提示一次。
+const NO_ADVISOR_PATTERN = /未找到指导老师|导师信息不存在|未分配指导老师/;
+
+export const getAdvisorInteractionInfo = async () => {
+  try {
+    return await request({
+      url: '/api/student/advisor/info',
+      method: 'get',
+      silent: true
+    });
+  } catch (err) {
+    if (NO_ADVISOR_PATTERN.test(err?.message || '')) {
+      return { code: 200, data: null, message: err.message };
+    }
+    // axios 层的失败（401/500/网络）拦截器已经提示过，这里直接透传，别弹第二遍
+    if (!err?.isAxiosError) {
+      ElMessage.error(err?.message || '获取导师信息失败');
+    }
+    throw err;
+  }
 };
 
 export const getMessageSessions = () => {

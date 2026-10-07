@@ -48,6 +48,13 @@
                 </div>
               </div>
             </div>
+
+            <!-- 没导师时列表本来就是空的，别让卡片空着不给说法 -->
+            <el-empty
+              v-if="messageSessions.length === 0"
+              :image-size="60"
+              :description="advisorInfo ? '暂无消息会话' : '暂未分配指导老师'"
+            />
           </div>
         </el-card>
       </el-col>
@@ -450,7 +457,9 @@ const loadAdvisorData = async () => {
         }
       }
     } else {
-      console.warn('获取导师信息失败或未分配导师:', advisorRes.message);
+      // 空态，不是错误：「没分配导师」在 api/student.js 里已被归一成 200 + null，
+      // 模板据此显示「暂未分配指导老师」。真失败会在那里就抛出来。
+      console.info('该学生暂未分配指导老师');
       advisorInfo.value = null;
     }
     // 获取消息会话列表
@@ -486,7 +495,12 @@ const loadAdvisorData = async () => {
     }
   } catch (error) {
     console.error('加载导师数据失败:', error);
-    ElMessage.error('加载数据失败' + (error.message || '未知错误'));
+    // 接口失败（业务码失败 / axios 失败）在拦截器和 api/student.js 里已经提示过，
+    // 这里再弹一根红条就是同一句话在屏幕上出现两次；只有意料之外的报错才补提示。
+    const isApiError = error?.isAxiosError || (error && !(error instanceof Error) && 'code' in error);
+    if (!isApiError) {
+      ElMessage.error('加载数据失败: ' + (error.message || '未知错误'));
+    }
   }
 };
 

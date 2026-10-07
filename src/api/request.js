@@ -126,7 +126,11 @@ service.interceptors.response.use(
     if (res.code === 200) {
       return res
     } else {
-      ElMessage.error(res.message || '操作失败')
+      // silent：这类业务失败由调用方自己决定怎么呈现——例如「学生还没分配导师」
+      // 是正常空态，不该弹红条。只挡提示，照旧 reject，调用方不接就会原样冒出来。
+      if (!response.config?.silent) {
+        ElMessage.error(res.message || '操作失败')
+      }
       return Promise.reject(res)
     }
   },
