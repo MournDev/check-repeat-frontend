@@ -1,12 +1,8 @@
 import request from './request'
 
-// 获取当前登录用户的完整信息（含 email/phone 等敏感字段）
-export const getCurrentUserInfo = () => {
-  return request({
-    url: '/api/user/info/get',
-    method: 'get'
-  })
-}
+// 注：没有"获取当前用户信息"的接口。登录响应（LoginVO）已带回
+// realName/email/phone/major/collegeName/grade/className/introduce/avatar 等全部展示字段，
+// 由 userStore 存下后各页面直接读缓存即可。
 
 export const updateUserInfo = (data) => {
   return request({
