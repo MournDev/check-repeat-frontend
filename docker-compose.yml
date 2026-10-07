@@ -16,11 +16,16 @@
 # （cd /opt/check-repeat-frontend && docker compose ...）也都不带 -f，
 # 同样假定它在检出目录根。
 #
-# 本文件【只包含 frontend 一个服务】，是三份独立编排之一：
-#     /opt/check-repeat/docker-compose.yml           后端
-#     /opt/check-repeat/nginx/docker-compose.yml     网关（由 deploy/gateway-compose.yml 安装）
-#     /opt/check-repeat-frontend/docker-compose.yml  前端（本文件）
-# 三方各自独立维护、独立部署，任何一方 compose down 都不影响其余两方。
+# 本文件【只包含 frontend 一个服务】，是四份独立编排之一：
+#     /opt/check-repeat/docker-compose.yml            中间件（mysql/redis/minio/kkfileview）
+#     /usr/local/check-repeat/docker-compose.prod.yml 后端（check-repeat-service 仓库的制品）
+#     /opt/check-repeat/nginx/docker-compose.yml      网关（由 deploy/gateway-compose.yml 安装）
+#     /opt/check-repeat-frontend/docker-compose.yml   前端（本文件）
+# 四方各自独立维护、独立部署，任何一方 compose down 都不影响其余三方。
+#
+# ⚠️ 注意后端【不在】/opt/check-repeat/ 下：那个目录的 compose 是中间件。
+#    历史上后端确实在那里（本仓库 deploy/README.md 第二节的迁移叙述仍是那个布局），
+#    后来迁到了 /usr/local/check-repeat/，别混用 -f。
 #
 # 前端容器不需要访问后端（请求转发全由网关负责），
 # 它唯一需要互通的对象是网关。

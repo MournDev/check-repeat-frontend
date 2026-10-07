@@ -3,19 +3,21 @@
 #
 # 部署位置：/opt/check-repeat/nginx/docker-compose.yml
 #
-# ⚠️ 为什么单独一个 compose 文件，而不是加进
-#    /opt/check-repeat/docker-compose.yml
+# ⚠️ 为什么单独一个 compose 文件，而不是加进别人的
 #
-# 那个文件是【后端自己的】编排。网关若与其同属一个 compose 项目：
-#   - 后端团队改自己的服务定义时，会连带影响网关的启动配置
-#   - 他们在该目录执行 docker compose down，会把网关一并停掉，
-#     整站入口消失（后端重启不该等于全站不可用）
+# 无论加进后端那份（/usr/local/check-repeat/docker-compose.prod.yml）还是
+# 中间件那份（/opt/check-repeat/docker-compose.yml），都会与其同属一个
+# compose 项目，于是：
+#   - 对方改自己的服务定义时，会连带影响网关的启动配置
+#   - 对方在该目录执行 docker compose down，会把网关一并停掉，
+#     整站入口消失（后端/中间件重启不该等于全站不可用）
 #
-# 拆开后三方的生命周期互相独立：
-#     /opt/check-repeat/docker-compose.yml         后端自己的
-#     /opt/check-repeat/nginx/docker-compose.yml   本文件（网关）
-#     /opt/check-repeat-frontend/docker-compose.yml 前端仓库的
-# 三者只通过一个 external 网络互通，没有任何启动顺序依赖。
+# 拆开后各方的生命周期互相独立：
+#     /opt/check-repeat/docker-compose.yml            中间件（mysql/redis/minio/kkfileview）
+#     /usr/local/check-repeat/docker-compose.prod.yml 后端（check-repeat-service 仓库的制品）
+#     /opt/check-repeat/nginx/docker-compose.yml      本文件（网关）
+#     /opt/check-repeat-frontend/docker-compose.yml   前端仓库
+# 四方只通过一个 external 网络互通，没有任何启动顺序依赖。
 #
 # 又因为没有跨 compose 项目的 depends_on，网关不等待后端就绪；
 # 「上游未解析导致 nginx 拒绝启动」的问题由主配置里的
@@ -23,8 +25,8 @@
 #
 # 常用命令。注意必须显式带 -f：
 #   Docker Compose v2 在当前目录找不到 compose 文件时会向上级目录查找，
-#   而 /opt/check-repeat/docker-compose.yml（后端那份）就在上一级。
-#   不带 -f 时 `up -d` 会去启动【后端】，`config` 会静默校验后端文件。
+#   而 /opt/check-repeat/docker-compose.yml（中间件那份）就在上一级。
+#   不带 -f 时 `up -d` 会去启动【中间件】，`config` 会静默校验中间件文件。
 #
 #   docker compose -f /opt/check-repeat/nginx/docker-compose.yml up -d
 #   docker compose -f /opt/check-repeat/nginx/docker-compose.yml logs -f
