@@ -637,9 +637,11 @@ export const getPaperStatistics = (paperId) => {
 
 // ── 查重规则 ──
 
-export const getDefaultCheckRule = () => {
+// 当前生效的查重规则（含按学院/专业解析出的通过阈值）。
+// 规则的配置端在管理端 /api/admin/config/check-rule/**，学生端只有一个只读接口。
+export const getCurrentCheckRule = () => {
   return request({
-    url: '/api/check-rules/default',
+    url: '/api/student/check-rule/current',
     method: 'get'
   });
 };

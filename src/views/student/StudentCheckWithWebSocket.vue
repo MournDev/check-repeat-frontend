@@ -81,7 +81,7 @@
           {{ checkRule.maxReSubmitCount || '不限制' }}
         </el-descriptions-item>
         <el-descriptions-item label="查重间隔">
-          {{ checkRule.checkInterval ? checkRule.checkInterval + '秒' : '无限制' }}
+          {{ checkIntervalText }}
         </el-descriptions-item>
       </el-descriptions>
     </el-card>
@@ -311,6 +311,13 @@ const pageSize = ref(10);
 
 // 查重规则
 const checkRule = ref(null);
+
+// 间隔按秒返回，但实际配置多为整天（如 86400），直接显示秒不可读
+const checkIntervalText = computed(() => {
+  const seconds = checkRule.value?.checkInterval;
+  if (!seconds) return '无限制';
+  return seconds >= 3600 ? `${seconds / 3600}小时` : `${seconds}秒`;
+});
 
 // 任务统计
 const taskStats = computed(() => {
@@ -730,7 +737,7 @@ onMounted(() => {
  */
 const loadCheckRule = async () => {
   try {
-    const res = await studentApi.getDefaultCheckRule();
+    const res = await studentApi.getCurrentCheckRule();
     if (res.code === 200 && res.data) {
       checkRule.value = res.data;
     }
