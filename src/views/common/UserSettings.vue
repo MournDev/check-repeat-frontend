@@ -393,7 +393,7 @@ import {
   Ticket, School, Calendar, Close, Refresh, Clock
 } from '@element-plus/icons-vue'
 import {
-  updateUserInfo, uploadAvatar, updatePassword, getAllColleges, getLoginHistory,
+  getCurrentUserInfo, updateUserInfo, uploadAvatar, updatePassword, getAllColleges, getLoginHistory,
   sendVerifyEmail, verifyEmail as verifyEmailAPI, sendEmailCode as sendEmailCodeAPI, updateUserEmail
 } from '@/api/user'
 import { updateUser } from '@/api/admin/users'
@@ -590,6 +590,8 @@ async function saveProfile() {
   try {
     const submitData = { ...profileForm, userId: userInfo.value.userId || userStore.userInfo.userId }
     const res = await updateUserInfo(submitData)
+    // 后端失败时 HTTP 仍是 200（Result.code 才是真正的状态），不判 code 会把失败报成"更新成功"
+    if (res.code !== 200) { ElMessage.error(res.message || '保存失败'); return }
     const updated = { ...userStore.userInfo, ...(res.data || submitData), avatar: res.data?.avatar || userStore.userInfo.avatar }
     userStore.setUserInfo(updated)
     userInfo.value = { ...updated }
@@ -726,10 +728,7 @@ function initAdminTeacher() {
   })
 }
 
-function initStudent() {
-  const info = userStore.userInfo
-  if (!info) return
-  // 学生信息只有登录响应这一个来源（LoginVO 已含全部展示字段），没有"重新拉取完整信息"的接口
+function applyStudentInfo(info) {
   userInfo.value = { ...info, emailVerified: info.emailVerified ?? false }
   Object.assign(profileForm, {
     realName: info.realName || '', username: info.username || '',
@@ -738,6 +737,24 @@ function initStudent() {
     grade: info.grade || '', className: info.className || info.classInfo || '',
     introduce: info.introduce || '',
   })
+}
+
+async function initStudent() {
+  const info = userStore.userInfo
+  if (!info) return
+  // 先用本地缓存渲染，接口没回来之前页面不空
+  applyStudentInfo(info)
+  // 再拉一次完整信息：localStorage 里只留了非敏感展示字段，
+  // 邮箱 / 手机号 / 个人简介刷新后就丢了，只有后端能补回来
+  try {
+    const res = await getCurrentUserInfo()
+    if (res.code === 200 && res.data) {
+      // userId 沿用 store 里那份，避免雪花 ID 过一遍 JSON 再被截一次
+      const merged = { ...userStore.userInfo, ...res.data, userId: userStore.userInfo.userId }
+      userStore.setUserInfo(merged)
+      applyStudentInfo(merged)
+    }
+  } catch { /* 拉不到就继续用缓存，不打扰用户 */ }
 }
 
 async function checkEmailVerification() {

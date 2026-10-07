@@ -1,8 +1,15 @@
 import request from './request'
 
-// 注：没有"获取当前用户信息"的接口。登录响应（LoginVO）已带回
-// realName/email/phone/major/collegeName/grade/className/introduce/avatar 等全部展示字段，
-// 由 userStore 存下后各页面直接读缓存即可。
+// 获取当前登录用户信息。
+// 登录响应（LoginVO）虽然带回了全部展示字段，但 userStore 落 localStorage 前会走
+// filterSafeInfo 只保留非敏感字段（见 stores/user.js），email/phone/introduce/emailVerified
+// 刷新后就没了。个人中心靠这个接口把完整信息取回来。
+export const getCurrentUserInfo = () => {
+  return request({
+    url: '/api/user/info',
+    method: 'get'
+  })
+}
 
 export const updateUserInfo = (data) => {
   return request({
