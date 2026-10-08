@@ -49,6 +49,7 @@
           <el-input
             v-model="resetForm.verificationCode"
             placeholder="请输入邮箱验证码"
+            maxlength="6"
             @focus="isTyping = true; error = ''"
             @blur="isTyping = false"
             class="code-input"
