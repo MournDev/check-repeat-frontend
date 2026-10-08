@@ -418,44 +418,29 @@ const isActiveSection = (key) => {
   return false
 }
 
+// 面包屑直接读路由的 meta.title —— 文案只有路由这一处出处。
+//
+// 这是拿掉一张 45 项的中文映射表换来的：那张表按 URL 片段查，与 router 的 meta.title
+// 两份并存，已经漂了 5 处（user-management、paper-library、school-overview、
+// profile/settings 互换），而且新页面漏加时兜底会把 URL 片段原样当文案显示
+// （/admin/subject-management 就那样露过一版）。
+//
+// 层级改由路由嵌套决定，不再按 URL 分段拆：好处是 /student/check-monitor/:paperId
+// 这类不再把雪花 ID 当成一级面包屑显示出来；代价是扁平注册的路由少一层
+// （/admin/paper-assignment/manual 由「论文分配 / 手动分配」变成「手动论文分配」）。
 const breadcrumbItems = computed(() => {
-  const pathArray = route.path.split('/').filter(item => item)
   const homePath = userStore.role === 'SUPER_ADMIN' ? '/super-admin' : `/dashboard/${userStore.role.toLowerCase()}`
   const items = [{ title: '首页', path: homePath }]
-  pathArray.forEach((path, index) => {
-    const fullPath = '/' + pathArray.slice(0, index + 1).join('/')
-    const title = getBreadcrumbTitle(path)
-    if (title) items.push({ title, path: fullPath })
+  route.matched.forEach(record => {
+    const title = record.meta?.title
+    if (!title) return
+    // 父级布局与默认子路由可能同标题（/message-center 两级都是「消息中心」），
+    // 连出两条一模一样的面包屑没有意义，跳过重复的那条
+    if (title === items[items.length - 1].title) return
+    items.push({ title, path: record.path })
   })
   return items
 })
-
-const getBreadcrumbTitle = (path) => {
-  const titleMap = {
-    'message-center': '通知中心', 'student': '学生', 'teacher': '教师', 'admin': '管理员', 'super-admin': '超级管理员',
-    'dashboard': '工作台', 'paper-submit': '论文提交', 'my-papers': '我的论文',
-    'advisor-interaction': '导师互动', 'student-list': '学生管理', 'data-statistics': '数据统计',
-    'audit-records': '审核记录', 'paper-review': '论文审核', 'profile': '个人设置',
-    'help-center': '帮助中心', 'paper-details': '论文详情', 'pending': '待审核',
-    'history': '历史记录', 'user-management': '人员管理', 'permissions': '权限设置',
-    'paper-assignment': '论文分配', 'manual': '手动分配', 'auto': '自动分配',
-    'system-config': '系统配置', 'log-center': '日志中心', 'settings': '个人中心',
-    'school-overview': '全校概览', 'paper-library': '论文库', 'report-management': '报告管理',
-    'check': '查重管理', 'check-history': '查重历史', 'academic-integrity': '学术诚信',
-    'check-monitor': '查重监控', 'plagiarism-report': '查重报告',
-    'student-check-with-websocket': '查重任务', 'review-templates': '审核意见模板',
-    'student-groups': '学生分组管理', 'chat-center': '在线聊天',
-    'similarity-thresholds': '相似度阈值设置', 'review-workflow': '审核工作流配置',
-    'knowledge-management': '知识库管理',
-    'check-rule-management': '查重规则',
-    'compare-lib-management': '比对库管理',
-    'file-management': '文件管理',
-    'system-notice-management': '通知管理',
-    'message-template-management': '消息模板',
-    'system-monitoring': '系统监控'
-  }
-  return titleMap[path] || path
-}
 
 const currentPageTitle = computed(() => {
   const last = breadcrumbItems.value[breadcrumbItems.value.length - 1]

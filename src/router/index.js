@@ -74,7 +74,10 @@ const asyncRoutes = [
   {
     path: "/student",
     component: () => import("@/components/layout/MainLayout.vue"),
-    meta: { requiresAuth: true, roles: ["STUDENT"] },
+    // 这几个角色级父路由本身不带页面，但**必须给 title**：面包屑改读 route.matched
+    // 后，没有 title 的记录会被整条跳过，/student/paper-submit 会掉成「首页/论文提交」，
+    // 少掉「学生」这一级。
+    meta: { requiresAuth: true, roles: ["STUDENT"], title: "学生" },
     children: [
       { path: "paper-submit", name: "PaperSubmit", component: () => import("@/views/student/PaperSubmit.vue"), meta: { title: "论文提交" } },
       { path: "paper-details", name: "PaperDetail", component: () => import("@/views/student/PaperDetail.vue"), meta: { title: "论文详情" } },
@@ -94,7 +97,7 @@ const asyncRoutes = [
   {
     path: "/teacher",
     component: () => import("@/components/layout/MainLayout.vue"),
-    meta: { requiresAuth: true, roles: ["TEACHER"] },
+    meta: { requiresAuth: true, roles: ["TEACHER"], title: "教师" },
     children: [
       { path: "", name: "TeacherDashboard", component: () => import("@/views/teacher/Dashboard.vue"), meta: { title: "教师仪表盘" } },
       { path: "student-list", name: "StudentList", component: () => import("@/views/teacher/StudentList.vue"), meta: { title: "学生管理" } },
@@ -114,7 +117,7 @@ const asyncRoutes = [
   {
     path: "/admin",
     component: () => import("@/components/layout/MainLayout.vue"),
-    meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] },
+    meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"], title: "管理员" },
     children: [
       { path: "user-management", name: "UserManagement", component: () => import("@/views/admin/UserManagement.vue"), meta: { title: "用户管理" } },
       { path: "paper-assignment", name: "PaperAssignment", component: () => import("@/views/admin/PaperAssignment.vue"), meta: { title: "论文分配" } },
@@ -138,7 +141,7 @@ const asyncRoutes = [
   {
     path: "/super-admin",
     component: () => import("@/components/layout/MainLayout.vue"),
-    meta: { requiresAuth: true, roles: ["SUPER_ADMIN"] },
+    meta: { requiresAuth: true, roles: ["SUPER_ADMIN"], title: "超级管理员" },
     children: [
       { path: "", name: "SuperAdminDashboard", component: () => import("@/views/admin/Dashboard.vue"), meta: { title: "系统概览" } },
       { path: "system-config", name: "SuperAdminSystemConfig", component: () => import("@/views/admin/SystemConfig.vue"), meta: { title: "系统配置" } },
