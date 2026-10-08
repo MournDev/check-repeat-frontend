@@ -21,6 +21,9 @@ const constantRoutes = [
     path: "/register",
     name: "Register",
     component: () => import("@/views/login/Register.vue"),
+    // 补 title：路由守卫拿 to.meta.title 拼浏览器标签页，缺了会显示成
+    // 「undefined - 系统名」。这几个静态路由都不在 MainLayout 下，只影响标签页。
+    meta: { title: "注册" },
   },
   {
     path: "/reset",
