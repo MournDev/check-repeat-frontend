@@ -42,7 +42,10 @@ const asyncRoutes = [
     path: "/dashboard",
     name: "Dashboard",
     component: () => import("@/components/layout/MainLayout.vue"),
-    meta: { requiresAuth: true, title: "仪表盘" },
+    // 叫「工作台」而不是「仪表盘」：侧边栏与登录页对这项都写「工作台」
+    // （MainLayout 的 topNavItems、AuthLayout 的「登录到工作台」），
+    // 面包屑改读 meta.title 后这里就是唯一出处，得跟它们对齐。
+    meta: { requiresAuth: true, title: "工作台" },
     children: [
       {
         path: "student",

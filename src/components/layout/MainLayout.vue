@@ -428,8 +428,21 @@ const isActiveSection = (key) => {
 // 层级改由路由嵌套决定，不再按 URL 分段拆：好处是 /student/check-monitor/:paperId
 // 这类不再把雪花 ID 当成一级面包屑显示出来；代价是扁平注册的路由少一层
 // （/admin/paper-assignment/manual 由「论文分配 / 手动分配」变成「手动论文分配」）。
+// 各角色的落地页。以前这里是一律拼 `/dashboard/<role>`，但 /dashboard 下只有 student
+// 和 admin 两个子路由：TEACHER 会拼出并不存在的 /dashboard/teacher，教师点面包屑里的
+// 「首页」直接落 404。取值与侧边栏 topNavItems 里那条「工作台」保持一致 ——
+// 教师的工作台就是 /teacher，侧边栏一直是这么指的，只有这里拼错了。
+// 认不出的角色（LAB_ASSISTANT 等）在侧边栏没有入口，退回不需要角色权限的消息中心，
+// 否则「首页」会是个死链。
+const ROLE_HOME = {
+  STUDENT: '/dashboard/student',
+  TEACHER: '/teacher',
+  ADMIN: '/dashboard/admin',
+  SUPER_ADMIN: '/super-admin',
+}
+
 const breadcrumbItems = computed(() => {
-  const homePath = userStore.role === 'SUPER_ADMIN' ? '/super-admin' : `/dashboard/${userStore.role.toLowerCase()}`
+  const homePath = ROLE_HOME[userStore.role] || '/message-center'
   const items = [{ title: '首页', path: homePath }]
   route.matched.forEach(record => {
     const title = record.meta?.title
