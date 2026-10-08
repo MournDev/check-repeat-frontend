@@ -130,6 +130,7 @@ const asyncRoutes = [
       { path: "knowledge-management", name: "KnowledgeManagement", component: () => import("@/views/admin/KnowledgeManagement.vue"), meta: { title: "知识库管理" } },
       { path: "check-rule-management", name: "CheckRuleManagement", component: () => import("@/views/admin/CheckRuleManagement.vue"), meta: { title: "查重规则" } },
       { path: "compare-lib-management", name: "CompareLibManagement", component: () => import("@/views/admin/CompareLibManagement.vue"), meta: { title: "比对库管理" } },
+      { path: "subject-management", name: "SubjectManagement", component: () => import("@/views/admin/SubjectManagement.vue"), meta: { title: "学科领域管理" } },
       { path: "system-notice-management", name: "SystemNoticeManagement", component: () => import("@/views/admin/SystemNoticeManagement.vue"), meta: { title: "通知管理" } },
       { path: "message-template-management", name: "MessageTemplateManagement", component: () => import("@/views/admin/MessageTemplateManagement.vue"), meta: { title: "消息模板" } },
     ],

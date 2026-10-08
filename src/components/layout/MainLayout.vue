@@ -218,6 +218,9 @@
             <a :class="['sidebar-item', { active: activeMenu === '/admin/compare-lib-management' }]" @click="navigateTo('/admin/compare-lib-management')">
               <el-icon><Files /></el-icon><span>比对库管理</span>
             </a>
+            <a :class="['sidebar-item', { active: activeMenu === '/admin/subject-management' }]" @click="navigateTo('/admin/subject-management')">
+              <el-icon><Grid /></el-icon><span>学科领域管理</span>
+            </a>
             <div class="sidebar-sub-label">系统管理</div>
             <a :class="['sidebar-item', { active: activeMenu === '/admin/system-notice-management' }]" @click="navigateTo('/admin/system-notice-management')">
               <el-icon><Bell /></el-icon><span>通知管理</span>
@@ -261,6 +264,9 @@
             </a>
             <a :class="['sidebar-item', { active: activeMenu === '/admin/compare-lib-management' }]" @click="navigateTo('/admin/compare-lib-management')">
               <el-icon><Files /></el-icon><span>比对库管理</span>
+            </a>
+            <a :class="['sidebar-item', { active: activeMenu === '/admin/subject-management' }]" @click="navigateTo('/admin/subject-management')">
+              <el-icon><Grid /></el-icon><span>学科领域管理</span>
             </a>
             <div class="sidebar-sub-label">监控与日志</div>
             <a :class="['sidebar-item', { active: activeMenu === '/super-admin/log-center' }]" @click="navigateTo('/super-admin/log-center')">
@@ -318,7 +324,7 @@ import {
   UploadFilled, Folder, FolderOpened, ChatDotRound, DataAnalysis,
   DataBoard, EditPen, TrendCharts, Clock, Histogram,
   Monitor, Avatar, Lock, Connection, Pointer, MagicStick,
-  Tools, Document, Bell, Files, Service, Check, Menu, Close, Collection
+  Tools, Document, Bell, Files, Service, Check, Menu, Close, Collection, Grid
 } from '@element-plus/icons-vue'
 
 const router = useRouter()

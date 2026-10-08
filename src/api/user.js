@@ -63,6 +63,14 @@ export const getMajorsByCollegeId = (params) => {
   });
 }
 
+// 获取全部专业（不带 collegeId 时后端返回所有专业，每条含 collegeId，前端自行按学院过滤）
+export const getAllMajors = () => {
+  return request({
+    url: '/api/common/dict/majors',
+    method: 'get'
+  });
+}
+
 // 根据字典类型获取字典数据
 export const getDictDataByType = (dictType) => {
   return request({
@@ -71,10 +79,16 @@ export const getDictDataByType = (dictType) => {
   });
 };
 
-export const getSubjectFieldTree = (subjectField) => {
+// 学科领域树。不传参 = 整棵树（教师研究方向选择、管理端用）；
+// 传 { majorId } = 只返回该专业映射到的学科分支（论文提交页选完专业后重拉）。
+// 兼容旧调用：老代码传的是字符串 'subject_field'（一个后端从来没读过的死参数），
+// 这种形态直接当"空参数"处理，等价于要整棵树，三个旧调用点因此一行都不用改。
+export const getSubjectFieldTree = (params = {}) => {
+  const query = (params && typeof params === 'object') ? params : {};
   return request({
     url: `/api/dict/subject/tree`,
-    method: 'get'
+    method: 'get',
+    params: query
   })
 };
 

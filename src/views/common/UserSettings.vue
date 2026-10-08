@@ -95,8 +95,24 @@
               <el-col :xs="24" :sm="12"><el-form-item label="手机号码" prop="phone"><el-input v-model="profileForm.phone" :disabled="!isEditing" /></el-form-item></el-col>
             </el-row>
             <el-row :gutter="20">
-              <el-col :xs="24" :sm="12"><el-form-item label="专业" prop="major"><el-input v-model="profileForm.major" :disabled="!isEditing" /></el-form-item></el-col>
-              <el-col :xs="24" :sm="12"><el-form-item label="学院" prop="collegeName"><el-input v-model="profileForm.collegeName" :disabled="!isEditing" /></el-form-item></el-col>
+              <!-- 学院在前、专业在后：专业列表按学院过滤，顺序反了就是在让人先挑一个还够不着的专业 -->
+              <el-col :xs="24" :sm="12">
+                <el-form-item label="学院" prop="collegeId">
+                  <el-select v-model="profileForm.collegeId" :disabled="!isEditing" :loading="collegeLoading"
+                             filterable placeholder="请选择学院" style="width: 100%" @change="handleCollegeChange">
+                    <el-option v-for="c in collegeList" :key="c.value" :label="c.label" :value="c.value" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :xs="24" :sm="12">
+                <el-form-item label="专业" prop="majorId">
+                  <el-select v-model="profileForm.majorId" :disabled="!isEditing || !profileForm.collegeId"
+                             :loading="majorLoading" filterable placeholder="请先选择学院" style="width: 100%"
+                             @change="handleMajorChange">
+                    <el-option v-for="m in majorOptions" :key="m.value" :label="m.label" :value="m.value" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
             </el-row>
             <el-row :gutter="20">
               <el-col :xs="24" :sm="12"><el-form-item label="年级" prop="grade"><el-input v-model="profileForm.grade" :disabled="!isEditing" /></el-form-item></el-col>
@@ -198,12 +214,15 @@
                     </el-col>
                   </el-row>
                   <el-form-item label="研究方向" prop="researchFields">
-                    <el-select v-model="formData.researchFields" multiple placeholder="请选择研究方向" style="width:100%">
-                      <el-option label="人工智能" value="ai" /><el-option label="机器学习" value="machine_learning" />
-                      <el-option label="数据挖掘" value="data_mining" /><el-option label="计算机网络" value="computer_network" />
-                      <el-option label="软件工程" value="software_engineering" /><el-option label="数据库" value="database" />
-                      <el-option label="信息安全" value="information_security" />
-                    </el-select>
+                    <el-tree-select v-model="formData.researchFields" :data="subjectTree" multiple show-checkbox
+                      check-strictly filterable :loading="subjectLoading" placeholder="请选择研究方向（可多选）"
+                      style="width:100%" :props="subjectTreeProps" />
+                    <!-- 迁移遗留的旧短码：既不在学科树里、也不再是有效取值，
+                         静默丢弃等于把教师填过的信息抹掉，所以先明说再让他决定 -->
+                    <div v-if="legacyResearchFields.length" class="legacy-tip">
+                      以下研究方向已失效（不属于现有学科领域），保存后将被清除：
+                      <el-tag v-for="f in legacyResearchFields" :key="f" type="info" size="small" class="legacy-tag">{{ f }}</el-tag>
+                    </div>
                   </el-form-item>
                 </template>
 
@@ -393,8 +412,9 @@ import {
   Ticket, School, Calendar, Close, Refresh, Clock
 } from '@element-plus/icons-vue'
 import {
-  getCurrentUserInfo, updateUserInfo, uploadAvatar, updatePassword, getAllColleges, getLoginHistory,
-  sendVerifyEmail, verifyEmail as verifyEmailAPI, sendEmailCode as sendEmailCodeAPI, updateUserEmail
+  getCurrentUserInfo, updateUserInfo, uploadAvatar, updatePassword, getAllColleges, getAllMajors, getLoginHistory,
+  sendVerifyEmail, verifyEmail as verifyEmailAPI, sendEmailCode as sendEmailCodeAPI, updateUserEmail,
+  getSubjectFieldTree
 } from '@/api/user'
 import { updateUser } from '@/api/admin/users'
 import { updateInfo, getInfo, changePassword } from '@/api/teacher'
@@ -414,6 +434,15 @@ const contactForm = ref()
 const settingsForm = ref()
 const collegeList = ref([])
 const collegeLoading = ref(false)
+const majorList = ref([])
+
+// 研究方向 = 学科领域树（与论文的学科、阈值维度同一套取值域），提交的是学科 code
+const subjectTree = ref([])
+const subjectLoading = ref(false)
+const subjectTreeProps = { label: 'label', value: 'value', children: 'children' }
+// 迁移遗留、认不出学科的旧值；只做提示，不参与提交
+const legacyResearchFields = ref([])
+const majorLoading = ref(false)
 
 // ============ Admin/Teacher form data ============
 const formData = reactive({
@@ -470,8 +499,55 @@ const userInfo = ref({})
 const profileFormRef = ref()
 const profileForm = reactive({
   realName: '', username: '', email: '', phone: '',
-  major: '', collegeName: '', grade: '', className: '', introduce: '',
+  // 学院/专业：ID 是下拉框的绑定值（也是落库的依据），名称跟着 ID 一起提交
+  collegeId: '', collegeName: '', majorId: '', major: '',
+  grade: '', className: '', introduce: '',
 })
+
+/** 专业下拉的可选项：只列当前学院下的专业（字典接口一次性给了全部专业及其 collegeId） */
+const majorOptions = computed(() => {
+  const rows = majorList.value
+  const current = dictRowById(rows, profileForm.majorId)
+  if (!profileForm.collegeId) return current ? [current] : []
+  const inCollege = rows.filter(m => String(m.collegeId) === String(profileForm.collegeId))
+  // 存量数据里专业与学院可能对不上：选中的那个专业即使不在这所学院的名下也要留着，
+  // 否则选项里没有它，el-select 会退化成把 ID 当文本显示
+  return current && !inCollege.includes(current) ? [current, ...inCollege] : inCollege
+})
+
+/** 按 value 在字典列表里找一行；ID 在 JSON 里是数字、在下发时是字符串，一律转成字符串比 */
+function dictRowById(list, id) {
+  if (id === null || id === undefined || id === '') return null
+  return list.find(item => String(item.value) === String(id)) || null
+}
+
+function handleCollegeChange() {
+  // 换了学院，原专业大概率不属于新学院：连带清掉，免得存出一份学院与专业对不上的资料
+  profileForm.majorId = ''
+  profileForm.major = ''
+  profileForm.collegeName = dictRowById(collegeList.value, profileForm.collegeId)?.label || ''
+}
+
+function handleMajorChange() {
+  profileForm.major = dictRowById(majorList.value, profileForm.majorId)?.label || ''
+}
+
+/*
+ * 把用户信息里的学院/专业写进表单：ID 和名称一起写。
+ * 下拉框的显示值取自 ID，所以库里只有名称（历史自由输入、或该项已不在字典里）时，
+ * 按名称回查一次字典；查不到就留空 ID，保存时后端会退化成只存名称 —— 不会把原本的
+ * 名称抹掉。
+ */
+function applyCollegeMajor(info) {
+  const college = dictRowById(collegeList.value, info.collegeId)
+    || collegeList.value.find(c => c.label === (info.collegeName || ''))
+  const major = dictRowById(majorList.value, info.majorId)
+    || majorList.value.find(m => m.label === (info.major || ''))
+  profileForm.collegeId = college ? college.value : ''
+  profileForm.collegeName = college ? college.label : (info.collegeName || '')
+  profileForm.majorId = major ? major.value : ''
+  profileForm.major = major ? major.label : (info.major || '')
+}
 
 const profileRules = {
   realName: [{ required: true, message: '请输入真实姓名', trigger: 'blur' }],
@@ -585,10 +661,10 @@ function cancelEditing() {
   Object.assign(profileForm, {
     realName: userInfo.value.realName || '', username: userInfo.value.username || '',
     email: userInfo.value.email || '', phone: userInfo.value.phone || '',
-    major: userInfo.value.major || '', collegeName: userInfo.value.collegeName || '',
     grade: userInfo.value.grade || '', className: userInfo.value.className || '',
     introduce: userInfo.value.introduce || '',
   })
+  applyCollegeMajor(userInfo.value)
 }
 
 // ============ Student: save ============
@@ -596,7 +672,13 @@ async function saveProfile() {
   try { await profileFormRef.value?.validate() } catch { ElMessage.error('表单校验失败，请检查输入'); return }
   saving.value = true
   try {
-    const submitData = { ...profileForm, userId: userInfo.value.userId || userStore.userInfo.userId }
+    const submitData = {
+      ...profileForm,
+      userId: userInfo.value.userId || userStore.userInfo.userId,
+      // 后端这两个字段是 Long，空字符串反序列化会直接报错，没选就发 null
+      collegeId: profileForm.collegeId || null,
+      majorId: profileForm.majorId || null,
+    }
     const res = await updateUserInfo(submitData)
     // 后端失败时 HTTP 仍是 200（Result.code 才是真正的状态），不判 code 会把失败报成"更新成功"
     if (res.code !== 200) { ElMessage.error(res.message || '保存失败'); return }
@@ -606,10 +688,10 @@ async function saveProfile() {
     Object.assign(profileForm, {
       realName: res.data?.realName || '', username: res.data?.username || '',
       email: res.data?.email || '', phone: res.data?.phone || '',
-      major: res.data?.major || '', collegeName: res.data?.collegeName || '',
       grade: res.data?.grade || '', className: res.data?.className || '',
       introduce: res.data?.introduce || '',
     })
+    applyCollegeMajor(res.data || submitData)
     ElMessage.success('个人信息更新成功')
     isEditing.value = false
   } catch (e) { ElMessage.error(e?.message || '保存失败') }
@@ -705,12 +787,20 @@ function handleLogSizeChange(sz) { logPageSize.value = sz; logPage.value = 1; lo
 function onLogPageChange(p) { logPage.value = p; loadLoginLogs() }
 function formatDateTime(d) { return d ? new Date(d).toLocaleString('zh-CN') : '' }
 
-// ============ TEACHER: college list ============
+// ============ 学院/专业字典（教师所属学院 + 学生学院/专业下拉共用） ============
 async function fetchColleges() {
   collegeLoading.value = true
   try { const res = await getAllColleges(); if (res.code === 200) collegeList.value = res.data || [] }
   catch { /* ignore */ }
   finally { collegeLoading.value = false }
+}
+
+// 一次拿全部专业（每条带 collegeId），学生端按学院在前端过滤，换学院不用再等请求
+async function fetchMajors() {
+  majorLoading.value = true
+  try { const res = await getAllMajors(); if (res.code === 200) majorList.value = res.data || [] }
+  catch { /* ignore */ }
+  finally { majorLoading.value = false }
 }
 
 // ============ TEACHER: two factor ============
@@ -741,10 +831,10 @@ function applyStudentInfo(info) {
   Object.assign(profileForm, {
     realName: info.realName || '', username: info.username || '',
     email: info.email || '', phone: info.phone || '',
-    major: info.major || '', collegeName: info.collegeName || '',
     grade: info.grade || '', className: info.className || info.classInfo || '',
     introduce: info.introduce || '',
   })
+  applyCollegeMajor(info)
 }
 
 async function initStudent() {
@@ -779,12 +869,23 @@ async function checkEmailVerification() {
   } catch (e) { ElMessage.error(e?.response?.data?.message || '邮箱验证失败') }
 }
 
+// 学科领域树（不传 majorId = 整棵树）：教师的研究方向是跨专业的，不该按专业收窄
+async function fetchSubjectTree() {
+  subjectLoading.value = true
+  try {
+    const res = await getSubjectFieldTree()
+    if (res.code === 200) subjectTree.value = res.data || []
+  } catch { /* 树拉不到时保留下拉为空，不阻断页面其它部分 */ }
+  finally { subjectLoading.value = false }
+}
+
 async function initTeacherInfo() {
   try {
     const res = await getInfo(userStore.userInfo.userId)
     if (res.code === 200) {
       const merged = { ...userStore.userInfo, ...res.data, userId: userStore.userInfo.userId }
       Object.assign(formData, merged)
+      legacyResearchFields.value = res.data.legacyResearchFields || []
       userStore.userInfo = merged
       localStorage.setItem('userInfo', JSON.stringify(merged))
     }
@@ -793,6 +894,8 @@ async function initTeacherInfo() {
 
 onMounted(async () => {
   if (role.value === 'STUDENT') {
+    // 先取字典再填表单：学院/专业下拉的显示值由 ID 反查字典得来，顺序反了会先渲染两个空框
+    await Promise.all([fetchColleges(), fetchMajors()])
     initStudent()
     loadLoginLogs()
     checkEmailVerification()
@@ -800,6 +903,7 @@ onMounted(async () => {
     initAdminTeacher()
     if (role.value === 'TEACHER') {
       fetchColleges()
+      fetchSubjectTree()
       initTeacherInfo()
     }
   }
@@ -826,6 +930,12 @@ onUnmounted(() => {
 .role-ADMIN .page-header { background: #f5f5f7; }
 .role-TEACHER .page-header { background: #ffffff; }
 .role-STUDENT .page-header { background: none; border: none; padding: 0 0 16px; margin-bottom: 0; }
+
+// 研究方向里「已失效」的旧值提示（迁移遗留短码，保存后会被清除）
+.legacy-tip {
+  margin-top: 6px; font-size: 12px; line-height: 1.8; color: #909399;
+  .legacy-tag { margin-right: 6px; }
+}
 
 // Main content (Admin/Teacher)
 .main-content {

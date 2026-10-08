@@ -53,7 +53,8 @@
             >
               <el-table-column prop="categoryType" label="类型" width="120">
                 <template #default="scope">
-                  {{ scope.row.categoryType === 'college' ? '学院' : '专业' }}
+                  <!-- 三路查表，别再写二元三元表达式：加 subject 后漏一种取值会显示成"专业" -->
+                  {{ CATEGORY_TYPE_LABELS[scope.row.categoryType] || scope.row.categoryType }}
                 </template>
               </el-table-column>
               <el-table-column prop="categoryName" label="名称" min-width="150" />
@@ -123,6 +124,7 @@
           <el-radio-group v-model="categoryForm.categoryType">
             <el-radio label="college">学院</el-radio>
             <el-radio label="major">专业</el-radio>
+            <el-radio label="subject">学科领域</el-radio>
           </el-radio-group>
         </el-form-item>
 
@@ -167,6 +169,30 @@
               :value="major.id"
             />
           </el-select>
+        </el-form-item>
+
+        <!-- 学科领域选择器。一级门类与二级学科都能选（check-strictly 让父节点也可选），
+             值取 subject.id 而不是 code —— 后端 category_similarity_threshold.subject_id
+             存的是 id；树节点的 value 因此拼成 id 的字符串形态（与接口返回的 subjectId 同为字符串）。 -->
+        <el-form-item
+          label="学科领域"
+          prop="subjectId"
+          v-if="categoryForm.categoryType === 'subject'"
+        >
+          <el-tree-select
+            v-model="categoryForm.subjectId"
+            :data="subjectTree"
+            :props="subjectTreeProps"
+            :loading="subjectLoading"
+            check-strictly
+            filterable
+            placeholder="请选择学科领域（一级门类或二级学科）"
+            style="width: 100%"
+            :disabled="isLoading"
+          />
+          <div class="help-text">
+            配在一级门类上的阈值会继承给该门类下的全部二级学科；某个二级学科自己单独配了，则以它自己的为准。
+          </div>
         </el-form-item>
 
         <el-form-item label="相似度阈值" prop="threshold">
@@ -217,6 +243,14 @@ import {
   getColleges,
   getMajors
 } from '@/api/teacher'
+import { getSubjectFieldTree } from '@/api/user'
+
+// 类型列展示名。写成查表而不是三元表达式：取值域是三种，漏一种会静默显示成"专业"。
+const CATEGORY_TYPE_LABELS = {
+  college: '学院',
+  major: '专业',
+  subject: '学科领域'
+}
 
 // 响应式数据
 const isLoading = ref(false)
@@ -231,11 +265,21 @@ const categoryForm = ref({
   categoryType: 'college',
   collegeId: '',
   majorId: '',
+  subjectId: '',
   threshold: 30
 })
 const categoryFormRef = ref(null)
 const colleges = ref([])
 const majors = ref([])
+
+// 学科领域下拉树：节点 value 是 subject.id 的字符串形态（后端阈值接口收的也是它）
+const subjectTree = ref([])
+const subjectLoading = ref(false)
+const subjectTreeProps = {
+  label: 'label',
+  value: 'value',
+  children: 'children'
+}
 
 // 计算属性
 const categoryDialogTitle = ref('添加学科/专业阈值')
@@ -257,6 +301,9 @@ const categoryRules = {
   ],
   majorId: [
     { required: true, message: '请选择专业', trigger: 'change' }
+  ],
+  subjectId: [
+    { required: true, message: '请选择学科领域', trigger: 'change' }
   ],
   threshold: [
     { required: true, message: '请设置相似度阈值', trigger: 'blur' },
@@ -301,6 +348,45 @@ const loadSettings = async () => {
   }
 }
 
+// 拉学科领域树，转成选择器要的形状：node.value = subject.id（字符串），
+// 门类在 label 后缀「（大类）」——同一棵树里门类和二级学科长得一样，
+// 不标出来就分不清配的是哪一级，而门类会向下继承、二级不会。
+const fetchSubjectTree = async () => {
+  subjectLoading.value = true
+  try {
+    const response = await getSubjectFieldTree()
+    if (response.code === 200) {
+      subjectTree.value = decorateSubjectTree(response.data || [])
+    } else {
+      // 学科树拉不到只影响"新增学科领域阈值"，不该连累整页表单，所以只提示不抛
+      subjectTree.value = []
+      ElMessage.error('加载学科领域失败：' + response.message)
+    }
+  } catch (error) {
+    subjectTree.value = []
+    console.error('加载学科领域失败:', error)
+  } finally {
+    subjectLoading.value = false
+  }
+}
+
+const decorateSubjectTree = (nodes) => (nodes || []).map(node => ({
+  value: node.id === null || node.id === undefined ? '' : String(node.id),
+  label: node.level === 1 ? node.label + '（大类）' : node.label,
+  children: node.children && node.children.length ? decorateSubjectTree(node.children) : undefined
+}))
+
+// 从本地树里反查 label，用于新增行即时显示名称（保存后会回读服务端解析的名称）
+const subjectLabelOf = (subjectId, nodes = subjectTree.value) => {
+  if (!subjectId) return ''
+  for (const node of nodes || []) {
+    if (node.value === String(subjectId)) return node.label
+    const hit = subjectLabelOf(subjectId, node.children)
+    if (hit) return hit
+  }
+  return ''
+}
+
 // 组装 PUT 载荷：只保留后端认识的字段，并把空串收敛成 null。
 // 表格行是从服务端读回来的，带着后端会忽略的 id / categoryName；
 // 而表单里未选择时是 ''，别把一个空串丢给后端的 Long 字段去赌 Jackson 的强制转换配置。
@@ -310,6 +396,8 @@ const buildSavePayload = () => ({
     categoryType: item.categoryType,
     collegeId: item.collegeId === '' || item.collegeId === undefined ? null : item.collegeId,
     majorId: item.majorId === '' || item.majorId === undefined ? null : item.majorId,
+    // subjectId 从树里来时已经是字符串（与接口返回形态一致），直接透传即可
+    subjectId: item.subjectId === '' || item.subjectId === undefined ? null : item.subjectId,
     threshold: item.threshold
   }))
 })
@@ -350,6 +438,7 @@ const showCategoryDialog = () => {
     categoryType: 'college',
     collegeId: '',
     majorId: '',
+    subjectId: '',
     threshold: 30
   }
   categoryDialogTitle.value = '添加学科/专业阈值'
@@ -377,6 +466,11 @@ const saveCategoryThreshold = async () => {
           if (college) {
             threshold.categoryName = college.name
           }
+        } else if (categoryForm.value.categoryType === 'subject') {
+          // 学科维度只提交 subjectId；collegeId/majorId 留空，
+          // 免得后端把这条学科配置也当成"某学院"的配置（三个字段是同一张表的并列列）
+          threshold.subjectId = categoryForm.value.subjectId
+          threshold.categoryName = subjectLabelOf(categoryForm.value.subjectId)
         } else {
           threshold.collegeId = categoryForm.value.collegeId
           threshold.majorId = categoryForm.value.majorId
@@ -471,14 +565,19 @@ const resetCategoryForm = () => {
 // 生命周期
 onMounted(() => {
   loadSettings()
+  fetchSubjectTree()
 })
 
-// 监听分类类型变化
+// 监听分类类型变化：切走时把该类型不再用到的字段清掉。
+// collegeId 刻意不清 —— 学院/专业两档共用它（选专业时靠它过滤专业列表）。
 watch(
   () => categoryForm.value.categoryType,
   (newType) => {
-    if (newType === 'college') {
+    if (newType !== 'major') {
       categoryForm.value.majorId = ''
+    }
+    if (newType !== 'subject') {
+      categoryForm.value.subjectId = ''
     }
   }
 )

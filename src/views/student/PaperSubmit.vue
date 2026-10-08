@@ -28,11 +28,6 @@
       <div v-if="activeStep === 0" class="step-content">
         <el-form ref="basicFormRef" :model="paperForm" :rules="paperRules" class="paper-form">
           <div class="form-group">
-            <label class="form-label">学科领域</label>
-            <el-tree-select v-model="paperForm.subjectCode" :data="subjectTree" placeholder="请选择学科领域" :props="treeProps"
-              check-strictly :only-leaf-select="true" class="form-control" />
-          </div>
-          <div class="form-group">
             <label class="form-label">论文标题</label>
             <el-input v-model="paperForm.paperTitle" placeholder="请输入论文标题" maxlength="200" class="form-control" />
           </div>
@@ -47,9 +42,18 @@
           <div class="form-group">
             <label class="form-label">专业</label>
             <el-select v-model="paperForm.majorId" placeholder="请选择专业" :disabled="!paperForm.collegeId"
-              :loading="majorLoading" class="form-control">
+              :loading="majorLoading" @change="handleMajorChange" class="form-control">
               <el-option v-for="major in majorList" :key="major.value" :label="major.label" :value="major.value"></el-option>
             </el-select>
+          </div>
+          <!-- 学科领域排在专业之后：候选要靠专业收窄，选完专业才有得选。
+               门类与二级学科**都可以选**（学生只知道大类时不必硬凑二级），
+               门类在后面缀「（大类）」以便一眼区分层级。 -->
+          <div class="form-group">
+            <label class="form-label">学科领域</label>
+            <el-tree-select v-model="paperForm.subjectCode" placeholder="请先选择专业，再选择学科领域"
+              :props="treeProps" :loading="subjectLoading" check-strictly filterable :disabled="!paperForm.majorId"
+              class="form-control" />
           </div>
           <div class="form-group">
             <label class="form-label">论文类型</label>
@@ -201,6 +205,7 @@ const paperTypeDictList = ref([]); // 论文类型字典列表
 const collegeLoading = ref(false)
 const majorLoading = ref(false)
 const subjectTree = ref([]); // 学科领域树形结构
+const subjectLoading = ref(false)
 
 const treeProps = {
   label: 'label',
@@ -280,9 +285,9 @@ onMounted(async () => {
     // 获取论文类型字典数据
     try {
       const res = await getDictDataByType('paper_type');
-      const subjectRes = await getSubjectFieldTree('subject_field');
-      subjectTree.value = subjectRes.data;
       paperTypeDictList.value = res.data;
+      // 此时还没选专业，先给整棵树；选完专业由 handleMajorChange 重拉成收窄后的
+      await loadSubjectTree();
     } catch (err) {
       console.error('获取论文类型字典失败：', err);
     }
@@ -300,9 +305,9 @@ onMounted(async () => {
         // 获取论文类型字典数据
         try {
           const res = await getDictDataByType('paper_type');
-          const subjectRes = await getSubjectFieldTree('subject_field');
-          subjectTree.value = subjectRes.data;
           paperTypeDictList.value = res.data;
+          // 此时还没选专业，先给整棵树；选完专业由 handleMajorChange 重拉成收窄后的
+          await loadSubjectTree();
         } catch (err) {
           console.error('获取论文类型字典失败：', err);
         }
@@ -318,6 +323,45 @@ onMounted(async () => {
     }, 500)
   }
 })
+
+// 加载学科领域树。
+// 传 majorId = 只列该专业映射到的分支；不传 = 整棵树。
+// 专业没配映射时（哲学/历史学/体育类等）后端会**回退成整棵树**，所以这里永远是
+// 「有得选」，不会因为收窄没命中而把选择器变空。
+// 后端在回滚场景下没有 level 字段，装饰层会自动退化成不加后缀（见 decorateLevel）。
+const loadSubjectTree = async (majorId) => {
+  subjectLoading.value = true
+  try {
+    const res = await getSubjectFieldTree(majorId ? { majorId } : {})
+    if (res.code === 200) {
+      subjectTree.value = decorateLevel(res.data || [])
+    } else {
+      subjectTree.value = []
+      ElMessage.error('获取学科领域失败：' + res.message)
+    }
+  } catch (error) {
+    subjectTree.value = []
+    ElMessage.error('获取学科领域失败')
+    console.error('获取学科领域失败：', error)
+  } finally {
+    subjectLoading.value = false
+  }
+}
+
+// 门类与二级学科都能选（学生只知道大类时不必硬凑二级），给门类后缀「（大类）」区分层级。
+// level 缺失（旧后端）时不加后缀，而不是当成二级 —— 避免回滚后一半节点冒出奇怪的标注。
+const decorateLevel = (nodes) => nodes.map(node => ({
+  ...node,
+  label: node.level === 1 ? `${node.label}（大类）` : node.label,
+  children: node.children && node.children.length ? decorateLevel(node.children) : node.children
+}))
+
+// 换专业要把已选学科清掉：旧学科很可能不在新专业的候选里，
+// 留着就会提交出一个「专业与学科对不上」的组合（症状是阈值解析拿不到学科维度的规则）
+const handleMajorChange = async (majorId) => {
+  paperForm.value.subjectCode = ''
+  await loadSubjectTree(majorId)
+}
 
 // 获取所有学院
 const getColleges = async () => {
@@ -342,6 +386,9 @@ const handleCollegeChange = async (collegeId) => {
   // 清空已选择的专业
   paperForm.value.majorId = ''
   majorList.value = []
+  // 专业没了，依附于它的学科候选也就不成立了，一并清掉（学科选择器同时被禁用）
+  paperForm.value.subjectCode = ''
+  subjectTree.value = []
 
   if (!collegeId) return
 
