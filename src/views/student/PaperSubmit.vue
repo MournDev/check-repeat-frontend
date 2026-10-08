@@ -51,7 +51,7 @@
                门类在后面缀「（大类）」以便一眼区分层级。 -->
           <div class="form-group">
             <label class="form-label">学科领域</label>
-            <el-tree-select v-model="paperForm.subjectCode" placeholder="请先选择专业，再选择学科领域"
+            <el-tree-select v-model="paperForm.subjectCode" :data="subjectTree" :placeholder="subjectPlaceholder"
               :props="treeProps" :loading="subjectLoading" check-strictly filterable :disabled="!paperForm.majorId"
               class="form-control" />
           </div>
@@ -233,6 +233,12 @@ const paperForm = ref({
   paperAbstract: '',
   file: '' // 存储文件ID
 })
+
+// 占位文案跟着专业走：专业没选时提示「先选专业」，选完后还挂着同一句会让人
+// 以为选择器没生效（实际是候选已就绪、只是没选而已）。
+const subjectPlaceholder = computed(() => paperForm.value.majorId
+  ? '请选择学科领域（一级门类或二级学科）'
+  : '请先选择专业，再选择学科领域')
 
 // 是否可以进入下一步
 const canProceed = computed(() => {
