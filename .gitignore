@@ -32,6 +32,9 @@ dist-ssr
 # 本地留着自己用即可，.dockerignore 里也排除了它。
 nginx-1.28.0/
 
+# AI 对话用项目事实基准文档（本地专用，不入库）
+/PROJECT_CONTEXT.md
+
 # 误提交的空文件
 /npm
 
