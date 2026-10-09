@@ -167,10 +167,6 @@ const filteredSessions = computed(() => {
   )
 })
 
-const uploadUrl = computed(() => {
-  return '/check/api/teacher/message/upload'
-})
-
 // 方法
 const loadSessions = async () => {
   loadingSessions.value = true
@@ -304,7 +300,11 @@ const sendFileMessage = async (fileInfo) => {
       sessionId: activeSessionId.value,
       receiverId: studentId,
       content: `[文件] ${fileInfo.name}`,
-      messageType: 'PRIVATE'
+      messageType: 'PRIVATE',
+      // 关键：附件必须随消息一起发给后端，否则文件只躺在文件服务里，
+      // 「文件管理」页的共享文件列表永远看不到它（列表是从带附件的消息里反查的）。
+      // 后端只认 attachmentIds，不认这里传的 url；id 本来就是字符串（雪花 ID 不能走 JS 数字）。
+      attachmentIds: [String(fileInfo.id)]
     })
     if (response.code === 200) {
       // 重新加载消息
