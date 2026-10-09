@@ -84,6 +84,18 @@ export const getStudentInfo = (studentId) => {
   })
 }
 
+// 发送系统消息（站内信）。
+// 注意别和上面的 sendMessage 混用：sendMessage 走 /api/teacher/message/send，
+// 是师生聊天消息，必须带 sessionId；这个是老师单方面给学生发的站内信，
+// 载荷是 {receiverId, receiverType, content, title}，落到 system_message 表。
+export const sendSystemMessage = (data) => {
+  return request({
+    url: '/api/teacher/students/messages/send',
+    method: 'post',
+    data
+  })
+}
+
 // 下载论文
 export const downloadPaper = (paperId) => {
   return request({

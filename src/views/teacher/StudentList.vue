@@ -489,7 +489,7 @@ import {
   deleteStudent as deleteStudentapi,
   getStudentStats,
   assignAdvisor as assignAdvisorApi,
-  sendMessage as sendMessageApi,
+  sendSystemMessage as sendMessageApi,
   batchAssignAdvisor,
   batchSendMessage,
   batchDeleteStudents,

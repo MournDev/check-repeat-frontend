@@ -329,7 +329,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox, ElLoading } from 'element-plus'
 import PlagiarismReportViewer from './PlagiarismReportViewer.vue'
-import { doReview, sendMessage, getReviewTemplates, useReviewTemplate, getPaperContent } from '@/api/teacher.js'
+import { doReview, sendSystemMessage, getReviewTemplates, useReviewTemplate, getPaperContent } from '@/api/teacher.js'
 import { convertToBackendStatus, getSimilarityTagType } from '@/utils/reviewStatus.js'
 import { sanitizeHtml } from '@/utils/markdown'
 import { useRouter } from 'vue-router'
@@ -662,13 +662,15 @@ const sendReviewNotification = async (data) => {
     const statusText = getStatusText(data.status)
     const messageContent = `您的论文《${data.paperTitle}》已完成审核，结果：${statusText}。\n\n审核意见：${data.opinion}`
     
-    await sendMessage({
-      recipientId: data.studentId,
-      recipientType: 'student',
-      content: messageContent,
-      messageType: 'system',
-      relatedId: data.paperId || props.paperId,
-      relatedType: 'paper'
+    // 走的是后端已有的站内信端点 /api/teacher/students/messages/send，
+    // 它的 SendMessageDTO 只认 receiverId / receiverType / content / title。
+    // 原先写在这里的 recipientId/messageType/relatedId 是另一个虚构接口的字段名，
+    // 传过去只会被忽略；论文关联信息该端点存不下，需要的话得先给 DTO 加字段。
+    await sendSystemMessage({
+      receiverId: data.studentId,
+      receiverType: 'student',
+      title: '论文审核结果',
+      content: messageContent
     })
   } catch (error) {
     console.warn('发送审核通知失败:', error)
