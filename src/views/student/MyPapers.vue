@@ -508,6 +508,8 @@ import { ref, reactive, onMounted, watch, h } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { ElMessage, ElMessageBox, ElSelect, ElOption, ElInput } from "element-plus";
 import { getDictDataByType } from "@/api/user.js";
+// 论文类型统一走共享模块（真相源是后端 PaperTypeEnum），本页不再自持一份映射
+import { loadPaperTypes, getPaperTypeText } from "@/utils/paperType.js";
 import { 
   getStudentPaperPage, 
   withdrawPaper as withdrawPaperApi, 
@@ -587,6 +589,9 @@ onMounted(async () => {
   } catch (err) {
     console.error("获取论文状态字典失败：", err);
   }
+  // 预取论文类型，列表里的 code 才能渲染成中文。
+  // 不 await：失败与否都不影响论文列表本身，且全局 axios 拦截器已经 toast 过。
+  loadPaperTypes().catch(() => {});
   fetchPapers();
 });
 
@@ -781,15 +786,9 @@ const getStatusText = (status) => {
   return textMap[status] || "未知状态";
 };
 
-// 新增论文类型映射
-const getPaperTypeText = (type) => {
-  const typeMap = {
-    graduation: "毕业论文",
-    course: "课程论文",
-    other: "其他",
-  };
-  return typeMap[type] || "其他";
-};
+// 论文类型文案改由 utils/paperType.js 提供（见顶部 import）。
+// 原先这里有一份硬编码映射，且未命中时返回 "其他" —— 会把未知/脏值
+// 伪装成一个合法类型；共享模块未命中时返回原始 code，一眼能看出数据有问题。
 
 const formatDate = (date) => {
   if (!date) return "-";

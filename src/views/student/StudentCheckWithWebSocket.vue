@@ -70,7 +70,25 @@
       </template>
       <el-descriptions :column="4" border size="small">
         <el-descriptions-item label="通过阈值">
-          <el-tag :type="checkRule.passThreshold <= 20 ? 'success' : 'warning'">
+          <!--
+            阈值可按论文类型分档，所以逐类型展示：同一名学生提交不同类型论文时，
+            命中的配置行可能不同，只显示一个通用值会误导。
+            文案与顺序由后端 PaperTypeEnum 给出（paperTypeDesc）。
+          -->
+          <template v-if="paperTypeThresholds.length">
+            <div
+              v-for="item in paperTypeThresholds"
+              :key="item.paperType"
+              class="paper-type-threshold"
+            >
+              <span class="paper-type-name">{{ item.paperTypeDesc }}</span>
+              <el-tag size="small" :type="item.passThreshold <= 20 ? 'success' : 'warning'">
+                {{ item.passThreshold }}%
+              </el-tag>
+            </div>
+          </template>
+          <!-- 旧后端没有 paperTypeThresholds 字段时回退到单个通用值，避免卡片空掉 -->
+          <el-tag v-else :type="checkRule.passThreshold <= 20 ? 'success' : 'warning'">
             {{ checkRule.passThreshold }}%
           </el-tag>
         </el-descriptions-item>
@@ -311,6 +329,10 @@ const pageSize = ref(10);
 
 // 查重规则
 const checkRule = ref(null);
+
+// 按论文类型分档的通过阈值。后端逐类型解析后返回；老后端没有这个字段时为 undefined，
+// 这里兜成空数组，模板据此回退到单个通用值。
+const paperTypeThresholds = computed(() => checkRule.value?.paperTypeThresholds || []);
 
 // 间隔按秒返回，但实际配置多为整天（如 86400），直接显示秒不可读
 const checkIntervalText = computed(() => {
@@ -792,6 +814,21 @@ onUnmounted(() => {
 
   .rule-info-card {
     margin-bottom: 24px;
+  }
+
+  // 一个论文类型一行：类型名在左、百分比标签在右，多类型时纵向排列不挤成一行
+  .paper-type-threshold {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    & + .paper-type-threshold {
+      margin-top: 4px;
+    }
+  }
+
+  .paper-type-name {
+    color: #1d1d1f;
   }
 
   .stat-item {

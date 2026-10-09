@@ -57,11 +57,16 @@
           </div>
           <div class="form-group">
             <label class="form-label">论文类型</label>
-            <el-select v-model="paperForm.paperType" placeholder="请选择论文类型" class="form-control">
-              <el-option v-for="item in paperTypeDictList" :key="item.dictValue" :label="item.dictLabel"
-                :value="item.dictValue">
+            <!-- 选项来自共享模块（后端 PaperTypeEnum），不再是本页自己拉的一份字典 -->
+            <el-select v-model="paperForm.paperType" placeholder="请选择论文类型" class="form-control"
+              :loading="!paperTypesLoaded">
+              <el-option v-for="item in paperTypeOptions" :key="item.code" :label="item.label" :value="item.code">
               </el-option>
             </el-select>
+            <!-- 加载失败时选项是空的，不给出口的话用户只会看到"下拉点开空白" -->
+            <div v-if="paperTypeLoadFailed" class="form-tip-error">
+              论文类型加载失败，<a href="javascript:;" @click="retryLoadPaperTypes">点击重试</a>
+            </div>
           </div>
           <div class="form-group">
             <label class="form-label">论文摘要</label>
@@ -126,7 +131,7 @@
             </div>
             <div class="detail-item">
               <span class="detail-label">论文类型</span>
-              <span class="detail-value">{{ getPaperTypeName(paperForm.paperType) }}</span>
+              <span class="detail-value">{{ getPaperTypeText(paperForm.paperType) }}</span>
             </div>
             <div class="detail-item">
               <span class="detail-label">论文摘要</span>
@@ -169,7 +174,13 @@ import { uploadPaper, resubmitAfterWithdraw, resubmitAfterRevision, getMajorList
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Check, Upload } from '@element-plus/icons-vue'
 import SparkMD5 from 'spark-md5'
-import { getDictDataByType, getSubjectFieldTree } from '@/api/user.js'
+import { getSubjectFieldTree } from '@/api/user.js'
+import {
+  loadPaperTypes,
+  getPaperTypeText,
+  usePaperTypeOptions,
+  usePaperTypesLoaded,
+} from '@/utils/paperType.js'
 
 
 const route = useRoute()
@@ -201,7 +212,10 @@ const resubmitPaperId = ref('')
 // 学院和专业相关
 const collegeList = ref([])
 const majorList = ref([])
-const paperTypeDictList = ref([]); // 论文类型字典列表
+// 论文类型选项来自共享模块（全前端唯一一份，见 utils/paperType.js），本页不再自持
+const paperTypeOptions = usePaperTypeOptions()
+const paperTypesLoaded = usePaperTypesLoaded()
+const paperTypeLoadFailed = ref(false) // 只用于本页显示重试入口
 const collegeLoading = ref(false)
 const majorLoading = ref(false)
 const subjectTree = ref([]); // 学科领域树形结构
@@ -284,45 +298,52 @@ const paperRules = {
   }]
 }
 
+// 拉论文类型选项。
+// 只负责触发共享模块的加载与失败置位；不要再弹 ElMessage ——
+// 全局 axios 拦截器已经弹过，这里再弹就是双份提示。
+const initPaperTypes = async () => {
+  try {
+    await loadPaperTypes()
+    paperTypeLoadFailed.value = false
+  } catch (err) {
+    console.error('获取论文类型选项失败：', err)
+    paperTypeLoadFailed.value = true
+  }
+}
+
+const retryLoadPaperTypes = async () => {
+  paperTypeLoadFailed.value = false
+  try {
+    await loadPaperTypes(true)
+  } catch (err) {
+    paperTypeLoadFailed.value = true
+  }
+}
+
+// 页面初始化。两处分支（token 就绪 / 等 500ms）走同一套逻辑。
+const initPage = async () => {
+  await getColleges()
+  // 学科树与论文类型是两件互不相干的事，必须分开处理：
+  // 改造前两者挤在同一个 try 里，字典一失败学科树也就跟着不加载了。
+  // 此时还没选专业，先给整棵树；选完专业由 handleMajorChange 重拉成收窄后的
+  await loadSubjectTree()
+  await initPaperTypes()
+  if (userStore.userInfo?.userId) {
+    loginUserId.value = userStore.userInfo.userId
+  }
+  // 检查是否是撤回后重新提交模式
+  checkResubmitMode()
+}
+
 onMounted(async () => {
   // 确保 userStore.token 存在
   if (userStore.token) {
-    await getColleges()
-    // 获取论文类型字典数据
-    try {
-      const res = await getDictDataByType('paper_type');
-      paperTypeDictList.value = res.data;
-      // 此时还没选专业，先给整棵树；选完专业由 handleMajorChange 重拉成收窄后的
-      await loadSubjectTree();
-    } catch (err) {
-      console.error('获取论文类型字典失败：', err);
-    }
-    if (userStore.userInfo?.userId) {
-      loginUserId.value = userStore.userInfo.userId
-    }
-    
-    // 检查是否是撤回后重新提交模式
-    checkResubmitMode();
+    await initPage()
   } else {
     // 等待一段时间后再尝试
     setTimeout(async () => {
       if (userStore.token) {
-        await getColleges()
-        // 获取论文类型字典数据
-        try {
-          const res = await getDictDataByType('paper_type');
-          paperTypeDictList.value = res.data;
-          // 此时还没选专业，先给整棵树；选完专业由 handleMajorChange 重拉成收窄后的
-          await loadSubjectTree();
-        } catch (err) {
-          console.error('获取论文类型字典失败：', err);
-        }
-        if (userStore.userInfo?.userId) {
-          loginUserId.value = userStore.userInfo.userId
-        }
-        
-        // 检查是否是撤回后重新提交模式
-        checkResubmitMode();
+        await initPage()
       } else {
         ElMessage.error('登录状态未初始化，请刷新页面')
       }
@@ -598,13 +619,6 @@ const getMajorName = (majorId) => {
   return major ? major.label : ''
 }
 
-// 获取论文类型名称
-const getPaperTypeName = (paperType) => {
-  if (!paperType) return ''
-  const type = paperTypeDictList.value.find(item => item.dictValue === paperType)
-  return type ? type.dictLabel : ''
-}
-
 // 提交论文
 const submitPaper = async () => {
   try {
@@ -849,7 +863,20 @@ const resetForm = () => {
       color: #0f172a;
       margin-bottom: 8px;
     }
-    
+
+    /* 选项拉取失败时的行内提示。比再弹一次 ElMessage 好：
+       全局拦截器已经弹过一次，这里只需要一个不会消失的出口。 */
+    .form-tip-error {
+      margin-top: 6px;
+      font-size: 0.8125rem;
+      color: #dc2626;
+
+      a {
+        color: #0ea5e9;
+        text-decoration: underline;
+      }
+    }
+
     .form-control {
       width: 100%;
       transition: all 0.2s ease;

@@ -27,15 +27,24 @@
           </el-select>
         </el-form-item>
         <el-form-item label="论文类型">
+          <!--
+            选项来自后端 PaperTypeEnum（经 /api/dict/data/type/paper_type 合成），
+            不是前端硬编码。原先这里写死的是 THESIS/JOURNAL/CONFERENCE —— 一套
+            后端从未存在过的取值，选中任何一个都必然筛出 0 条。
+          -->
           <el-select
             v-model="filterForm.paperType"
             placeholder="全部类型"
             clearable
+            :loading="!paperTypesLoaded"
             @change="fetchPapers"
           >
-            <el-option label="学位论文" value="THESIS"></el-option>
-            <el-option label="期刊论文" value="JOURNAL"></el-option>
-            <el-option label="会议论文" value="CONFERENCE"></el-option>
+            <el-option
+              v-for="item in paperTypeOptions"
+              :key="item.code"
+              :label="item.label"
+              :value="item.code"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="关键词">
@@ -154,9 +163,20 @@ import { ElMessage } from 'element-plus'
 import { Histogram, Document, Search, Refresh } from '@element-plus/icons-vue'
 import { getStudentPaperPage } from '@/api/student'
 import { useUserStore } from '@/stores/user'
+import {
+  loadPaperTypes,
+  getPaperTypeText,
+  getPaperTypeTagType,
+  usePaperTypeOptions,
+  usePaperTypesLoaded
+} from '@/utils/paperType.js'
 
 const router = useRouter()
 const userStore = useUserStore()
+
+// 论文类型选项与文案统一走 utils/paperType.js（模块级缓存，多页并发只发一次请求）
+const paperTypeOptions = usePaperTypeOptions()
+const paperTypesLoaded = usePaperTypesLoaded()
 
 // 响应式数据
 const papers = ref([])
@@ -251,26 +271,9 @@ const viewCheckHistory = (paperId) => {
   router.push(`/student/check-history/${paperId}`)
 }
 
-const getPaperTypeTagType = (type) => {
-  const typeMap = {
-    'THESIS': 'primary',
-    'JOURNAL': 'success',
-    'CONFERENCE': 'warning'
-  }
-  return typeMap[type] || 'info'
-}
-
-const getPaperTypeText = (type) => {
-  const textMap = {
-    'THESIS': '学位论文',
-    'JOURNAL': '期刊论文',
-    'CONFERENCE': '会议论文',
-    'graduation': '毕业论文',
-    'course': '课程论文',
-    'other': '其他'
-  }
-  return textMap[type] || '未知类型'
-}
+// 论文类型的属性与文案不再由本页维护：getPaperTypeTagType / getPaperTypeText
+// 来自 utils/paperType.js。原先这里的两份映射同时持有 THESIS/JOURNAL/CONFERENCE
+// （幽灵值）和 graduation/course/other（真值）两套值域，未命中时还回 "未知类型"。
 
 const getStatusTagType = (status) => {
   const statusMap = {
@@ -326,6 +329,9 @@ const formatDate = (date) => {
 
 // 生命周期
 onMounted(() => {
+  // 预取论文类型，填充筛选下拉并让列表里的 code 渲染成中文。
+  // 失败不在这里提示：全局 axios 拦截器已经 toast 过，这里只避免未处理的 rejection。
+  loadPaperTypes().catch(() => {})
   fetchPapers()
 })
 </script>

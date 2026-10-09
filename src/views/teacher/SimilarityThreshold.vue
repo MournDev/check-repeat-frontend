@@ -34,7 +34,7 @@
           <div class="help-text">全局默认的相似度阈值，适用于所有未设置特定阈值的学科/专业</div>
         </el-form-item>
 
-        <el-form-item label="学科/专业阈值">
+        <el-form-item label="分类阈值">
           <div class="category-thresholds">
             <el-button
               type="primary"
@@ -42,7 +42,7 @@
               @click="showCategoryDialog"
               :disabled="isLoading"
             >
-              添加学科/专业阈值
+              添加分类阈值
             </el-button>
 
             <el-table
@@ -58,6 +58,15 @@
                 </template>
               </el-table-column>
               <el-table-column prop="categoryName" label="名称" min-width="150" />
+              <!-- 论文类型维度：空 = 该行不带类型限定，对所有论文类型生效（存量行都是这种形态） -->
+              <el-table-column label="论文类型" width="130">
+                <template #default="scope">
+                  <span v-if="scope.row.paperType">
+                    {{ getPaperTypeText(scope.row.paperType) }}
+                  </span>
+                  <span v-else class="all-types-label">{{ ALL_TYPES_LABEL }}</span>
+                </template>
+              </el-table-column>
               <el-table-column prop="threshold" label="阈值" width="180">
                 <template #default="scope">
                   <el-slider
@@ -87,7 +96,7 @@
             </el-table>
 
             <div v-else class="empty-category-thresholds">
-              <el-empty description="暂无学科/专业阈值设置">
+              <el-empty description="暂无分类阈值设置">
                 <el-button type="primary" @click="showCategoryDialog">
                   添加第一个阈值设置
                 </el-button>
@@ -107,7 +116,7 @@
       </el-form>
     </el-card>
 
-    <!-- 学科/专业阈值编辑对话框 -->
+    <!-- 分类阈值编辑对话框 -->
     <el-dialog
       v-model="categoryDialogVisible"
       :title="categoryDialogTitle"
@@ -125,7 +134,36 @@
             <el-radio label="college">学院</el-radio>
             <el-radio label="major">专业</el-radio>
             <el-radio label="subject">学科领域</el-radio>
+            <el-radio label="paper_type">论文类型（通用）</el-radio>
           </el-radio-group>
+        </el-form-item>
+
+        <!--
+          论文类型维度，三种情况下都渲染：
+          - 选「论文类型（通用）」时必填 —— 这一档就是"只按类型匹配"；
+          - 选学院/专业/学科时留空 = 适用全部类型，填上则是"该作用域 + 该类型"的更精确一档。
+          所以留空不是"没选"，而是明确表达"不限制类型"。
+        -->
+        <el-form-item label="论文类型" prop="paperType">
+          <el-select
+            v-model="categoryForm.paperType"
+            :placeholder="categoryForm.categoryType === 'paper_type'
+              ? '请选择论文类型'
+              : '不限制（适用全部类型）'"
+            :clearable="categoryForm.categoryType !== 'paper_type'"
+            :disabled="!paperTypesLoaded || isLoading"
+            style="width: 100%"
+          >
+            <el-option
+              v-for="item in paperTypeOptions"
+              :key="item.code"
+              :label="item.label"
+              :value="item.code"
+            />
+          </el-select>
+          <div class="help-text">
+            留空表示该行对所有论文类型生效；填上则只对这一种类型生效（同作用域下带类型的行优先级更高）。
+          </div>
         </el-form-item>
 
         <el-form-item label="学院" prop="collegeId" v-if="categoryForm.categoryType === 'college'">
@@ -244,12 +282,22 @@ import {
   getMajors
 } from '@/api/teacher'
 import { getSubjectFieldTree } from '@/api/user'
+// 论文类型选项/文案统一走共享模块（真相源是后端 PaperTypeEnum）
+import {
+  loadPaperTypes,
+  getPaperTypeText,
+  usePaperTypeOptions,
+  usePaperTypesLoaded,
+  ALL_TYPES_LABEL
+} from '@/utils/paperType.js'
 
-// 类型列展示名。写成查表而不是三元表达式：取值域是三种，漏一种会静默显示成"专业"。
+// 类型列展示名。写成查表而不是三元表达式：漏一种取值会静默显示成别的类型。
+// paper_type 是"仅按论文类型"那一档（不带学院/专业/学科）。
 const CATEGORY_TYPE_LABELS = {
   college: '学院',
   major: '专业',
-  subject: '学科领域'
+  subject: '学科领域',
+  paper_type: '论文类型'
 }
 
 // 响应式数据
@@ -266,11 +314,16 @@ const categoryForm = ref({
   collegeId: '',
   majorId: '',
   subjectId: '',
+  paperType: '',
   threshold: 30
 })
 const categoryFormRef = ref(null)
 const colleges = ref([])
 const majors = ref([])
+
+// 论文类型选项与加载状态（模块级缓存，与其他页面共用同一次请求）
+const paperTypeOptions = usePaperTypeOptions()
+const paperTypesLoaded = usePaperTypesLoaded()
 
 // 学科领域下拉树：节点 value 是 subject.id 的字符串形态（后端阈值接口收的也是它）
 const subjectTree = ref([])
@@ -282,7 +335,7 @@ const subjectTreeProps = {
 }
 
 // 计算属性
-const categoryDialogTitle = ref('添加学科/专业阈值')
+const categoryDialogTitle = ref('添加分类阈值')
 
 // 表单验证规则
 const thresholdRules = {
@@ -304,6 +357,20 @@ const categoryRules = {
   ],
   subjectId: [
     { required: true, message: '请选择学科领域', trigger: 'change' }
+  ],
+  paperType: [
+    // 不能写成 required: true：这个下拉在学院/专业/学科三种类型下都渲染且都允许为空
+    // （空 = 适用全部类型），只有选了"论文类型（通用）"那一档才必须填。
+    {
+      validator: (rule, value, callback) => {
+        if (categoryForm.value.categoryType === 'paper_type' && !value) {
+          callback(new Error('请选择论文类型'))
+        } else {
+          callback()
+        }
+      },
+      trigger: 'change'
+    }
   ],
   threshold: [
     { required: true, message: '请设置相似度阈值', trigger: 'blur' },
@@ -398,6 +465,9 @@ const buildSavePayload = () => ({
     majorId: item.majorId === '' || item.majorId === undefined ? null : item.majorId,
     // subjectId 从树里来时已经是字符串（与接口返回形态一致），直接透传即可
     subjectId: item.subjectId === '' || item.subjectId === undefined ? null : item.subjectId,
+    // 空串必须收敛成 null：库里的空串会让解析器的 "paper_type IS NULL" 永远匹配不到它，
+    // 于是这条行会静默失效（既不生效也不报错）。
+    paperType: item.paperType === '' || item.paperType === undefined ? null : item.paperType,
     threshold: item.threshold
   }))
 })
@@ -439,9 +509,10 @@ const showCategoryDialog = () => {
     collegeId: '',
     majorId: '',
     subjectId: '',
+    paperType: '',
     threshold: 30
   }
-  categoryDialogTitle.value = '添加学科/专业阈值'
+  categoryDialogTitle.value = '添加分类阈值'
   categoryDialogVisible.value = true
 }
 
@@ -456,10 +527,17 @@ const saveCategoryThreshold = async () => {
         const threshold = {
           id: categoryForm.value.id,
           categoryType: categoryForm.value.categoryType,
+          // 空串在 buildSavePayload 里会被收敛成 null（= 适用全部类型）
+          paperType: categoryForm.value.paperType,
           threshold: categoryForm.value.threshold
         }
 
-        if (categoryForm.value.categoryType === 'college') {
+        if (categoryForm.value.categoryType === 'paper_type') {
+          // "仅按类型"这一档只认 paperType，三个作用域 id 必须全空，
+          // 否则后端 validate 会把它当成"某学院+类型"的行并拒绝。
+          threshold.paperType = categoryForm.value.paperType
+          threshold.categoryName = getPaperTypeText(categoryForm.value.paperType)
+        } else if (categoryForm.value.categoryType === 'college') {
           threshold.collegeId = categoryForm.value.collegeId
           // 查找学院名称
           const college = colleges.value.find(c => c.id === categoryForm.value.collegeId)
@@ -566,6 +644,9 @@ const resetCategoryForm = () => {
 onMounted(() => {
   loadSettings()
   fetchSubjectTree()
+  // 预取论文类型，填充下拉并让表格里的 code 渲染成中文
+  // 失败不在此提示：全局 axios 拦截器已 toast 过，catch 只避免未处理的 rejection
+  loadPaperTypes().catch(() => {})
 })
 
 // 监听分类类型变化：切走时把该类型不再用到的字段清掉。
@@ -577,6 +658,14 @@ watch(
       categoryForm.value.majorId = ''
     }
     if (newType !== 'subject') {
+      categoryForm.value.subjectId = ''
+    }
+    // "仅按类型"档不允许带任何作用域 id，这里连 collegeId 一起清掉
+    // （它与上面两处不同：别处是"该类型用不到"，这里是"存在就会被后端拒绝"）。
+    // paperType 本身不清 —— 它在四种类型下都是合法维度，作用域行也可以带类型。
+    if (newType === 'paper_type') {
+      categoryForm.value.collegeId = ''
+      categoryForm.value.majorId = ''
       categoryForm.value.subjectId = ''
     }
   }
@@ -622,9 +711,14 @@ watch(
     
     .category-thresholds {
       margin-top: 16px;
-      
+
       .empty-category-thresholds {
         padding: 40px 0;
+      }
+
+      // 「全部类型」是占位语义（该行不带类型限定），压低存在感避免被读成一个真实取值
+      .all-types-label {
+        color: #909399;
       }
     }
   }

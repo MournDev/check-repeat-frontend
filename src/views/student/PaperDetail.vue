@@ -353,6 +353,7 @@ import { ElMessage, ElMessageBox, ElLoading } from 'element-plus'
 import { getPaperDetails, deleteFile as deleteFileAPI, createCheckTask, getCheckTaskDetail } from "@/api/student.js"
 import { getAvatarUrl } from '@/utils/avatar'
 import { getSimilarityColor, getSimilarityTagType as baseGetSimilarityTagType } from '@/utils/reviewStatus.js'
+import { loadPaperTypes, getPaperTypeText } from '@/utils/paperType.js'
 
 // 图标引入
 import {
@@ -785,6 +786,14 @@ const uploadFileAPI = async (formData) => {
 }
 
 // 更新论文文件的API调用
+//
+// ⚠️ 这个端点在后端没有对应映射（StudentPaperController 没有 /papers/{id}/update），
+//    属于死调用。这里只做一件事：去掉原先那几个**伪造默认值**
+//    （collegeId/majorId 兜 1、paperType 兜 'graduation'）。
+//    它们比"传空"危险得多 —— 一旦这个端点将来真的接上，论文缺失的字段会被静默
+//    改绑成 1 号学院/1 号专业、类型改成"毕业论文"，而且不报任何错。
+//    传空值让后端明确拒绝，比悄悄写错强。
+//    另外这个调用用的是原生 fetch，绕开了 axios 拦截器，所以它失败时不会有全局提示。
 const updatePaperFile = async (paperId, fileId, fileMd5) => {
     const token = userStore.token || ''
     const response = await fetch(`/check/api/papers/${paperId}/update`, {
@@ -796,9 +805,9 @@ const updatePaperFile = async (paperId, fileId, fileMd5) => {
         body: JSON.stringify({
             subjectCode: paperDetails.value.subjectCode || '',
             paperTitle: paperDetails.value.paperTitle || '',
-            collegeId: paperDetails.value.collegeId || 1,
-            majorId: paperDetails.value.majorId || 1,
-            paperType: paperDetails.value.paperType || 'graduation',
+            collegeId: paperDetails.value.collegeId,
+            majorId: paperDetails.value.majorId,
+            paperType: paperDetails.value.paperType,
             paperAbstract: paperDetails.value.paperAbstract || '',
             fileId: fileId,
             fileMd5: fileMd5
@@ -1088,23 +1097,10 @@ const formatDate = (date) => {
     })
 }
 
-const getPaperTypeText = (type) => {
-    const typeMap = {
-        'graduation': '毕业论文',
-        'course': '课程论文',
-        'other': '其他'
-    }
-    return typeMap[type] || '其他论文'
-}
-
-const getPaperTypeTag = (type) => {
-    const tagMap = {
-        'graduation': 'success',
-        'course': 'info',
-        'research': 'warning'
-    }
-    return tagMap[type] || 'info'
-}
+// 论文类型的文案不再由本页维护：getPaperTypeText / getPaperTypeTagType
+// 来自 utils/paperType.js（数据源是后端 PaperTypeEnum），见文件顶部 import。
+// 原先这里有 getPaperTypeText 与 getPaperTypeTag 两份硬编码映射，
+// 后者还多带一个 'research' —— 一个从未存在过的取值。
 
 const getWordCountPercentage = (wordCount) => {
     if (!wordCount) return 0
@@ -1114,6 +1110,9 @@ const getWordCountPercentage = (wordCount) => {
         'course': 3000,
         'other': 5000
     }
+    // 这里的 key 是 PaperTypeEnum 的 code，与上面的映射同源；
+    // 它只是进度条的展示基准（不是阈值、不参与判定），所以没走字典接口，
+    // 新增类型时落到 default 即可，不会显示错东西。
     const target = targetMap[type] || 8000
     return Math.min(Math.round((wordCount / target) * 100), 100)
 }
@@ -1338,6 +1337,9 @@ const getCheckStatusIcon = (status) => {
 onMounted(() => {
     loadPaperDetails(),
         subjectField()
+    // 预取论文类型，让 getPaperTypeText 能把 code 渲染成中文（未加载完时先显示裸 code）
+    // 失败不在这里处理：全局 axios 拦截器已经 toast 过，catch 只为避免未处理的 rejection
+    loadPaperTypes().catch(() => {})
 });
 </script>
 
