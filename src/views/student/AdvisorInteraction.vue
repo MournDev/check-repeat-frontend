@@ -677,11 +677,19 @@ const sendMessage = async () => {
       }
     }
     
+    // 后端 MessageSendDTO.content 是 @NotBlank，而上面的按钮只要求"有文字或有附件"即可点。
+    // 于是"只发附件"会被 400 挡掉，附件也跟着一起丢。这里补一个占位文案兜住这个组合，
+    // 与教师端聊天页发文件的写法一致。
+    const content = newMessage.value.trim()
+      || (attachments.value.length > 0
+        ? `[文件] ${attachments.value.map(att => att.name).join('、')}`
+        : '')
+
     const messageData = {
       sessionId: activeSessionId.value,
       receiverId: receiverId,
       senderId: userStore.userInfo?.userId,
-      content: newMessage.value,
+      content,
       attachmentIds: attachments.value.map(att => att.id),
       senderName: userStore.userInfo?.realName || userStore.userInfo?.username || '未知用户'
     };
