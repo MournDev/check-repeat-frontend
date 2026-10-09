@@ -286,8 +286,11 @@ const filteredTemplates = computed(() => {
 })
 
 const recentTemplates = computed(() => {
-  return templates.value
-    .sort((a, b) => new Date(b.lastUsed) - new Date(a.lastUsed))
+  // 先复制再排：sort 是原地排序，直接对 templates.value 排会把表格的数据源一起改掉。
+  // lastUsed 为 null（从未使用过）时用 0 兜底 —— new Date(undefined) 是 Invalid Date，
+  // 参与比较会得到 NaN，排序结果就不确定了。
+  return [...templates.value]
+    .sort((a, b) => new Date(b.lastUsed || 0) - new Date(a.lastUsed || 0))
     .slice(0, 5)
 })
 
@@ -350,21 +353,17 @@ const deleteTemplate = async (template) => {
       { type: 'warning' }
     )
     
-    // 删除逻辑
-    const response = await deleteReviewTemplate(template.id)
-    if (response.success) {
-      const index = templates.value.findIndex(t => t.id === template.id)
-      if (index > -1) {
-        templates.value.splice(index, 1)
-      }
-      ElMessage.success('模板删除成功')
-    } else {
-      ElMessage.error('删除模板失败')
+    // 非 200 已被全局拦截器 reject，能走到这里就是成功
+    await deleteReviewTemplate(template.id)
+    const index = templates.value.findIndex(t => t.id === template.id)
+    if (index > -1) {
+      templates.value.splice(index, 1)
     }
+    ElMessage.success('模板删除成功')
   } catch (error) {
     if (error !== 'cancel') {
+      // 不在这里再弹提示：拦截器已经按状态码弹过一次，再弹就是两条
       console.error('删除模板失败:', error)
-      ElMessage.error('删除失败')
     }
   }
 }
@@ -378,31 +377,21 @@ const saveTemplate = async () => {
         if (templateForm.value.id) {
           // 更新模板
           const response = await updateReviewTemplate(templateForm.value.id, templateForm.value)
-          if (response.success) {
-            const index = templates.value.findIndex(t => t.id === templateForm.value.id)
-            if (index > -1) {
-              templates.value[index] = response.data
-            }
-          } else {
-            ElMessage.error('更新模板失败')
-            return
+          const index = templates.value.findIndex(t => t.id === templateForm.value.id)
+          if (index > -1) {
+            templates.value[index] = response.data
           }
         } else {
           // 新建模板
           const response = await createReviewTemplate(templateForm.value)
-          if (response.success) {
-            templates.value.push(response.data)
-          } else {
-            ElMessage.error('创建模板失败')
-            return
-          }
+          templates.value.push(response.data)
         }
-        
+
         templateDialogVisible.value = false
         ElMessage.success('模板保存成功')
       } catch (error) {
+        // 不在这里再弹提示：拦截器已经按状态码弹过一次
         console.error('保存模板失败:', error)
-        ElMessage.error('保存失败')
       }
     }
   })
@@ -432,22 +421,18 @@ const applyTemplate = async (template) => {
   try {
     // 应用模板到当前审核
     const response = await useReviewTemplate(template.id)
-    if (response.success) {
-      ElMessage.success(`模板 "${template.title}" 已应用`)
-      quickUseDrawerVisible.value = false
-      
-      // 更新使用次数和最后使用时间
-      const index = templates.value.findIndex(t => t.id === template.id)
-      if (index > -1) {
-        templates.value[index].usageCount += 1
-        templates.value[index].lastUsed = new Date().toISOString()
-      }
-    } else {
-      ElMessage.error('应用模板失败')
+    ElMessage.success(`模板 "${template.title}" 已应用`)
+    quickUseDrawerVisible.value = false
+
+    // 用服务端返回的 VO 覆盖本地那一行：使用次数与最后使用时间都由服务端维护，
+    // 本地再自行 +1 会与服务端算出的值重复计一次。
+    const index = templates.value.findIndex(t => t.id === template.id)
+    if (index > -1) {
+      templates.value[index] = response.data
     }
   } catch (error) {
+    // 不在这里再弹提示：拦截器已经按状态码弹过一次
     console.error('应用模板失败:', error)
-    ElMessage.error('应用模板失败')
   }
 }
 
@@ -488,14 +473,11 @@ onMounted(async () => {
   // 加载模板数据
   try {
     const response = await getReviewTemplates()
-    if (response.success) {
-      templates.value = response.data
-    } else {
-      ElMessage.error('加载模板失败')
-    }
+    // 非 200 已被全局拦截器 reject，能拿到响应就是成功
+    templates.value = response.data || []
   } catch (error) {
+    // 不在这里再弹提示：拦截器已经按状态码弹过一次
     console.error('加载模板失败:', error)
-    ElMessage.error('加载模板失败')
   }
 })
 </script>
