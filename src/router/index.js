@@ -137,18 +137,20 @@ export const asyncRoutes = [
     // （如「查重规则」：ADMIN 无分组、超管归「系统运维」组），差异写在
     // menu 下以角色名为 key 的覆盖块里，buildMenus 按当前角色合并。
     children: [
+      // 论文业务管理只进 ADMIN 菜单。menu.roles 仅控菜单露出，路由 roles 仍含
+      // SUPER_ADMIN（超管可 URL 直达）；缺了这层会继承父路由双角色而泄漏进超管菜单
       { path: "user-management", name: "UserManagement", component: () => import("@/views/admin/UserManagement.vue"), meta: { title: "用户管理", menu: { icon: "UserFilled", roles: ["SUPER_ADMIN"], order: 1 } } },
-      { path: "paper-assignment", name: "PaperAssignment", component: () => import("@/views/admin/PaperAssignment.vue"), meta: { title: "论文分配", menu: { icon: "Connection", label: "导师分配", group: "论文分配", order: 4 } } },
-      { path: "paper-assignment/manual", name: "ManualPaperAssignment", component: () => import("@/views/admin/ManualPaperAssignment.vue"), meta: { title: "手动论文分配", menu: { icon: "Pointer", label: "手动分配", group: "论文分配", order: 5 } } },
-      { path: "paper-assignment/auto", name: "AutoPaperAssignment", component: () => import("@/views/admin/AutoPaperAssignment.vue"), meta: { title: "自动论文分配", menu: { icon: "MagicStick", label: "自动分配", group: "论文分配", order: 6 } } },
-      { path: "paper-assignment/history", name: "PaperAssignmentHistory", component: () => import("@/views/admin/PaperAssignmentHistory.vue"), meta: { title: "论文分配记录", menu: { icon: "Notebook", label: "分配记录", group: "论文分配", order: 7 } } },
+      { path: "paper-assignment", name: "PaperAssignment", component: () => import("@/views/admin/PaperAssignment.vue"), meta: { title: "论文分配", menu: { roles: ["ADMIN"], icon: "Connection", label: "导师分配", group: "论文分配", order: 4 } } },
+      { path: "paper-assignment/manual", name: "ManualPaperAssignment", component: () => import("@/views/admin/ManualPaperAssignment.vue"), meta: { title: "手动论文分配", menu: { roles: ["ADMIN"], icon: "Pointer", label: "手动分配", group: "论文分配", order: 5 } } },
+      { path: "paper-assignment/auto", name: "AutoPaperAssignment", component: () => import("@/views/admin/AutoPaperAssignment.vue"), meta: { title: "自动论文分配", menu: { roles: ["ADMIN"], icon: "MagicStick", label: "自动分配", group: "论文分配", order: 6 } } },
+      { path: "paper-assignment/history", name: "PaperAssignmentHistory", component: () => import("@/views/admin/PaperAssignmentHistory.vue"), meta: { title: "论文分配记录", menu: { roles: ["ADMIN"], icon: "Notebook", label: "分配记录", group: "论文分配", order: 7 } } },
       { path: "system-config", name: "SystemConfig", component: () => import("@/views/admin/SystemConfig.vue"), meta: { title: "系统配置", menu: { icon: "Tools", roles: ["SUPER_ADMIN"], group: "系统运维", order: 4 } } },
       { path: "log-center", name: "LogCenter", component: () => import("@/views/admin/LogCenter.vue"), meta: { title: "日志中心", menu: { icon: "Document", ADMIN: { group: "系统管理", order: 15 }, SUPER_ADMIN: { group: "监控与日志", order: 10 } } } },
       { path: "settings", name: "AdminSettings", component: () => import("@/views/admin/Settings.vue"), meta: { title: "个人设置", menu: { icon: "Setting", roles: ["ADMIN"], order: 16, spacer: true } } },
       { path: "school-overview", name: "SchoolOverview", component: () => import("@/views/admin/SchoolOverview.vue"), meta: { title: "全校数据概览", menu: { icon: "DataAnalysis", label: "全校概览", order: 2 } } },
-      { path: "paper-library", name: "PaperLibrary", component: () => import("@/views/admin/PaperLibrary.vue"), meta: { title: "论文库管理", menu: { icon: "Files", label: "论文库", group: "论文管理", order: 3 } } },
-      { path: "report-management", name: "ReportManagement", component: () => import("@/views/admin/ReportManagement.vue"), meta: { title: "报告管理", menu: { icon: "Histogram", order: 8 } } },
-      { path: "knowledge-management", name: "KnowledgeManagement", component: () => import("@/views/admin/KnowledgeManagement.vue"), meta: { title: "知识库管理", menu: { icon: "Collection", order: 9 } } },
+      { path: "paper-library", name: "PaperLibrary", component: () => import("@/views/admin/PaperLibrary.vue"), meta: { title: "论文库管理", menu: { roles: ["ADMIN"], icon: "Files", label: "论文库", group: "论文管理", order: 3 } } },
+      { path: "report-management", name: "ReportManagement", component: () => import("@/views/admin/ReportManagement.vue"), meta: { title: "报告管理", menu: { roles: ["ADMIN"], icon: "Histogram", order: 8 } } },
+      { path: "knowledge-management", name: "KnowledgeManagement", component: () => import("@/views/admin/KnowledgeManagement.vue"), meta: { title: "知识库管理", menu: { roles: ["ADMIN"], icon: "Collection", order: 9 } } },
       { path: "check-rule-management", name: "CheckRuleManagement", component: () => import("@/views/admin/CheckRuleManagement.vue"), meta: { title: "查重规则", menu: { icon: "Setting", ADMIN: { order: 10 }, SUPER_ADMIN: { group: "系统运维", order: 7 } } } },
       { path: "compare-lib-management", name: "CompareLibManagement", component: () => import("@/views/admin/CompareLibManagement.vue"), meta: { title: "比对库管理", menu: { icon: "Files", ADMIN: { order: 11 }, SUPER_ADMIN: { group: "系统运维", order: 8 } } } },
       { path: "subject-management", name: "SubjectManagement", component: () => import("@/views/admin/SubjectManagement.vue"), meta: { title: "学科领域管理", menu: { icon: "Grid", ADMIN: { order: 12 }, SUPER_ADMIN: { group: "系统运维", order: 9 } } } },
@@ -167,9 +169,9 @@ export const asyncRoutes = [
       // /admin 的 roles 含 SUPER_ADMIN，超管可直接访问 /admin/*。
       { path: "system-config", redirect: "/admin/system-config" },
       { path: "log-center", redirect: "/admin/log-center" },
-      { path: "similarity-thresholds", name: "SuperAdminSimilarityThresholds", component: () => import("@/views/super-admin/SimilarityThreshold.vue"), meta: { title: "相似度阈值设置", menu: { icon: "TrendCharts", label: "相似度阈值", order: 5 } } },
-      { path: "review-workflow", name: "SuperAdminReviewWorkflow", component: () => import("@/views/super-admin/ReviewWorkflow.vue"), meta: { title: "审核工作流配置", menu: { icon: "Connection", label: "审核工作流", order: 6 } } },
-      { path: "system-monitoring", name: "SystemMonitoring", component: () => import("@/views/admin/SystemMonitoring.vue"), meta: { title: "系统监控", menu: { icon: "Monitor", order: 11 } } },
+      { path: "similarity-thresholds", name: "SuperAdminSimilarityThresholds", component: () => import("@/views/super-admin/SimilarityThreshold.vue"), meta: { title: "相似度阈值设置", menu: { icon: "TrendCharts", label: "相似度阈值", group: "系统运维", order: 5 } } },
+      { path: "review-workflow", name: "SuperAdminReviewWorkflow", component: () => import("@/views/super-admin/ReviewWorkflow.vue"), meta: { title: "审核工作流配置", menu: { icon: "Connection", label: "审核工作流", group: "系统运维", order: 6 } } },
+      { path: "system-monitoring", name: "SystemMonitoring", component: () => import("@/views/admin/SystemMonitoring.vue"), meta: { title: "系统监控", menu: { icon: "Monitor", group: "监控与日志", order: 11 } } },
     ],
   },
   {
