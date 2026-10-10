@@ -126,7 +126,7 @@
             <el-button size="small" type="primary" text @click="viewUser(row)">
               查看
             </el-button>
-            <el-button v-if="canManage(row)" size="small" type="warning" text @click="editUser(row)">
+            <el-button v-if="canEdit(row)" size="small" type="warning" text @click="editUser(row)">
               编辑
             </el-button>
             <el-button
@@ -211,11 +211,12 @@
           <el-input v-model="userForm.realName"></el-input>
         </el-form-item>
         <el-form-item label="人员类型" prop="roleId">
-          <el-select v-model="userForm.roleId" placeholder="请选择人员类型" style="width: 100%" @change="handleRoleChange">
+          <el-select v-model="userForm.roleId" :disabled="isSelfEdit" placeholder="请选择人员类型" style="width: 100%" @change="handleRoleChange">
             <el-option label="学生" value="1001"></el-option>
             <el-option label="教师" value="2001"></el-option>
             <el-option v-if="userStore.isSuperAdmin" label="管理员" value="3001"></el-option>
           </el-select>
+          <div v-if="isSelfEdit" class="self-edit-tip">不可修改自己的人员类型</div>
         </el-form-item>
         
         <!-- 学生特有字段 -->
@@ -265,7 +266,7 @@
         <el-form-item v-if="!isEdit" label="密码" prop="password">
           <el-input v-model="userForm.password" type="password"></el-input>
         </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item v-if="!isSelfEdit" label="状态">
           <el-radio-group v-model="userForm.status">
             <el-radio label="ENABLED">启用</el-radio>
             <el-radio label="DISABLED">禁用</el-radio>
@@ -504,12 +505,28 @@ const loadUserList = async () => {
 }
 
 // 权限治理（与后端 403/40304 对齐）：ADMIN 无权管理同级 ADMIN 与超级管理员，
-// 这些行的编辑/删除/状态开关直接隐藏或禁用，避免点了才被后端拒绝。
+// 这些行的删除/状态开关直接隐藏或禁用，避免点了才被后端拒绝。
 const userStore = useUserStore()
 const canManage = (row) => {
   if (userStore.isSuperAdmin) return true
   return !['ADMIN', 'SUPER_ADMIN'].includes(row.roleCode)
 }
+
+// 但管理员应当能修改自己的资料：编辑入口对本人额外放行。
+// 删除/禁用自己仍被 canManage 拦住（防自锁），角色修改在对话框内禁用（防提权）。
+const rowIdOf = (row) => row?.userId ?? row?.id
+const isSelf = (row) => {
+  const selfId = userStore.userInfo?.userId
+  return row != null && selfId != null && String(rowIdOf(row)) === String(selfId)
+}
+const canEdit = (row) => canManage(row) || isSelf(row)
+
+// 正在编辑的目标行（修复此前 editUser 不存行、saveUser 错拿详情 currentUser 取 ID 的问题）
+const editingUser = ref(null)
+const isSelfEdit = computed(() => editingUser.value ? isSelf(editingUser.value) : false)
+
+// 列表行可能只返回 roleCode，按其映射 roleId 以保证人员类型及角色特有字段正确回显
+const ROLE_ID_BY_CODE = { STUDENT: '1001', TEACHER: '2001', ADMIN: '3001', SUPER_ADMIN: '3001' }
 
 const getRoleTagType = (roleCode) => {
   const typeMap = {
@@ -599,16 +616,18 @@ const viewUser = (user) => {
 
 const showAddUserDialog = () => {
   isEdit.value = false
+  editingUser.value = null
   resetUserForm()
   userDialogVisible.value = true
 }
 
 const editUser = (user) => {
   isEdit.value = true
+  editingUser.value = user
   Object.assign(userForm, {
     username: user.username,
     realName: user.realName,
-    roleId: user.roleId || '',
+    roleId: user.roleId || ROLE_ID_BY_CODE[user.roleCode] || '',
     email: user.email,
     phone: user.phone,
     status: toStatusNumber(user.status), // 确保状态为数字格式
@@ -731,12 +750,18 @@ const saveUser = async () => {
     const userData = {
       username: userForm.username,
       realName: userForm.realName,
-      roleId: userForm.roleId,
       email: userForm.email,
-      phone: userForm.phone,
-      status: toStatusNumber(userForm.status)
+      phone: userForm.phone
     }
-    
+
+    if (isSelfEdit.value) {
+      // 本人编辑：仅允许更新资料，roleId/status 一律不带，
+      // 避免被后端按越权改角色/禁用本人拒绝，也杜绝提权、自锁
+    } else {
+      userData.roleId = userForm.roleId
+      userData.status = toStatusNumber(userForm.status)
+    }
+
     // 添加密码（仅创建时）
     if (!isEdit.value && userForm.password) {
       userData.password = userForm.password
@@ -753,13 +778,14 @@ const saveUser = async () => {
     }
     
     if (isEdit.value) {
-      await updateUser(currentUser.value.userId ?? currentUser.value.id, userData)
+      await updateUser(rowIdOf(editingUser.value), userData)
     } else {
       await createUser(userData)
     }
     
     ElMessage.success(`${isEdit.value ? '更新' : '创建'}成功`)
     userDialogVisible.value = false
+    editingUser.value = null
     resetUserForm()
     loadUserList()
     saving.value = false
@@ -1047,6 +1073,13 @@ const rowKey = (row) => {
 .unassigned {
   color: #ef4444; // Red-500
   font-style: italic;
+}
+
+.self-edit-tip {
+  font-size: 12px;
+  color: #86868b; // Slate-500
+  line-height: 1.6;
+  margin-top: 4px;
 }
 
 @media (max-width: 768px) {
