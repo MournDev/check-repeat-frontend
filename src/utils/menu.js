@@ -22,8 +22,9 @@
 
 import * as ElIcons from '@element-plus/icons-vue'
 
-// 侧边栏顶部大标题按角色固定。
-const SECTION_LABELS = {
+// 侧边栏顶部大标题按角色固定。导出供面包屑复用：角色分区父路由的父级标题
+// 与这里的分区名保持一致（如超管访问 /admin/* 时父级显示「系统管理」）。
+export const SECTION_LABELS = {
   STUDENT: '学生',
   TEACHER: '教师',
   ADMIN: '业务管理',

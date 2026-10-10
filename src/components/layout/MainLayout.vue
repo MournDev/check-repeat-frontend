@@ -157,7 +157,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { getUnreadCount, getMessageList } from '@/api/user.js'
 import { useMessageStore } from '@/stores/message'
 import { useMessageWebSocket } from '@/composables/useMessageWebSocket'
-import { buildMenus } from '@/utils/menu'
+import { buildMenus, SECTION_LABELS } from '@/utils/menu'
 import { asyncRoutes } from '@/router'
 
 import {
@@ -304,12 +304,20 @@ const ROLE_HOME = {
   SUPER_ADMIN: '/super-admin',
 }
 
+// 角色分区父路由（/student /teacher /admin /super-admin）的面包屑父级按当前
+// 角色显示侧边栏同款分区名：超管访问 /admin/* 时「管理员」这个父级对不上
+// 他的视角，应显示「系统管理」；ADMIN 同理显示「业务管理」。
+const ROLE_SECTION_PATHS = new Set(['/student', '/teacher', '/admin', '/super-admin'])
+
 const breadcrumbItems = computed(() => {
   const homePath = ROLE_HOME[userStore.role] || '/message-center'
   const items = [{ title: '首页', path: homePath }]
   route.matched.forEach(record => {
-    const title = record.meta?.title
-    if (!title) return
+    const raw = record.meta?.title
+    if (!raw) return
+    const title = ROLE_SECTION_PATHS.has(record.path)
+      ? (SECTION_LABELS[userStore.role] || raw)
+      : raw
     // 父级布局与默认子路由可能同标题（/message-center 两级都是「消息中心」），
     // 连出两条一模一样的面包屑没有意义，跳过重复的那条
     if (title === items[items.length - 1].title) return
