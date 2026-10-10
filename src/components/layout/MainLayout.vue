@@ -109,182 +109,17 @@
         <div v-if="isMobile && sidebarVisible" class="sidebar-overlay" @click="toggleSidebar"></div>
 
         <nav class="sidebar-nav">
-          <!-- Student Menu -->
-          <div v-if="userStore.role === 'STUDENT'" class="sidebar-section">
-            <div class="sidebar-section-label">学生</div>
-            <a :class="['sidebar-item', { active: activeMenu === '/dashboard/student' }]" @click="navigateTo('/dashboard/student')">
-              <el-icon><DataAnalysis /></el-icon><span>论文工作台</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/student/paper-submit' }]" @click="navigateTo('/student/paper-submit')">
-              <el-icon><UploadFilled /></el-icon><span>论文提交</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/student/my-papers' }]" @click="navigateTo('/student/my-papers')">
-              <el-icon><FolderOpened /></el-icon><span>我的论文</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/student/advisor-interaction' }]" @click="navigateTo('/student/advisor-interaction')">
-              <el-icon><ChatDotRound /></el-icon><span>导师互动</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/student/file-management' }]" @click="navigateTo('/student/file-management')">
-              <el-icon><Folder /></el-icon><span>文件管理</span>
-            </a>
-            <div class="sidebar-sub-label">查重管理</div>
-            <a :class="['sidebar-item', { active: activeMenu === '/student/student-check-with-websocket' }]" @click="navigateTo('/student/student-check-with-websocket')">
-              <el-icon><Document /></el-icon><span>查重任务</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/student/check-history' }]" @click="navigateTo('/student/check-history')">
-              <el-icon><Histogram /></el-icon><span>查重历史</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/student/academic-integrity' }]" @click="navigateTo('/student/academic-integrity')">
-              <el-icon><Notebook /></el-icon><span>学术诚信</span>
-            </a>
-            <div class="sidebar-spacer"></div>
-            <a :class="['sidebar-item', { active: activeMenu === '/student/settings' }]" @click="navigateTo('/student/settings')">
-              <el-icon><Setting /></el-icon><span>个人设置</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/student/help-center' }]" @click="navigateTo('/student/help-center')">
-              <el-icon><Service /></el-icon><span>帮助中心</span>
-            </a>
-          </div>
-
-          <!-- Teacher Menu -->
-          <div v-if="userStore.role === 'TEACHER'" class="sidebar-section">
-            <div class="sidebar-section-label">教师</div>
-            <a :class="['sidebar-item', { active: activeMenu === '/teacher' }]" @click="navigateTo('/teacher')">
-              <el-icon><DataBoard /></el-icon><span>审核工作台</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/teacher/student-list' }]" @click="navigateTo('/teacher/student-list')">
-              <el-icon><UserFilled /></el-icon><span>学生管理</span>
-            </a>
-            <div class="sidebar-sub-label">论文审核</div>
-            <a :class="['sidebar-item', { active: activeMenu === '/teacher/paper-review/pending' }]" @click="navigateTo('/teacher/paper-review/pending')">
-              <el-icon><Clock /></el-icon><span>待审核论文</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/teacher/paper-review/audit-records' }]" @click="navigateTo('/teacher/paper-review/audit-records')">
-              <el-icon><Histogram /></el-icon><span>审核记录</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/teacher/data-statistics' }]" @click="navigateTo('/teacher/data-statistics')">
-              <el-icon><TrendCharts /></el-icon><span>数据统计</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/teacher/review-templates' }]" @click="navigateTo('/teacher/review-templates')">
-              <el-icon><Document /></el-icon><span>审核意见模板</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/teacher/student-groups' }]" @click="navigateTo('/teacher/student-groups')">
-              <el-icon><UserFilled /></el-icon><span>学生分组管理</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/teacher/chat-center' }]" @click="navigateTo('/teacher/chat-center')">
-              <el-icon><ChatDotRound /></el-icon><span>在线聊天</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/teacher/file-management' }]" @click="navigateTo('/teacher/file-management')">
-              <el-icon><Folder /></el-icon><span>文件管理</span>
-            </a>
-            <div class="sidebar-spacer"></div>
-            <a :class="['sidebar-item', { active: activeMenu === '/teacher/profile' }]" @click="navigateTo('/teacher/profile')">
-              <el-icon><Setting /></el-icon><span>我的设置</span>
-            </a>
-          </div>
-
-          <!-- Admin Menu (业务管理员 — 管"事") -->
-          <div v-if="userStore.role === 'ADMIN'" class="sidebar-section">
-            <div class="sidebar-section-label">业务管理</div>
-            <!-- 运营概览是 ADMIN 的首页（ROLE_HOME / 登录落点 / 面包屑「首页」三者一致） -->
-            <a :class="['sidebar-item', { active: activeMenu === '/dashboard/admin' }]" @click="navigateTo('/dashboard/admin')">
-              <el-icon><DataBoard /></el-icon><span>运营概览</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/admin/school-overview' }]" @click="navigateTo('/admin/school-overview')">
-              <el-icon><DataAnalysis /></el-icon><span>全校概览</span>
-            </a>
-            <div class="sidebar-sub-label">论文管理</div>
-            <a :class="['sidebar-item', { active: activeMenu === '/admin/paper-library' }]" @click="navigateTo('/admin/paper-library')">
-              <el-icon><Files /></el-icon><span>论文库</span>
-            </a>
-            <div class="sidebar-sub-label">论文分配</div>
-            <a :class="['sidebar-item', { active: activeMenu === '/admin/paper-assignment' }]" @click="navigateTo('/admin/paper-assignment')">
-              <el-icon><Connection /></el-icon><span>导师分配</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/admin/paper-assignment/manual' }]" @click="navigateTo('/admin/paper-assignment/manual')">
-              <el-icon><Pointer /></el-icon><span>手动分配</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/admin/paper-assignment/auto' }]" @click="navigateTo('/admin/paper-assignment/auto')">
-              <el-icon><MagicStick /></el-icon><span>自动分配</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/admin/paper-assignment/history' }]" @click="navigateTo('/admin/paper-assignment/history')">
-              <el-icon><Notebook /></el-icon><span>分配记录</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/admin/report-management' }]" @click="navigateTo('/admin/report-management')">
-              <el-icon><Histogram /></el-icon><span>报告管理</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/admin/knowledge-management' }]" @click="navigateTo('/admin/knowledge-management')">
-              <el-icon><Collection /></el-icon><span>知识库管理</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/admin/check-rule-management' }]" @click="navigateTo('/admin/check-rule-management')">
-              <el-icon><Setting /></el-icon><span>查重规则</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/admin/compare-lib-management' }]" @click="navigateTo('/admin/compare-lib-management')">
-              <el-icon><Files /></el-icon><span>比对库管理</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/admin/subject-management' }]" @click="navigateTo('/admin/subject-management')">
-              <el-icon><Grid /></el-icon><span>学科领域管理</span>
-            </a>
-            <div class="sidebar-sub-label">系统管理</div>
-            <a :class="['sidebar-item', { active: activeMenu === '/admin/system-notice-management' }]" @click="navigateTo('/admin/system-notice-management')">
-              <el-icon><Bell /></el-icon><span>通知管理</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/admin/message-template-management' }]" @click="navigateTo('/admin/message-template-management')">
-              <el-icon><Document /></el-icon><span>消息模板</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/admin/log-center' }]" @click="navigateTo('/admin/log-center')">
-              <el-icon><Document /></el-icon><span>日志中心</span>
-            </a>
-            <div class="sidebar-spacer"></div>
-            <a :class="['sidebar-item', { active: activeMenu === '/admin/settings' }]" @click="navigateTo('/admin/settings')">
-              <el-icon><Setting /></el-icon><span>个人设置</span>
-            </a>
-          </div>
-
-          <!-- Super Admin Menu (系统管理员 — 管"人" + 系统运维) -->
-          <div v-if="userStore.role === 'SUPER_ADMIN'" class="sidebar-section">
-            <div class="sidebar-section-label">人员管理</div>
-            <a :class="['sidebar-item', { active: activeMenu === '/admin/user-management' }]" @click="navigateTo('/admin/user-management')">
-              <el-icon><UserFilled /></el-icon><span>用户管理</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/admin/school-overview' }]" @click="navigateTo('/admin/school-overview')">
-              <el-icon><DataAnalysis /></el-icon><span>全校概览</span>
-            </a>
-            <div class="sidebar-sub-label">系统运维</div>
-            <a :class="['sidebar-item', { active: activeMenu === '/super-admin' }]" @click="navigateTo('/super-admin')">
-              <el-icon><Monitor /></el-icon><span>系统概览</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/admin/system-config' }]" @click="navigateTo('/admin/system-config')">
-              <el-icon><Tools /></el-icon><span>系统配置</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/super-admin/similarity-thresholds' }]" @click="navigateTo('/super-admin/similarity-thresholds')">
-              <el-icon><TrendCharts /></el-icon><span>相似度阈值</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/super-admin/review-workflow' }]" @click="navigateTo('/super-admin/review-workflow')">
-              <el-icon><Connection /></el-icon><span>审核工作流</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/admin/check-rule-management' }]" @click="navigateTo('/admin/check-rule-management')">
-              <el-icon><Setting /></el-icon><span>查重规则</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/admin/compare-lib-management' }]" @click="navigateTo('/admin/compare-lib-management')">
-              <el-icon><Files /></el-icon><span>比对库管理</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/admin/subject-management' }]" @click="navigateTo('/admin/subject-management')">
-              <el-icon><Grid /></el-icon><span>学科领域管理</span>
-            </a>
-            <div class="sidebar-sub-label">监控与日志</div>
-            <a :class="['sidebar-item', { active: activeMenu === '/admin/log-center' }]" @click="navigateTo('/admin/log-center')">
-              <el-icon><Document /></el-icon><span>日志中心</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/super-admin/system-monitoring' }]" @click="navigateTo('/super-admin/system-monitoring')">
-              <el-icon><Monitor /></el-icon><span>系统监控</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/admin/system-notice-management' }]" @click="navigateTo('/admin/system-notice-management')">
-              <el-icon><Bell /></el-icon><span>通知管理</span>
-            </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/admin/message-template-management' }]" @click="navigateTo('/admin/message-template-management')">
-              <el-icon><Document /></el-icon><span>消息模板</span>
-            </a>
+          <!-- 菜单项从路由表（asyncRoutes 的 meta.menu）按角色派生，见 src/utils/menu.js -->
+          <div class="sidebar-section">
+            <div class="sidebar-section-label">{{ sidebarMenu.label }}</div>
+            <template v-for="item in sidebarMenu.items" :key="item.path">
+              <div v-if="item.groupLabel" class="sidebar-sub-label">{{ item.groupLabel }}</div>
+              <div v-if="item.spacer" class="sidebar-spacer"></div>
+              <router-link :to="item.path" :class="['sidebar-item', { active: activeMenu === item.path }]">
+                <el-icon v-if="item.icon"><component :is="item.icon" /></el-icon>
+                <span>{{ item.label }}</span>
+              </router-link>
+            </template>
           </div>
         </nav>
       </aside>
@@ -322,13 +157,12 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { getUnreadCount, getMessageList } from '@/api/user.js'
 import { useMessageStore } from '@/stores/message'
 import { useMessageWebSocket } from '@/composables/useMessageWebSocket'
+import { buildMenus } from '@/utils/menu'
+import { asyncRoutes } from '@/router'
 
 import {
-  Notebook, User, UserFilled, Setting, SwitchButton, ArrowDown,
-  UploadFilled, Folder, FolderOpened, ChatDotRound, DataAnalysis,
-  DataBoard, EditPen, TrendCharts, Clock, Histogram,
-  Monitor, Avatar, Lock, Connection, Pointer, MagicStick,
-  Tools, Document, Bell, Files, Service, Check, Menu, Close, Collection, Grid
+  User, Setting, SwitchButton, ArrowDown,
+  Bell, Menu, Close
 } from '@element-plus/icons-vue'
 
 const router = useRouter()
@@ -361,40 +195,18 @@ const unreadCount = computed(() => messageStore.unreadCount)
 const notifications = computed(() => previewNotifications.value)
 const loading = computed(() => messageStore.loading)
 
-// 侧边栏全部菜单项的基路径（与下方各角色菜单的 navigateTo 目标一一对应）。
-// 高亮用它做「最长前缀」匹配：详情页（/student/check-history/:paperId 等）
-// 能点亮所属列表项；同族路径（/admin/paper-assignment 与其 /manual 等子项）
-// 只亮最精确的一条，不会双高亮。
-const MENU_BASES = [
-  // 学生
-  '/dashboard/student',
-  '/student/paper-submit', '/student/my-papers', '/student/advisor-interaction',
-  '/student/file-management', '/student/student-check-with-websocket',
-  '/student/check-history', '/student/academic-integrity',
-  '/student/settings', '/student/help-center',
-  // 教师
-  '/teacher', '/teacher/student-list',
-  '/teacher/paper-review/pending', '/teacher/paper-review/audit-records',
-  '/teacher/data-statistics', '/teacher/review-templates', '/teacher/student-groups',
-  '/teacher/chat-center', '/teacher/file-management', '/teacher/profile',
-  // 管理员
-  '/dashboard/admin', '/admin/school-overview', '/admin/paper-library',
-  '/admin/paper-assignment', '/admin/paper-assignment/manual',
-  '/admin/paper-assignment/auto', '/admin/paper-assignment/history',
-  '/admin/report-management', '/admin/knowledge-management',
-  '/admin/check-rule-management', '/admin/compare-lib-management',
-  '/admin/subject-management', '/admin/system-notice-management',
-  '/admin/message-template-management', '/admin/log-center', '/admin/settings',
-  // 超级管理员
-  '/admin/user-management', '/super-admin', '/admin/system-config',
-  '/super-admin/similarity-thresholds', '/super-admin/review-workflow',
-  '/super-admin/system-monitoring',
-]
+// 侧边栏菜单：从路由表（asyncRoutes 的 meta.menu）按当前角色派生，见 src/utils/menu.js。
+// 顶部大标题也在这里一并给出，不再按角色写四份模板块。
+const sidebarMenu = computed(() => buildMenus(asyncRoutes, userStore.role))
 
+// 高亮用「最长前缀」匹配：详情页（/student/check-history/:paperId 等）
+// 能点亮所属列表项；同族路径（/admin/paper-assignment 与其 /manual 等子项）
+// 只亮最精确的一条，不会双高亮。前缀集合直接取派生菜单项的 path，不再手写数组。
 const activeMenu = computed(() => {
   const path = route.path
   let best = ''
-  for (const base of MENU_BASES) {
+  for (const item of sidebarMenu.value.items) {
+    const base = item.path
     if ((path === base || path.startsWith(`${base}/`)) && base.length > best.length) {
       best = base
     }

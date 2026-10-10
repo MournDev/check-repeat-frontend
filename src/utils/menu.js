@@ -1,0 +1,81 @@
+// 侧边栏菜单从路由表派生（SSOT）。
+//
+// 路由在 meta.menu 上声明菜单元数据，这里按当前角色过滤、排序，交给
+// MainLayout 渲染。此前四个角色各维护一份硬编码模板块（约 170 行），新增
+// 页面要记得改菜单还得防四个块漂移；现在菜单项与路由声明在同一处，路由
+// 表就是菜单的唯一事实来源。
+//
+// meta.menu 字段：
+//   icon   Element Plus 图标组件名（@element-plus/icons-vue 的导出名）
+//   label  菜单文案；缺省用 meta.title。两者允许不同：title 进面包屑和
+//          浏览器标签页，label 是侧边栏短文案（如「论文工作台」vs「学生仪表盘」）
+//   group  分组子标签（如「查重管理」）；缺省/null 表示无分组
+//   order  在该角色菜单中的排序位置（必填，缺了沉底）
+//   roles  覆盖「谁能看到这一项」；缺省依次继承路由自身 meta.roles、
+//          父路由 meta.roles
+//   hidden true 表示该路由刻意不进菜单（详情页、容器路由等），仅作文档标注
+//   spacer 在这一项之前渲染一段留白（各角色菜单尾部设置项前）
+//
+// 同一路由出现在多个角色菜单的不同位置时（如「查重规则」：ADMIN 菜单无
+// 分组、超管菜单归「系统运维」组），用角色名作 key 写覆盖块：
+//   menu: { icon: 'Setting', ADMIN: { order: 10 }, SUPER_ADMIN: { group: '系统运维', order: 7 } }
+
+import * as ElIcons from '@element-plus/icons-vue'
+
+// 侧边栏顶部大标题按角色固定。
+const SECTION_LABELS = {
+  STUDENT: '学生',
+  TEACHER: '教师',
+  ADMIN: '业务管理',
+  SUPER_ADMIN: '系统管理',
+}
+
+// 应用角色覆盖块：menu[role] 的字段覆盖同名字段。
+const resolve = (menu, role) => ({ ...menu, ...(menu[role] || {}) })
+
+const joinPath = (parent, child) => {
+  if (!child) return parent
+  if (child.startsWith('/')) return child
+  return `${parent.replace(/\/+$/, '')}/${child}`
+}
+
+function collect(records, inheritedRoles, basePath, role, out) {
+  for (const record of records) {
+    const meta = record.meta || {}
+    const path = joinPath(basePath, record.path)
+    const menu = meta.menu ? resolve(meta.menu, role) : null
+    // 生效角色：menu.roles 优先（把共用路由限定给某个角色的菜单，如超管的
+    // 「系统配置」），其次路由自身 meta.roles，最后父路由的。
+    const roles = (menu && menu.roles) || meta.roles || inheritedRoles
+    if (menu && !menu.hidden && roles.includes(role)) {
+      out.push({
+        path,
+        label: menu.label || meta.title || path,
+        icon: menu.icon ? ElIcons[menu.icon] : null,
+        group: menu.group || null,
+        order: typeof menu.order === 'number' ? menu.order : Number.MAX_SAFE_INTEGER,
+        spacer: Boolean(menu.spacer),
+      })
+    }
+    if (record.children?.length) {
+      collect(record.children, roles, path, role, out)
+    }
+  }
+}
+
+// 从路由表构建指定角色的侧边栏菜单。
+// 返回 { label: 顶部大标题, items: [{ path, label, icon, groupLabel, spacer }] }，
+// items 已按 order 排序；groupLabel 是显示在本项之上的分组子标签，只在
+// group 相对上一项发生变化且非空时给出，模板无需自己跟踪分组状态。
+export function buildMenus(routes, role) {
+  const items = []
+  collect(routes, [], '/', role, items)
+  items.sort((a, b) => a.order - b.order)
+  return {
+    label: SECTION_LABELS[role] || '菜单',
+    items: items.map((item, index) => ({
+      ...item,
+      groupLabel: item.group && item.group !== items[index - 1]?.group ? item.group : null,
+    })),
+  }
+}

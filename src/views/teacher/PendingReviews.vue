@@ -1347,7 +1347,7 @@ import { ElMessage, ElMessageBox, ElLoading } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import ReviewDialog from '@/views/teacher/ReviewDialog.vue'
 import PlagiarismReportViewer from '@/views/teacher/PlagiarismReportViewer.vue'// import SimilarityReportDialog from './components/SimilarityReportDialog.vue'
-import PriorityBadge from '@/views/teacher/PriorityBadge.vue'
+import PriorityBadge from '@/views/teacher/components/PriorityBadge.vue'
 import { formatDateTime } from '@/utils/dataType.js'
 import { getAllColleges } from '@/api/user'
 
