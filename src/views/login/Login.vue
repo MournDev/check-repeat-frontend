@@ -194,7 +194,9 @@ const handleLogin = async () => {
       } else if (role === 'TEACHER') {
         targetRoute = { name: 'TeacherDashboard' }
       } else if (role === 'ADMIN') {
-        targetRoute = { name: 'SchoolOverview' }
+        // 与 MainLayout 的 ROLE_HOME.ADMIN 对齐：登录落「运营概览」，
+        // 也是侧边栏第一项和面包屑「首页」的目标
+        targetRoute = { name: 'AdminDashboard' }
       } else if (role === 'SUPER_ADMIN') {
         targetRoute = { name: 'SuperAdminDashboard' }
       } else {

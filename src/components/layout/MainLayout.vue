@@ -186,6 +186,10 @@
           <!-- Admin Menu (业务管理员 — 管"事") -->
           <div v-if="userStore.role === 'ADMIN'" class="sidebar-section">
             <div class="sidebar-section-label">业务管理</div>
+            <!-- 运营概览是 ADMIN 的首页（ROLE_HOME / 登录落点 / 面包屑「首页」三者一致） -->
+            <a :class="['sidebar-item', { active: activeMenu === '/dashboard/admin' }]" @click="navigateTo('/dashboard/admin')">
+              <el-icon><DataBoard /></el-icon><span>运营概览</span>
+            </a>
             <a :class="['sidebar-item', { active: activeMenu === '/admin/school-overview' }]" @click="navigateTo('/admin/school-overview')">
               <el-icon><DataAnalysis /></el-icon><span>全校概览</span>
             </a>
@@ -250,7 +254,7 @@
             <a :class="['sidebar-item', { active: activeMenu === '/super-admin' }]" @click="navigateTo('/super-admin')">
               <el-icon><Monitor /></el-icon><span>系统概览</span>
             </a>
-            <a :class="['sidebar-item', { active: activeMenu === '/super-admin/system-config' }]" @click="navigateTo('/super-admin/system-config')">
+            <a :class="['sidebar-item', { active: activeMenu === '/admin/system-config' }]" @click="navigateTo('/admin/system-config')">
               <el-icon><Tools /></el-icon><span>系统配置</span>
             </a>
             <a :class="['sidebar-item', { active: activeMenu === '/super-admin/similarity-thresholds' }]" @click="navigateTo('/super-admin/similarity-thresholds')">
@@ -269,7 +273,7 @@
               <el-icon><Grid /></el-icon><span>学科领域管理</span>
             </a>
             <div class="sidebar-sub-label">监控与日志</div>
-            <a :class="['sidebar-item', { active: activeMenu === '/super-admin/log-center' }]" @click="navigateTo('/super-admin/log-center')">
+            <a :class="['sidebar-item', { active: activeMenu === '/admin/log-center' }]" @click="navigateTo('/admin/log-center')">
               <el-icon><Document /></el-icon><span>日志中心</span>
             </a>
             <a :class="['sidebar-item', { active: activeMenu === '/super-admin/system-monitoring' }]" @click="navigateTo('/super-admin/system-monitoring')">
@@ -357,7 +361,46 @@ const unreadCount = computed(() => messageStore.unreadCount)
 const notifications = computed(() => previewNotifications.value)
 const loading = computed(() => messageStore.loading)
 
-const activeMenu = computed(() => route.path)
+// 侧边栏全部菜单项的基路径（与下方各角色菜单的 navigateTo 目标一一对应）。
+// 高亮用它做「最长前缀」匹配：详情页（/student/check-history/:paperId 等）
+// 能点亮所属列表项；同族路径（/admin/paper-assignment 与其 /manual 等子项）
+// 只亮最精确的一条，不会双高亮。
+const MENU_BASES = [
+  // 学生
+  '/dashboard/student',
+  '/student/paper-submit', '/student/my-papers', '/student/advisor-interaction',
+  '/student/file-management', '/student/student-check-with-websocket',
+  '/student/check-history', '/student/academic-integrity',
+  '/student/settings', '/student/help-center',
+  // 教师
+  '/teacher', '/teacher/student-list',
+  '/teacher/paper-review/pending', '/teacher/paper-review/audit-records',
+  '/teacher/data-statistics', '/teacher/review-templates', '/teacher/student-groups',
+  '/teacher/chat-center', '/teacher/file-management', '/teacher/profile',
+  // 管理员
+  '/dashboard/admin', '/admin/school-overview', '/admin/paper-library',
+  '/admin/paper-assignment', '/admin/paper-assignment/manual',
+  '/admin/paper-assignment/auto', '/admin/paper-assignment/history',
+  '/admin/report-management', '/admin/knowledge-management',
+  '/admin/check-rule-management', '/admin/compare-lib-management',
+  '/admin/subject-management', '/admin/system-notice-management',
+  '/admin/message-template-management', '/admin/log-center', '/admin/settings',
+  // 超级管理员
+  '/admin/user-management', '/super-admin', '/admin/system-config',
+  '/super-admin/similarity-thresholds', '/super-admin/review-workflow',
+  '/super-admin/system-monitoring',
+]
+
+const activeMenu = computed(() => {
+  const path = route.path
+  let best = ''
+  for (const base of MENU_BASES) {
+    if ((path === base || path.startsWith(`${base}/`)) && base.length > best.length) {
+      best = base
+    }
+  }
+  return best
+})
 
 const displayUserName = computed(() => {
   if (userStore.userInfo?.realName) return userStore.userInfo.realName
@@ -391,21 +434,29 @@ const topNavItems = computed(() => {
     { key: 'students', label: '学生管理', path: '/teacher/student-list' },
   ]
   if (role === 'ADMIN') return [
+    { key: 'dashboard', label: '工作台', path: '/dashboard/admin' },
     { key: 'papers', label: '论文管理', path: '/admin/paper-library' },
     { key: 'assign', label: '论文分配', path: '/admin/paper-assignment/manual' },
   ]
   if (role === 'SUPER_ADMIN') return [
     { key: 'users', label: '人员管理', path: '/admin/user-management' },
     { key: 'dashboard', label: '系统运维', path: '/super-admin' },
-    { key: 'config', label: '系统配置', path: '/super-admin/system-config' },
-    { key: 'logs', label: '日志中心', path: '/super-admin/log-center' },
+    { key: 'config', label: '系统配置', path: '/admin/system-config' },
+    { key: 'logs', label: '日志中心', path: '/admin/log-center' },
   ]
   return []
 })
 
 const isActiveSection = (key) => {
   const path = route.path
-  if (key === 'dashboard') return path === '/super-admin'
+  const role = userStore.role
+  // 'dashboard' 是三个角色共用 key，按角色各判各的，学生/管理员的工作台此前永远不亮
+  if (key === 'dashboard') {
+    if (role === 'STUDENT') return path === '/dashboard/student'
+    if (role === 'ADMIN') return path === '/dashboard/admin'
+    if (role === 'SUPER_ADMIN') return path === '/super-admin'
+    return false
+  }
   if (key === 'paper') return path.includes('/student/paper') || path.includes('/student/my-papers')
   if (key === 'check') return path.includes('/student/check') || path.includes('/student/student-check')
   if (key === 'review') return path.includes('/teacher/paper-review')
@@ -413,8 +464,8 @@ const isActiveSection = (key) => {
   if (key === 'users') return path.includes('/admin/user')
   if (key === 'papers') return path.includes('/admin/paper-library')
   if (key === 'assign') return path.includes('/admin/paper-assignment')
-  if (key === 'config') return path.includes('/super-admin/system-config')
-  if (key === 'logs') return path.includes('/super-admin/log-center')
+  if (key === 'config') return path.includes('/admin/system-config')
+  if (key === 'logs') return path.includes('/admin/log-center')
   return false
 }
 
@@ -469,7 +520,7 @@ const toggleSidebar = () => { sidebarVisible.value = !sidebarVisible.value }
 
 const settingsPath = computed(() => {
   const r = userStore.role.toLowerCase()
-  if (r === 'super_admin') return '/super-admin'
+  if (r === 'super_admin') return '/admin/settings'
   if (r === 'teacher') return '/teacher/profile'
   return `/${r}/settings`
 })

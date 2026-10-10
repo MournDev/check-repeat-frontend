@@ -150,8 +150,11 @@ const asyncRoutes = [
     meta: { requiresAuth: true, roles: ["SUPER_ADMIN"], title: "超级管理员" },
     children: [
       { path: "", name: "SuperAdminDashboard", component: () => import("@/views/admin/Dashboard.vue"), meta: { title: "系统概览" } },
-      { path: "system-config", name: "SuperAdminSystemConfig", component: () => import("@/views/admin/SystemConfig.vue"), meta: { title: "系统配置" } },
-      { path: "log-center", name: "SuperAdminLogCenter", component: () => import("@/views/admin/LogCenter.vue"), meta: { title: "日志中心" } },
+      // 系统配置 / 日志中心与 /admin 下是同一组件，这里只保留 URL 兼容跳转，
+      // 不再重复注册路由（同一页面两条 URL 会分裂面包屑、高亮与埋点语义）。
+      // /admin 的 roles 含 SUPER_ADMIN，超管可直接访问 /admin/*。
+      { path: "system-config", redirect: "/admin/system-config" },
+      { path: "log-center", redirect: "/admin/log-center" },
       { path: "similarity-thresholds", name: "SuperAdminSimilarityThresholds", component: () => import("@/views/teacher/SimilarityThreshold.vue"), meta: { title: "相似度阈值设置" } },
       { path: "review-workflow", name: "SuperAdminReviewWorkflow", component: () => import("@/views/teacher/ReviewWorkflow.vue"), meta: { title: "审核工作流配置" } },
       { path: "system-monitoring", name: "SystemMonitoring", component: () => import("@/views/admin/SystemMonitoring.vue"), meta: { title: "系统监控" } },
