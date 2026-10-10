@@ -17,19 +17,11 @@ export const getResourceUsage = () => {
   })
 }
 
-// 获取API响应时间统计
-export const getApiResponseTimes = (period = '1h') => {
-  return request({
-    url: '/api/admin/monitoring/response-times',
-    method: 'get',
-    params: { period }
-  })
-}
-
 // 获取系统监控概览
+// 后端已统一到 /api/admin/monitoring 前缀（原 /api/admin/monitor/{overview,database,application} 已迁移）
 export const getSystemOverview = () => {
   return request({
-    url: '/api/admin/monitor/overview',
+    url: '/api/admin/monitoring/overview',
     method: 'get'
   })
 }
@@ -37,7 +29,7 @@ export const getSystemOverview = () => {
 // 获取数据库监控
 export const getDatabaseMonitor = () => {
   return request({
-    url: '/api/admin/monitor/database',
+    url: '/api/admin/monitoring/database',
     method: 'get'
   })
 }
@@ -45,23 +37,7 @@ export const getDatabaseMonitor = () => {
 // 获取应用性能监控
 export const getApplicationMetrics = () => {
   return request({
-    url: '/api/admin/monitor/application',
-    method: 'get'
-  })
-}
-
-// 获取缓存性能监控
-export const getCacheMetrics = () => {
-  return request({
-    url: '/api/admin/monitor/cache',
-    method: 'get'
-  })
-}
-
-// 获取业务指标监控
-export const getBusinessMetrics = () => {
-  return request({
-    url: '/api/admin/monitoring/metrics',
+    url: '/api/admin/monitoring/application',
     method: 'get'
   })
 }

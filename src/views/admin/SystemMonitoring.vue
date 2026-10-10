@@ -139,7 +139,7 @@
 import { ref, reactive, onMounted, onUnmounted, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Refresh, Monitor, Cpu, Coin, DataLine } from '@element-plus/icons-vue'
-import { getResourceUsage, getPerformanceData, getApiResponseTimes, getSystemOverview, getDatabaseMonitor, getApplicationMetrics, getResponseTimeTrend } from '@/api/admin/monitoring'
+import { getResourceUsage, getPerformanceData, getSystemOverview, getDatabaseMonitor, getApplicationMetrics, getResponseTimeTrend } from '@/api/admin/monitoring'
 import * as echarts from 'echarts'
 
 const refreshInterval = ref(0)
