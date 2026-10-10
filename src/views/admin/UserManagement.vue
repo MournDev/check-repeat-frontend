@@ -87,7 +87,7 @@
         @selection-change="handleSelectionChange"
         v-loading="loading"
       >
-        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column type="selection" width="55" :selectable="canManage"></el-table-column>
         <el-table-column prop="username" label="用户名" width="120"></el-table-column>
         <el-table-column prop="realName" label="真实姓名" width="100"></el-table-column>
         <el-table-column prop="roleName" label="人员类型" width="100">
@@ -116,6 +116,7 @@
               :inactive-value="0"
               active-color="#13ce66"
               inactive-color="#ff4949"
+              :disabled="!canManage(row)"
               @change="handleStatusChange(row, $event)"
             />
           </template>
@@ -125,13 +126,14 @@
             <el-button size="small" type="primary" text @click="viewUser(row)">
               查看
             </el-button>
-            <el-button size="small" type="warning" text @click="editUser(row)">
+            <el-button v-if="canManage(row)" size="small" type="warning" text @click="editUser(row)">
               编辑
             </el-button>
-            <el-button 
-              size="small" 
-              type="danger" 
-              text 
+            <el-button
+              v-if="canManage(row)"
+              size="small"
+              type="danger"
+              text
               @click="deleteUser(row)"
             >
               删除
@@ -212,7 +214,7 @@
           <el-select v-model="userForm.roleId" placeholder="请选择人员类型" style="width: 100%" @change="handleRoleChange">
             <el-option label="学生" value="1001"></el-option>
             <el-option label="教师" value="2001"></el-option>
-            <el-option label="管理员" value="3001"></el-option>
+            <el-option v-if="userStore.isSuperAdmin" label="管理员" value="3001"></el-option>
           </el-select>
         </el-form-item>
         
@@ -294,6 +296,7 @@ import {
   updateUserStatus,
   exportUsers as exportUsersApi
 } from '@/api/admin/users'
+import { useUserStore } from '@/stores/user'
 
 // 图标导入
 import {
@@ -500,6 +503,14 @@ const loadUserList = async () => {
   }
 }
 
+// 权限治理（与后端 403/40304 对齐）：ADMIN 无权管理同级 ADMIN 与超级管理员，
+// 这些行的编辑/删除/状态开关直接隐藏或禁用，避免点了才被后端拒绝。
+const userStore = useUserStore()
+const canManage = (row) => {
+  if (userStore.isSuperAdmin) return true
+  return !['ADMIN', 'SUPER_ADMIN'].includes(row.roleCode)
+}
+
 const getRoleTagType = (roleCode) => {
   const typeMap = {
     'STUDENT': 'primary',
@@ -630,9 +641,11 @@ const deleteUser = async (user) => {
     ElMessage.success('删除成功')
     loadUserList()
   } catch (error) {
+    // ElMessageBox 取消/关闭：静默返回（此前取消会误弹「删除用户失败」）
+    if (error === 'cancel' || error === 'close') return
+    // 403（如「仅超级管理员可管理管理员账号」）与业务失败已由拦截器弹出
+    // 后端精确文案，这里不再兜底弹第二次，避免盖住真实原因
     console.error('删除用户失败:', error)
-    ElMessage.error('删除用户失败')
-    // 用户取消操作
   }
 }
 
@@ -654,9 +667,9 @@ const batchDelete = async () => {
     selectedUsers.value = []
     loadUserList()
   } catch (error) {
+    if (error === 'cancel' || error === 'close') return
+    // 同 deleteUser：拦截器已弹出后端精确文案，不再二次兜底
     console.error('批量删除失败:', error)
-    ElMessage.error('批量删除失败')
-    // 用户取消操作
   }
 }
 
@@ -702,9 +715,8 @@ const handleStatusChange = async (user, newStatus) => {
     await updateUserStatus(userId, statusNumber)
     ElMessage.success(`用户状态已${normalizeStatus(statusNumber) === 'ENABLED' ? '启用' : '禁用'}`)
   } catch (error) {
+    // 拦截器已弹出后端精确文案（如权限不足），这里只回滚开关状态
     console.error('状态更新失败:', error)
-    ElMessage.error('状态更新失败')
-    // 恢复原状态
     user.status = prevStatus
   }
 }
@@ -752,8 +764,8 @@ const saveUser = async () => {
     loadUserList()
     saving.value = false
   } catch (error) {
+    // 拦截器已弹出后端精确文案（如「仅超级管理员可管理管理员账号」），不再二次兜底
     console.error('保存用户失败:', error)
-    ElMessage.error(`${isEdit.value ? '更新' : '创建'}失败`)
     saving.value = false
   }
 }
