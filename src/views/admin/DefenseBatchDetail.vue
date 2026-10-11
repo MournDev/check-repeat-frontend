@@ -87,9 +87,7 @@
           @keyup.enter="handleRecordSearch"
         />
         <el-select v-model="recordFilters.result" placeholder="结论" clearable class="filter-item" @change="handleRecordSearch">
-          <el-option label="通过" value="pass" />
-          <el-option label="不通过" value="fail" />
-          <el-option label="缓辩" value="postpone" />
+          <el-option v-for="o in resultOpts" :key="o.value" :label="o.label" :value="o.value" />
         </el-select>
         <el-button @click="handleRecordSearch">
           <el-icon><Search /></el-icon>
@@ -261,6 +259,16 @@ import {
 } from '@/api/defense'
 import { getPaperList } from '@/api/admin/papers'
 import { getReviewWorkflowTeachers } from '@/api/admin/config'
+import {
+  loadDefenseDict,
+  useDefenseDictOptions,
+  getDefenseDictText,
+  DICT_BATCH_TYPE,
+  DICT_BATCH_STATUS,
+  DICT_MODE,
+  DICT_RESULT,
+  DICT_PAPER_STATUS
+} from '@/utils/defenseDict'
 
 const route = useRoute()
 const router = useRouter()
@@ -479,15 +487,28 @@ const showBatchOpResult = (res, fallbackLabel) => {
   }
 }
 
-// ==================== 展示辅助 ====================
-const batchTypeText = (v) => (v === 'final' ? '终期答辩' : v === 'mid_term' ? '中期答辩' : v || '—')
-const modeText = (v) => (v === 'online' ? '线上答辩' : v === 'offline' ? '线下答辩' : v || '—')
-const statusText = (v) => ({ 0: '筹备中', 1: '进行中', 2: '已结束' }[v] ?? '—')
+// ==================== 展示辅助（defense_* 字典驱动，本地兜底） ====================
+const resultOptions = useDefenseDictOptions(DICT_RESULT)
+const localResultOptions = [
+  { value: 'pass', label: '通过' },
+  { value: 'fail', label: '不通过' },
+  { value: 'postpone', label: '缓辩' }
+]
+const resultOpts = computed(() => (resultOptions.value.length ? resultOptions.value : localResultOptions))
+
+const batchTypeText = (v) =>
+  getDefenseDictText(DICT_BATCH_TYPE, v, v === 'final' ? '终期答辩' : v === 'mid_term' ? '中期答辩' : v || '—')
+const modeText = (v) =>
+  getDefenseDictText(DICT_MODE, v, v === 'online' ? '线上答辩' : v === 'offline' ? '线下答辩' : v || '—')
+const statusText = (v) => {
+  if (v === null || v === undefined || v === '') return '—'
+  return getDefenseDictText(DICT_BATCH_STATUS, v, { 0: '筹备中', 1: '进行中', 2: '已结束' }[v] ?? '—')
+}
 const statusTagType = (v) => ({ 0: 'info', 1: 'primary', 2: 'success' }[v] || 'info')
-const resultText = (v) => ({ pass: '通过', fail: '不通过', postpone: '缓辩' }[v] || v)
+const resultText = (v) => getDefenseDictText(DICT_RESULT, v, { pass: '通过', fail: '不通过', postpone: '缓辩' }[v] || v)
 const resultTagType = (v) => ({ pass: 'success', fail: 'danger', postpone: 'warning' }[v] || 'info')
 
-// paper_status 13 态文案与字典对齐（/api/dict/data/type/paper_status）
+// paper_status 13 态本地兜底映射（与 /api/dict/data/type/paper_status 对齐），文案优先读字典
 const PAPER_STATUS_TEXT = {
   pending: '待分配',
   assigned: '已分配',
@@ -503,7 +524,7 @@ const PAPER_STATUS_TEXT = {
   finalized: '已定稿',
   archived: '已归档'
 }
-const paperStatusText = (v) => PAPER_STATUS_TEXT[v] || v || '—'
+const paperStatusText = (v) => getDefenseDictText(DICT_PAPER_STATUS, v, PAPER_STATUS_TEXT[v] || v || '—')
 const paperStatusTagType = (v) => ({
   reviewing: 'primary',
   mid_defense: 'warning',
@@ -520,6 +541,12 @@ onMounted(() => {
   fetchDetail()
   fetchRecords()
   fetchMembers()
+  // defense_* / paper_status 字典：失败不阻塞页面（文案走本地兜底，选项走兜底数组）
+  loadDefenseDict(DICT_BATCH_TYPE).catch(() => {})
+  loadDefenseDict(DICT_BATCH_STATUS).catch(() => {})
+  loadDefenseDict(DICT_MODE).catch(() => {})
+  loadDefenseDict(DICT_RESULT).catch(() => {})
+  loadDefenseDict(DICT_PAPER_STATUS).catch(() => {})
   getReviewWorkflowTeachers().then((res) => {
     teachers.value = res.data || []
   }).catch(() => {})

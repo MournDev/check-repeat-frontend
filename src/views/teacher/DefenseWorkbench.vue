@@ -116,9 +116,7 @@
           <div class="section-head">
             <span class="section-title">答辩记录</span>
             <el-select v-model="recordResult" placeholder="全部结论" clearable class="result-filter" @change="fetchRecords">
-              <el-option label="通过" value="pass" />
-              <el-option label="不通过" value="fail" />
-              <el-option label="缓辩" value="postpone" />
+              <el-option v-for="o in resultOpts" :key="o.value" :label="o.label" :value="o.value" />
             </el-select>
           </div>
         </template>
@@ -195,9 +193,7 @@
       <el-form ref="scoreFormRef" :model="scoreForm" :rules="scoreRules" label-width="80px">
         <el-form-item label="结论" prop="result">
           <el-radio-group v-model="scoreForm.result" @change="handleResultChange">
-            <el-radio value="pass">通过</el-radio>
-            <el-radio value="fail">不通过</el-radio>
-            <el-radio value="postpone">缓辩</el-radio>
+            <el-radio v-for="o in resultOpts" :key="o.value" :value="o.value">{{ o.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="得分" prop="score">
@@ -214,7 +210,7 @@
         </el-form-item>
         <el-form-item label="等级" prop="grade">
           <el-select v-model="scoreForm.grade" placeholder="选择等级" clearable style="width: 180px">
-            <el-option v-for="g in GRADE_OPTIONS" :key="g" :label="g" :value="g" />
+            <el-option v-for="o in gradeOpts" :key="o.value" :label="o.label" :value="o.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="答辩记录" prop="comment">
@@ -259,6 +255,15 @@ import {
   submitDefenseScore,
   uploadDefenseAttachment
 } from '@/api/defense'
+import {
+  loadDefenseDict,
+  useDefenseDictOptions,
+  getDefenseDictText,
+  DICT_BATCH_TYPE,
+  DICT_MODE,
+  DICT_RESULT,
+  DICT_GRADE
+} from '@/utils/defenseDict'
 
 const userStore = useUserStore()
 
@@ -350,7 +355,12 @@ const fetchRecords = async () => {
 }
 
 // ==================== 评分录入 ====================
+// 等级选项：defense_grade 字典驱动，失败兜底本地五档（dictValue 与 dictLabel 同为中文，可直接作提交值）
+const gradeOptions = useDefenseDictOptions(DICT_GRADE)
 const GRADE_OPTIONS = ['优', '良', '中', '及格', '不及格']
+const gradeOpts = computed(() =>
+  gradeOptions.value.length ? gradeOptions.value : GRADE_OPTIONS.map((g) => ({ value: g, label: g }))
+)
 
 const scoreFormRef = ref(null)
 const scoreDialog = reactive({
@@ -472,19 +482,40 @@ const handleScoreSubmit = async () => {
 }
 
 // ==================== 展示辅助 ====================
-const batchTypeText = (v) => (v === 'final' ? '终期答辩' : v === 'mid_term' ? '中期答辩' : v || '—')
-const modeText = (v) => (v === 'online' ? '线上答辩' : v === 'offline' ? '线下答辩' : v || '—')
+const batchTypeText = (v) =>
+  getDefenseDictText(DICT_BATCH_TYPE, v, v === 'final' ? '终期答辩' : v === 'mid_term' ? '中期答辩' : v || '—')
+const modeText = (v) =>
+  getDefenseDictText(DICT_MODE, v, v === 'online' ? '线上答辩' : v === 'offline' ? '线下答辩' : v || '—')
 const statusText = (v) => ({ 0: '筹备中', 1: '进行中', 2: '已结束' }[v] ?? '—')
 const statusTagType = (v) => ({ 0: 'info', 1: 'primary', 2: 'success' }[v] || 'info')
-const resultText = (v) => ({ pass: '通过', fail: '不通过', postpone: '缓辩' }[v] || v)
+const resultText = (v) => getDefenseDictText(DICT_RESULT, v, { pass: '通过', fail: '不通过', postpone: '缓辩' }[v] || v)
 const resultTagType = (v) => ({ pass: 'success', fail: 'danger', postpone: 'warning' }[v] || 'info')
+
+// 结论选项：defense_result 字典驱动（dictValue=pass/fail/postpone 可直接作提交值），失败兜底本地
+const resultOptions = useDefenseDictOptions(DICT_RESULT)
+const resultOpts = computed(() =>
+  resultOptions.value.length
+    ? resultOptions.value
+    : [
+        { value: 'pass', label: '通过' },
+        { value: 'fail', label: '不通过' },
+        { value: 'postpone', label: '缓辩' }
+      ]
+)
 
 const formatDateTime = (val) => {
   if (!val) return '—'
   return String(val).replace('T', ' ').slice(0, 16)
 }
 
-onMounted(fetchBatches)
+onMounted(() => {
+  fetchBatches()
+  // defense_* 字典：失败不阻塞页面（文案走本地兜底，选项走兜底数组）
+  loadDefenseDict(DICT_BATCH_TYPE).catch(() => {})
+  loadDefenseDict(DICT_MODE).catch(() => {})
+  loadDefenseDict(DICT_RESULT).catch(() => {})
+  loadDefenseDict(DICT_GRADE).catch(() => {})
+})
 </script>
 
 <style scoped lang="scss">

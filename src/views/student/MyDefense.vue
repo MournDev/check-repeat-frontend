@@ -9,8 +9,7 @@
         </div>
         <el-radio-group v-model="batchType" @change="fetchList">
           <el-radio-button value="">全部</el-radio-button>
-          <el-radio-button value="mid_term">中期答辩</el-radio-button>
-          <el-radio-button value="final">终期答辩</el-radio-button>
+          <el-radio-button v-for="o in batchTypeOpts" :key="o.value" :value="o.value">{{ o.label }}</el-radio-button>
         </el-radio-group>
       </div>
     </el-card>
@@ -84,8 +83,16 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { getMyDefenseList } from '@/api/defense'
+import {
+  loadDefenseDict,
+  useDefenseDictOptions,
+  getDefenseDictText,
+  DICT_BATCH_TYPE,
+  DICT_MODE,
+  DICT_RESULT
+} from '@/utils/defenseDict'
 
 const loading = ref(false)
 const list = ref([])
@@ -101,10 +108,19 @@ const fetchList = async () => {
   }
 }
 
-// ==================== 展示辅助 ====================
-const batchTypeText = (v) => (v === 'final' ? '终期答辩' : v === 'mid_term' ? '中期答辩' : v || '—')
-const modeText = (v) => (v === 'online' ? '线上答辩' : v === 'offline' ? '线下答辩' : v || '—')
-const resultText = (v) => ({ pass: '通过', fail: '不通过', postpone: '缓辩' }[v] || v)
+// ==================== 展示辅助（defense_* 字典驱动，本地兜底） ====================
+const batchTypeOptions = useDefenseDictOptions(DICT_BATCH_TYPE)
+const localBatchTypeOptions = [
+  { value: 'mid_term', label: '中期答辩' },
+  { value: 'final', label: '终期答辩' }
+]
+const batchTypeOpts = computed(() => (batchTypeOptions.value.length ? batchTypeOptions.value : localBatchTypeOptions))
+
+const batchTypeText = (v) =>
+  getDefenseDictText(DICT_BATCH_TYPE, v, v === 'final' ? '终期答辩' : v === 'mid_term' ? '中期答辩' : v || '—')
+const modeText = (v) =>
+  getDefenseDictText(DICT_MODE, v, v === 'online' ? '线上答辩' : v === 'offline' ? '线下答辩' : v || '—')
+const resultText = (v) => getDefenseDictText(DICT_RESULT, v, { pass: '通过', fail: '不通过', postpone: '缓辩' }[v] || v)
 const resultTagType = (v) => ({ pass: 'success', fail: 'danger', postpone: 'warning' }[v] || 'info')
 
 const formatDateTime = (val) => {
@@ -112,7 +128,13 @@ const formatDateTime = (val) => {
   return String(val).replace('T', ' ').slice(0, 16)
 }
 
-onMounted(fetchList)
+onMounted(() => {
+  fetchList()
+  // defense_* 字典：失败不阻塞页面（文案走本地兜底，选项走兜底数组）
+  loadDefenseDict(DICT_BATCH_TYPE).catch(() => {})
+  loadDefenseDict(DICT_MODE).catch(() => {})
+  loadDefenseDict(DICT_RESULT).catch(() => {})
+})
 </script>
 
 <style scoped lang="scss">

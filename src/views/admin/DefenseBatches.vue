@@ -18,16 +18,13 @@
     <el-card class="console-card filter-card" shadow="never">
       <div class="filter-row">
         <el-select v-model="filters.batchType" placeholder="批次类型" clearable class="filter-item" @change="handleSearch">
-          <el-option label="中期答辩" value="mid_term" />
-          <el-option label="终期答辩" value="final" />
+          <el-option v-for="o in batchTypeOpts" :key="o.value" :label="o.label" :value="o.value" />
         </el-select>
         <el-select v-model="filters.collegeId" placeholder="学院（可空为全校）" clearable filterable class="filter-item filter-college" @change="handleSearch">
           <el-option v-for="c in colleges" :key="c.id" :label="c.collegeName" :value="String(c.id)" />
         </el-select>
         <el-select v-model="filters.status" placeholder="批次状态" clearable class="filter-item" @change="handleSearch">
-          <el-option label="筹备中" :value="0" />
-          <el-option label="进行中" :value="1" />
-          <el-option label="已结束" :value="2" />
+          <el-option v-for="o in batchStatusOpts" :key="o.value" :label="o.label" :value="Number(o.value)" />
         </el-select>
         <el-button @click="handleSearch">
           <el-icon><Search /></el-icon>
@@ -115,8 +112,7 @@
         </el-form-item>
         <el-form-item label="批次类型" prop="batchType">
           <el-radio-group v-model="form.batchType" :disabled="dialog.isEdit">
-            <el-radio value="mid_term">中期答辩</el-radio>
-            <el-radio value="final">终期答辩</el-radio>
+            <el-radio v-for="o in batchTypeOpts" :key="o.value" :value="o.value">{{ o.label }}</el-radio>
           </el-radio-group>
           <div v-if="!dialog.isEdit" class="form-tip">中期入批推进 reviewing → mid_defense；终期入批推进 mid_defense → final_defense</div>
         </el-form-item>
@@ -136,8 +132,7 @@
         </el-form-item>
         <el-form-item label="答辩方式" prop="mode">
           <el-radio-group v-model="form.mode">
-            <el-radio value="offline">线下答辩</el-radio>
-            <el-radio value="online">线上答辩</el-radio>
+            <el-radio v-for="o in modeOpts" :key="o.value" :value="o.value">{{ o.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item :label="form.mode === 'online' ? '会议链接' : '地点'" prop="location">
@@ -166,12 +161,20 @@
 </template>
 
 <script setup>
-import { reactive, ref, onMounted } from 'vue'
+import { computed, reactive, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { createDefenseBatch, updateDefenseBatch, getDefenseBatchList, deleteDefenseBatch } from '@/api/defense'
 import { getColleges } from '@/api/admin/common'
 import { getReviewWorkflowTeachers } from '@/api/admin/config'
+import {
+  loadDefenseDict,
+  useDefenseDictOptions,
+  getDefenseDictText,
+  DICT_BATCH_TYPE,
+  DICT_BATCH_STATUS,
+  DICT_MODE
+} from '@/utils/defenseDict'
 
 const router = useRouter()
 
@@ -325,10 +328,37 @@ const handleDelete = (row) => {
   }).catch(() => {})
 }
 
-// ==================== 展示辅助 ====================
-const batchTypeText = (v) => (v === 'final' ? '终期答辩' : v === 'mid_term' ? '中期答辩' : v || '—')
-const modeText = (v) => (v === 'online' ? '线上答辩' : v === 'offline' ? '线下答辩' : v || '—')
-const statusText = (v) => ({ 0: '筹备中', 1: '进行中', 2: '已结束' }[v] ?? '—')
+// ==================== 展示辅助（defense_* 字典驱动，本地兜底） ====================
+const batchTypeOptions = useDefenseDictOptions(DICT_BATCH_TYPE)
+const batchStatusOptions = useDefenseDictOptions(DICT_BATCH_STATUS)
+const modeOptions = useDefenseDictOptions(DICT_MODE)
+
+// 字典加载失败时兜底，保证筛选与表单始终可用；取值与 P3 播种 SQL 对齐
+const localBatchTypeOptions = [
+  { value: 'mid_term', label: '中期答辩' },
+  { value: 'final', label: '终期答辩' }
+]
+const localBatchStatusOptions = [
+  { value: 0, label: '筹备中' },
+  { value: 1, label: '进行中' },
+  { value: 2, label: '已结束' }
+]
+const localModeOptions = [
+  { value: 'offline', label: '线下答辩' },
+  { value: 'online', label: '线上答辩' }
+]
+const batchTypeOpts = computed(() => (batchTypeOptions.value.length ? batchTypeOptions.value : localBatchTypeOptions))
+const batchStatusOpts = computed(() => (batchStatusOptions.value.length ? batchStatusOptions.value : localBatchStatusOptions))
+const modeOpts = computed(() => (modeOptions.value.length ? modeOptions.value : localModeOptions))
+
+const batchTypeText = (v) =>
+  getDefenseDictText(DICT_BATCH_TYPE, v, v === 'final' ? '终期答辩' : v === 'mid_term' ? '中期答辩' : v || '—')
+const modeText = (v) =>
+  getDefenseDictText(DICT_MODE, v, v === 'online' ? '线上答辩' : v === 'offline' ? '线下答辩' : v || '—')
+const statusText = (v) => {
+  if (v === null || v === undefined || v === '') return '—'
+  return getDefenseDictText(DICT_BATCH_STATUS, v, { 0: '筹备中', 1: '进行中', 2: '已结束' }[v] ?? '—')
+}
 const statusTagType = (v) => ({ 0: 'info', 1: 'primary', 2: 'success' }[v] || 'info')
 
 const formatDateTime = (val) => {
@@ -338,6 +368,10 @@ const formatDateTime = (val) => {
 
 onMounted(async () => {
   fetchBatches()
+  // defense_* 字典：失败不阻塞页面（文案走本地兜底，选项走兜底数组；拦截器已 toast）
+  loadDefenseDict(DICT_BATCH_TYPE).catch(() => {})
+  loadDefenseDict(DICT_BATCH_STATUS).catch(() => {})
+  loadDefenseDict(DICT_MODE).catch(() => {})
   // 学院与教师候选项失败不阻塞列表本身（全局拦截器已 toast）
   getColleges().then((res) => {
     colleges.value = res.data || []

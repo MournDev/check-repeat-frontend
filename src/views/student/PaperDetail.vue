@@ -195,9 +195,9 @@
                                 :description="getReviewStepDesc(paperDetails)" />
                             <el-step title="审核完成"
                                 :description="paperDetails.paperStatus === 'completed' ? formatDate(paperDetails.reviewTime) : '--'" />
-                            <el-step title="中期答辩" icon="Calendar" :description="getDefenseStepDesc('mid_defense')" />
-                            <el-step title="终期答辩" icon="Trophy" :description="getDefenseStepDesc('final_defense')" />
-                            <el-step title="答辩通过" icon="CircleCheckFilled" :description="getDefenseStepDesc('defense_passed')" />
+                            <el-step :title="dictStatusText('mid_defense', '中期答辩')" icon="Calendar" :description="getDefenseStepDesc('mid_defense')" />
+                            <el-step :title="dictStatusText('final_defense', '终期答辩')" icon="Trophy" :description="getDefenseStepDesc('final_defense')" />
+                            <el-step :title="dictStatusText('defense_passed', '答辩通过')" icon="CircleCheckFilled" :description="getDefenseStepDesc('defense_passed')" />
                         </el-steps>
                     </el-card>
                 </el-col>
@@ -357,6 +357,7 @@ import { getPaperDetails, deleteFile as deleteFileAPI, createCheckTask, getCheck
 import { getAvatarUrl } from '@/utils/avatar'
 import { getSimilarityColor, getSimilarityTagType as baseGetSimilarityTagType } from '@/utils/reviewStatus.js'
 import { loadPaperTypes, getPaperTypeText } from '@/utils/paperType.js'
+import { loadDefenseDict, getDefenseDictText, DICT_PAPER_STATUS } from '@/utils/defenseDict.js'
 
 // 图标引入
 import {
@@ -1168,13 +1169,17 @@ const getActiveStep = (paperStatus) => {
     return stepMap[paperStatus] || 1
 }
 
+// 进度时间线状态名文案：优先读 paper_status 字典（13 态），字典未加载时回退本地措辞；
+// 已加载但未命中时 getDefenseDictText 返回裸值（脏数据一眼可见）
+const dictStatusText = (code, fallback) => getDefenseDictText(DICT_PAPER_STATUS, code, fallback)
+
 const getReviewStepTitle = (paperStatus) => {
     if (paperStatus === 'rejected') return '需要修改'
     if (paperStatus === 'completed') return '审核通过'
-    if (paperStatus === 'reviewing') return '评阅中'
-    if (paperStatus === 'mid_defense') return '中期答辩'
-    if (paperStatus === 'final_defense') return '终期答辩'
-    if (paperStatus === 'defense_passed' || paperStatus === 'finalized' || paperStatus === 'archived') return '答辩通过'
+    if (paperStatus === 'reviewing') return dictStatusText('reviewing', '评阅中')
+    if (paperStatus === 'mid_defense') return dictStatusText('mid_defense', '中期答辩')
+    if (paperStatus === 'final_defense') return dictStatusText('final_defense', '终期答辩')
+    if (paperStatus === 'defense_passed' || paperStatus === 'finalized' || paperStatus === 'archived') return dictStatusText('defense_passed', '答辩通过')
     if (paperStatus === 'auditing' || paperStatus === 'assigned') return '导师审核'
     if (paperStatus === 'pending') return '等待分配'
     return '处理中'
@@ -1392,6 +1397,8 @@ onMounted(() => {
     // 预取论文类型，让 getPaperTypeText 能把 code 渲染成中文（未加载完时先显示裸 code）
     // 失败不在这里处理：全局 axios 拦截器已经 toast 过，catch 只为避免未处理的 rejection
     loadPaperTypes().catch(() => {})
+    // 预取 paper_status 字典，时间线三个答辩节点文案改由字典驱动（失败回退本地措辞）
+    loadDefenseDict(DICT_PAPER_STATUS).catch(() => {})
 });
 </script>
 
