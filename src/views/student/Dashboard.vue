@@ -248,14 +248,14 @@
                   <div class="info-label">字数统计</div>
                   <div class="info-value">
                     <el-icon><EditPen /></el-icon>
-                    <span class="word-count">{{ latestPaper.wordCount || '9999+' }} 字</span>
+                    <span class="word-count">{{ latestPaper.wordCount ? latestPaper.wordCount + ' 字' : '暂无' }}</span>
                   </div>
                 </div>
-                <div class="info-item">
+                <div class="info-item" v-if="latestPaper.version">
                   <div class="info-label">版本信息</div>
                   <div class="info-value">
                     <el-icon><Files /></el-icon>
-                    <span class="version">V{{ latestPaper.version || 1 }}</span>
+                    <span class="version">V{{ latestPaper.version }}</span>
                   </div>
                 </div>
               </div>
@@ -298,7 +298,11 @@
                 <span>个人能力评估</span>
               </div>
             </div>
-            <div ref="radarChartRef" class="chart-container"></div>
+            <div v-if="hasRadarData" ref="radarChartRef" class="chart-container"></div>
+            <div v-else class="chart-empty">
+              <el-icon class="empty-icon"><DataAnalysis /></el-icon>
+              <p>暂无评估数据</p>
+            </div>
           </div>
           <!-- 相似度趋势图 -->
           <div class="card chart-card">
@@ -308,7 +312,11 @@
                 <span>相似度变化趋势</span>
               </div>
             </div>
-            <div ref="trendChartRef" class="chart-container"></div>
+            <div v-if="hasTrendData" ref="trendChartRef" class="chart-container"></div>
+            <div v-else class="chart-empty">
+              <el-icon class="empty-icon"><TrendCharts /></el-icon>
+              <p>暂无检测数据</p>
+            </div>
           </div>
         </div>
         <!-- 专业对比图 -->
@@ -319,7 +327,11 @@
               <span>与专业平均水平对比</span>
             </div>
           </div>
-          <div ref="comparisonChartRef" class="chart-container-large"></div>
+          <div v-if="hasComparisonData" ref="comparisonChartRef" class="chart-container-large"></div>
+          <div v-else class="chart-empty">
+            <el-icon class="empty-icon"><Histogram /></el-icon>
+            <p>暂无专业对比数据</p>
+          </div>
         </div>
       </div>
       <!-- 右侧：指导老师 -->
@@ -342,13 +354,13 @@
                 {{ advisorInfo.name?.charAt(0) }}
               </div>
               <div class="advisor-status">
-                <div class="status-indicator online"></div>
-                <span>在线</span>
+                <div class="status-indicator" :class="advisorOnlineStatus.className"></div>
+                <span>{{ advisorOnlineStatus.text }}</span>
               </div>
             </div>
             <div class="advisor-info">
               <h3 class="advisor-name">{{ advisorInfo.name }}</h3>
-              <p class="advisor-title">{{ advisorInfo.title || '教授' }}</p>
+              <p class="advisor-title">{{ advisorInfo.title || '暂无' }}</p>
               <div class="advisor-expertise">
                 <span v-for="field in advisorInfo.expertise" :key="field" class="expertise-tag">
                   {{ field }}
@@ -365,21 +377,21 @@
                 </div>
                 <div class="contact-item">
                   <el-icon><OfficeBuilding /></el-icon>
-                  <span>{{ advisorInfo.office || '信息楼 301室' }}</span>
+                  <span>{{ advisorInfo.office || '暂无' }}</span>
                 </div>
               </div>
             </div>
             <div class="advisor-stats">
               <div class="stat-item">
-                <div class="stat-number">24</div>
+                <div class="stat-number">{{ advisorInfo.guidedPapersCount ?? '暂无' }}</div>
                 <div class="stat-label">指导论文</div>
               </div>
               <div class="stat-item">
-                <div class="stat-number">98%</div>
+                <div class="stat-number">{{ advisorInfo.approvalRate != null ? advisorInfo.approvalRate + '%' : '暂无' }}</div>
                 <div class="stat-label">通过率</div>
               </div>
               <div class="stat-item">
-                <div class="stat-number">4.8</div>
+                <div class="stat-number">{{ advisorInfo.averageScore ?? '暂无' }}</div>
                 <div class="stat-label">评分</div>
               </div>
             </div>
@@ -395,6 +407,27 @@
             </div>
           </div>
         </div>
+        <!-- 通知消息卡片 -->
+        <div class="card notification-card">
+          <div class="card-header">
+            <div class="card-title">
+              <el-icon><Bell /></el-icon>
+              <span>通知消息</span>
+            </div>
+            <button class="text-button" @click="viewAllNotifications">查看全部</button>
+          </div>
+          <div v-if="notifications.length > 0" class="notification-list">
+            <div v-for="(item, index) in notifications" :key="item.id ?? index" class="notification-item">
+              <div class="notification-title">{{ item.title || '系统通知' }}</div>
+              <div class="notification-content">{{ item.content || item.message || '' }}</div>
+              <div class="notification-time">{{ formatDateTime(item.createTime || item.createdAt) }}</div>
+            </div>
+          </div>
+          <div v-else class="notification-empty">
+            <el-icon class="empty-icon"><Bell /></el-icon>
+            <p>暂无通知消息</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -405,7 +438,7 @@ import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
-import { getLatestPaper, getAdvisorInfo, getStudentDashboardStats, getDashboardDeadlines, getAbilityRadarData, getSimilarityTrendChart, getMajorComparisonData, getTodoList, getNotifications, getProgressTracking, exportDashboardStats } from "@/api/student.js"
+import { getLatestPaper, getAdvisorInfo, getStudentDashboardStats, getDashboardDeadlines, getAbilityRadarData, getSimilarityTrendChart, getMajorComparisonData, getNotifications, getProgressTracking, exportDashboardStats } from "@/api/student.js"
 import * as echarts from 'echarts'
 
 // 图标导入
@@ -433,7 +466,6 @@ const stats = reactive({
   revisionCount: 0
 })
 const latestPaper = ref(null)
-const todoList = ref([])
 const advisorInfo = ref(null)
 const notifications = ref([])
 const loading = reactive({
@@ -444,7 +476,6 @@ const loading = reactive({
   radar: false,
   trend: false,
   comparison: false,
-  todo: false,
   notifications: false,
   progress: false
 })
@@ -556,10 +587,6 @@ const progressSteps = computed(() => {
   ];
 });
 
-const pendingTasksCount = computed(() => {
-  return todoList.value.filter(t => !t.completed).length
-})
-
 const currentDate = computed(() => {
   return new Date().toLocaleDateString('zh-CN', {
     year: 'numeric',
@@ -578,12 +605,33 @@ const advisorRating = computed(() => {
   return abilityRadarData.advisorRating || 0
 })
 
-const avgReviewTime = computed(() => {
-  return '3'
+// 导师在线状态：null 显示未知
+const advisorOnlineStatus = computed(() => {
+  const status = advisorInfo.value?.onlineStatus
+  if (status === null || status === undefined || status === '') {
+    return { className: 'unknown', text: '未知' }
+  }
+  if (status === true || status === 'online' || status === 'ONLINE') {
+    return { className: 'online', text: '在线' }
+  }
+  return { className: 'offline', text: '离线' }
 })
 
-const collectionCount = computed(() => {
-  return '12'
+// 趋势图是否有数据
+const hasTrendData = computed(() => {
+  return Array.isArray(similarityTrendData.similarities) && similarityTrendData.similarities.length > 0
+})
+
+// 雷达图是否有数据：六个指标全为 0/空时视为无评估数据，展示空态
+const hasRadarData = computed(() => {
+  const d = abilityRadarData
+  return [d.paperCount, d.passRate, d.revisionTimes, d.averageSimilarity, d.onTimeSubmission, d.advisorRating]
+    .some(v => v !== null && v !== undefined && Number(v) !== 0)
+})
+
+// 专业对比图是否有数据
+const hasComparisonData = computed(() => {
+  return Array.isArray(majorComparisonData.dimensions) && majorComparisonData.dimensions.length > 0
 })
 
 const estimatedCompletion = computed(() => {
@@ -605,42 +653,13 @@ const estimatedCompletion = computed(() => {
     }
     return dateStr;
   }
-  // 根据当前进度计算默认值
-  const progress = currentProgress.value;
-  const now = new Date();
-  switch (progress) {
-    case 0: return '未开始';
-    case 1: {
-      const d = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
-      return d.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
-    }
-    case 2: {
-      const d = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-      return d.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
-    }
-    case 3: {
-      const d = new Date(now.getTime() + 21 * 24 * 60 * 60 * 1000);
-      return d.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
-    }
-    case 4: return '已完成';
-    default: return '计算中';
-  }
+  // 后端未返回预估时间
+  return '暂无预估';
 })
 
 const processingSpeed = computed(() => {
-  if (progressTrackingData.processingSpeed) {
-    return progressTrackingData.processingSpeed;
-  }
-  // 根据当前进度返回默认值
-  const progress = currentProgress.value;
-  const speedMap = {
-    0: '未开始',
-    1: '等待审核',
-    2: '正常处理中',
-    3: '需修改后重新提交',
-    4: '已完成'
-  };
-  return speedMap[progress] || '未知';
+  // 后端根据最近查重任务的真实耗时返回（快速/正常/较慢），无记录返回 null → 暂无
+  return progressTrackingData.processingSpeed || '暂无';
 })
 
 // 方法
@@ -653,7 +672,7 @@ const loadDashboardData = async () => {
   
   try {
     // 并行请求所有数据
-    const [statsRes, paperRes, advisorRes, deadlinesRes, radarRes, trendRes, comparisonRes, todoRes, notifRes, progressRes] = await Promise.all([
+    const [statsRes, paperRes, advisorRes, deadlinesRes, radarRes, trendRes, comparisonRes, notifRes, progressRes] = await Promise.all([
       getStudentDashboardStats(),
       getLatestPaper(),
       getAdvisorInfo(),
@@ -661,7 +680,6 @@ const loadDashboardData = async () => {
       getAbilityRadarData(),
       getSimilarityTrendChart(),
       getMajorComparisonData(),
-      getTodoList(),
       getNotifications(5),
       getProgressTracking()
     ])
@@ -751,14 +769,6 @@ const loadDashboardData = async () => {
       ElMessage.error(comparisonRes.message || '获取专业对比数据失败')
     }
     loading.comparison = false
-    
-    // 处理待办事项
-    if (todoRes.code === 200) {
-      todoList.value = todoRes.data || []
-    } else {
-      ElMessage.error(todoRes.message || '获取待办事项失败')
-    }
-    loading.todo = false
     
     // 处理通知消息
     if (notifRes.code === 200) {
@@ -1124,7 +1134,7 @@ const addAllToCalendar = () => {
 
 // 图表初始化方法
 const initRadarChart = () => {
-  if (!radarChartRef.value) return;
+  if (!radarChartRef.value || !hasRadarData.value) return;
   
   radarChartInstance = echarts.init(radarChartRef.value);
   
@@ -1147,13 +1157,13 @@ const initRadarChart = () => {
       data: [
         {
           value: [
-            abilityRadarData.paperCount || 3,
-            abilityRadarData.passRate || 85,
+            abilityRadarData.paperCount ?? 0,
+            abilityRadarData.passRate ?? 0,
             // 相似度取反：100 - 相似度，这样越低越好
-            (100 - (abilityRadarData.averageSimilarity || 15.2)),
-            abilityRadarData.revisionTimes || 2,
-            abilityRadarData.onTimeSubmission || 100,
-            abilityRadarData.advisorRating || 90
+            (100 - (abilityRadarData.averageSimilarity ?? 0)),
+            abilityRadarData.revisionTimes ?? 0,
+            abilityRadarData.onTimeSubmission ?? 0,
+            abilityRadarData.advisorRating ?? 0
           ],
           name: '我的能力',
           areaStyle: {
@@ -1174,7 +1184,7 @@ const initRadarChart = () => {
 };
 
 const initTrendChart = () => {
-  if (!trendChartRef.value) return;
+  if (!trendChartRef.value || !hasTrendData.value) return;
   
   trendChartInstance = echarts.init(trendChartRef.value);
   
@@ -1191,7 +1201,7 @@ const initTrendChart = () => {
     xAxis: {
       type: 'category',
       boundaryGap: false,
-      data: similarityTrendData.versions || ['V1', 'V2', 'V3', 'V4']
+      data: similarityTrendData.versions
     },
     yAxis: {
       type: 'value',
@@ -1203,7 +1213,7 @@ const initTrendChart = () => {
       name: '相似度',
       type: 'line',
       smooth: true,
-      data: similarityTrendData.similarities || [25.8, 22.3, 18.5, 15.2],
+      data: similarityTrendData.similarities,
       areaStyle: {
         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
           { offset: 0, color: 'rgba(245, 87, 108, 0.3)' },
@@ -1224,7 +1234,7 @@ const initTrendChart = () => {
 };
 
 const initComparisonChart = () => {
-  if (!comparisonChartRef.value) return;
+  if (!comparisonChartRef.value || !hasComparisonData.value) return;
   
   comparisonChartInstance = echarts.init(comparisonChartRef.value);
   
@@ -1246,7 +1256,7 @@ const initComparisonChart = () => {
     },
     xAxis: {
       type: 'category',
-      data: majorComparisonData.dimensions || ['论文质量', '创新性', '规范性', '工作量', '答辩表现']
+      data: majorComparisonData.dimensions
     },
     yAxis: {
       type: 'value',
@@ -1257,7 +1267,7 @@ const initComparisonChart = () => {
       {
         name: '我的水平',
         type: 'bar',
-        data: majorComparisonData.myLevel || [85, 78, 92, 88, 90],
+        data: majorComparisonData.myLevel,
         itemStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
             { offset: 0, color: '#0066cc' },
@@ -1268,7 +1278,7 @@ const initComparisonChart = () => {
       {
         name: '专业平均',
         type: 'bar',
-        data: majorComparisonData.majorAverage || [75, 70, 80, 75, 78],
+        data: majorComparisonData.majorAverage,
         itemStyle: {
           color: '#e4e7ed'
         }
@@ -2011,8 +2021,79 @@ const initComparisonChart = () => {
     width: 100%;
   }
   
+  .chart-empty {
+    height: 300px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: #86868b;
+    
+    .empty-icon {
+      font-size: 40px;
+    }
+    
+    p {
+      margin: 0;
+      font-size: 0.875rem;
+    }
+  }
+  
   &.full-width {
     grid-column: 1 / -1;
+  }
+}
+
+// 通知消息卡片
+.notification-card {
+  
+  .notification-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    
+    .notification-item {
+      padding: 12px;
+      border-radius: 11px;
+      background: #f5f5f7;
+      
+      .notification-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin-bottom: 4px;
+      }
+      
+      .notification-content {
+        font-size: 0.8rem;
+        color: #86868b;
+        line-height: 1.4;
+        margin-bottom: 4px;
+      }
+      
+      .notification-time {
+        font-size: 0.75rem;
+        color: #86868b;
+      }
+    }
+  }
+  
+  .notification-empty {
+    padding: 32px 0;
+    text-align: center;
+    color: #86868b;
+    
+    .empty-icon {
+      font-size: 40px;
+      margin-bottom: 8px;
+    }
+    
+    p {
+      margin: 0;
+      font-size: 0.875rem;
+    }
   }
 }
 
@@ -2056,6 +2137,14 @@ const initComparisonChart = () => {
           
           &.online {
             background: #34c759;
+          }
+          
+          &.offline {
+            background: #86868b;
+          }
+          
+          &.unknown {
+            background: #d2d2d7;
           }
         }
       }
