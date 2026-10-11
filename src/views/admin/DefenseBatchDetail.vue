@@ -49,13 +49,33 @@
           <div class="stat-label">组长 / 秘书</div>
         </div>
       </div>
+      <div v-if="members.length" class="members-line">
+        <span class="members-label">答辩组成员</span>
+        <el-tag
+          v-for="m in members"
+          :key="m.id"
+          :type="m.groupRole === 'leader' ? 'danger' : 'info'"
+          effect="light"
+          round
+          size="small"
+          class="member-tag"
+        >
+          {{ m.teacherName || m.teacherUsername || '未知' }}<template v-if="m.groupRole === 'leader'">（组长）</template>
+        </el-tag>
+      </div>
       <p v-if="batch.remark" class="remark-line">备注：{{ batch.remark }}</p>
     </el-card>
 
     <!-- 记录列表 -->
     <el-card class="console-card" shadow="never">
       <template #header>
-        <span class="section-title">批次内答辩记录</span>
+        <div class="section-head">
+          <span class="section-title">批次内答辩记录</span>
+          <el-button :loading="exporting" @click="handleExport">
+            <el-icon><Download /></el-icon>
+            导出
+          </el-button>
+        </div>
       </template>
 
       <div class="filter-row">
@@ -235,7 +255,9 @@ import {
   getDefenseBatchDetail,
   assignDefenseMembers,
   enrollDefenseStudents,
-  getDefenseBatchRecords
+  getDefenseBatchRecords,
+  exportDefenseBatchRecords,
+  getDefenseBatchMembers
 } from '@/api/defense'
 import { getPaperList } from '@/api/admin/papers'
 import { getReviewWorkflowTeachers } from '@/api/admin/config'
@@ -259,6 +281,14 @@ const fetchDetail = async () => {
 }
 
 const goBack = () => router.push('/admin/defense-batches')
+
+// ==================== 答辩组成员名单 ====================
+const members = ref([])
+
+const fetchMembers = async () => {
+  const res = await getDefenseBatchMembers(batchId)
+  members.value = res.data || []
+}
 
 // ==================== 记录列表 ====================
 const recordLoading = ref(false)
@@ -294,6 +324,32 @@ const handleRecordReset = () => {
   fetchRecords(1)
 }
 
+// ==================== 导出答辩记录 ====================
+const exporting = ref(false)
+
+const handleExport = async () => {
+  exporting.value = true
+  try {
+    // request 在 responseType=blob 时返回原始 axios response
+    const res = await exportDefenseBatchRecords(batchId)
+    const blob = res.data || res
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `答辩记录_${batch.value.batchNo || batchId}_${new Date().toISOString().slice(0, 10)}.xlsx`
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    window.URL.revokeObjectURL(url)
+    ElMessage.success('导出已开始')
+  } catch (error) {
+    // 全局拦截器已提示错误，这里只留排查日志
+    console.error('导出答辩记录失败', error)
+  } finally {
+    exporting.value = false
+  }
+}
+
 // ==================== 分配答辩组 ====================
 const teachers = ref([])
 const assignDialog = reactive({
@@ -324,6 +380,7 @@ const handleAssignSubmit = async () => {
     showBatchOpResult(res, '答辩组分配完成')
     assignDialog.visible = false
     fetchDetail()
+    fetchMembers()
   } finally {
     assignDialog.submitting = false
   }
@@ -462,6 +519,7 @@ const formatDateTime = (val) => {
 onMounted(() => {
   fetchDetail()
   fetchRecords()
+  fetchMembers()
   getReviewWorkflowTeachers().then((res) => {
     teachers.value = res.data || []
   }).catch(() => {})
@@ -554,9 +612,32 @@ onMounted(() => {
   color: var(--apple-ink-muted-48);
 }
 
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .section-title {
   font-size: 0.9375rem;
   font-weight: 600;
+}
+
+.members-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.members-label {
+  font-size: 0.8125rem;
+  color: var(--apple-ink-muted-48);
+}
+
+.member-tag {
+  margin: 0;
 }
 
 .filter-row {

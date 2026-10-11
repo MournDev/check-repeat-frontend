@@ -95,6 +95,20 @@
           <el-descriptions-item label="答辩秘书">{{ batch.secretaryName || '待定' }}</el-descriptions-item>
           <el-descriptions-item label="组员人数">{{ batch.memberCount ?? '—' }}</el-descriptions-item>
         </el-descriptions>
+        <div v-if="members.length" class="members-line">
+          <span class="members-label">答辩组成员</span>
+          <el-tag
+            v-for="m in members"
+            :key="m.id"
+            :type="m.groupRole === 'leader' ? 'danger' : 'info'"
+            effect="light"
+            round
+            size="small"
+            class="member-tag"
+          >
+            {{ m.teacherName || m.teacherUsername || '未知' }}<template v-if="m.groupRole === 'leader'">（组长）</template>
+          </el-tag>
+        </div>
       </el-card>
 
       <el-card class="console-card" shadow="never">
@@ -241,6 +255,7 @@ import {
   getMyDefenseBatches,
   getTeacherDefenseBatchDetail,
   getTeacherDefenseRecords,
+  getTeacherDefenseMembers,
   submitDefenseScore,
   uploadDefenseAttachment
 } from '@/api/defense'
@@ -276,6 +291,7 @@ const batch = ref({})
 const records = ref([])
 const recordLoading = ref(false)
 const recordResult = ref('')
+const members = ref([])
 
 const isLeader = computed(() => {
   const myId = userStore.userInfo?.userId != null ? String(userStore.userInfo.userId) : ''
@@ -288,6 +304,16 @@ const conclusionPercent = computed(() => {
   if (!paper) return 0
   return Math.min(100, Math.round((submitted / paper) * 100))
 })
+
+// 组成员名单属辅助信息：失败（如 40303）静默降级为不展示，不阻塞详情页
+const fetchMembers = async () => {
+  try {
+    const res = await getTeacherDefenseMembers(batch.value.id)
+    members.value = res.data || []
+  } catch {
+    members.value = []
+  }
+}
 
 const enterDetail = async (row) => {
   view.value = 'detail'
@@ -303,12 +329,14 @@ const enterDetail = async (row) => {
     detailLoading.value = false
   }
   fetchRecords()
+  fetchMembers()
 }
 
 const backToList = () => {
   view.value = 'list'
   batch.value = {}
   records.value = []
+  members.value = []
 }
 
 const fetchRecords = async () => {
@@ -518,6 +546,23 @@ onMounted(fetchBatches)
 
 .meeting-desc {
   margin-top: 16px;
+}
+
+.members-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.members-label {
+  font-size: 0.8125rem;
+  color: var(--apple-ink-muted-48);
+}
+
+.member-tag {
+  margin: 0;
 }
 
 .section-head {

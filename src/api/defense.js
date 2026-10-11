@@ -84,6 +84,23 @@ export const getDefenseBatchRecords = (id, params) => {
   })
 }
 
+// 导出批次内答辩记录（EasyExcel xlsx；responseType blob 返回原始 axios response）
+export const exportDefenseBatchRecords = (id) => {
+  return request({
+    url: `/api/admin/defense/batch/${id}/records/export`,
+    method: 'get',
+    responseType: 'blob'
+  })
+}
+
+// 批次答辩组成员名单（组长在前，成员在后，同角色按加入时间升序）
+export const getDefenseBatchMembers = (id) => {
+  return request({
+    url: `/api/admin/defense/batch/${id}/members`,
+    method: 'get'
+  })
+}
+
 // ==================== 教师端：答辩工作台 ====================
 // 后端控制器：TeacherDefenseController（/api/teacher/defense/**，仅 TEACHER）。
 // 组长（leader）主持并汇总结论；成员（member）参与；秘书（secretary）记录与线下回填。
@@ -112,6 +129,16 @@ export const getTeacherDefenseRecords = (id, result) => {
     url: `/api/teacher/defense/batch/${id}/records`,
     method: 'get',
     params: result ? { result } : {}
+  })
+}
+
+// 批次答辩组成员名单（组长在前，成员在后；须为本批次组成员或秘书）
+// silent：名单属辅助信息，失败不弹全局红条，由页面自行降级为隐藏
+export const getTeacherDefenseMembers = (id) => {
+  return request({
+    url: `/api/teacher/defense/batch/${id}/members`,
+    method: 'get',
+    silent: true
   })
 }
 
