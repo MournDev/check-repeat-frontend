@@ -187,7 +187,7 @@ const fetchList = async () => {
 const fetchLibOptions = async () => {
   libLoading.value = true
   try {
-    const res = await getCompareLibList({ pageSize: 1000 })
+    const res = await getCompareLibList({ currentPage: 1, pageSize: 1000 })
     if (res.code === 200 && res.data) {
       libOptions.value = res.data.records || []
     }
