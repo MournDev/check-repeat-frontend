@@ -824,6 +824,14 @@ function initAdminTeacher() {
     officeAddress: info.officeAddress || '',
     title: info.title || '', collegeId: info.collegeId || '',
     researchFields: info.researchFields || [], office: info.office || '', officeHours: info.officeHours || '',
+    // 通知/偏好随登录下发（LoginVO），?? 保默认值：旧 localStorage 缓存里没有这些键时
+    // 与 DB 列默认值一致（开/开/开/开，90 天，daily）；后端下发了 false/0 时必须原样回显
+    notifySystemError: info.notifySystemError ?? true,
+    notifySecurityWarning: info.notifySecurityWarning ?? true,
+    notifySystemAnnouncement: info.notifySystemAnnouncement ?? true,
+    notifyEmail: info.notifyEmail ?? true,
+    logRetentionDays: info.logRetentionDays ?? 90,
+    backupFrequency: info.backupFrequency || 'daily',
   })
 }
 
