@@ -271,11 +271,91 @@ a {
 @media (max-width: 640px) {
   .grid.grid-cols-2,
   .grid.grid-cols-3,
-  .grid.grid-cols-4 { grid-template-columns: 1fr; }
+  .grid.grid-cols-4 {
+    grid-template-columns: 1fr;
+  }
 
-  .card { padding: var(--spacing-md); }
+  .card {
+    padding: var(--spacing-md);
+  }
 
-  h1 { font-size: 28px; }
-  h2 { font-size: 24px; }
-  body { font-size: 14px; }
+  h1 {
+    font-size: 28px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
+
+  body {
+    font-size: 14px;
+  }
+}
+
+// ── Teleported dialogs（append-to-body 后 scoped 无法命中外壳）──────────
+// 目前仅教师审核控制台的查重报告 / 论文预览两个弹窗使用，按自定义 class 限定作用域
+.report-dialog.el-dialog,
+.preview-dialog.el-dialog {
+  overflow: hidden;
+
+  .el-dialog__header {
+    background: var(--apple-canvas-parchment);
+    border-bottom: 1px solid var(--apple-hairline);
+    padding: 16px 24px;
+    margin-right: 0;
+  }
+
+  .el-dialog__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--apple-ink);
+  }
+
+  .el-dialog__headerbtn {
+    top: 16px;
+
+    .el-dialog__close {
+      font-size: 18px;
+      color: var(--apple-ink-muted-48);
+
+      &:hover {
+        color: var(--apple-ink);
+      }
+    }
+  }
+
+  .el-dialog__body {
+    padding: 0;
+  }
+}
+
+.report-dialog .dialog-footer,
+.preview-dialog .dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--apple-hairline);
+  background: var(--apple-canvas-parchment);
+}
+
+// ── 教师控制台公共卡片语言（PendingReviews / AuditRecords 复用）──────────
+// 双类名（.el-card.console-card）保证压过 Element 主题的默认卡片边框
+.el-card.console-card {
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-lg);
+}
+
+// 页头白卡（两页 header-content 复用）
+.console-page-head-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-lg);
+  padding: 18px 24px;
 }

@@ -58,3 +58,19 @@ export const downloadPaper = async (fileId, fileName) => {
     ElMessage.error('下载失败，请重试')
   }
 }
+
+/**
+ * 将 Blob 保存为文件下载（供接口返回 blob 时的通用落盘逻辑）
+ * @param {Blob} blob - 二进制数据
+ * @param {string} fileName - 下载文件名
+ */
+export const saveBlobAs = (blob, fileName) => {
+  const url = window.URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = fileName
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  window.URL.revokeObjectURL(url)
+}

@@ -2,7 +2,7 @@
   <div class="teacher-review">
     <!-- 页面头部 -->
     <div class="page-header">
-      <div class="header-content">
+      <div class="header-content console-page-head-card">
         <div class="header-left">
           <h1 class="page-title">审核记录</h1>
           <p class="page-subtitle">查看您审核过的论文记录</p>
@@ -16,7 +16,7 @@
     </div>
 
     <!-- 筛选条件 -->
-    <el-card class="filter-card" shadow="never">
+    <el-card class="filter-card console-card" shadow="never">
       <div class="filter-content">
         <el-form :model="filterForm" label-width="auto">
           <el-row :gutter="20">
@@ -91,7 +91,7 @@
     </el-card>
 
     <!-- 数据表格 -->
-    <el-card class="data-card" shadow="hover">
+    <el-card class="data-card console-card" shadow="never">
       <template #header>
         <div class="card-header">
           <div class="header-left">
@@ -454,32 +454,28 @@ onMounted(() => {
 
 <style scoped>
 .teacher-review {
-  background-color: #f5f5f7;
+  min-height: 100vh;
+  background: var(--apple-canvas-parchment);
+  color: var(--apple-ink);
+  font-family: var(--apple-font-text);
 }
 
 .page-header {
-  margin-bottom: 24px;
-}
-
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
+  margin-bottom: 16px;
 }
 
 .header-left .page-title {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 600;
-  color: #303133;
+  margin: 0 0 4px 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--apple-ink);
+  line-height: 1.2;
 }
 
 .header-left .page-subtitle {
-  margin: 8px 0 0;
-  font-size: 17px;
-  color: #909399;
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--apple-ink-muted-48);
 }
 
 .filter-card {
@@ -513,7 +509,7 @@ onMounted(() => {
   gap: 8px;
   font-size: 16px;
   font-weight: 400;
-  color: #303133;
+  color: var(--apple-ink);
 }
 
 .student-info {
@@ -523,8 +519,8 @@ onMounted(() => {
 }
 
 .student-name {
-  font-weight: 400;
-  color: #303133;
+  font-weight: 600;
+  color: var(--apple-ink);
 }
 
 .student-meta {
@@ -535,7 +531,7 @@ onMounted(() => {
 }
 
 .college {
-  color: #909399;
+  color: var(--apple-ink-muted-48);
 }
 
 .paper-info {
@@ -545,8 +541,8 @@ onMounted(() => {
 }
 
 .paper-title {
-  font-weight: 400;
-  color: #303133;
+  font-weight: 600;
+  color: var(--apple-ink);
   line-height: 1.4;
 }
 
@@ -555,13 +551,13 @@ onMounted(() => {
   align-items: center;
   gap: 12px;
   font-size: 12px;
-  color: #909399;
+  color: var(--apple-ink-muted-48);
 }
 
 .version {
-  background-color: #f5f5f7;
+  background-color: var(--apple-canvas-parchment);
   padding: 2px 6px;
-  border-radius: 3px;
+  border-radius: var(--apple-rounded-xs);
 }
 
 .similarity-cell {
@@ -582,16 +578,17 @@ onMounted(() => {
   font-weight: 400;
 }
 
+/* 与 getSimilarityClass 返回的类名对应 */
 .similarity-low {
-  color: #52c41a;
+  color: var(--apple-success);
 }
 
 .similarity-medium {
-  color: #faad14;
+  color: var(--apple-warning);
 }
 
 .similarity-high {
-  color: #ff4d4f;
+  color: var(--apple-danger);
 }
 
 .feedback-text {

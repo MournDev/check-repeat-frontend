@@ -84,12 +84,12 @@ export const isValidReviewStatus = (status) => {
   return validStatuses.includes(status)
 }
 
-// 相似度颜色映射
+// 相似度颜色映射（Apple 语义色板，与 --apple-success/warning/danger 对齐；供 el-progress :color 等 JS 场景使用）
 export const getSimilarityColor = (similarity) => {
-  if (!similarity) return '#909399'
-  if (similarity < 15) return '#52c41a'
-  if (similarity < 30) return '#faad14'
-  return '#ff4d4f'
+  if (!similarity) return '#8e8e93'
+  if (similarity < 15) return '#34c759'
+  if (similarity < 30) return '#ff9500'
+  return '#ff3b30'
 }
 
 // 相似度CSS类名映射

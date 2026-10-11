@@ -123,4 +123,14 @@
   --apple-search-input-height: 44px;
   --apple-search-input-padding: 12px 20px;
   --apple-touch-target-min: 44px;
+
+  // ── Semantic aliases（业务页面兼容层，2026-10 补）────────
+  // 业务页面（教师端等）既有的 var() 引用此前无定义，统一在此补齐
+  --apple-surface: #ffffff;                  // = --apple-canvas
+  --apple-primary-hover: #0071e3;            // = --apple-primary-focus
+  --apple-success: #34c759;                  // Apple system green
+  --apple-warning: #ff9500;                  // Apple system orange
+  --apple-danger: #ff3b30;                   // Apple system red
+  --apple-info: #8e8e93;                     // Apple system gray
+  --apple-rounded-xl: 22px;                  // 大于 --apple-rounded-lg(18) 的卡片层级
 }

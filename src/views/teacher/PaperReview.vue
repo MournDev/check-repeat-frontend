@@ -33,9 +33,9 @@ const handleTabChange = (tab) => {
 <style scoped>
 .paper-review {
   min-height: 100vh;
-  background: #f5f5f7; /* Slate-50 */
-  color: #1d1d1f; /* Slate-900 */
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--apple-canvas-parchment);
+  color: var(--apple-ink);
+  font-family: var(--apple-font-text);
 }
 
 :deep(.el-tabs) {
@@ -45,26 +45,26 @@ const handleTabChange = (tab) => {
     margin-bottom: 24px;
 
     .el-tabs__nav {
-      border-bottom: 1px solid #d2d2d7;
+      border-bottom: 1px solid var(--apple-surface-chip-translucent);
 
       .el-tabs__item {
         font-size: 0.875rem;
         font-weight: 400;
-        color: #64748b;
+        color: var(--apple-ink-muted-48);
         padding: 12px 16px;
         margin-right: 24px;
         transition: border-color 0.2s ease;
 
         &:hover {
-          color: #1d1d1f;
+          color: var(--apple-ink);
         }
 
         &.is-active {
-          color: #0066cc;
+          color: var(--apple-primary);
           font-weight: 600;
 
           &::after {
-            background-color: #0066cc;
+            background-color: var(--apple-primary);
             height: 2px;
           }
         }
