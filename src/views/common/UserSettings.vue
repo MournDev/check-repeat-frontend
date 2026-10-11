@@ -627,6 +627,7 @@ async function saveSettings() {
   if (role.value === 'STUDENT') { await saveProfile(); return }
   try { await settingsForm.value?.validate(); await contactForm.value?.validate() } catch { ElMessage.error('请完善所有必填项后再保存'); return }
   const submitData = { ...formData, userId: userStore.userInfo.userId }
+  delete submitData.avatar
   try {
     let res
     if (role.value === 'ADMIN') res = await updateUser(userStore.userInfo.userId, submitData)
