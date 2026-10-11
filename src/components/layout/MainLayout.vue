@@ -126,24 +126,46 @@
 
       <!-- Main Content -->
       <main class="main-content">
-        <div class="content-inner">
-          <router-view v-slot="{ Component }">
-            <component :is="Component" />
-          </router-view>
-        </div>
-
-        <!-- Footer -->
-        <footer class="app-footer">
-          <div class="footer-inner">
-            <div class="footer-links">
-              <a href="#">关于我们</a>
-              <a href="#">帮助中心</a>
-              <a href="#">隐私政策</a>
-              <a href="#">使用条款</a>
-            </div>
-            <p class="footer-copy">&copy; 2026 论文管理系统 版权所有</p>
+        <!-- 系统公告/维护模式（非管理员角色）：横幅 + 维护面板替代业务内容 -->
+        <el-alert
+          v-if="maintenanceStore.showBanner"
+          type="error"
+          :closable="false"
+          show-icon
+          class="maintenance-banner"
+          :title="maintenanceBannerText"
+        />
+        <div v-if="maintenanceStore.showBanner" class="maintenance-overlay">
+          <div class="maintenance-panel">
+            <el-icon class="maintenance-icon"><Tools /></el-icon>
+            <h2>系统维护中</h2>
+            <p class="maintenance-notice">{{ maintenanceStore.notice || '系统维护中，请稍后再试' }}</p>
+            <p v-if="maintenanceStore.startTime || maintenanceStore.endTime" class="maintenance-time">
+              {{ [maintenanceStore.startTime, maintenanceStore.endTime].filter(Boolean).join(' ~ ') }}
+            </p>
+            <el-button type="primary" @click="maintenanceStore.fetchStatus()">刷新状态</el-button>
           </div>
-        </footer>
+        </div>
+        <template v-else>
+          <div class="content-inner">
+            <router-view v-slot="{ Component }">
+              <component :is="Component" />
+            </router-view>
+          </div>
+
+          <!-- Footer -->
+          <footer class="app-footer">
+            <div class="footer-inner">
+              <div class="footer-links">
+                <a href="#">关于我们</a>
+                <a href="#">帮助中心</a>
+                <a href="#">隐私政策</a>
+                <a href="#">使用条款</a>
+              </div>
+              <p class="footer-copy">&copy; 2026 论文管理系统 版权所有</p>
+            </div>
+          </footer>
+        </template>
       </main>
     </div>
   </div>
@@ -153,22 +175,25 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { useMaintenanceStore } from '@/stores/maintenance'
+import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
 import { getUnreadCount, getMessageList } from '@/api/user.js'
 import { useMessageStore } from '@/stores/message'
 import { useMessageWebSocket } from '@/composables/useMessageWebSocket'
+import { subscribeTopic } from '@/utils/stompClient'
 import { buildMenus, SECTION_LABELS } from '@/utils/menu'
 import { asyncRoutes } from '@/router'
 
 import {
   User, Setting, SwitchButton, ArrowDown,
-  Bell, Menu, Close
+  Bell, Menu, Close, Tools
 } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()
 const messageStore = useMessageStore()
+const maintenanceStore = useMaintenanceStore()
 
 // WebSocket实时通知
 const { connect: wsConnect, disconnect: wsDisconnect } = useMessageWebSocket()
@@ -184,6 +209,39 @@ const connectNotificationWebSocket = () => {
     const title = payload.content?.title
     ElMessage({ message: title ? `新通知：${title}` : '收到一条新通知', type: 'info', duration: 3000 })
   })
+}
+
+// ============ 系统公告广播 + 维护模式实时感知（/topic/announcements） ============
+// 后端约定：
+// - 公告广播帧 { type:'NOTIFICATION'|'ANNOUNCEMENT', noticeType, title, content, ... }
+//   （若后端选择按人推 /user/queue/messages，上面的 NOTIFICATION 处理已能弹提示，
+//     这里的 topic 订阅作为兜底广播通道，同一公告两种推送都可能到达）
+// - 维护模式开/关帧 { type:'MAINTENANCE_STATUS_CHANGED', maintenanceStatus, maintenanceNotice, ... }
+const maintenanceBannerText = computed(() => {
+  const notice = maintenanceStore.notice || '系统维护中，请稍后再试'
+  return maintenanceStore.endTime ? `${notice}（预计恢复：${maintenanceStore.endTime}）` : notice
+})
+
+let unsubscribeAnnouncements = null
+const handleAnnouncementFrame = (payload) => {
+  const type = String(payload?.type || '')
+  // 维护模式开/关：实时更新全局维护状态（横幅/遮罩立即出现或消失）
+  if (type === 'MAINTENANCE_STATUS_CHANGED') {
+    maintenanceStore.setFromWs(payload)
+    return
+  }
+  // 公告兜底广播：按人推送的 NOTIFICATION 已在上方弹过提示，topic 直接广播的公告在这里补齐
+  if (type === 'NOTIFICATION' || type === 'ANNOUNCEMENT' || !type) {
+    loadUnreadCount()
+    const title = payload?.title || payload?.content?.title
+    const noticeType = payload?.noticeType || payload?.content?.noticeType
+    ElNotification({
+      title: noticeType === 'MAINTENANCE' ? '维护通知' : '系统公告',
+      message: title || '收到一条新的系统公告',
+      type: noticeType === 'MAINTENANCE' ? 'warning' : 'info',
+      duration: 6000
+    })
+  }
 }
 
 const notificationDropdown = ref()
@@ -436,10 +494,14 @@ watch(() => userStore.userInfo?.userId, (newUserId) => {
 
 onMounted(() => {
   window.addEventListener('resize', handleResize)
+  // 维护模式状态：启动拉取一次（失败静默降级），并订阅实时变更
+  maintenanceStore.fetchStatus()
+  unsubscribeAnnouncements = subscribeTopic('/topic/announcements', handleAnnouncementFrame)
 })
 
 onUnmounted(() => {
   window.removeEventListener('resize', handleResize)
+  unsubscribeAnnouncements?.()
   wsDisconnect()
 })
 </script>
@@ -714,6 +776,56 @@ onUnmounted(() => {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+}
+
+// ── 维护模式（横幅 + 面板，仅非管理员角色） ────────────────
+.maintenance-banner {
+  border-radius: 0;
+  flex-shrink: 0;
+}
+
+.maintenance-overlay {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f7;
+  padding: 32px;
+}
+
+.maintenance-panel {
+  text-align: center;
+  max-width: 520px;
+
+  .maintenance-icon {
+    font-size: 48px;
+    color: #f56c6c;
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin: 0 0 12px;
+  }
+
+  .maintenance-notice {
+    font-size: 14px;
+    color: #606266;
+    white-space: pre-wrap;
+    margin: 0;
+  }
+
+  .maintenance-time {
+    font-size: 13px;
+    color: #909399;
+    margin: 8px 0 0;
+  }
+
+  .el-button {
+    margin-top: 24px;
+  }
 }
 
 .content-inner {

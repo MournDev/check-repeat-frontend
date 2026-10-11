@@ -238,7 +238,15 @@ service.interceptors.response.use(
       ElMessage.error('网关错误，请稍后再试')
     }
     else if (status === 503) {
-      ElMessage.error('服务暂时不可用，请稍后再试')
+      // 维护模式专属响应（errorCode=SYSTEM_MAINTENANCE）：更新全局维护状态，
+      // MainLayout 据此显示维护横幅/遮罩；动态导入避免 request → store → api → request 循环依赖
+      if (errorData?.errorCode === 'SYSTEM_MAINTENANCE') {
+        import('@/stores/maintenance').then(({ useMaintenanceStore }) => {
+          useMaintenanceStore().setFrom503(errorData)
+        })
+      } else {
+        ElMessage.error('服务暂时不可用，请稍后再试')
+      }
     }
     else if (status === 504) {
       ElMessage.error('网关超时，请稍后再试')

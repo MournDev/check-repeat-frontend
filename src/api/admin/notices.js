@@ -92,18 +92,11 @@ export const getNoticeStats = () => {
   })
 }
 
-// 发送测试通知
-export const sendTestNotice = () => {
+// 发布系统公告（仅超级管理员）：按目标角色给每个用户落一条通知，并经 /topic/announcements 实时广播
+export const broadcastNotice = (data) => {
   return request({
-    url: '/api/notices/test',
-    method: 'post'
-  })
-}
-
-// 发送带优先级测试通知
-export const sendTestNoticeWithPriority = () => {
-  return request({
-    url: '/api/notices/test-priority',
-    method: 'post'
+    url: '/api/admin/notices/broadcast',
+    method: 'post',
+    data
   })
 }

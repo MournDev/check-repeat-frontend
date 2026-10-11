@@ -154,7 +154,7 @@ export const asyncRoutes = [
       { path: "check-rule-management", name: "CheckRuleManagement", component: () => import("@/views/admin/CheckRuleManagement.vue"), meta: { title: "查重规则", menu: { icon: "Setting", ADMIN: { order: 10 }, SUPER_ADMIN: { group: "系统运维", order: 7 } } } },
       { path: "compare-lib-management", name: "CompareLibManagement", component: () => import("@/views/admin/CompareLibManagement.vue"), meta: { title: "比对库管理", menu: { icon: "Files", ADMIN: { order: 11 }, SUPER_ADMIN: { group: "系统运维", order: 8 } } } },
       { path: "subject-management", name: "SubjectManagement", component: () => import("@/views/admin/SubjectManagement.vue"), meta: { title: "学科领域管理", menu: { icon: "Grid", ADMIN: { order: 12 }, SUPER_ADMIN: { group: "系统运维", order: 9 } } } },
-      { path: "system-notice-management", name: "SystemNoticeManagement", component: () => import("@/views/admin/SystemNoticeManagement.vue"), meta: { title: "通知管理", menu: { icon: "Bell", ADMIN: { group: "系统管理", order: 13 }, SUPER_ADMIN: { group: "监控与日志", order: 12 } } } },
+      { path: "system-notice-management", name: "SystemNoticeManagement", component: () => import("@/views/admin/SystemNoticeManagement.vue"), meta: { title: "系统公告与维护", menu: { icon: "Bell", ADMIN: { group: "系统管理", order: 13 }, SUPER_ADMIN: { group: "监控与日志", order: 12 } } } },
       { path: "message-template-management", name: "MessageTemplateManagement", component: () => import("@/views/admin/MessageTemplateManagement.vue"), meta: { title: "消息模板", menu: { icon: "Document", ADMIN: { group: "系统管理", order: 14 }, SUPER_ADMIN: { group: "监控与日志", order: 13 } } } },
     ],
   },
