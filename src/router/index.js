@@ -96,6 +96,8 @@ export const asyncRoutes = [
       // 详情/监控/报告页从列表跳入，不是导航目标，menu.hidden 仅作文档标注
       { path: "paper-details", name: "PaperDetail", component: () => import("@/views/student/PaperDetail.vue"), meta: { title: "论文详情", menu: { hidden: true } } },
       { path: "my-papers", name: "MyPapers", component: () => import("@/views/student/MyPapers.vue"), meta: { title: "我的论文", menu: { icon: "FolderOpened", order: 3 } } },
+      // order 3.5 有意插在我的论文(3)与导师互动(4)之间
+      { path: "my-defense", name: "MyDefense", component: () => import("@/views/student/MyDefense.vue"), meta: { title: "我的答辩", menu: { icon: "Trophy", order: 3.5 } } },
       { path: "advisor-interaction", name: "AdvisorInteraction", component: () => import("@/views/student/AdvisorInteraction.vue"), meta: { title: "导师互动", menu: { icon: "ChatDotRound", order: 4 } } },
       { path: "file-management", name: "StudentFileManagement", component: () => import("@/views/student/FileManagement.vue"), meta: { title: "文件管理", menu: { icon: "Folder", order: 5 } } },
       { path: "settings", name: "StudentSettings", component: () => import("@/views/student/Settings.vue"), meta: { title: "个人设置", menu: { icon: "Setting", order: 9, spacer: true } } },
@@ -122,6 +124,8 @@ export const asyncRoutes = [
         { path: "audit-records", name: "AuditRecords", component: () => import("@/views/teacher/AuditRecords.vue"), meta: { title: "审核记录", menu: { icon: "Histogram", group: "论文审核", order: 4 } } }
       ]},
       { path: "data-statistics", name: "DataStatistics", component: () => import("@/views/teacher/DataStatistics.vue"), meta: { title: "数据统计", menu: { icon: "TrendCharts", order: 5 } } },
+      // order 4.5 有意插在审核记录(4)与数据统计(5)之间
+      { path: "defense-workbench", name: "DefenseWorkbench", component: () => import("@/views/teacher/DefenseWorkbench.vue"), meta: { title: "答辩工作台", menu: { icon: "Microphone", order: 4.5 } } },
       { path: "profile", name: "TeacherProfile", component: () => import("@/views/teacher/Profile.vue"), meta: { title: "个人中心", menu: { icon: "Setting", label: "我的设置", order: 10, spacer: true } } },
       { path: "review-templates", name: "ReviewTemplates", component: () => import("@/views/teacher/ReviewTemplates.vue"), meta: { title: "审核意见模板", menu: { icon: "Document", order: 6 } } },
       { path: "student-groups", name: "StudentGroups", component: () => import("@/views/teacher/StudentGroups.vue"), meta: { title: "学生分组管理", menu: { icon: "UserFilled", order: 7 } } },
@@ -149,6 +153,9 @@ export const asyncRoutes = [
       { path: "settings", name: "AdminSettings", component: () => import("@/views/admin/Settings.vue"), meta: { title: "个人设置", menu: { icon: "Setting", roles: ["ADMIN"], order: 16, spacer: true } } },
       { path: "school-overview", name: "SchoolOverview", component: () => import("@/views/admin/SchoolOverview.vue"), meta: { title: "全校数据概览", menu: { icon: "DataAnalysis", label: "全校概览", order: 2 } } },
       { path: "paper-library", name: "PaperLibrary", component: () => import("@/views/admin/PaperLibrary.vue"), meta: { title: "论文库管理", menu: { roles: ["ADMIN"], icon: "Files", label: "论文库", group: "论文管理", order: 3 } } },
+      // 答辩批次管理：order 3.5 有意用小数插在论文库(3)与导师分配(4)之间，避免挪动既有菜单排序
+      { path: "defense-batches", name: "DefenseBatches", component: () => import("@/views/admin/DefenseBatches.vue"), meta: { title: "答辩批次管理", menu: { roles: ["ADMIN"], icon: "Calendar", label: "答辩批次", group: "论文管理", order: 3.5 } } },
+      { path: "defense-batches/:id", name: "DefenseBatchDetail", component: () => import("@/views/admin/DefenseBatchDetail.vue"), meta: { title: "批次详情", menu: { hidden: true } } },
       { path: "report-management", name: "ReportManagement", component: () => import("@/views/admin/ReportManagement.vue"), meta: { title: "报告管理", menu: { roles: ["ADMIN"], icon: "Histogram", order: 8 } } },
       { path: "knowledge-management", name: "KnowledgeManagement", component: () => import("@/views/admin/KnowledgeManagement.vue"), meta: { title: "知识库管理", menu: { roles: ["ADMIN"], icon: "Collection", order: 9 } } },
       { path: "check-rule-management", name: "CheckRuleManagement", component: () => import("@/views/admin/CheckRuleManagement.vue"), meta: { title: "查重规则", menu: { icon: "Setting", ADMIN: { order: 10 }, SUPER_ADMIN: { group: "系统运维", order: 7 } } } },

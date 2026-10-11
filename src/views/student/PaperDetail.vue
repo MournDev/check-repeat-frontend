@@ -195,6 +195,9 @@
                                 :description="getReviewStepDesc(paperDetails)" />
                             <el-step title="审核完成"
                                 :description="paperDetails.paperStatus === 'completed' ? formatDate(paperDetails.reviewTime) : '--'" />
+                            <el-step title="中期答辩" icon="Calendar" :description="getDefenseStepDesc('mid_defense')" />
+                            <el-step title="终期答辩" icon="Trophy" :description="getDefenseStepDesc('final_defense')" />
+                            <el-step title="答辩通过" icon="CircleCheckFilled" :description="getDefenseStepDesc('defense_passed')" />
                         </el-steps>
                     </el-card>
                 </el-col>
@@ -1154,7 +1157,13 @@ const getActiveStep = (paperStatus) => {
         'assigned': 2,       // 步骤 2：已分配（有导师）
         'auditing': 2,       // 步骤 2：审核中（与 assigned 同一级）
         'rejected': 3,       // 步骤 3：需修改
-        'completed': 4       // 步骤 4：已完成
+        'completed': 4,      // 步骤 4：初审通过（语义收窄），进入评阅阶段
+        'reviewing': 4,      // 步骤 4：评阅任务已下发，仍在初审完成门槛内
+        'mid_defense': 5,    // 步骤 5：中期答辩批次已安排
+        'final_defense': 6,  // 步骤 6：终期答辩批次已安排
+        'defense_passed': 7, // 步骤 7：答辩通过
+        'finalized': 7,      // 定稿/归档都在答辩通过之后
+        'archived': 7
     }
     return stepMap[paperStatus] || 1
 }
@@ -1162,6 +1171,10 @@ const getActiveStep = (paperStatus) => {
 const getReviewStepTitle = (paperStatus) => {
     if (paperStatus === 'rejected') return '需要修改'
     if (paperStatus === 'completed') return '审核通过'
+    if (paperStatus === 'reviewing') return '评阅中'
+    if (paperStatus === 'mid_defense') return '中期答辩'
+    if (paperStatus === 'final_defense') return '终期答辩'
+    if (paperStatus === 'defense_passed' || paperStatus === 'finalized' || paperStatus === 'archived') return '答辩通过'
     if (paperStatus === 'auditing' || paperStatus === 'assigned') return '导师审核'
     if (paperStatus === 'pending') return '等待分配'
     return '处理中'
@@ -1210,7 +1223,46 @@ const getReviewStepDesc = (paper) => {
         return '论文已通过审核'
     }
 
+    // P3 答辩阶段状态：评阅 → 中期/终期答辩 → 答辩通过 → 定稿/归档
+    if (status === 'reviewing') {
+        return '评阅任务已下发，等待评阅教师完成评阅'
+    }
+    if (status === 'mid_defense') {
+        return '中期答辩批次已安排'
+    }
+    if (status === 'final_defense') {
+        return '终期答辩批次已安排'
+    }
+    if (status === 'defense_passed') {
+        return '答辩通过，等待定稿归档'
+    }
+    if (status === 'finalized') {
+        return '已定稿，待归档'
+    }
+    if (status === 'archived') {
+        return '材料已归档'
+    }
+
     return '状态未知'
+}
+
+// 新增答辩三步（中期答辩/终期答辩/答辩通过）的描述：未到达该阶段显示 '--'
+const getDefenseStepDesc = (stage) => {
+    const status = paperDetails.value?.paperStatus
+    const AFTER = ['defense_passed', 'finalized', 'archived']
+    if (stage === 'mid_defense') {
+        if (status === 'mid_defense') return '中期答辩批次已安排'
+        if (status === 'final_defense' || AFTER.includes(status)) return '已完成'
+    }
+    if (stage === 'final_defense') {
+        if (status === 'final_defense') return '终期答辩批次已安排'
+        if (AFTER.includes(status)) return '已完成'
+    }
+    if (stage === 'defense_passed') {
+        if (status === 'defense_passed') return '答辩通过，等待定稿'
+        if (AFTER.includes(status)) return '已完成'
+    }
+    return '--'
 }
 
 const getReviewTypeTag = (type) => {
