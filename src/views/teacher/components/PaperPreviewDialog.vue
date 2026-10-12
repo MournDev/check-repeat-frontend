@@ -113,10 +113,10 @@ defineExpose({
 .skeleton-full {
   width: 100%;
   height: 100%;
+}
 
-  :deep(.el-skeleton__item) {
-    height: 100%;
-  }
+.skeleton-full :deep(.el-skeleton__item) {
+  height: 100%;
 }
 
 .error-placeholder {
@@ -132,28 +132,28 @@ defineExpose({
   background: var(--apple-canvas-parchment);
   padding: 48px;
   overflow: auto;
+}
 
-  .el-icon {
-    font-size: 48px;
-    color: var(--apple-info);
-  }
+.error-placeholder .el-icon {
+  font-size: 48px;
+  color: var(--apple-info);
+}
 
-  p {
-    margin: 0;
-    line-height: 1.5;
-    font-size: 0.875rem;
-  }
+.error-placeholder p {
+  margin: 0;
+  line-height: 1.5;
+  font-size: 0.875rem;
+}
 
-  ul {
-    text-align: left;
-    margin: 12px 0;
-    padding-left: 24px;
-  }
+.error-placeholder ul {
+  text-align: left;
+  margin: 12px 0;
+  padding-left: 24px;
+}
 
-  li {
-    margin-bottom: 8px;
-    font-size: 0.8125rem;
-  }
+.error-placeholder li {
+  margin-bottom: 8px;
+  font-size: 0.8125rem;
 }
 
 .fallback-panel {
@@ -162,21 +162,21 @@ defineExpose({
   background: color-mix(in srgb, var(--apple-warning) 8%, #ffffff);
   border: 1px solid color-mix(in srgb, var(--apple-warning) 35%, #ffffff);
   border-radius: var(--apple-rounded-md);
+}
 
-  .fallback-title {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    margin-bottom: 10px;
-    color: var(--apple-ink);
-  }
+.fallback-panel .fallback-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  color: var(--apple-ink);
+}
 
-  .fallback-actions {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-  }
+.fallback-panel .fallback-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 
 @media (max-width: 768px) {
