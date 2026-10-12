@@ -374,7 +374,8 @@ onMounted(async () => {
   loadDefenseDict(DICT_MODE).catch(() => {})
   // 学院与教师候选项失败不阻塞列表本身（全局拦截器已 toast）
   getColleges().then((res) => {
-    colleges.value = res.data || []
+    // /api/common/dict/colleges 返回 {code,label,value}，value 为学院 ID，映射为页面使用的 id/collegeName
+    colleges.value = (res.data || []).map((c) => ({ id: c.value, collegeName: c.label, code: c.code }))
   }).catch(() => {})
   getReviewWorkflowTeachers().then((res) => {
     teachers.value = res.data || []
