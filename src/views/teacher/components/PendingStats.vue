@@ -77,7 +77,7 @@ defineProps({
 defineEmits(['filter'])
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

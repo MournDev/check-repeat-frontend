@@ -15,7 +15,7 @@
 // 可以添加一些逻辑
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .not-found-container {
   display: flex;
   justify-content: center;

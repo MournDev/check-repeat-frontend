@@ -230,7 +230,7 @@
               </div>
               <div class="meta-item">
                 <el-icon><Files /></el-icon>
-                <span>相似度：{{ paper.similarityRate != null ? paper.similarityRate + '%' : '未检测' }}</span>
+                <span>总相似比：{{ paper.similarityRate != null ? paper.similarityRate + '%' : '未检测' }}</span>
               </div>
             </div>
 
@@ -358,8 +358,14 @@
           <el-descriptions-item label="论文类型">
             {{ getPaperTypeText(currentPaper.paperType) }}
           </el-descriptions-item>
-          <el-descriptions-item label="相似度">
-            {{ currentPaper.similarityRate }}%
+          <el-descriptions-item label="总相似比">
+            {{ currentPaper.similarityRate != null ? currentPaper.similarityRate + '%' : '—' }}
+          </el-descriptions-item>
+          <el-descriptions-item label="单篇最大">
+            {{ currentPaper.maxPerSource != null ? currentPaper.maxPerSource + '%' : '—' }}
+          </el-descriptions-item>
+          <el-descriptions-item label="引用率">
+            {{ currentPaper.citationRate != null ? currentPaper.citationRate + '%' : '—' }}
           </el-descriptions-item>
           <el-descriptions-item label="查重结果">
             {{ currentPaper.checkResult || "暂无结果" }}
@@ -433,8 +439,8 @@
                   <div class="info-value">{{ formatDate(compareVersions[0]?.submitTime) }}</div>
                 </div>
                 <div class="info-item">
-                  <div class="info-label">相似度</div>
-                  <div class="info-value">{{ compareVersions[0]?.similarityRate }}%</div>
+                  <div class="info-label">总相似比</div>
+                  <div class="info-value">{{ compareVersions[0]?.similarityRate != null ? compareVersions[0]?.similarityRate + '%' : '—' }}</div>
                 </div>
                 <div class="info-item">
                   <div class="info-label">字数</div>
@@ -452,8 +458,8 @@
                   <div class="info-value">{{ formatDate(compareVersions[1]?.submitTime) }}</div>
                 </div>
                 <div class="info-item">
-                  <div class="info-label">相似度</div>
-                  <div class="info-value">{{ compareVersions[1]?.similarityRate }}%</div>
+                  <div class="info-label">总相似比</div>
+                  <div class="info-value">{{ compareVersions[1]?.similarityRate != null ? compareVersions[1]?.similarityRate + '%' : '—' }}</div>
                 </div>
                 <div class="info-item">
                   <div class="info-label">字数</div>
@@ -954,7 +960,7 @@ const getDiffData = () => {
   
   return [
     {
-      field: '相似度',
+      field: '总相似比',
       before: v1.similarityRate,
       after: v2.similarityRate,
       change: (v2.similarityRate - v1.similarityRate).toFixed(1)
@@ -1022,7 +1028,7 @@ const viewVersionDetail = async (version) => {
         `<div style="text-align: left;">
           <p><strong>版本号：</strong>V${res.data.version}</p>
           <p><strong>提交时间：</strong>${formatDateTime(res.data.submitTime)}</p>
-          <p><strong>相似度：</strong>${res.data.similarityRate}%</p>
+          <p><strong>总相似比：</strong>${res.data.similarityRate != null ? res.data.similarityRate + '%' : '—'}</p>
           <p><strong>字数：</strong>${res.data.wordCount}字</p>
           <p><strong>修改说明：</strong>${res.data.changes || '无'}</p>
         </div>`,

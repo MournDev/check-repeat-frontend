@@ -101,7 +101,7 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .verify-email-page {
   min-height: 100vh;
   display: flex;

@@ -77,6 +77,56 @@
       </div>
     </el-card>
 
+    <!-- 学院查重额度 -->
+    <el-card class="table-card" shadow="never">
+      <template #header>
+        <div class="card-header">
+          <span class="card-title">学院查重额度</span>
+          <el-button type="primary" @click="openQuotaDialog(null)">新增额度</el-button>
+        </div>
+      </template>
+
+      <el-form label-width="80px" inline class="quota-filter">
+        <el-form-item label="额度月份">
+          <el-date-picker
+            v-model="quotaFilter.quotaMonth"
+            type="month"
+            value-format="YYYY-MM"
+            placeholder="选择月份"
+            :clearable="false"
+            style="width: 160px"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="handleQuotaSearch">查询</el-button>
+        </el-form-item>
+      </el-form>
+
+      <el-table :data="quotaList" v-loading="quotaLoading" stripe style="width: 100%">
+        <el-table-column prop="collegeName" label="学院" min-width="180" show-overflow-tooltip />
+        <el-table-column prop="quotaMonth" label="额度月份" width="110" align="center" />
+        <el-table-column prop="totalQuota" label="总额度(次)" width="110" align="center" />
+        <el-table-column prop="usedQuota" label="已用(次)" width="110" align="center" />
+        <el-table-column label="使用进度" min-width="200">
+          <template #default="{ row }">
+            <el-progress :percentage="quotaPercent(row)" :stroke-width="10" />
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="100" fixed="right">
+          <template #default="{ row }">
+            <el-button size="small" text type="primary" @click="openQuotaDialog(row)">编辑</el-button>
+          </template>
+        </el-table-column>
+        <template #empty>
+          <el-empty description="当月暂无额度配置" />
+        </template>
+      </el-table>
+
+      <div class="pagination-wrapper" v-if="quotaTotal > quotaPageSize">
+        <el-pagination v-model:current-page="quotaCurrentPage" v-model:page-size="quotaPageSize" :total="quotaTotal" layout="total, sizes, prev, pager, next, jumper" :page-sizes="[10, 20, 50]" @size-change="handleQuotaSearch" @current-change="fetchQuotaList" />
+      </div>
+    </el-card>
+
     <!-- 新增/编辑对话框 -->
     <el-dialog v-model="dialogVisible" :title="editingId ? '编辑规则' : '新增规则'" width="600px" destroy-on-close>
       <el-form ref="formRef" :model="form" :rules="rules" label-width="120px">
@@ -110,13 +160,45 @@
         <el-button type="primary" :loading="submitting" @click="handleSubmit">确定</el-button>
       </template>
     </el-dialog>
+
+    <!-- 新增/编辑额度对话框 -->
+    <el-dialog v-model="quotaDialogVisible" :title="quotaEditing ? '编辑额度' : '新增额度'" width="480px" destroy-on-close>
+      <el-form ref="quotaFormRef" :model="quotaForm" :rules="quotaRules" label-width="100px">
+        <el-form-item label="学院" prop="collegeId">
+          <el-select v-model="quotaForm.collegeId" placeholder="请选择学院" filterable style="width: 100%" :disabled="quotaEditing">
+            <el-option v-for="c in collegeOptions" :key="c.value" :label="c.label" :value="String(c.value)" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="额度月份" prop="quotaMonth">
+          <el-date-picker
+            v-model="quotaForm.quotaMonth"
+            type="month"
+            value-format="YYYY-MM"
+            placeholder="缺省当前月"
+            :disabled="quotaEditing"
+            style="width: 100%"
+          />
+        </el-form-item>
+        <el-form-item label="总额度(次)" prop="totalQuota">
+          <el-input-number v-model="quotaForm.totalQuota" :min="0" :max="1000000" :step="10" style="width: 100%" />
+        </el-form-item>
+        <div class="form-tip">同一学院同一月份重复保存将覆盖原额度</div>
+      </el-form>
+      <template #footer>
+        <el-button @click="quotaDialogVisible = false">取消</el-button>
+        <el-button type="primary" :loading="quotaSubmitting" @click="handleQuotaSubmit">确定</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import dayjs from 'dayjs'
 import { getCheckRuleList, saveOrUpdateCheckRule, deleteCheckRule, getRuleRelatedLibs, getCompareLibList } from '@/api/admin/config'
+import { getColleges } from '@/api/admin/common'
+import { getCheckQuotaList, saveCheckQuota } from '@/api/p5'
 
 const loading = ref(false)
 const submitting = ref(false)
@@ -285,8 +367,128 @@ const handleDelete = async (row) => {
   }
 }
 
+// ==================== 学院查重额度 ====================
+const currentMonth = dayjs().format('YYYY-MM')
+
+const quotaLoading = ref(false)
+const quotaSubmitting = ref(false)
+const quotaList = ref([])
+const quotaTotal = ref(0)
+const quotaCurrentPage = ref(1)
+const quotaPageSize = ref(10)
+const quotaDialogVisible = ref(false)
+const quotaEditing = ref(false)
+const quotaFormRef = ref(null)
+const collegeOptions = ref([])
+
+const quotaFilter = reactive({
+  quotaMonth: currentMonth
+})
+
+const quotaForm = reactive({
+  collegeId: '',
+  totalQuota: 0,
+  quotaMonth: currentMonth
+})
+
+const quotaRules = {
+  collegeId: [{ required: true, message: '请选择学院', trigger: 'change' }],
+  totalQuota: [{ required: true, message: '请输入总额度', trigger: 'blur' }]
+}
+
+const quotaPercent = (row) => {
+  const total = Number(row.totalQuota) || 0
+  if (total <= 0) return 0
+  return Math.min(100, Math.round(((Number(row.usedQuota) || 0) / total) * 100))
+}
+
+const fetchQuotaList = async () => {
+  quotaLoading.value = true
+  try {
+    // 必须显式传 currentPage/pageSize（缺分页参数后端直接报错）
+    const res = await getCheckQuotaList({
+      quotaMonth: quotaFilter.quotaMonth || undefined,
+      currentPage: quotaCurrentPage.value,
+      pageSize: quotaPageSize.value
+    })
+    if (res.code === 200 && res.data) {
+      quotaList.value = res.data.records || []
+      quotaTotal.value = Number(res.data.total) || 0
+    }
+  } catch (e) {
+    console.error('查询学院查重额度失败', e)
+  } finally {
+    quotaLoading.value = false
+  }
+}
+
+const handleQuotaSearch = () => {
+  quotaCurrentPage.value = 1
+  fetchQuotaList()
+}
+
+const loadCollegeOptions = async () => {
+  try {
+    const res = await getColleges()
+    if (res.code === 200) {
+      collegeOptions.value = res.data || []
+    }
+  } catch (e) {
+    console.error('获取学院列表失败', e)
+  }
+}
+
+const openQuotaDialog = (row) => {
+  if (row) {
+    quotaEditing.value = true
+    // 雪花 ID 按字符串回传
+    quotaForm.collegeId = String(row.collegeId)
+    quotaForm.totalQuota = Number(row.totalQuota) || 0
+    quotaForm.quotaMonth = row.quotaMonth || currentMonth
+  } else {
+    quotaEditing.value = false
+    quotaForm.collegeId = ''
+    quotaForm.totalQuota = 0
+    quotaForm.quotaMonth = currentMonth
+  }
+  quotaDialogVisible.value = true
+}
+
+const handleQuotaSubmit = async () => {
+  if (!quotaFormRef.value) return
+  const valid = await quotaFormRef.value.validate().catch(() => false)
+  if (!valid) return
+
+  quotaSubmitting.value = true
+  try {
+    // quotaMonth 留空时后端缺省当前月
+    const data = {
+      collegeId: quotaForm.collegeId,
+      totalQuota: quotaForm.totalQuota
+    }
+    if (quotaForm.quotaMonth) data.quotaMonth = quotaForm.quotaMonth
+
+    const res = await saveCheckQuota(data)
+    if (res.code === 200) {
+      ElMessage.success(res.message || '保存成功')
+      quotaDialogVisible.value = false
+      // 保存后若列表筛选月份与保存月份一致则立即可见；不一致时切到保存月份
+      quotaFilter.quotaMonth = data.quotaMonth || currentMonth
+      fetchQuotaList()
+    } else {
+      ElMessage.error(res.message || '保存失败')
+    }
+  } catch (e) {
+    ElMessage.error('保存失败：' + (e.message || '网络异常'))
+  } finally {
+    quotaSubmitting.value = false
+  }
+}
+
 onMounted(() => {
   fetchList()
+  fetchQuotaList()
+  loadCollegeOptions()
 })
 </script>
 
@@ -338,5 +540,8 @@ onMounted(() => {
   color: #909399;
   line-height: 1.5;
   margin-top: 4px;
+}
+.quota-filter {
+  margin-bottom: 8px;
 }
 </style>

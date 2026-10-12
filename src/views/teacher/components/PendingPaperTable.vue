@@ -129,6 +129,9 @@
                   <el-dropdown-item command="viewReport" :icon="Document">
                     查看查重报告
                   </el-dropdown-item>
+                  <el-dropdown-item command="signoff" :icon="Stamp">
+                    签核查重报告
+                  </el-dropdown-item>
                   <el-dropdown-item command="remind" :icon="Bell" divided>
                     提醒学生
                   </el-dropdown-item>
@@ -219,7 +222,8 @@ import {
   User,
   DocumentChecked,
   ArrowDown,
-  OfficeBuilding
+  OfficeBuilding,
+  Stamp
 } from '@element-plus/icons-vue'
 
 defineProps({
@@ -264,7 +268,8 @@ const emit = defineEmits([
   'batch-review',
   'batch-remind',
   'refresh',
-  'reset-filters'
+  'reset-filters',
+  'signoff'
 ])
 
 const tableRef = ref(null)
@@ -308,6 +313,10 @@ const handleMoreAction = (paper, command) => {
       break
     case 'viewReport':
       emit('view-report', paper)
+      break
+    case 'signoff':
+      // 本列表后端已按 paper_status='auditing'（查重完成 → 待审核）过滤，所有行均可签核
+      emit('signoff', paper)
       break
     case 'remind':
       remindPaper(paper)
@@ -455,7 +464,7 @@ const requestRecheck = async (paper) => {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .list-card {
   background: var(--apple-surface);
   border: 1px solid var(--apple-hairline);

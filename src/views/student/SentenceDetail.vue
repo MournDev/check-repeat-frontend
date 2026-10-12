@@ -1,0 +1,455 @@
+<template>
+  <div class="sentence-detail-page">
+    <!-- 页面头部 -->
+    <div class="page-header console-page-head-card">
+      <div class="header-left">
+        <el-button text @click="goBack">
+          <el-icon><ArrowLeft /></el-icon>
+          <span>返回</span>
+        </el-button>
+        <h1 class="page-title">句级检测明细</h1>
+      </div>
+      <el-button :icon="Refresh" @click="loadDetail">刷新</el-button>
+    </div>
+
+    <!-- 错误态（403 等）：按后端 message 提示 -->
+    <el-result
+      v-if="loadError"
+      icon="error"
+      :title="loadError"
+      class="error-result"
+    >
+      <template #extra>
+        <el-button type="primary" @click="goBack">返回上一页</el-button>
+      </template>
+    </el-result>
+
+    <template v-else>
+      <!-- 顶部指标卡 -->
+      <el-card class="console-card metrics-card" shadow="never" v-loading="loading">
+        <div class="metrics-grid">
+          <div class="metric-block metric-main">
+            <div class="metric-label">总相似比</div>
+            <div class="metric-value primary">{{ formatPercent(detail.checkRate) }}</div>
+          </div>
+          <div class="metric-block">
+            <div class="metric-label">单篇最大</div>
+            <div class="metric-value">{{ formatPercent(detail.maxPerSource) }}</div>
+          </div>
+          <div class="metric-block">
+            <div class="metric-label">引用率</div>
+            <div class="metric-value">{{ formatPercent(detail.citationRate) }}</div>
+          </div>
+          <div class="metric-block">
+            <div class="metric-label">命中句数</div>
+            <div class="metric-value">{{ detail.hitCount ?? '—' }}</div>
+          </div>
+        </div>
+      </el-card>
+
+      <!-- 来源列表：点击过滤下方句列表，再点取消 -->
+      <el-card v-if="sources.length > 0" class="console-card sources-card" shadow="never">
+        <template #header>
+          <div class="card-header">
+            <span>命中来源（{{ sources.length }}）</span>
+            <el-button
+              v-if="activeSourceId"
+              text
+              type="primary"
+              size="small"
+              @click="clearSourceFilter"
+            >
+              取消过滤
+            </el-button>
+          </div>
+        </template>
+        <div
+          v-for="source in sources"
+          :key="source.hitPaperId"
+          class="source-item"
+          :class="{ active: String(activeSourceId) === String(source.hitPaperId) }"
+          @click="toggleSourceFilter(source)"
+        >
+          <div class="source-info">
+            <div class="source-title" :title="source.hitPaperTitle">
+              {{ source.hitPaperTitle || '未知来源' }}
+            </div>
+            <div class="source-meta">
+              命中 {{ source.sentenceCount }} 句<template v-if="source.citationSentenceCount">（含引用 {{ source.citationSentenceCount }} 句）</template>
+              · 平均相似度 {{ formatPercent(source.avgSimilarity) }}
+            </div>
+          </div>
+          <div class="source-share">
+            <el-progress
+              :percentage="normalizeShare(source.sharePercent)"
+              :stroke-width="8"
+              :show-text="false"
+            />
+            <span class="share-text">{{ formatPercent(source.sharePercent) }}</span>
+          </div>
+        </div>
+      </el-card>
+
+      <!-- 句级明细 -->
+      <el-card class="console-card items-card" shadow="never">
+        <template #header>
+          <div class="card-header">
+            <span>句级明细<template v-if="activeSourceId">（已按来源过滤）</template></span>
+            <span v-if="items.length > 0" class="item-count">共 {{ filteredItems.length }} 句</span>
+          </div>
+        </template>
+
+        <!-- 存量任务空态：正常情况，不是报错 -->
+        <el-empty
+          v-if="!loading && items.length === 0"
+          description="该任务为历史数据，未生成句级明细，仅提供总相似比"
+        />
+        <el-empty
+          v-else-if="!loading && filteredItems.length === 0"
+          description="该来源下无命中句"
+        />
+        <div v-else class="sentence-list" v-loading="loading">
+          <div
+            v-for="item in filteredItems"
+            :key="item.sentenceIndex"
+            class="sentence-item"
+          >
+            <div class="sentence-head">
+              <span class="sentence-index">#{{ item.sentenceIndex + 1 }}</span>
+              <el-tag
+                v-if="item.isCitation === 1"
+                type="primary"
+                size="small"
+                effect="plain"
+                class="citation-tag"
+              >
+                引用
+              </el-tag>
+              <el-tag
+                v-else
+                size="small"
+                effect="light"
+                :class="similarityTagClass(item.similarity)"
+              >
+                {{ formatPercent(item.similarity) }}
+              </el-tag>
+            </div>
+            <div class="sentence-text">{{ item.sentenceText }}</div>
+            <div class="sentence-source">命中来源：{{ item.hitPaperTitle || '未知来源' }}</div>
+          </div>
+        </div>
+      </el-card>
+    </template>
+  </div>
+</template>
+
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { ArrowLeft, Refresh } from '@element-plus/icons-vue'
+import { getSentenceDetail } from '@/api/p5'
+
+const route = useRoute()
+const router = useRouter()
+
+// 路由参数 taskId（雪花 ID，按字符串处理）
+const taskId = route.params.taskId
+
+const loading = ref(false)
+const loadError = ref('')
+const detail = ref({})
+const sources = ref([])
+const items = ref([])
+// 当前过滤的来源 ID（null = 不过滤）；字符串比较防精度问题
+const activeSourceId = ref(null)
+
+// null（存量任务）显示「—」，不按 0 处理
+const formatPercent = (value) => (value == null ? '—' : `${value}%`)
+
+const normalizeShare = (value) => {
+  const num = Number(value)
+  if (!Number.isFinite(num)) return 0
+  return Math.min(100, Math.max(0, num))
+}
+
+const filteredItems = computed(() => {
+  if (!activeSourceId.value) return items.value
+  return items.value.filter(
+    (item) => String(item.hitPaperId) === String(activeSourceId.value)
+  )
+})
+
+// 普通命中按 similarity 分档：≥80 深红 / 其余（50-80）浅红
+const similarityTagClass = (similarity) => {
+  const value = Number(similarity) || 0
+  return value >= 80 ? 'sim-tag-high' : 'sim-tag-mid'
+}
+
+const toggleSourceFilter = (source) => {
+  activeSourceId.value =
+    String(activeSourceId.value) === String(source.hitPaperId) ? null : source.hitPaperId
+}
+
+const clearSourceFilter = () => {
+  activeSourceId.value = null
+}
+
+const goBack = () => {
+  router.back()
+}
+
+const loadDetail = async () => {
+  if (!taskId || taskId === 'undefined') {
+    loadError.value = '缺少任务ID参数'
+    return
+  }
+
+  loading.value = true
+  loadError.value = ''
+  try {
+    const res = await getSentenceDetail(taskId)
+    if (res.code === 200) {
+      detail.value = res.data || {}
+      sources.value = res.data?.sources || []
+      items.value = res.data?.items || []
+    } else {
+      loadError.value = res.message || '获取句级检测明细失败'
+    }
+  } catch (error) {
+    // 403 等 HTTP 错误：按后端 message 提示（拦截器已 toast，这里渲染错误态）
+    loadError.value = error?.response?.data?.message || error?.message || '获取句级检测明细失败'
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(() => {
+  loadDetail()
+})
+</script>
+
+<style lang="scss" scoped>
+.sentence-detail-page {
+  padding: 24px;
+  min-height: 100vh;
+  background: var(--apple-canvas-parchment);
+
+  .page-header {
+    margin-bottom: 24px;
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .page-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--apple-ink);
+        margin: 0;
+      }
+    }
+  }
+
+  .error-result {
+    background: var(--apple-surface);
+    border: 1px solid var(--apple-hairline);
+    border-radius: var(--apple-rounded-lg);
+  }
+
+  .metrics-card {
+    margin-bottom: 24px;
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 24px;
+
+      .metric-block {
+        .metric-label {
+          font-size: 0.75rem;
+          color: #86868b;
+          margin-bottom: 8px;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .metric-value {
+          font-size: 1.5rem;
+          font-weight: 600;
+          color: var(--apple-ink);
+
+          &.primary {
+            font-size: 2.25rem;
+            color: var(--apple-primary);
+          }
+        }
+      }
+    }
+  }
+
+  .sources-card {
+    margin-bottom: 24px;
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      color: var(--apple-ink);
+    }
+
+    .source-item {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 14px 16px;
+      border: 1px solid var(--apple-hairline);
+      border-radius: var(--apple-rounded-md);
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all var(--apple-transition-normal);
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      &:hover {
+        border-color: var(--apple-primary);
+      }
+
+      &.active {
+        border-color: var(--apple-primary);
+        background: rgba(0, 102, 204, 0.04);
+      }
+
+      .source-info {
+        flex: 1;
+        min-width: 0;
+
+        .source-title {
+          font-weight: 600;
+          color: var(--apple-ink);
+          font-size: 0.875rem;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .source-meta {
+          font-size: 0.75rem;
+          color: #86868b;
+          margin-top: 4px;
+        }
+      }
+
+      .source-share {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 220px;
+        flex-shrink: 0;
+
+        .el-progress {
+          flex: 1;
+        }
+
+        .share-text {
+          font-size: 0.875rem;
+          font-weight: 600;
+          color: var(--apple-ink);
+          min-width: 48px;
+          text-align: right;
+        }
+      }
+    }
+  }
+
+  .items-card {
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      color: var(--apple-ink);
+
+      .item-count {
+        font-size: 0.75rem;
+        color: #86868b;
+        font-weight: normal;
+      }
+    }
+
+    .sentence-list {
+      .sentence-item {
+        padding: 16px;
+        border: 1px solid var(--apple-hairline);
+        border-radius: var(--apple-rounded-md);
+        margin-bottom: 12px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        .sentence-head {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 8px;
+
+          .sentence-index {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #86868b;
+          }
+
+          // 普通命中分档：≥80 深红 / 50-80 浅红
+          :deep(.sim-tag-high) {
+            background: #b91c1c;
+            border-color: #b91c1c;
+            color: #ffffff;
+          }
+
+          :deep(.sim-tag-mid) {
+            background: #fee2e2;
+            border-color: #fecaca;
+            color: #dc2626;
+          }
+        }
+
+        .sentence-text {
+          color: var(--apple-ink);
+          font-size: 0.875rem;
+          line-height: 1.6;
+          word-break: break-word;
+        }
+
+        .sentence-source {
+          margin-top: 8px;
+          font-size: 0.75rem;
+          color: #86868b;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .sentence-detail-page {
+    padding: 12px;
+
+    .sources-card {
+      .source-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+
+        .source-share {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+</style>

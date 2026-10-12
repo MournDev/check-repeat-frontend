@@ -37,6 +37,13 @@ const constantRoutes = [
     component: () => import("@/views/EmailVerified.vue"),
     meta: { title: "邮箱验证", requiresAuth: false },
   },
+  // 报告验真：面向用人单位/期刊等任何访客，不进登录守卫（P5 清单第 6 节）
+  {
+    path: "/report-verify",
+    name: "ReportVerify",
+    component: () => import("@/views/ReportVerify.vue"),
+    meta: { title: "报告验真", requiresAuth: false },
+  },
 ];
 
 // 权限路由（需登录+对应角色）
@@ -98,6 +105,8 @@ export const asyncRoutes = [
       { path: "my-papers", name: "MyPapers", component: () => import("@/views/student/MyPapers.vue"), meta: { title: "我的论文", menu: { icon: "FolderOpened", order: 3 } } },
       // order 3.5 有意插在我的论文(3)与导师互动(4)之间
       { path: "my-defense", name: "MyDefense", component: () => import("@/views/student/MyDefense.vue"), meta: { title: "我的答辩", menu: { icon: "Trophy", order: 3.5 } } },
+      // order 3.6 有意插在我的答辩(3.5)与导师互动(4)之间（P6a 导师评价）
+      { path: "advisor-evaluation", name: "AdvisorEvaluation", component: () => import("@/views/student/AdvisorEvaluation.vue"), meta: { title: "导师评价", menu: { icon: "Star", order: 3.6 } } },
       { path: "advisor-interaction", name: "AdvisorInteraction", component: () => import("@/views/student/AdvisorInteraction.vue"), meta: { title: "导师互动", menu: { icon: "ChatDotRound", order: 4 } } },
       { path: "file-management", name: "StudentFileManagement", component: () => import("@/views/student/FileManagement.vue"), meta: { title: "文件管理", menu: { icon: "Folder", order: 5 } } },
       { path: "settings", name: "StudentSettings", component: () => import("@/views/student/Settings.vue"), meta: { title: "个人设置", menu: { icon: "Setting", order: 9, spacer: true } } },
@@ -108,6 +117,8 @@ export const asyncRoutes = [
       { path: "check-history/:paperId", name: "CheckHistory", component: () => import("@/views/student/CheckHistory.vue"), meta: { title: "查重历史详情", menu: { hidden: true } } },
       { path: "student-check-with-websocket", name: "StudentCheckWithWebSocket", component: () => import("@/views/student/StudentCheckWithWebSocket.vue"), meta: { title: "查重管理", menu: { icon: "Document", label: "查重任务", group: "查重管理", order: 6 } } },
       { path: "academic-integrity", name: "AcademicIntegrity", component: () => import("@/views/student/AcademicIntegrity.vue"), meta: { title: "学术诚信", menu: { icon: "Notebook", group: "查重管理", order: 8 } } },
+      // P5 句级检测明细（从任务列表/详情跳入，非导航目标）
+      { path: "sentence-detail/:taskId", name: "SentenceDetail", component: () => import("@/views/student/SentenceDetail.vue"), meta: { title: "句级检测明细", menu: { hidden: true } } },
     ],
   },
   {
@@ -126,6 +137,10 @@ export const asyncRoutes = [
       { path: "data-statistics", name: "DataStatistics", component: () => import("@/views/teacher/DataStatistics.vue"), meta: { title: "数据统计", menu: { icon: "TrendCharts", order: 5 } } },
       // order 4.5 有意插在审核记录(4)与数据统计(5)之间
       { path: "defense-workbench", name: "DefenseWorkbench", component: () => import("@/views/teacher/DefenseWorkbench.vue"), meta: { title: "答辩工作台", menu: { icon: "Microphone", order: 4.5 } } },
+      // order 4.6 插在答辩工作台(4.5)与数据统计(5)之间（P5 指导进度看板）
+      { path: "guidance-progress", name: "TeacherGuidanceProgress", component: () => import("@/views/teacher/GuidanceProgress.vue"), meta: { title: "指导进度看板", menu: { icon: "Odometer", order: 4.6 } } },
+      // order 4.7 插在指导进度看板(4.6)与数据统计(5)之间（P6a 学生评价汇总）
+      { path: "advisor-eval-summary", name: "AdvisorEvalSummary", component: () => import("@/views/teacher/AdvisorEvalSummary.vue"), meta: { title: "学生评价汇总", menu: { icon: "Star", order: 4.7 } } },
       { path: "profile", name: "TeacherProfile", component: () => import("@/views/teacher/Profile.vue"), meta: { title: "个人中心", menu: { icon: "Setting", label: "我的设置", order: 10, spacer: true } } },
       { path: "review-templates", name: "ReviewTemplates", component: () => import("@/views/teacher/ReviewTemplates.vue"), meta: { title: "审核意见模板", menu: { icon: "Document", order: 6 } } },
       { path: "student-groups", name: "StudentGroups", component: () => import("@/views/teacher/StudentGroups.vue"), meta: { title: "学生分组管理", menu: { icon: "UserFilled", order: 7 } } },
@@ -157,6 +172,10 @@ export const asyncRoutes = [
       { path: "defense-batches", name: "DefenseBatches", component: () => import("@/views/admin/DefenseBatches.vue"), meta: { title: "答辩批次管理", menu: { roles: ["ADMIN"], icon: "Calendar", label: "答辩批次", group: "论文管理", order: 3.5 } } },
       { path: "defense-batches/:id", name: "DefenseBatchDetail", component: () => import("@/views/admin/DefenseBatchDetail.vue"), meta: { title: "批次详情", menu: { hidden: true } } },
       { path: "report-management", name: "ReportManagement", component: () => import("@/views/admin/ReportManagement.vue"), meta: { title: "报告管理", menu: { roles: ["ADMIN"], icon: "Histogram", order: 8 } } },
+      // order 8.5 插在报告管理(8)与知识库(9)之间（P5 全校统计报表）
+      { path: "stat-report", name: "StatReport", component: () => import("@/views/admin/StatReport.vue"), meta: { title: "统计报表", menu: { roles: ["ADMIN"], icon: "DataAnalysis", label: "统计报表", order: 8.5 } } },
+      // order 8.6 插在统计报表(8.5)与知识库(9)之间（P6a 导师评价管理）
+      { path: "advisor-evaluation", name: "AdvisorEvalManagement", component: () => import("@/views/admin/AdvisorEvalManagement.vue"), meta: { title: "导师评价管理", menu: { roles: ["ADMIN"], icon: "Star", label: "导师评价", order: 8.6 } } },
       { path: "knowledge-management", name: "KnowledgeManagement", component: () => import("@/views/admin/KnowledgeManagement.vue"), meta: { title: "知识库管理", menu: { roles: ["ADMIN"], icon: "Collection", order: 9 } } },
       { path: "check-rule-management", name: "CheckRuleManagement", component: () => import("@/views/admin/CheckRuleManagement.vue"), meta: { title: "查重规则", menu: { icon: "Setting", ADMIN: { order: 10 }, SUPER_ADMIN: { group: "系统运维", order: 7 } } } },
       { path: "compare-lib-management", name: "CompareLibManagement", component: () => import("@/views/admin/CompareLibManagement.vue"), meta: { title: "比对库管理", menu: { icon: "Files", ADMIN: { order: 11 }, SUPER_ADMIN: { group: "系统运维", order: 8 } } } },
@@ -178,6 +197,8 @@ export const asyncRoutes = [
       { path: "log-center", redirect: "/admin/log-center" },
       { path: "similarity-thresholds", name: "SuperAdminSimilarityThresholds", component: () => import("@/views/super-admin/SimilarityThreshold.vue"), meta: { title: "相似度阈值设置", menu: { icon: "TrendCharts", label: "相似度阈值", group: "系统运维", order: 5 } } },
       { path: "review-workflow", name: "SuperAdminReviewWorkflow", component: () => import("@/views/super-admin/ReviewWorkflow.vue"), meta: { title: "审核工作流配置", menu: { icon: "Connection", label: "审核工作流", group: "系统运维", order: 6 } } },
+      // order 6.5 插在审核工作流(6)之后，不动既有菜单排序（P5 学位检测策略集）
+      { path: "check-policy", name: "SuperAdminCheckPolicy", component: () => import("@/views/super-admin/CheckPolicy.vue"), meta: { title: "检测策略", menu: { icon: "SetUp", label: "检测策略", group: "系统运维", order: 6.5 } } },
       { path: "system-monitoring", name: "SystemMonitoring", component: () => import("@/views/admin/SystemMonitoring.vue"), meta: { title: "系统监控", menu: { icon: "Monitor", group: "监控与日志", order: 11 } } },
     ],
   },
@@ -198,7 +219,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   document.title = `${to.meta.title} - ${import.meta.env.VITE_SYSTEM_NAME}`;
 
-  const noAuthPaths = ['/login', '/register', '/reset', '/verify-email'];
+  const noAuthPaths = ['/login', '/register', '/reset', '/verify-email', '/report-verify'];
   if (noAuthPaths.includes(to.path)) return next();
 
   if (to.meta.requiresAuth !== false) {

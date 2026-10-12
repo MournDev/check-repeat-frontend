@@ -30,7 +30,7 @@ const handleTabChange = (tab) => {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .paper-review {
   min-height: 100vh;
   background: var(--apple-canvas-parchment);

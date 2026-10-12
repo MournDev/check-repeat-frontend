@@ -229,7 +229,7 @@
                   </div>
                 </div>
                 <div class="info-item">
-                  <div class="info-label">相似度检测</div>
+                  <div class="info-label">总相似比</div>
                   <div class="info-value similarity">
                     <div class="similarity-display">
                       <div class="similarity-bar" :style="{ width: latestPaperSimilarity + '%' }" :class="getSimilarityClass(latestPaperSimilarity)"></div>
@@ -309,7 +309,7 @@
             <div class="card-header">
               <div class="card-title">
                 <el-icon><TrendCharts /></el-icon>
-                <span>相似度变化趋势</span>
+                <span>总相似比变化趋势</span>
               </div>
             </div>
             <div v-if="hasTrendData" ref="trendChartRef" class="chart-container"></div>
@@ -1205,12 +1205,12 @@ const initTrendChart = () => {
     },
     yAxis: {
       type: 'value',
-      name: '相似度 (%)',
+      name: '总相似比 (%)',
       min: 0,
       max: 100
     },
     series: [{
-      name: '相似度',
+      name: '总相似比',
       type: 'line',
       smooth: true,
       data: similarityTrendData.similarities,

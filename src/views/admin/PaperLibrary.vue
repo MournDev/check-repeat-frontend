@@ -277,7 +277,7 @@
             {{ row.wordCount }}字
           </template>
         </el-table-column>
-        <el-table-column label="操作" fixed="right" width="280">
+        <el-table-column label="操作" fixed="right" width="340">
           <template #default="{ row }">
             <el-button size="small" type="primary" text @click="viewPaper(row)">
               查看
@@ -293,6 +293,9 @@
             </el-button>
             <el-button size="small" type="primary" text @click="showAuditDialog(row)">
               审核
+            </el-button>
+            <el-button size="small" type="warning" text @click="handleRecomputeScore(row)">
+              重算总评
             </el-button>
             <el-button size="small" type="danger" text @click="removePaper(row)">
               删除
@@ -540,6 +543,9 @@ import {
 
 // 导入通用接口
 import { getMajors, getColleges } from '@/api/admin/common'
+
+// P5 总评成绩重算（兜底入口）
+import { recomputeFinalScore } from '@/api/p5'
 
 // 图标导入
 import {
@@ -1020,6 +1026,39 @@ const performBatchThirdPartyCheck = () => {
     console.error('批量第三方查重失败', err)
     ElMessage.error(err.message || '批量第三方查重失败')
   })
+}
+
+// 重算总评成绩（P5 兜底入口：finalScore 为空或需修正时使用，后端硬校验兜底）
+const handleRecomputeScore = async (paper) => {
+  try {
+    await ElMessageBox.confirm(
+      `确定要重算论文《${paper.paperTitle}》的总评成绩吗？将按当前权重配置重新合成。`,
+      '重算总评确认',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }
+    )
+  } catch {
+    return // 用户取消
+  }
+  try {
+    const res = await recomputeFinalScore(paper.id)
+    ElMessage.success(`总评成绩重算成功，新成绩：${res.data} 分`)
+    await loadPaperList()
+  } catch (err) {
+    const errorCode = err?.response?.data?.errorCode
+    const backendMsg = err?.response?.data?.message
+    if (errorCode === 40914) {
+      ElMessage.error('导师未完成签核，暂无指导分，待导师补签后重算')
+    } else if (errorCode === 40915) {
+      ElMessage.error(backendMsg || '成绩权重配置非法（三项权重合计须等于100），请联系超级管理员修正权重配置')
+    } else if (!err?.response) {
+      ElMessage.error(err.message || '重算总评失败')
+    }
+    // 其余 HTTP 错误（含其他 409）由全局拦截器按后端 message 提示，不重复弹
+  }
 }
 
 const removePaper = async (paper) => {

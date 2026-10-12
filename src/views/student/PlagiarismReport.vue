@@ -76,6 +76,7 @@
                         />
                         <div class="similarity-text">
                           <div class="percentage">{{ Math.round(reportData.totalSimilarity || 0) }}%</div>
+                          <div class="metric-caption">总相似比</div>
                           <div class="rating">{{ getSimilarityRating(reportData.totalSimilarity || 0) }}</div>
                         </div>
                       </div>
@@ -114,25 +115,37 @@
               <!-- 检测统计 -->
               <div class="check-statistics">
                 <el-row :gutter="20">
-                  <el-col :span="6">
+                  <el-col :span="4">
                     <div class="stat-item">
                       <div class="stat-value">{{ reportData.wordCount || 0 }}</div>
                       <div class="stat-label">总字数</div>
                     </div>
                   </el-col>
-                  <el-col :span="6">
+                  <el-col :span="4">
                     <div class="stat-item">
                       <div class="stat-value">{{ reportData.citationCount || 0 }}</div>
                       <div class="stat-label">引用文献</div>
                     </div>
                   </el-col>
-                  <el-col :span="6">
+                  <el-col :span="4">
                     <div class="stat-item">
                       <div class="stat-value">{{ reportData.similarSourceCount || 0 }}</div>
                       <div class="stat-label">相似文献</div>
                     </div>
                   </el-col>
-                  <el-col :span="6">
+                  <el-col :span="4">
+                    <div class="stat-item">
+                      <div class="stat-value">{{ reportData.maxPerSource != null ? reportData.maxPerSource + '%' : '—' }}</div>
+                      <div class="stat-label">单篇最大</div>
+                    </div>
+                  </el-col>
+                  <el-col :span="4">
+                    <div class="stat-item">
+                      <div class="stat-value">{{ reportData.citationRate != null ? reportData.citationRate + '%' : '—' }}</div>
+                      <div class="stat-label">引用率</div>
+                    </div>
+                  </el-col>
+                  <el-col :span="4">
                     <div class="stat-item">
                       <div class="stat-value">{{ (reportData.checkEngines || []).join(' + ') || '暂无数据' }}</div>
                       <div class="stat-label">检测引擎</div>
@@ -996,6 +1009,12 @@ $border-color: #e2e8f0;
               color: $text-primary;
             }
             
+            .metric-caption {
+              font-size: 13px;
+              color: $text-secondary;
+              margin-top: 2px;
+            }
+
             .rating {
               font-size: 16px;
               color: $text-secondary;

@@ -15,6 +15,42 @@
     <el-tabs v-model="activeTab" class="log-tabs" @tab-change="onTabChange">
       <!-- 操作日志 -->
       <el-tab-pane label="操作日志" name="operation">
+        <!--
+          审计汇总视图（P5，仅超级管理员可见）：summary 接口仅 SUPER_ADMIN 可调（ADMIN 403），
+          所以整块用 userStore.isSuperAdmin 控制渲染，ADMIN 看到的页面与改造前完全一致
+        -->
+        <div v-if="userStore.isSuperAdmin" class="summary-section">
+          <el-card shadow="never" class="summary-filter-card">
+            <div class="summary-filter-row">
+              <el-date-picker
+                v-model="summaryFilters.dateRange"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                value-format="YYYY-MM-DD"
+                style="width: 260px"
+              />
+              <el-button type="primary" :icon="Search" :loading="summaryLoading" @click="loadOperationSummary">查询</el-button>
+              <span class="summary-tip">审计汇总（仅超级管理员可见），日期留空表示不限范围</span>
+            </div>
+          </el-card>
+          <div class="summary-charts-row" v-loading="summaryLoading">
+            <el-card shadow="never" class="summary-chart-card">
+              <template #header>
+                <span class="card-title">按操作类型 TOP10</span>
+              </template>
+              <div ref="summaryBarRef" class="summary-chart"></div>
+            </el-card>
+            <el-card shadow="never" class="summary-chart-card">
+              <template #header>
+                <span class="card-title">按用户类型分布</span>
+              </template>
+              <div ref="summaryPieRef" class="summary-chart"></div>
+            </el-card>
+          </div>
+        </div>
+
         <el-card shadow="never">
           <template #header>
             <div class="tab-header">
@@ -318,6 +354,9 @@ import { ref, reactive, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getOperationLogs, exportOperationLogsNew, getLoginLogs, getOperationStatistics, getHotOperations, getUserActivity, getModuleUsage, batchDeleteLogs, cleanExpiredLogs, exportLoginLogs } from '@/api/admin/logs'
 import { getBackupHistory } from '@/api/admin/backup'
+// P5 审计日志汇总（仅 SUPER_ADMIN 可调，ADMIN 403；页面已按角色控制渲染）
+import { getOperationLogSummary } from '@/api/p5'
+import { useUserStore } from '@/stores/user'
 import { Refresh, Download, Search, Delete } from '@element-plus/icons-vue'
 import * as echarts from 'echarts'
 
@@ -533,6 +572,93 @@ const hotOperationsTotal = ref(0)
 const userActivity = ref([])
 const moduleChartRef = ref(null)
 let moduleChart = null
+
+// ==================== 审计汇总（P5，仅 SUPER_ADMIN） ====================
+const userStore = useUserStore()
+const summaryLoading = ref(false)
+const summaryFilters = reactive({ dateRange: [] })
+const summaryBarRef = ref(null)
+const summaryPieRef = ref(null)
+let summaryBarChart = null
+let summaryPieChart = null
+
+// 汇总饼图的角色码翻译（本页表格里 getUserTypeName 的历史文案是 'super_admin'，汇总视图按清单用「超级管理员」）
+const SUMMARY_USER_TYPE_LABELS = { STUDENT: '学生', TEACHER: '教师', ADMIN: '管理员', SUPER_ADMIN: '超级管理员' }
+
+async function loadOperationSummary() {
+  // 双保险：模板已 v-if，这里再挡一次，避免任何路径下 ADMIN 触发 403
+  if (!userStore.isSuperAdmin) return
+  summaryLoading.value = true
+  try {
+    const params = {
+      beginDate: summaryFilters.dateRange?.[0] || undefined,
+      endDate: summaryFilters.dateRange?.[1] || undefined
+    }
+    const res = await getOperationLogSummary(params)
+    if (res.code === 200 && res.data) {
+      await nextTick()
+      renderSummaryCharts(res.data)
+    }
+  } catch {
+    ElMessage.error('加载审计汇总失败')
+  } finally {
+    summaryLoading.value = false
+  }
+}
+
+function renderSummaryCharts(data) {
+  // 按操作类型 Top 柱状图（取前 10）；key 复用本页操作类型映射翻译，未知值显示原文
+  const opItems = (data.operationTypes || []).slice(0, 10)
+  const opNames = opItems.map((item) => getOperationName(item.key) || item.key)
+  const opValues = opItems.map((item) => item.count || 0)
+  if (!summaryBarChart && summaryBarRef.value) {
+    summaryBarChart = echarts.init(summaryBarRef.value)
+  }
+  summaryBarChart?.setOption({
+    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+    grid: { left: 8, right: 16, top: 16, bottom: 8, containLabel: true },
+    xAxis: {
+      type: 'category',
+      data: opNames,
+      axisLabel: { interval: 0, rotate: opNames.length > 5 ? 30 : 0 }
+    },
+    yAxis: { type: 'value', minInterval: 1 },
+    series: [{
+      type: 'bar',
+      data: opValues,
+      barMaxWidth: 32,
+      itemStyle: { color: '#0066cc', borderRadius: [6, 6, 0, 0] }
+    }]
+  }, true)
+
+  // 按用户类型饼图；角色码翻译，未知值显示原文
+  const userItems = (data.userTypes || []).map((item) => ({
+    name: SUMMARY_USER_TYPE_LABELS[item.key] || item.key,
+    value: item.count || 0
+  }))
+  if (!summaryPieChart && summaryPieRef.value) {
+    summaryPieChart = echarts.init(summaryPieRef.value)
+  }
+  summaryPieChart?.setOption({
+    tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
+    legend: { orient: 'vertical', left: 'left', top: 'center' },
+    series: [{
+      type: 'pie',
+      radius: ['40%', '70%'],
+      center: ['60%', '50%'],
+      itemStyle: { borderRadius: 6, borderColor: '#fff', borderWidth: 2 },
+      label: { show: false },
+      emphasis: { label: { show: true, fontSize: 14, fontWeight: 'bold' } },
+      labelLine: { show: false },
+      data: userItems
+    }]
+  }, true)
+}
+
+const handleSummaryChartResize = () => {
+  summaryBarChart?.resize()
+  summaryPieChart?.resize()
+}
 
 // 模块列表
 const operationModules = computed(() => OPERATION_MODULES.map(m => ({ value: m.value, label: m.label })))
@@ -850,6 +976,9 @@ function formatFileSize(bytes) {
 // ==================== 生命周期 ====================
 onMounted(() => {
   refreshLogs(false)
+  // 审计汇总（仅超管渲染并加载，函数内对 ADMIN 直接 return）
+  loadOperationSummary()
+  window.addEventListener('resize', handleSummaryChartResize)
 })
 
 onUnmounted(() => {
@@ -857,7 +986,16 @@ onUnmounted(() => {
     moduleChart.dispose()
     moduleChart = null
   }
+  if (summaryBarChart) {
+    summaryBarChart.dispose()
+    summaryBarChart = null
+  }
+  if (summaryPieChart) {
+    summaryPieChart.dispose()
+    summaryPieChart = null
+  }
   window.removeEventListener('resize', handleModuleChartResize)
+  window.removeEventListener('resize', handleSummaryChartResize)
 })
 </script>
 
@@ -922,6 +1060,15 @@ onUnmounted(() => {
 .module-card { margin-bottom: 16px; }
 .chart-container { width: 100%; height: 300px; }
 
+// P5 审计汇总区（仅超管渲染）
+.summary-section { margin-bottom: 16px; }
+.summary-filter-card { margin-bottom: 16px; }
+.summary-filter-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.summary-tip { font-size: 12px; color: #909399; }
+.summary-charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.summary-chart-card { margin-bottom: 0; }
+.summary-chart { width: 100%; height: 300px; }
+
 .table-footer { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid #EBEEF5; margin-top: 12px; }
 .selected-count { font-size: 13px; color: #606266; }
 
@@ -935,6 +1082,12 @@ onUnmounted(() => {
     flex-direction: column;
     align-items: stretch;
     .el-date-editor, .el-select, .el-input, .el-button { width: 100% !important; }
+  }
+  .summary-charts-row { grid-template-columns: 1fr; }
+  .summary-filter-row {
+    flex-direction: column;
+    align-items: stretch;
+    .el-date-editor, .el-button { width: 100% !important; }
   }
 }
 </style>

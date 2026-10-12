@@ -149,9 +149,13 @@
           <el-icon color="#67c23a" size="48"><SuccessFilled /></el-icon>
         </div>
         <p>论文查重检测已完成！</p>
-        <p>总体相似度: <strong>{{ finalSimilarity }}%</strong></p>
+        <p>总相似比: <strong>{{ finalSimilarity }}%</strong></p>
+        <!-- P5 新指标：存量任务为 null，显示「—」不按 0 处理 -->
+        <p>单篇最大: <strong>{{ maxPerSource != null ? maxPerSource + '%' : '—' }}</strong></p>
+        <p>引用率: <strong>{{ citationRate != null ? citationRate + '%' : '—' }}</strong></p>
       </div>
       <template #footer>
+        <el-button v-if="taskId" type="primary" plain @click="viewSentenceDetail">查看检测明细</el-button>
         <el-button @click="viewReport">查看报告</el-button>
         <el-button type="primary" @click="closeCompletionDialog">知道了</el-button>
       </template>
@@ -195,6 +199,10 @@ const logs = ref([])
 
 const showCompletionDialog = ref(false)
 const finalSimilarity = ref(0)
+// P5 新指标与句级明细入口所需的 taskId（任务详情接口带回，字符串）
+const taskId = ref(null)
+const maxPerSource = ref(null)
+const citationRate = ref(null)
 const logContainer = ref(null)
 
 // 使用实时推送 Hook
@@ -284,6 +292,17 @@ const updateStatus = (data, { announce = false } = {}) => {
     ...currentStatus.value,
     ...data,
     status: data.checkStatus || data.status || currentStatus.value.status
+  }
+
+  // 任务详情带回 taskId（字符串雪花 ID）与 P5 新指标
+  if (data.taskId) {
+    taskId.value = data.taskId
+  }
+  if ('maxPerSource' in data) {
+    maxPerSource.value = data.maxPerSource
+  }
+  if ('citationRate' in data) {
+    citationRate.value = data.citationRate
   }
 
   // 记录首次拿到状态的时刻，供"已用时"计算。
@@ -402,6 +421,13 @@ const viewReport = () => {
   router.push(`/student/plagiarism-report/${route.params.paperId}`)
 }
 
+// 查看句级检测明细（P5 新页，taskId 按字符串传递防雪花 ID 精度丢失）
+const viewSentenceDetail = () => {
+  if (!taskId.value) return
+  showCompletionDialog.value = false
+  router.push(`/student/sentence-detail/${taskId.value}`)
+}
+
 const closeCompletionDialog = () => {
   showCompletionDialog.value = false
 }
@@ -437,12 +463,23 @@ const connectWebSocket = (taskId) => {
       addLog('success', data.message || '查重完成');
       currentStatus.value.overallProgress = 100;
       currentStatus.value.status = 'completed';
-      // 推送事件里不带相似度，完成后再查一次任务详情把查重率取回来
+      // 推送事件里不带完整数据，完成后再查一次任务详情
       getCheckTaskDetail(route.params.paperId)
         .then((res) => {
-          if (res.code === 200 && res.data?.checkRate != null) {
-            finalSimilarity.value = res.data.checkRate;
-            currentStatus.value.checkRate = res.data.checkRate;
+          if (res.code === 200 && res.data) {
+            if (res.data.checkRate != null) {
+              finalSimilarity.value = res.data.checkRate;
+              currentStatus.value.checkRate = res.data.checkRate;
+            }
+            if (res.data.taskId) {
+              taskId.value = res.data.taskId;
+            }
+            if ('maxPerSource' in res.data) {
+              maxPerSource.value = res.data.maxPerSource;
+            }
+            if ('citationRate' in res.data) {
+              citationRate.value = res.data.citationRate;
+            }
           }
         })
         .catch(() => {});

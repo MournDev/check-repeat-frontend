@@ -109,11 +109,24 @@
           </template>
         </el-table-column>
         
-        <el-table-column prop="similarityRate" label="相似度" width="100">
+        <el-table-column prop="similarityRate" label="总相似比" width="100">
           <template #default="{ row }">
             <span :class="getSimilarityClass(row.similarityRate)">
               {{ row.similarityRate != null ? row.similarityRate + '%' : '未检测' }}
             </span>
+          </template>
+        </el-table-column>
+
+        <!-- P5 新指标：存量数据字段为 null，展示「—」不按 0 处理 -->
+        <el-table-column label="单篇最大" width="100">
+          <template #default="{ row }">
+            <span>{{ row.maxPerSource != null ? row.maxPerSource + '%' : '—' }}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="引用率" width="100">
+          <template #default="{ row }">
+            <span>{{ row.citationRate != null ? row.citationRate + '%' : '—' }}</span>
           </template>
         </el-table-column>
         

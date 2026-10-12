@@ -611,6 +611,10 @@ const handleMessageClick = async (notification) => {
     case 'ADVISOR_MESSAGE':
       router.push('/student/advisor-interaction')
       break
+    // P6a 导师评价邀请：终期答辩通过后邀请学生评价导师
+    case 'ADVISOR_EVAL_INVITE':
+      router.push({ path: '/student/advisor-evaluation', query: notification.relatedId ? { paperId: notification.relatedId } : {} })
+      break
     case 'SYSTEM_NOTICE':
       // 可以跳转到消息详情页
       break

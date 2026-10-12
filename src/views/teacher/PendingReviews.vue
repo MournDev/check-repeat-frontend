@@ -80,6 +80,7 @@
       @review="reviewPaper"
       @view-paper="onViewPaper"
       @view-report="viewSimilarityReport"
+      @signoff="onSignoff"
       @batch-review="batchReview"
       @batch-remind="batchRemind"
       @refresh="refreshList"
@@ -125,6 +126,9 @@
 
     <!-- 论文预览对话框（内部自理加载/降级/重试） -->
     <PaperPreviewDialog ref="previewDialogRef" />
+
+    <!-- 查重报告签核对话框（P5）：本列表均为查重完成（auditing）论文，签核成功后刷新 -->
+    <CheckSignoffDialog ref="signoffDialogRef" @success="refreshList" />
   </div>
 </template>
 
@@ -139,11 +143,13 @@ import PendingStats from '@/views/teacher/components/PendingStats.vue'
 import PendingFilterBar from '@/views/teacher/components/PendingFilterBar.vue'
 import PendingPaperTable from '@/views/teacher/components/PendingPaperTable.vue'
 import PaperPreviewDialog from '@/views/teacher/components/PaperPreviewDialog.vue'
+import CheckSignoffDialog from '@/views/teacher/components/CheckSignoffDialog.vue'
 import { usePendingPapers } from '@/composables/usePendingPapers.js'
 
 // 表格组件引用（须在 usePendingPapers 之前声明，供 onLoaded 回调清空跨页勾选）
 const pendingTableRef = ref(null)
 const previewDialogRef = ref(null)
+const signoffDialogRef = ref(null)
 
 // ── 列表 / 筛选 / 排序 / 分页 / 统计（composable）──────────
 const {
@@ -291,6 +297,15 @@ const reportFullscreen = ref(false)
 const viewSimilarityReport = (paper) => {
   currentPaperId.value = paper.paperId ?? paper.paperBaseInfo?.paperId ?? paper.id ?? null
   reportDialogVisible.value = true
+}
+
+// ── 查重报告签核（P5）─────────────────────────────────────
+const onSignoff = (paper) => {
+  signoffDialogRef.value?.open({
+    paperId: paper.paperId ?? paper.paperBaseInfo?.paperId ?? paper.id ?? null,
+    paperTitle: paper.paperTitle,
+    studentName: paper.studentName
+  })
 }
 
 const toggleReportFullscreen = () => {

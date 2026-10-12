@@ -25,8 +25,17 @@
         <h2 class="paper-title">{{ paperInfo.title }}</h2>
         <div class="paper-stats">
           <div class="stat-item">
-            <div class="stat-label">当前相似度</div>
+            <div class="stat-label">总相似比</div>
             <div class="stat-value" :class="getCurrentSimilarityClass(paperInfo.currentSimilarity)">{{ paperInfo.currentSimilarity }}%</div>
+          </div>
+          <!-- P5 新指标：存量任务为 null，显示「—」不按 0 处理 -->
+          <div class="stat-item">
+            <div class="stat-label">单篇最大</div>
+            <div class="stat-value">{{ formatMetric(paperInfo.maxPerSource) }}</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">引用率</div>
+            <div class="stat-value">{{ formatMetric(paperInfo.citationRate) }}</div>
           </div>
           <div class="stat-item">
             <div class="stat-label">历史最低</div>
@@ -95,6 +104,18 @@
       </div>
     </div>
 
+    <!-- P5 查重指标趋势（总相似比 + 单篇最大 + 引用率，新口径） -->
+    <div class="trend-card p5-trend-card">
+      <div class="card-header">
+        <div class="card-title">
+          <el-icon><TrendCharts /></el-icon>
+          <span>查重指标趋势</span>
+        </div>
+      </div>
+      <div v-if="p5TrendList.length === 0" class="trend-empty">暂无查重记录</div>
+      <div v-show="p5TrendList.length > 0" ref="p5TrendChart" class="p5-trend-chart"></div>
+    </div>
+
     <!-- 版本历史时间轴 -->
     <div class="history-card">
       <div class="card-header">
@@ -137,6 +158,15 @@
                   </div>
                   <div class="record-actions" v-if="!compactView">
                     <el-button
+                      v-if="record.taskId"
+                      type="primary"
+                      text
+                      size="small"
+                      @click="viewSentenceDetail(record.taskId)"
+                    >
+                      查看检测明细
+                    </el-button>
+                    <el-button
                       v-if="record.reportId"
                       text
                       size="small"
@@ -165,6 +195,11 @@
                 </div>
                 
                 <div class="record-content" v-if="!compactView">
+                  <!-- P5 新指标：该次查重的单篇最大/引用率，存量记录为 null 显示「—」 -->
+                  <div class="p5-metric-row">
+                    <span class="p5-metric-item">单篇最大：{{ formatMetric(record.maxPerSource) }}</span>
+                    <span class="p5-metric-item">引用率：{{ formatMetric(record.citationRate) }}</span>
+                  </div>
                   <div class="changes-description">
                     <el-icon><EditPen /></el-icon>
                     <span>{{ record.changes }}</span>
@@ -296,7 +331,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onUnmounted, computed, nextTick } from 'vue'
+import { ref, reactive, onMounted, onUnmounted, onBeforeUnmount, computed, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { 
@@ -305,6 +340,7 @@ import {
 } from '@element-plus/icons-vue'
 
 import { getCheckHistory, getSimilarityTrend, compareVersionHistory } from '@/api/student'
+import { getPaperSimilarityTrend } from '@/api/p5'
 import { getSimilarityColor } from '@/utils/dataType.js'
 import * as echarts from 'echarts'
 
@@ -316,7 +352,10 @@ const paperInfo = ref({
   title: '',
   currentSimilarity: 0,
   lowestSimilarity: 0,
-  versionCount: 0
+  versionCount: 0,
+  // P5 新指标：存量任务为 null，展示「—」
+  maxPerSource: null,
+  citationRate: null
 })
 
 const trendPeriod = ref('30')
@@ -324,6 +363,11 @@ const compactView = ref(false)
 const showCompareDrawer = ref(false)
 const trendChart = ref(null)
 const chartInstance = ref(null)
+
+// P5 查重指标趋势（总相似比/单篇最大/引用率）
+const p5TrendChart = ref(null)
+const p5TrendList = ref([])
+let p5ChartInstance = null
 
 const historyRecords = ref([])
 
@@ -351,6 +395,14 @@ const getCurrentSimilarityClass = computed(() => (similarity) => {
 // 方法
 const goBack = () => {
   router.back()
+}
+
+// P5 指标展示：null（存量任务）显示「—」，不按 0 处理
+const formatMetric = (value) => (value == null ? '—' : `${value}%`)
+
+// 查看句级检测明细（P5 新页，taskId 按字符串传递防雪花 ID 精度丢失）
+const viewSentenceDetail = (taskId) => {
+  router.push(`/student/sentence-detail/${taskId}`)
 }
 
 const refreshHistory = async () => {
@@ -382,7 +434,9 @@ const refreshHistory = async () => {
           title: res.data.paperInfo.title || '',
           currentSimilarity: res.data.paperInfo.currentSimilarity || 0,
           lowestSimilarity: res.data.paperInfo.lowestSimilarity || 0,
-          versionCount: res.data.paperInfo.versionCount || 0
+          versionCount: res.data.paperInfo.versionCount || 0,
+          maxPerSource: res.data.paperInfo.maxPerSource ?? null,
+          citationRate: res.data.paperInfo.citationRate ?? null
         }
       } else if (records.length > 0) {
         const similarities = records.map(r => Number(r.similarity) || 0)
@@ -548,6 +602,115 @@ const renderTrendChart = (data) => {
 
 const toggleCompactView = () => {
   compactView.value = !compactView.value
+}
+
+// ── P5 查重指标趋势 ──────────────────────────────────────
+// 接口：getPaperSimilarityTrend（新口径，无 period 参数，按查重完成时间升序）
+// x=checkTime，y=repeatRate（总相似比）；maxPerSource/citationRate 叠加为第二/三条线，
+// 存量点为 null，用 '-' 断开；空数组显示「暂无查重记录」
+const loadP5Trend = async () => {
+  const paperId = route.params.paperId
+
+  if (!paperId || paperId === 'undefined') {
+    return
+  }
+
+  try {
+    const res = await getPaperSimilarityTrend(paperId)
+    if (res.code === 200) {
+      p5TrendList.value = res.data || []
+      renderP5TrendChart()
+    }
+  } catch (error) {
+    console.error('加载查重指标趋势失败:', error)
+  }
+}
+
+const renderP5TrendChart = () => {
+  nextTick(() => {
+    if (!p5TrendChart.value || p5TrendList.value.length === 0) return
+
+    if (p5ChartInstance) {
+      p5ChartInstance.dispose()
+    }
+    p5ChartInstance = echarts.init(p5TrendChart.value)
+
+    const list = p5TrendList.value
+    const xData = list.map(item => item.checkTime)
+    // null 点映射为 '-'，connectNulls:false 使线条在缺口处断开
+    const toPoints = (key) => list.map(item => (item[key] == null ? '-' : item[key]))
+
+    p5ChartInstance.setOption({
+      tooltip: {
+        trigger: 'axis',
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        textStyle: { color: '#fff', fontSize: 13 },
+        valueFormatter: (value) => (value == null ? '—' : `${value}%`)
+      },
+      legend: {
+        data: ['总相似比', '单篇最大', '引用率'],
+        bottom: 0,
+        textStyle: { color: '#86868b' }
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        top: '12%',
+        bottom: '14%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'category',
+        data: xData,
+        axisLine: { lineStyle: { color: '#e4e7ed' } },
+        axisLabel: { color: '#86868b' },
+        splitLine: { show: false }
+      },
+      yAxis: {
+        type: 'value',
+        min: 0,
+        max: 100,
+        axisLine: { show: false },
+        axisLabel: { color: '#86868b', formatter: '{value}%' },
+        splitLine: { lineStyle: { color: 'rgba(0, 0, 0, 0.05)' } }
+      },
+      series: [
+        {
+          name: '总相似比',
+          type: 'line',
+          data: toPoints('repeatRate'),
+          smooth: true,
+          symbol: 'circle',
+          symbolSize: 8,
+          connectNulls: false,
+          lineStyle: { width: 3, color: '#0066cc' },
+          itemStyle: { color: '#0066cc', borderColor: '#fff', borderWidth: 2 }
+        },
+        {
+          name: '单篇最大',
+          type: 'line',
+          data: toPoints('maxPerSource'),
+          smooth: true,
+          symbol: 'circle',
+          symbolSize: 6,
+          connectNulls: false,
+          lineStyle: { width: 2, color: '#ff9500' },
+          itemStyle: { color: '#ff9500', borderColor: '#fff', borderWidth: 2 }
+        },
+        {
+          name: '引用率',
+          type: 'line',
+          data: toPoints('citationRate'),
+          smooth: true,
+          symbol: 'circle',
+          symbolSize: 6,
+          connectNulls: false,
+          lineStyle: { width: 2, color: '#34c759' },
+          itemStyle: { color: '#34c759', borderColor: '#fff', borderWidth: 2 }
+        }
+      ]
+    })
+  })
 }
 
 const viewReport = (reportId) => {
@@ -759,11 +922,20 @@ onMounted(async () => {
   await refreshHistory()
   await loadTrendData()
   await loadStatistics()
+  loadP5Trend()
 })
 
 const handleResize = () => {
   chartInstance.value?.resize()
+  p5ChartInstance?.resize()
 }
+
+onBeforeUnmount(() => {
+  if (p5ChartInstance) {
+    p5ChartInstance.dispose()
+    p5ChartInstance = null
+  }
+})
 
 onUnmounted(() => {
   if (chartInstance.value) {
@@ -1011,6 +1183,21 @@ onUnmounted(() => {
     }
   }
 
+  // P5 查重指标趋势卡（复用 trend-card 外壳，仅补图表容器与空态）
+  .p5-trend-card {
+    .p5-trend-chart {
+      width: 100%;
+      height: 360px;
+    }
+
+    .trend-empty {
+      padding: 80px 0;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.875rem;
+    }
+  }
+
   // 历史卡片
   .history-card {
     background: white;
@@ -1225,6 +1412,18 @@ onUnmounted(() => {
               }
               
               .record-content {
+                .p5-metric-row {
+                  display: flex;
+                  gap: 16px;
+                  margin-bottom: 12px;
+
+                  .p5-metric-item {
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    color: #64748b;
+                  }
+                }
+
                 .changes-description {
                   display: flex;
                   align-items: flex-start;

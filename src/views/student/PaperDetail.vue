@@ -114,11 +114,21 @@
                             <div class="similarity-actions">
                                 <el-button type="primary" plain :icon="Refresh" size="small" @click="recheckSimilarity">重新检测</el-button>
                                 <el-button type="success" plain :icon="View" size="small" @click="viewSimilarityReport" :disabled="!checkTask">查看报告</el-button>
+                                <el-button type="primary" text size="small" @click="viewSentenceDetail" :disabled="!checkTask?.taskId">查看检测明细</el-button>
                             </div>
                         </div>
 
                         <!-- 检测任务详情 -->
                         <div v-if="checkTask" class="check-task-info">
+                            <!-- P5 新指标：存量任务为 null，显示「—」不按 0 处理 -->
+                            <div class="task-row">
+                                <span class="task-label">单篇最大</span>
+                                <span class="task-value">{{ checkTask.maxPerSource != null ? checkTask.maxPerSource + '%' : '—' }}</span>
+                            </div>
+                            <div class="task-row">
+                                <span class="task-label">引用率</span>
+                                <span class="task-value">{{ checkTask.citationRate != null ? checkTask.citationRate + '%' : '—' }}</span>
+                            </div>
                             <div class="task-row">
                                 <span class="task-label">任务编号</span>
                                 <span class="task-value">{{ checkTask.taskNo || '--' }}</span>
@@ -264,6 +274,14 @@
                         <div class="feedback-actions">
                             <el-button :icon="ChatDotRound" size="small" @click="contactAdvisor">联系导师</el-button>
                             <el-button :icon="ChatDotRound" size="small" @click="replyToFeedback">回复反馈</el-button>
+                            <el-button
+                                v-if="['defense_passed', 'finalized'].includes(paperDetails.paperStatus)"
+                                type="primary"
+                                plain
+                                :icon="Star"
+                                size="small"
+                                @click="goAdvisorEvaluation"
+                            >评价导师</el-button>
                         </div>
                     </el-card>
 
@@ -363,7 +381,7 @@ import { loadDefenseDict, getDefenseDictText, DICT_PAPER_STATUS } from '@/utils/
 import {
     ArrowLeft, Download, Document, TrendCharts, Timer,
     ChatLineRound, ChatDotRound, Paperclip, Upload, View, Refresh,
-    DocumentChecked, DocumentAdd, Picture, VideoPlay, EditPen, FullScreen
+    DocumentChecked, DocumentAdd, Picture, VideoPlay, EditPen, FullScreen, Star
 } from '@element-plus/icons-vue'
 import { getFileInfo } from "@/api/student.js"
 import { getSubjectFieldTree } from '@/api/user.js'
@@ -541,6 +559,16 @@ const handlePreviewError = (error) => {
     previewLoading.value = false;
     previewError.value = true;
     errorMessage.value = error.message || '文件预览失败，请尝试下载文件查看';
+}
+
+// 查看句级检测明细（P5 新页，taskId 按字符串传递防雪花 ID 精度丢失）
+const viewSentenceDetail = () => {
+    const taskId = checkTask.value?.taskId
+    if (!taskId) {
+        ElMessage.warning('暂无检测任务，无法查看明细')
+        return
+    }
+    router.push(`/student/sentence-detail/${taskId}`)
 }
 
 // 重试预览
@@ -1028,6 +1056,10 @@ const contactAdvisor = () => {
     } else {
         ElMessage.warning('暂无导师联系信息')
     }
+}
+
+const goAdvisorEvaluation = () => {
+    router.push({ name: 'AdvisorEvaluation', query: { paperId: String(paperDetails.value?.id || '') } })
 }
 
 const replyToFeedback = async () => {

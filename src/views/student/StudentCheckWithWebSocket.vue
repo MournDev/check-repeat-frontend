@@ -133,7 +133,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="相似度" width="150">
+        <el-table-column label="总相似比" width="150">
           <template #default="{ row }">
             <span v-if="row.checkRate != null">
               {{ row.checkRate }}%
@@ -142,6 +142,17 @@
               </el-tag>
             </span>
             <span v-else>-</span>
+          </template>
+        </el-table-column>
+        <!-- P5 新指标：存量任务字段为 null，展示「—」不按 0 处理 -->
+        <el-table-column label="单篇最大" width="100">
+          <template #default="{ row }">
+            <span>{{ row.maxPerSource != null ? row.maxPerSource + '%' : '—' }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="引用率" width="100">
+          <template #default="{ row }">
+            <span>{{ row.citationRate != null ? row.citationRate + '%' : '—' }}</span>
           </template>
         </el-table-column>
         <el-table-column label="开始时间" width="180">
@@ -179,7 +190,7 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="300">
+        <el-table-column label="操作" width="400">
           <template #default="{ row }">
             <el-button 
               type="primary" 
@@ -198,8 +209,18 @@
             >
               查看报告
             </el-button>
+            <el-button
+              v-if="row.checkStatus === 'completed'"
+              type="primary"
+              plain
+              @click="viewSentenceDetail(row.taskId)"
+              style="margin-right: 8px"
+              size="small"
+            >
+              查看检测明细
+            </el-button>
             <el-button 
-              v-else-if="row.checkStatus === 'completed'"
+              v-if="row.checkStatus === 'completed' && !row.reportId"
               @click="recheckPlagiarism(row.paperId)"
               style="margin-right: 8px"
               size="small"
@@ -562,6 +583,17 @@ const exportReport = async (reportIdValue) => {
     console.error('导出报告失败', error);
     ElMessage.error('导出报告失败，请稍后重试');
   }
+};
+
+/**
+ * 查看句级检测明细（P5 新页，taskId 按字符串传递防雪花 ID 精度丢失）
+ */
+const viewSentenceDetail = (taskId) => {
+  if (!taskId) {
+    ElMessage.error('任务ID不能为空');
+    return;
+  }
+  router.push(`/student/sentence-detail/${taskId}`);
 };
 
 /**
