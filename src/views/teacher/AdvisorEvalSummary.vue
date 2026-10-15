@@ -98,6 +98,7 @@ import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import * as echarts from 'echarts'
 import { Refresh, Histogram, CollectionTag, Hide } from '@element-plus/icons-vue'
 import { getAdvisorEvalSummary } from '@/api/advisorEvaluation'
+import { isNegativeAdvisorEvalTag } from '@/utils/advisorEvalTag'
 
 const loading = ref(false)
 const summary = ref({
@@ -115,8 +116,8 @@ const summary = ref({
 const radarChartRef = ref()
 let radarChart = null
 
-const NEGATIVE_TAGS = ['guidance_lacking', 'feedback_slow']
-const isNegativeTag = (tag) => NEGATIVE_TAGS.includes(tag)
+// 标签负向判定统一取 utils/advisorEvalTag.js（SSOT）
+const isNegativeTag = isNegativeAdvisorEvalTag
 
 const formatScore = (v, digits = 1) => {
   if (v === null || v === undefined || v === '') return '—'

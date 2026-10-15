@@ -159,6 +159,11 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Lock, CircleCheckFilled, EditPen } from '@element-plus/icons-vue'
 import { getMyAdvisorEvaluation, submitAdvisorEvaluation } from '@/api/advisorEvaluation'
+import {
+  ADVISOR_EVAL_TAG_OPTIONS,
+  advisorEvalTagLabel,
+  isNegativeAdvisorEvalTag
+} from '@/utils/advisorEvalTag'
 
 const route = useRoute()
 const router = useRouter()
@@ -203,27 +208,15 @@ const scoreFields = [
   { key: 'scoreOverall', label: '总体满意度' }
 ]
 
-// 标签映射：清单 1.3 固定字典，value → label
-const TAG_MAP = {
-  reply_timely: '回复及时',
-  feedback_detailed: '反馈细致',
-  strict_demanding: '要求严格',
-  tailored_guidance: '因材施教',
-  resource_support: '资源丰富',
-  guidance_lacking: '指导偏少',
-  feedback_slow: '反馈较慢'
-}
-
-const NEGATIVE_TAGS = ['guidance_lacking', 'feedback_slow']
-
+// 标签字典统一取 utils/advisorEvalTag.js（SSOT），此处仅做模板别名
 const tagOptions = computed(() => {
   // 后端 /my 恒返回 tagOptions，直接用它；本地兜底防接口异常
   if (status.value.tagOptions?.length) return status.value.tagOptions
-  return Object.entries(TAG_MAP).map(([value, label]) => ({ label, value }))
+  return ADVISOR_EVAL_TAG_OPTIONS
 })
 
-const tagLabel = (value) => TAG_MAP[value] || value
-const tagType = (value) => (NEGATIVE_TAGS.includes(value) ? 'danger' : 'success')
+const tagLabel = advisorEvalTagLabel
+const tagType = (value) => (isNegativeAdvisorEvalTag(value) ? 'danger' : 'success')
 
 const formatDateTime = (val) => {
   if (!val) return '—'
