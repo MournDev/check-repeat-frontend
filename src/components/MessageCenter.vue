@@ -612,7 +612,9 @@ const handleMessageClick = async (notification) => {
       router.push('/student/advisor-interaction')
       break
     // P6a 导师评价邀请：终期答辩通过后邀请学生评价导师
+    // P6b 催评提醒：评价窗口临近截止补发，落点与邀请一致
     case 'ADVISOR_EVAL_INVITE':
+    case 'ADVISOR_EVAL_REMIND':
       router.push({ path: '/student/advisor-evaluation', query: notification.relatedId ? { paperId: notification.relatedId } : {} })
       break
     case 'SYSTEM_NOTICE':

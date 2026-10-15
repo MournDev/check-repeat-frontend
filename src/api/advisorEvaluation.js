@@ -44,7 +44,8 @@ export const getAdvisorEvalSummary = () => {
 
 // 评价实名分页（MyBatis-Plus Page 结构 records/total/size/current）
 // params: { pageNum: number, pageSize: number, teacherId?: string, collegeId?: string,
-//           minOverall?: number, maxOverall?: number }
+//           minOverall?: number, maxOverall?: number,
+//           beginDate?: string, endDate?: string }（P6b 新增时间段，yyyy-MM-dd 含当天）
 export const getAdvisorEvalPage = (params) => {
   return request({
     url: "/api/admin/advisor-evaluation/page",
@@ -54,18 +55,23 @@ export const getAdvisorEvalPage = (params) => {
 };
 
 // 评价统计（完成率/导师排行/学院对比/低分预警）
-export const getAdvisorEvalStats = () => {
+// P6b 起支持可选 beginDate/endDate（yyyy-MM-dd，含当天）：传时段后完成率按届别口径
+// （分母=该时段内通过终期答辩的论文数），排行/预警/学院对比均按时段过滤；不传为全量历史
+export const getAdvisorEvalStats = (params) => {
   return request({
     url: "/api/admin/advisor-evaluation/stats",
     method: "get",
+    params,
   });
 };
 
 // 导师评价明细导出（xlsx，单 sheet「导师评价明细」）
-export const exportAdvisorEval = () => {
+// 跟随列表筛选：params 同 /page 的过滤项 { teacherId?, collegeId?, minOverall?, maxOverall? }，不传则导出全量
+export const exportAdvisorEval = (params) => {
   return request({
     url: "/api/admin/advisor-evaluation/export",
     method: "get",
+    params,
     responseType: "blob",
   });
 };

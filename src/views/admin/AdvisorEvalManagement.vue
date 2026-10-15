@@ -14,6 +14,15 @@
       </div>
     </el-card>
 
+    <!-- 统计时段标注：分段口径下完成率分母为该时段内通过终期答辩的论文数（P6b） -->
+    <div class="period-tip">
+      <el-icon><InfoFilled /></el-icon>
+      <span>统计时段：{{ periodText }}</span>
+      <span v-if="hasDateRange" class="period-note">
+        （届别口径：完成率分母为该时段内通过终期答辩的论文数，存量无状态日志论文不参与分段统计）
+      </span>
+    </div>
+
     <!-- 顶部统计卡 -->
     <el-row :gutter="16">
       <el-col :xs="24" :md="8">
@@ -152,8 +161,19 @@
         </div>
       </template>
 
-      <!-- 筛选器 -->
+      <!-- 筛选器（时间范围同时驱动统计卡/排行/学院对比与明细列表，其余项仅过滤列表与导出） -->
       <div class="filter-bar">
+        <el-date-picker
+          v-model="filters.dateRange"
+          type="daterange"
+          range-separator="至"
+          start-placeholder="评价开始日期"
+          end-placeholder="评价结束日期"
+          value-format="YYYY-MM-DD"
+          :shortcuts="termShortcuts"
+          class="filter-item filter-date"
+          @change="handleDateChange"
+        />
         <el-select
           v-model="filters.teacherId"
           placeholder="按导师筛选"
@@ -273,7 +293,7 @@
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
 import * as echarts from 'echarts'
-import { Download, Refresh, Warning, Trophy, DataAnalysis, Document } from '@element-plus/icons-vue'
+import { Download, Refresh, Warning, Trophy, DataAnalysis, Document, InfoFilled } from '@element-plus/icons-vue'
 import {
   getAdvisorEvalPage,
   getAdvisorEvalStats,
@@ -282,20 +302,11 @@ import {
 import { getAllColleges } from '@/api/user'
 import { getAvailableTeachers } from '@/api/admin/assignment'
 import { saveBlobAs } from '@/utils/download'
+import { advisorEvalTagLabel, isNegativeAdvisorEvalTag } from '@/utils/advisorEvalTag'
 
-// ── 标签映射（清单 1.3 固定字典）──
-const TAG_MAP = {
-  reply_timely: '回复及时',
-  feedback_detailed: '反馈细致',
-  strict_demanding: '要求严格',
-  tailored_guidance: '因材施教',
-  resource_support: '资源丰富',
-  guidance_lacking: '指导偏少',
-  feedback_slow: '反馈较慢'
-}
-const NEGATIVE_TAGS = ['guidance_lacking', 'feedback_slow']
-const tagLabel = (v) => TAG_MAP[v] || v
-const isNegativeTag = (v) => NEGATIVE_TAGS.includes(v)
+// ── 标签字典统一取 utils/advisorEvalTag.js（SSOT），此处仅做模板别名 ──
+const tagLabel = advisorEvalTagLabel
+const isNegativeTag = isNegativeAdvisorEvalTag
 
 const formatFixed = (v, digits) => {
   if (v === null || v === undefined || v === '') return '—'
@@ -353,7 +364,8 @@ const renderCollegeChart = () => {
 const fetchStats = async () => {
   statsLoading.value = true
   try {
-    const res = await getAdvisorEvalStats()
+    // 统计仅支持时间段过滤（P6b），与明细分页共用同一时间筛选状态
+    const res = await getAdvisorEvalStats(buildDateParams())
     stats.value = res.data || {}
   } finally {
     statsLoading.value = false
@@ -372,17 +384,48 @@ const total = ref(0)
 const filters = ref({
   teacherId: '',
   collegeId: '',
-  scoreRange: ''
+  scoreRange: '',
+  dateRange: []
 })
+
+// 学年届别快捷选项：9/1 ~ 次年 6/30 为一届（学年制度以学校为准，可按需调整此口径）
+const termShortcuts = (() => {
+  const now = new Date()
+  // 9 月及以后进入下一届学年（如 2026-10 属 2027 届：2026-09-01 ~ 2027-06-30）
+  const currentClassYear = now.getMonth() >= 8 ? now.getFullYear() + 1 : now.getFullYear()
+  return [0, 1, 2].map((offset) => {
+    const classYear = currentClassYear - offset
+    return {
+      text: `${classYear} 届`,
+      value: [new Date(classYear - 1, 8, 1), new Date(classYear, 5, 30)]
+    }
+  })
+})()
 
 const teacherOptions = ref([])
 const collegeOptions = ref([])
 
-const buildPageParams = () => {
-  const params = {
-    pageNum: pageNum.value,
-    pageSize: pageSize.value
+// 时间段过滤项（P6b）：同时驱动统计接口与明细列表/导出，保证两区口径一致
+const hasDateRange = computed(
+  () => Array.isArray(filters.value.dateRange) && filters.value.dateRange.length === 2 && !!filters.value.dateRange[0]
+)
+
+const periodText = computed(() =>
+  hasDateRange.value ? `${filters.value.dateRange[0]} ~ ${filters.value.dateRange[1]}` : '全量历史'
+)
+
+const buildDateParams = () => {
+  const params = {}
+  if (hasDateRange.value) {
+    params.beginDate = filters.value.dateRange[0]
+    params.endDate = filters.value.dateRange[1]
   }
+  return params
+}
+
+// 列表与导出共用的过滤项（不含分页参数，导出按筛选全量出）
+const buildFilterParams = () => {
+  const params = buildDateParams()
   if (filters.value.teacherId) params.teacherId = String(filters.value.teacherId)
   if (filters.value.collegeId) params.collegeId = String(filters.value.collegeId)
   if (filters.value.scoreRange) {
@@ -392,6 +435,12 @@ const buildPageParams = () => {
   }
   return params
 }
+
+const buildPageParams = () => ({
+  pageNum: pageNum.value,
+  pageSize: pageSize.value,
+  ...buildFilterParams()
+})
 
 const fetchPage = async () => {
   pageLoading.value = true
@@ -409,9 +458,17 @@ const handleFilterChange = () => {
   fetchPage()
 }
 
-const resetFilters = () => {
-  filters.value = { teacherId: '', collegeId: '', scoreRange: '' }
+// 时间段同时驱动统计与明细两个数据区，变化时需双刷
+const handleDateChange = () => {
   pageNum.value = 1
+  fetchStats()
+  fetchPage()
+}
+
+const resetFilters = () => {
+  filters.value = { teacherId: '', collegeId: '', scoreRange: '', dateRange: [] }
+  pageNum.value = 1
+  fetchStats()
   fetchPage()
 }
 
@@ -442,7 +499,8 @@ const exporting = ref(false)
 const handleExport = async () => {
   exporting.value = true
   try {
-    const res = await exportAdvisorEval()
+    // 导出跟随当前筛选（时间段/导师/学院/分数段），与明细分页同一口径
+    const res = await exportAdvisorEval(buildFilterParams())
     const blob = res.data || res
     saveBlobAs(blob, `advisor_evaluation_${new Date().toISOString().slice(0, 10)}.xlsx`)
     ElMessage.success('导出已开始')
@@ -499,6 +557,23 @@ onBeforeUnmount(() => {
   margin: 0;
   font-size: 0.8125rem;
   color: var(--apple-ink-muted-48);
+}
+
+.period-tip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--apple-ink-muted-48);
+
+  .el-icon {
+    color: var(--apple-primary);
+  }
+
+  .period-note {
+    opacity: 0.85;
+  }
 }
 
 .stat-card {
@@ -578,6 +653,10 @@ onBeforeUnmount(() => {
 
   .filter-item {
     width: 200px;
+  }
+
+  .filter-date {
+    width: 300px;
   }
 }
 
