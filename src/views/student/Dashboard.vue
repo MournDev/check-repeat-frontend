@@ -1280,7 +1280,7 @@ const initComparisonChart = () => {
         type: 'bar',
         data: majorComparisonData.majorAverage,
         itemStyle: {
-          color: '#e4e7ed'
+          color: '#e0e0e0'
         }
       }
     ]
@@ -1295,8 +1295,8 @@ const initComparisonChart = () => {
 .student-dashboard {
   padding: 24px;
   min-height: 100vh;
-  background: #f5f5f7; // Slate-50
-  color: #1d1d1f; // Slate-900
+  background: var(--apple-canvas-parchment); // Slate-50
+  color: var(--apple-ink); // Slate-900
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
@@ -1315,14 +1315,14 @@ const initComparisonChart = () => {
       .welcome-title {
         font-size: 2rem;
         font-weight: 600;
-        color: #1d1d1f;
+        color: var(--apple-ink);
         margin: 0 0 8px 0;
         line-height: 1.2;
       }
       
       .welcome-subtitle {
         font-size: 1rem;
-        color: #86868b;
+        color: var(--apple-ink-secondary);
         margin: 0;
       }
     }
@@ -1342,8 +1342,8 @@ const initComparisonChart = () => {
 
 // 统计卡片
 .stat-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-slate-border);
   border-radius: 18px;
   padding: 20px;
   display: flex;
@@ -1354,7 +1354,7 @@ const initComparisonChart = () => {
   &:hover {
     /* translateY removed */
     /* box-shadow removed */
-    border-color: #cbd5e1;
+    border-color: var(--apple-slate-border-strong);
   }
   
   .stat-icon {
@@ -1368,23 +1368,23 @@ const initComparisonChart = () => {
     flex-shrink: 0;
     
     &.paper-icon {
-      background: #f5f5f7;
-      color: #0066cc;
+      background: var(--apple-canvas-parchment);
+      color: var(--apple-primary);
     }
     
     &.pending-icon {
-      background: #f5f5f7;
-      color: #ff9500;
+      background: var(--apple-canvas-parchment);
+      color: var(--apple-warning);
     }
     
     &.approved-icon {
-      background: #f5f5f7;
-      color: #34c759;
+      background: var(--apple-canvas-parchment);
+      color: var(--apple-success);
     }
     
     &.revision-icon {
-      background: #f5f5f7;
-      color: #ff3b30;
+      background: var(--apple-canvas-parchment);
+      color: var(--apple-danger);
     }
   }
   
@@ -1394,14 +1394,14 @@ const initComparisonChart = () => {
     .stat-value {
       font-size: 1.75rem;
       font-weight: 600;
-      color: #1d1d1f;
+      color: var(--apple-ink);
       line-height: 1.2;
       margin-bottom: 4px;
     }
     
     .stat-label {
       font-size: 0.875rem;
-      color: #86868b;
+      color: var(--apple-ink-secondary);
       font-weight: 600;
     }
   }
@@ -1423,10 +1423,10 @@ const initComparisonChart = () => {
       gap: 8px;
       font-size: 1.125rem;
       font-weight: 600;
-      color: #1d1d1f;
+      color: var(--apple-ink);
       
       .el-icon {
-        color: #86868b;
+        color: var(--apple-ink-secondary);
       }
     }
   }
@@ -1443,8 +1443,8 @@ const initComparisonChart = () => {
 }
 
 .deadline-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-slate-border);
   border-radius: 18px;
   padding: 20px;
   display: flex;
@@ -1455,23 +1455,23 @@ const initComparisonChart = () => {
   &:hover {
     /* translateY removed */
     /* box-shadow removed */
-    border-color: #cbd5e1;
+    border-color: var(--apple-slate-border-strong);
   }
   
   &.submission {
-    border-left: 4px solid #34c759;
+    border-left: 4px solid var(--apple-success);
   }
   
   &.review {
-    border-left: 4px solid #0066cc;
+    border-left: 4px solid var(--apple-primary);
   }
   
   &.defense {
-    border-left: 4px solid #ff9500;
+    border-left: 4px solid var(--apple-warning);
   }
   
   &.graduation {
-    border-left: 4px solid #0066cc;
+    border-left: 4px solid var(--apple-primary);
   }
   
   .deadline-icon {
@@ -1483,8 +1483,8 @@ const initComparisonChart = () => {
     justify-content: center;
     font-size: 18px;
     flex-shrink: 0;
-    background: #f5f5f7;
-    color: #86868b;
+    background: var(--apple-canvas-parchment);
+    color: var(--apple-ink-secondary);
   }
   
   .deadline-content {
@@ -1492,7 +1492,7 @@ const initComparisonChart = () => {
     
     .deadline-label {
       font-size: 0.875rem;
-      color: #86868b;
+      color: var(--apple-ink-secondary);
       margin-bottom: 6px;
       font-weight: 600;
     }
@@ -1500,7 +1500,7 @@ const initComparisonChart = () => {
     .deadline-date {
       font-size: 1.125rem;
       font-weight: 600;
-      color: #1d1d1f;
+      color: var(--apple-ink);
       margin-bottom: 8px;
     }
     
@@ -1514,23 +1514,23 @@ const initComparisonChart = () => {
         font-weight: 600;
         
         &.danger {
-          background: #f5f5f7;
-          color: #ff3b30;
+          background: var(--apple-canvas-parchment);
+          color: var(--apple-danger);
         }
         
         &.warning {
-          background: #f5f5f7;
-          color: #ff9500;
+          background: var(--apple-canvas-parchment);
+          color: var(--apple-warning);
         }
         
         &.success {
-          background: #f5f5f7;
-          color: #34c759;
+          background: var(--apple-canvas-parchment);
+          color: var(--apple-success);
         }
         
         &.goal {
-          background: #f5f5f7;
-          color: #0066cc;
+          background: var(--apple-canvas-parchment);
+          color: var(--apple-primary);
         }
       }
     }
@@ -1550,8 +1550,8 @@ const initComparisonChart = () => {
 
 // 通用卡片样式
 .card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-slate-border);
   border-radius: 18px;
   padding: 24px;
   margin-bottom: 24px;
@@ -1559,7 +1559,7 @@ const initComparisonChart = () => {
   
   &:hover {
     /* box-shadow removed */
-    border-color: #cbd5e1;
+    border-color: var(--apple-slate-border-strong);
   }
   
   .card-header {
@@ -1574,10 +1574,10 @@ const initComparisonChart = () => {
       gap: 8px;
       font-size: 1.125rem;
       font-weight: 600;
-      color: #1d1d1f;
+      color: var(--apple-ink);
       
       .el-icon {
-        color: #86868b;
+        color: var(--apple-ink-secondary);
       }
     }
     
@@ -1599,13 +1599,13 @@ const initComparisonChart = () => {
       align-items: center;
       margin-bottom: 24px;
       padding-bottom: 16px;
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: 1px solid var(--apple-slate-border);
       
       h3 {
         margin: 0;
         font-size: 1.125rem;
         font-weight: 600;
-        color: #1d1d1f;
+        color: var(--apple-ink);
       }
       
       .progress-status {
@@ -1615,28 +1615,28 @@ const initComparisonChart = () => {
         font-weight: 600;
         
         &.status-info {
-          background: #f5f5f7;
-          color: #0066cc;
+          background: var(--apple-canvas-parchment);
+          color: var(--apple-primary);
         }
         
         &.status-primary {
-          background: #f5f5f7;
-          color: #0066cc;
+          background: var(--apple-canvas-parchment);
+          color: var(--apple-primary);
         }
         
         &.status-warning {
-          background: #f5f5f7;
-          color: #ff9500;
+          background: var(--apple-canvas-parchment);
+          color: var(--apple-warning);
         }
         
         &.status-danger {
-          background: #f5f5f7;
-          color: #ff3b30;
+          background: var(--apple-canvas-parchment);
+          color: var(--apple-danger);
         }
         
         &.status-success {
-          background: #f5f5f7;
-          color: #34c759;
+          background: var(--apple-canvas-parchment);
+          color: var(--apple-success);
         }
       }
     }
@@ -1672,38 +1672,38 @@ const initComparisonChart = () => {
           .step-title {
             font-size: 14px;
             font-weight: 600;
-            color: #1d1d1f;
+            color: var(--apple-ink);
             margin-bottom: 2px;
           }
           
           .step-description {
             font-size: 12px;
-            color: #86868b;
+            color: var(--apple-ink-secondary);
           }
         }
         
         &.step-active {
           .step-number {
-            background: #34c759;
+            background: var(--apple-success);
             color: white;
           }
         }
         
         &.step-current {
           .step-number {
-            background: #0066cc;
+            background: var(--apple-primary);
             color: white;
           }
         }
         
         &.step-pending {
           .step-number {
-            background: #f5f5f7;
-            color: #86868b;
+            background: var(--apple-canvas-parchment);
+            color: var(--apple-ink-secondary);
           }
           
           .step-title {
-            color: #86868b;
+            color: var(--apple-ink-secondary);
           }
         }
       }
@@ -1713,7 +1713,7 @@ const initComparisonChart = () => {
       display: flex;
       gap: 24px;
       padding: 16px;
-      background: #f5f5f7;
+      background: var(--apple-canvas-parchment);
       border-radius: 11px;
       
       .summary-item {
@@ -1721,10 +1721,10 @@ const initComparisonChart = () => {
         align-items: center;
         gap: 8px;
         font-size: 0.875rem;
-        color: #86868b;
+        color: var(--apple-ink-secondary);
         
         .el-icon {
-          color: #86868b;
+          color: var(--apple-ink-secondary);
         }
       }
     }
@@ -1733,7 +1733,7 @@ const initComparisonChart = () => {
   .paper-details {
     margin-top: 24px;
     padding-top: 24px;
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid var(--apple-slate-border);
     
     .paper-header {
       display: flex;
@@ -1745,7 +1745,7 @@ const initComparisonChart = () => {
         margin: 0;
         font-size: 1rem;
         font-weight: 600;
-        color: #1d1d1f;
+        color: var(--apple-ink);
       }
       
       .paper-status {
@@ -1760,30 +1760,30 @@ const initComparisonChart = () => {
           font-weight: 600;
           
           &.status-info {
-            background: #f5f5f7;
-            color: #0066cc;
+            background: var(--apple-canvas-parchment);
+            color: var(--apple-primary);
           }
           &.status-primary {
-            background: #f5f5f7;
-            color: #0066cc;
+            background: var(--apple-canvas-parchment);
+            color: var(--apple-primary);
           }
           &.status-warning {
-            background: #f5f5f7;
-            color: #ff9500;
+            background: var(--apple-canvas-parchment);
+            color: var(--apple-warning);
           }
           &.status-danger {
-            background: #f5f5f7;
-            color: #ff3b30;
+            background: var(--apple-canvas-parchment);
+            color: var(--apple-danger);
           }
           &.status-success {
-            background: #f5f5f7;
-            color: #34c759;
+            background: var(--apple-canvas-parchment);
+            color: var(--apple-success);
           }
         }
         
         .paper-id {
           font-size: 0.875rem;
-          color: #86868b;
+          color: var(--apple-ink-secondary);
         }
       }
     }
@@ -1809,7 +1809,7 @@ const initComparisonChart = () => {
         
         .info-label {
           font-size: 0.75rem;
-          color: #86868b;
+          color: var(--apple-ink-secondary);
           margin-bottom: 8px;
           font-weight: 600;
           text-transform: uppercase;
@@ -1821,13 +1821,13 @@ const initComparisonChart = () => {
           align-items: center;
           gap: 8px;
           font-size: 0.95rem;
-          color: #1d1d1f;
+          color: var(--apple-ink);
           font-weight: 600;
           
           &.title {
             font-size: 1rem;
             font-weight: 600;
-            color: #0066cc;
+            color: var(--apple-primary);
             
             span {
               display: block;
@@ -1855,16 +1855,16 @@ const initComparisonChart = () => {
                 border-radius: 3px;
                 
                 &.similarity-low {
-                  background: #34c759;
+                  background: var(--apple-success);
                 }
                 &.similarity-medium {
-                  background: #ff9500;
+                  background: var(--apple-warning);
                 }
                 &.similarity-high {
-                  background: #ff3b30;
+                  background: var(--apple-danger);
                 }
                 &.similarity-neutral {
-                  background: #86868b;
+                  background: var(--apple-ink-secondary);
                 }
               }
               
@@ -1874,16 +1874,16 @@ const initComparisonChart = () => {
                 min-width: 48px;
                 
                 &.similarity-low {
-                  color: #34c759;
+                  color: var(--apple-success);
                 }
                 &.similarity-medium {
-                  color: #ff9500;
+                  color: var(--apple-warning);
                 }
                 &.similarity-high {
-                  color: #ff3b30;
+                  color: var(--apple-danger);
                 }
                 &.similarity-neutral {
-                  color: #86868b;
+                  color: var(--apple-ink-secondary);
                 }
               }
             }
@@ -1895,20 +1895,20 @@ const initComparisonChart = () => {
               font-weight: 600;
               
               &.status-info {
-                background: #f5f5f7;
-                color: #0066cc;
+                background: var(--apple-canvas-parchment);
+                color: var(--apple-primary);
               }
               &.status-success {
-                background: #f5f5f7;
-                color: #34c759;
+                background: var(--apple-canvas-parchment);
+                color: var(--apple-success);
               }
               &.status-warning {
-                background: #f5f5f7;
-                color: #ff9500;
+                background: var(--apple-canvas-parchment);
+                color: var(--apple-warning);
               }
               &.status-danger {
-                background: #f5f5f7;
-                color: #ff3b30;
+                background: var(--apple-canvas-parchment);
+                color: var(--apple-danger);
               }
             }
           }
@@ -1920,13 +1920,13 @@ const initComparisonChart = () => {
             font-weight: 600;
             
             &.word-count {
-              background: #f5f5f7;
-              color: #34c759;
+              background: var(--apple-canvas-parchment);
+              color: var(--apple-success);
             }
             
             &.version {
-              background: #f5f5f7;
-              color: #0066cc;
+              background: var(--apple-canvas-parchment);
+              color: var(--apple-primary);
             }
           }
         }
@@ -1936,7 +1936,7 @@ const initComparisonChart = () => {
     .paper-feedback {
       margin: 20px 0;
       padding: 16px;
-      background: #f5f5f7;
+      background: var(--apple-canvas-parchment);
       border-radius: 11px;
       
       .feedback-header {
@@ -1946,17 +1946,17 @@ const initComparisonChart = () => {
         margin-bottom: 12px;
         
         .el-icon {
-          color: #86868b;
+          color: var(--apple-ink-secondary);
         }
         
         span {
           font-weight: 600;
-          color: #1d1d1f;
+          color: var(--apple-ink);
         }
       }
       
       .feedback-content {
-        color: #86868b;
+        color: var(--apple-ink-secondary);
         line-height: 1.5;
         font-size: 0.875rem;
       }
@@ -1977,7 +1977,7 @@ const initComparisonChart = () => {
       
       .empty-icon {
         font-size: 48px;
-        color: #86868b;
+        color: var(--apple-ink-secondary);
         margin-bottom: 16px;
       }
       
@@ -1985,12 +1985,12 @@ const initComparisonChart = () => {
         margin: 0 0 8px 0;
         font-size: 1.125rem;
         font-weight: 600;
-        color: #1d1d1f;
+        color: var(--apple-ink);
       }
       
       p {
         margin: 0 0 24px 0;
-        color: #86868b;
+        color: var(--apple-ink-secondary);
         font-size: 0.875rem;
       }
     }
@@ -2029,7 +2029,7 @@ const initComparisonChart = () => {
     align-items: center;
     justify-content: center;
     gap: 12px;
-    color: #86868b;
+    color: var(--apple-ink-secondary);
     
     .empty-icon {
       font-size: 40px;
@@ -2057,25 +2057,25 @@ const initComparisonChart = () => {
     .notification-item {
       padding: 12px;
       border-radius: 11px;
-      background: #f5f5f7;
+      background: var(--apple-canvas-parchment);
       
       .notification-title {
         font-size: 0.875rem;
         font-weight: 600;
-        color: #1d1d1f;
+        color: var(--apple-ink);
         margin-bottom: 4px;
       }
       
       .notification-content {
         font-size: 0.8rem;
-        color: #86868b;
+        color: var(--apple-ink-secondary);
         line-height: 1.4;
         margin-bottom: 4px;
       }
       
       .notification-time {
         font-size: 0.75rem;
-        color: #86868b;
+        color: var(--apple-ink-secondary);
       }
     }
   }
@@ -2083,7 +2083,7 @@ const initComparisonChart = () => {
   .notification-empty {
     padding: 32px 0;
     text-align: center;
-    color: #86868b;
+    color: var(--apple-ink-secondary);
     
     .empty-icon {
       font-size: 40px;
@@ -2110,13 +2110,13 @@ const initComparisonChart = () => {
         width: 80px;
         height: 80px;
         border-radius: 50%;
-        background: #f5f5f7;
+        background: var(--apple-canvas-parchment);
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 24px;
         font-weight: 600;
-        color: #86868b;
+        color: var(--apple-ink-secondary);
         margin: 0 auto 12px;
         background-size: cover;
         background-position: center;
@@ -2128,7 +2128,7 @@ const initComparisonChart = () => {
         justify-content: center;
         gap: 6px;
         font-size: 0.75rem;
-        color: #86868b;
+        color: var(--apple-ink-secondary);
         
         .status-indicator {
           width: 8px;
@@ -2136,15 +2136,15 @@ const initComparisonChart = () => {
           border-radius: 50%;
           
           &.online {
-            background: #34c759;
+            background: var(--apple-success);
           }
           
           &.offline {
-            background: #86868b;
+            background: var(--apple-ink-secondary);
           }
           
           &.unknown {
-            background: #d2d2d7;
+            background: var(--apple-surface-chip-translucent);
           }
         }
       }
@@ -2158,13 +2158,13 @@ const initComparisonChart = () => {
         margin: 0 0 4px 0;
         font-size: 1.125rem;
         font-weight: 600;
-        color: #1d1d1f;
+        color: var(--apple-ink);
       }
       
       .advisor-title {
         margin: 0 0 16px 0;
         font-size: 0.875rem;
-        color: #86868b;
+        color: var(--apple-ink-secondary);
       }
       
       .advisor-expertise {
@@ -2178,8 +2178,8 @@ const initComparisonChart = () => {
           padding: 4px 12px;
           border-radius: 18px;
           font-size: 0.75rem;
-          background: #f5f5f7;
-          color: #86868b;
+          background: var(--apple-canvas-parchment);
+          color: var(--apple-ink-secondary);
         }
       }
       
@@ -2190,7 +2190,7 @@ const initComparisonChart = () => {
           align-items: center;
           gap: 8px;
           font-size: 0.875rem;
-          color: #86868b;
+          color: var(--apple-ink-secondary);
           margin-bottom: 8px;
           
           &:last-child {
@@ -2198,7 +2198,7 @@ const initComparisonChart = () => {
           }
           
           .el-icon {
-            color: #86868b;
+            color: var(--apple-ink-secondary);
             flex-shrink: 0;
           }
         }
@@ -2210,7 +2210,7 @@ const initComparisonChart = () => {
       grid-template-columns: repeat(3, 1fr);
       gap: 16px;
       padding-top: 16px;
-      border-top: 1px solid #e2e8f0;
+      border-top: 1px solid var(--apple-slate-border);
       
       .stat-item {
         text-align: center;
@@ -2218,13 +2218,13 @@ const initComparisonChart = () => {
         .stat-number {
           font-size: 1.25rem;
           font-weight: 600;
-          color: #1d1d1f;
+          color: var(--apple-ink);
           margin-bottom: 4px;
         }
         
         .stat-label {
           font-size: 0.75rem;
-          color: #86868b;
+          color: var(--apple-ink-secondary);
           font-weight: 600;
         }
       }
@@ -2239,7 +2239,7 @@ const initComparisonChart = () => {
       
       .empty-icon {
         font-size: 48px;
-        color: #86868b;
+        color: var(--apple-ink-secondary);
         margin-bottom: 16px;
       }
       
@@ -2247,12 +2247,12 @@ const initComparisonChart = () => {
         margin: 0 0 8px 0;
         font-size: 1.125rem;
         font-weight: 600;
-        color: #1d1d1f;
+        color: var(--apple-ink);
       }
       
       p {
         margin: 0 0 24px 0;
-        color: #86868b;
+        color: var(--apple-ink-secondary);
         font-size: 0.875rem;
       }
     }
@@ -2266,7 +2266,7 @@ const initComparisonChart = () => {
   gap: 8px;
   padding: 10px 16px;
   border-radius: 11px;
-  background: #0066cc;
+  background: var(--apple-primary);
   color: white;
   font-size: 0.875rem;
   font-weight: 600;
@@ -2275,7 +2275,7 @@ const initComparisonChart = () => {
   transition: all 0.2s ease;
   
   &:hover {
-    background: #0055aa;
+    background: var(--apple-primary-active);
     /* translateY and box-shadow removed */
   }
 
@@ -2294,17 +2294,17 @@ const initComparisonChart = () => {
   gap: 8px;
   padding: 10px 16px;
   border-radius: 11px;
-  background: #f5f5f7;
-  color: #1d1d1f;
+  background: var(--apple-canvas-parchment);
+  color: var(--apple-ink);
   font-size: 0.875rem;
   font-weight: 600;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--apple-slate-border);
   cursor: pointer;
   transition: all 0.2s ease;
   
   &:hover {
-    background: #e2e8f0;
-    border-color: #cbd5e1;
+    background: var(--apple-slate-border);
+    border-color: var(--apple-slate-border-strong);
     /* translateY removed */
   }
 
@@ -2324,7 +2324,7 @@ const initComparisonChart = () => {
   padding: 6px 12px;
   border-radius: 11px;
   background: transparent;
-  color: #86868b;
+  color: var(--apple-ink-secondary);
   font-size: 0.75rem;
   font-weight: 600;
   border: none;
@@ -2332,8 +2332,8 @@ const initComparisonChart = () => {
   transition: all 0.2s ease;
   
   &:hover {
-    background: #f5f5f7;
-    color: #1d1d1f;
+    background: var(--apple-canvas-parchment);
+    color: var(--apple-ink);
   }
   
   .el-icon {
@@ -2349,14 +2349,14 @@ const initComparisonChart = () => {
   height: 32px;
   border-radius: 11px;
   background: transparent;
-  color: #86868b;
+  color: var(--apple-ink-secondary);
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;
   
   &:hover {
-    background: #f5f5f7;
-    color: #1d1d1f;
+    background: var(--apple-canvas-parchment);
+    color: var(--apple-ink);
   }
   
   .el-icon {

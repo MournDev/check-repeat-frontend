@@ -107,7 +107,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f5f5f7; /* Slate-50 */
+  background: var(--apple-canvas-parchment); /* Slate-50 */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   padding: 24px;
 }
@@ -117,24 +117,24 @@ onMounted(() => {
 .error-container {
   width: 100%;
   max-width: 500px;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-slate-border);
   border-radius: 18px;
   padding: 48px;
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: #cbd5e1;
+    border-color: var(--apple-slate-border-strong);
   }
   
   :deep(.el-result) {
     .el-result__title {
-      color: #0f172a; /* Slate-900 */
+      color: var(--apple-slate-ink); /* Slate-900 */
       font-weight: 600;
     }
     
     .el-result__subtitle {
-      color: #64748b; /* Slate-500 */
+      color: var(--apple-slate-sub); /* Slate-500 */
       font-size: 1rem;
       line-height: 1.5;
     }
@@ -145,7 +145,7 @@ onMounted(() => {
       .el-button {
         border-radius: 8px;
         transition: all 0.2s ease;
-        border: 1px solid #e2e8f0;
+        border: 1px solid var(--apple-slate-border);
         padding: 10px 24px;
         font-size: 1rem;
         margin: 0 8px;

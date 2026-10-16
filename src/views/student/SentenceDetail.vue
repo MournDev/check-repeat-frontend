@@ -268,7 +268,7 @@ onMounted(() => {
       .metric-block {
         .metric-label {
           font-size: 0.75rem;
-          color: #86868b;
+          color: var(--apple-ink-secondary);
           margin-bottom: 8px;
           font-weight: 600;
           text-transform: uppercase;
@@ -339,7 +339,7 @@ onMounted(() => {
 
         .source-meta {
           font-size: 0.75rem;
-          color: #86868b;
+          color: var(--apple-ink-secondary);
           margin-top: 4px;
         }
       }
@@ -376,7 +376,7 @@ onMounted(() => {
 
       .item-count {
         font-size: 0.75rem;
-        color: #86868b;
+        color: var(--apple-ink-secondary);
         font-weight: normal;
       }
     }
@@ -401,20 +401,20 @@ onMounted(() => {
           .sentence-index {
             font-size: 0.75rem;
             font-weight: 600;
-            color: #86868b;
+            color: var(--apple-ink-secondary);
           }
 
           // 普通命中分档：≥80 深红 / 50-80 浅红
           :deep(.sim-tag-high) {
             background: #b91c1c;
             border-color: #b91c1c;
-            color: #ffffff;
+            color: var(--apple-surface);
           }
 
           :deep(.sim-tag-mid) {
-            background: #fee2e2;
-            border-color: #fecaca;
-            color: #dc2626;
+            background: var(--apple-danger-bg);
+            border-color: var(--apple-danger-bg);
+            color: var(--apple-danger);
           }
         }
 
@@ -428,7 +428,7 @@ onMounted(() => {
         .sentence-source {
           margin-top: 8px;
           font-size: 0.75rem;
-          color: #86868b;
+          color: var(--apple-ink-secondary);
         }
       }
     }

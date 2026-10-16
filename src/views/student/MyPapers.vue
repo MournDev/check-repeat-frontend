@@ -1250,8 +1250,8 @@ const batchDelete = async () => {
 // 全局样式
 .my-papers-page {
   min-height: 100vh;
-  background: #f5f5f7; // Slate-50
-  color: #0f172a; // Slate-900
+  background: var(--apple-canvas-parchment); // Slate-50
+  color: var(--apple-slate-ink); // Slate-900
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   padding: 24px 0;
 }
@@ -1273,12 +1273,12 @@ const batchDelete = async () => {
         margin: 0 0 8px 0;
         font-size: 1.5rem;
         font-weight: 600;
-        color: #0f172a;
+        color: var(--apple-slate-ink);
       }
       
       .page-desc {
         margin: 0;
-        color: #64748b;
+        color: var(--apple-slate-sub);
         font-size: 0.875rem;
       }
     }
@@ -1289,7 +1289,7 @@ const batchDelete = async () => {
         align-items: center;
         gap: 8px;
         padding: 8px 16px;
-        background: #0066cc;
+        background: var(--apple-primary);
         color: white;
         border: none;
         border-radius: 11px;
@@ -1299,7 +1299,7 @@ const batchDelete = async () => {
         transition: all 0.2s ease;
         
         &:hover {
-          background: #0055aa;
+          background: var(--apple-primary-active);
           /* translateY removed */
           /* box-shadow removed */
         }
@@ -1316,14 +1316,14 @@ const batchDelete = async () => {
   
   .filter-form {
     background: white;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--apple-slate-border);
     border-radius: 18px;
     padding: 24px;
     transition: all 0.2s ease;
     
     &:hover {
       /* box-shadow removed */
-      border-color: #cbd5e1;
+      border-color: var(--apple-slate-border-strong);
     }
     
     .form-row {
@@ -1337,7 +1337,7 @@ const batchDelete = async () => {
           display: block;
           font-size: 0.75rem;
           font-weight: 600;
-          color: #64748b;
+          color: var(--apple-slate-sub);
           margin-bottom: 8px;
           text-transform: uppercase;
           letter-spacing: 0.5px;
@@ -1346,18 +1346,18 @@ const batchDelete = async () => {
         .form-select {
           width: 100%;
           padding: 8px 12px;
-          border: 1px solid #e2e8f0;
+          border: 1px solid var(--apple-slate-border);
           border-radius: 11px;
           font-size: 0.875rem;
           transition: all 0.2s ease;
           
           &:hover {
-            border-color: #cbd5e1;
+            border-color: var(--apple-slate-border-strong);
           }
           
           &:focus {
             outline: none;
-            border-color: #0ea5e9;
+            border-color: var(--apple-primary);
             box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
           }
         }
@@ -1370,7 +1370,7 @@ const batchDelete = async () => {
             
             &:hover {
               box-shadow: none;
-              border-color: #cbd5e1;
+              border-color: var(--apple-slate-border-strong);
             }
             
             &.is-focus {
@@ -1387,7 +1387,7 @@ const batchDelete = async () => {
             left: 12px;
             top: 50%;
             transform: translateY(-50%);
-            color: #94a3b8;
+            color: var(--apple-slate-faint);
           }
           
           .input-field {
@@ -1399,7 +1399,7 @@ const batchDelete = async () => {
               
               &:hover {
                 box-shadow: none;
-                border-color: #cbd5e1;
+                border-color: var(--apple-slate-border-strong);
               }
               
               &.is-focus {
@@ -1419,7 +1419,7 @@ const batchDelete = async () => {
           align-items: center;
           gap: 6px;
           padding: 8px 16px;
-          background: #0066cc;
+          background: var(--apple-primary);
           color: white;
           border: none;
           border-radius: 11px;
@@ -1429,7 +1429,7 @@ const batchDelete = async () => {
           transition: all 0.2s ease;
           
           &:hover {
-            background: #0055aa;
+            background: var(--apple-primary-active);
             /* translateY removed */
             /* box-shadow removed */
           }
@@ -1441,8 +1441,8 @@ const batchDelete = async () => {
           gap: 6px;
           padding: 8px 16px;
           background: white;
-          color: #475569;
-          border: 1px solid #e2e8f0;
+          color: var(--apple-slate-muted);
+          border: 1px solid var(--apple-slate-border);
           border-radius: 11px;
           font-size: 0.875rem;
           font-weight: 600;
@@ -1450,8 +1450,8 @@ const batchDelete = async () => {
           transition: all 0.2s ease;
           
           &:hover {
-            border-color: #cbd5e1;
-            background: #f5f5f7;
+            border-color: var(--apple-slate-border-strong);
+            background: var(--apple-canvas-parchment);
             /* translateY removed */
           }
         }
@@ -1468,7 +1468,7 @@ const batchDelete = async () => {
   
   .card-header {
     background: white;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--apple-slate-border);
     border-radius: 18px 12px 0 0;
     padding: 20px 24px;
     display: flex;
@@ -1481,15 +1481,15 @@ const batchDelete = async () => {
       gap: 8px;
       font-size: 1.125rem;
       font-weight: 600;
-      color: #0f172a;
+      color: var(--apple-slate-ink);
       
       .el-icon {
-        color: #64748b;
+        color: var(--apple-slate-sub);
       }
     }
     
     .card-extra {
-      color: #64748b;
+      color: var(--apple-slate-sub);
       font-size: 0.875rem;
     }
   }
@@ -1506,8 +1506,8 @@ const batchDelete = async () => {
       
       .selected-count {
         padding: 4px 12px;
-        background: #f1f5f9;
-        color: #64748b;
+        background: var(--apple-slate-bg);
+        color: var(--apple-slate-sub);
         border-radius: 16px;
         font-size: 0.75rem;
         font-weight: 600;
@@ -1533,31 +1533,31 @@ const batchDelete = async () => {
       }
       
       .primary-button {
-        background: #0066cc;
+        background: var(--apple-primary);
         color: white;
         
         &:hover {
-          background: #0055aa;
+          background: var(--apple-primary-active);
           /* box-shadow removed */
         }
       }
       
       .success-button {
-        background: #10b981;
+        background: var(--apple-success);
         color: white;
         
         &:hover {
-          background: #34c759;
+          background: var(--apple-success);
           /* box-shadow removed */
         }
       }
       
       .danger-button {
-        background: #ef4444;
+        background: var(--apple-danger);
         color: white;
         
         &:hover {
-          background: #dc2626;
+          background: var(--apple-danger);
           /* box-shadow removed */
         }
       }
@@ -1565,7 +1565,7 @@ const batchDelete = async () => {
       .divider {
         width: 1px;
         height: 24px;
-        background: #e2e8f0;
+        background: var(--apple-slate-border);
       }
       
       .checkbox-label {
@@ -1581,7 +1581,7 @@ const batchDelete = async () => {
         
         .checkbox-text {
           font-size: 0.75rem;
-          color: #64748b;
+          color: var(--apple-slate-sub);
         }
       }
     }
@@ -1589,13 +1589,13 @@ const batchDelete = async () => {
   
   .papers-list {
     background: white;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--apple-slate-border);
     border-top: none;
     border-radius: 0 0 12px 12px;
     padding: 24px;
     
     .paper-item {
-      border: 1px solid #e2e8f0;
+      border: 1px solid var(--apple-slate-border);
       border-radius: 11px;
       margin-bottom: 16px;
       transition: all 0.2s ease;
@@ -1606,11 +1606,11 @@ const batchDelete = async () => {
       &:hover {
         /* translateY removed */
         /* box-shadow removed */
-        border-color: #cbd5e1;
+        border-color: var(--apple-slate-border-strong);
       }
       
       &.paper-selected {
-        border-color: #0ea5e9;
+        border-color: var(--apple-primary);
         background: rgba(0, 102, 204, 0.05);
       }
       
@@ -1644,7 +1644,7 @@ const batchDelete = async () => {
         
         .paper-title {
           margin: 0;
-          color: #0f172a;
+          color: var(--apple-slate-ink);
           font-size: 1.125rem;
           font-weight: 600;
           flex: 1;
@@ -1661,67 +1661,67 @@ const batchDelete = async () => {
             align-items: center;
             gap: 4px;
             padding: 4px 8px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--apple-slate-border);
             border-radius: 11px;
             background: white;
-            color: #64748b;
+            color: var(--apple-slate-sub);
             font-size: 0.75rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
             
             &:hover {
-              border-color: #cbd5e1;
-              color: #0f172a;
+              border-color: var(--apple-slate-border-strong);
+              color: var(--apple-slate-ink);
               /* translateY removed */
             }
             
             &.primary {
-              background: #0066cc;
+              background: var(--apple-primary);
               color: white;
-              border-color: #0066cc;
+              border-color: var(--apple-primary);
               
               &:hover {
-                background: #0055aa;
+                background: var(--apple-primary-active);
                 /* box-shadow removed */
               }
             }
             
             &.warning {
-              background: #f59e0b;
+              background: var(--apple-warning);
               color: white;
-              border-color: #f59e0b;
+              border-color: var(--apple-warning);
               
               &:hover {
-                background: #ff9500;
+                background: var(--apple-warning);
                 /* box-shadow removed */
               }
             }
             
             &.info {
-              background: #0ea5e9;
+              background: var(--apple-primary);
               color: white;
-              border-color: #0ea5e9;
+              border-color: var(--apple-primary);
               
               &:hover {
-                background: #0284c7;
+                background: var(--apple-primary);
                 /* box-shadow removed */
               }
             }
             
             &.danger {
-              background: #ef4444;
+              background: var(--apple-danger);
               color: white;
-              border-color: #ef4444;
+              border-color: var(--apple-danger);
               
               &:hover {
-                background: #dc2626;
+                background: var(--apple-danger);
                 /* box-shadow removed */
               }
               
               &:disabled {
-                background: #fca5a5;
-                border-color: #fca5a5;
+                background: var(--apple-danger-border);
+                border-color: var(--apple-danger-border);
                 cursor: not-allowed;
                 
                 &:hover {
@@ -1744,11 +1744,11 @@ const batchDelete = async () => {
           display: flex;
           align-items: center;
           gap: 8px;
-          color: #64748b;
+          color: var(--apple-slate-sub);
           font-size: 0.875rem;
           
           .el-icon {
-            color: #94a3b8;
+            color: var(--apple-slate-faint);
           }
         }
       }
@@ -1766,45 +1766,45 @@ const batchDelete = async () => {
           font-weight: 600;
           
           &.info {
-            background: #e0f2fe;
-            color: #0284c7;
+            background: var(--apple-info-bg);
+            color: var(--apple-primary);
           }
           &.warning {
-            background: #f5f5f7;
-            color: #ff9500;
+            background: var(--apple-canvas-parchment);
+            color: var(--apple-warning);
           }
           &.primary {
-            background: #f5f5f7;
-            color: #0066cc;
+            background: var(--apple-canvas-parchment);
+            color: var(--apple-primary);
           }
           &.success {
-            background: #f5f5f7;
-            color: #34c759;
+            background: var(--apple-canvas-parchment);
+            color: var(--apple-success);
           }
           &.danger {
-            background: #fee2e2;
-            color: #dc2626;
+            background: var(--apple-danger-bg);
+            color: var(--apple-danger);
           }
         }
         
         .feedback-brief {
-          color: #ef4444;
+          color: var(--apple-danger);
           font-size: 0.875rem;
           font-style: italic;
         }
       }
       
       .paper-versions {
-        border-top: 1px solid #e2e8f0;
+        border-top: 1px solid var(--apple-slate-border);
         padding: 20px;
-        background: #f5f5f7;
+        background: var(--apple-canvas-parchment);
         
         .versions-header {
           margin-bottom: 16px;
           
           h5 {
             margin: 0;
-            color: #0f172a;
+            color: var(--apple-slate-ink);
             font-size: 1rem;
             font-weight: 600;
           }
@@ -1821,7 +1821,7 @@ const batchDelete = async () => {
             top: 0;
             bottom: 0;
             width: 2px;
-            background: #e2e8f0;
+            background: var(--apple-slate-border);
           }
           
           .timeline-item {
@@ -1839,19 +1839,19 @@ const batchDelete = async () => {
               width: 16px;
               height: 16px;
               border-radius: 50%;
-              background: #cbd5e1;
+              background: var(--apple-slate-border-strong);
               border: 2px solid white;
               /* box-shadow removed */
               
               &.current {
-                background: #0ea5e9;
+                background: var(--apple-primary);
               }
             }
             
             .timeline-content {
               .timeline-timestamp {
                 font-size: 0.75rem;
-                color: #94a3b8;
+                color: var(--apple-slate-faint);
                 margin-bottom: 8px;
               }
               
@@ -1864,13 +1864,13 @@ const batchDelete = async () => {
                   
                   .version-title {
                     font-weight: 600;
-                    color: #0f172a;
+                    color: var(--apple-slate-ink);
                     font-size: 0.875rem;
                   }
                   
                   .current-badge {
                     padding: 2px 8px;
-                    background: #0ea5e9;
+                    background: var(--apple-primary);
                     color: white;
                     border-radius: 18px;
                     font-size: 0.75rem;
@@ -1895,7 +1895,7 @@ const batchDelete = async () => {
                     
                     .checkbox-text {
                       font-size: 0.75rem;
-                      color: #64748b;
+                      color: var(--apple-slate-sub);
                     }
                   }
                   
@@ -1904,17 +1904,17 @@ const batchDelete = async () => {
                     align-items: center;
                     gap: 4px;
                     padding: 4px 8px;
-                    border: 1px solid #e2e8f0;
+                    border: 1px solid var(--apple-slate-border);
                     border-radius: 11px;
                     background: white;
-                    color: #64748b;
+                    color: var(--apple-slate-sub);
                     font-size: 0.75rem;
                     cursor: pointer;
                     transition: all 0.2s ease;
                     
                     &:hover {
-                      border-color: #cbd5e1;
-                      color: #0f172a;
+                      border-color: var(--apple-slate-border-strong);
+                      color: var(--apple-slate-ink);
                     }
                   }
                 }
@@ -1925,10 +1925,10 @@ const batchDelete = async () => {
       }
       
       .paper-toggle {
-        border-top: 1px solid #e2e8f0;
+        border-top: 1px solid var(--apple-slate-border);
         padding: 16px 20px;
         text-align: center;
-        background: #f5f5f7;
+        background: var(--apple-canvas-parchment);
         
         .toggle-button {
           display: flex;
@@ -1937,15 +1937,15 @@ const batchDelete = async () => {
           padding: 6px 12px;
           background: transparent;
           border: none;
-          color: #64748b;
+          color: var(--apple-slate-sub);
           font-size: 0.875rem;
           font-weight: 600;
           cursor: pointer;
           transition: all 0.2s ease;
           
           &:hover {
-            color: #0f172a;
-            background: #f1f5f9;
+            color: var(--apple-slate-ink);
+            background: var(--apple-slate-bg);
             border-radius: 11px;
           }
         }
@@ -1955,7 +1955,7 @@ const batchDelete = async () => {
   
   .empty-state {
     background: white;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--apple-slate-border);
     border-top: none;
     border-radius: 0 0 12px 12px;
     padding: 64px 24px;
@@ -1964,20 +1964,20 @@ const batchDelete = async () => {
     .empty-content {
       .empty-icon {
         font-size: 48px;
-        color: #94a3b8;
+        color: var(--apple-slate-faint);
         margin-bottom: 16px;
       }
       
       h3 {
         margin: 0 0 8px 0;
-        color: #0f172a;
+        color: var(--apple-slate-ink);
         font-size: 1.125rem;
         font-weight: 600;
       }
       
       p {
         margin: 0 0 24px 0;
-        color: #64748b;
+        color: var(--apple-slate-sub);
         font-size: 0.875rem;
       }
       
@@ -1986,7 +1986,7 @@ const batchDelete = async () => {
         align-items: center;
         gap: 8px;
         padding: 8px 16px;
-        background: #0066cc;
+        background: var(--apple-primary);
         color: white;
         border: none;
         border-radius: 11px;
@@ -1996,7 +1996,7 @@ const batchDelete = async () => {
         transition: all 0.2s ease;
         
         &:hover {
-          background: #0055aa;
+          background: var(--apple-primary-active);
           /* translateY removed */
           /* box-shadow removed */
         }
@@ -2006,7 +2006,7 @@ const batchDelete = async () => {
   
   .pagination-container {
     background: white;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--apple-slate-border);
     border-top: none;
     border-radius: 0 0 12px 12px;
     padding: 20px 24px;
@@ -2017,7 +2017,7 @@ const batchDelete = async () => {
       align-items: center;
       
       .page-info {
-        color: #64748b;
+        color: var(--apple-slate-sub);
         font-size: 0.875rem;
       }
       
@@ -2028,17 +2028,17 @@ const batchDelete = async () => {
         
         .page-button {
           padding: 4px 12px;
-          border: 1px solid #e2e8f0;
+          border: 1px solid var(--apple-slate-border);
           border-radius: 11px;
           background: white;
-          color: #64748b;
+          color: var(--apple-slate-sub);
           font-size: 0.875rem;
           cursor: pointer;
           transition: all 0.2s ease;
           
           &:hover:not(:disabled) {
-            border-color: #cbd5e1;
-            color: #0f172a;
+            border-color: var(--apple-slate-border-strong);
+            color: var(--apple-slate-ink);
             /* translateY removed */
           }
           
@@ -2050,19 +2050,19 @@ const batchDelete = async () => {
         
         .page-number {
           font-size: 0.875rem;
-          color: #64748b;
+          color: var(--apple-slate-sub);
         }
         
         .page-size-select {
           padding: 4px 8px;
-          border: 1px solid #e2e8f0;
+          border: 1px solid var(--apple-slate-border);
           border-radius: 11px;
           font-size: 0.875rem;
           cursor: pointer;
           transition: all 0.2s ease;
           
           &:hover {
-            border-color: #cbd5e1;
+            border-color: var(--apple-slate-border-strong);
           }
         }
       }
@@ -2087,7 +2087,7 @@ const batchDelete = async () => {
         .detail-label {
           font-size: 0.75rem;
           font-weight: 600;
-          color: #64748b;
+          color: var(--apple-slate-sub);
           margin-bottom: 6px;
           text-transform: uppercase;
           letter-spacing: 0.5px;
@@ -2095,7 +2095,7 @@ const batchDelete = async () => {
         
         .detail-value {
           font-size: 0.875rem;
-          color: #0f172a;
+          color: var(--apple-slate-ink);
           
           .status-badge {
             padding: 4px 12px;
@@ -2104,24 +2104,24 @@ const batchDelete = async () => {
             font-weight: 600;
             
             &.info {
-              background: #e0f2fe;
-              color: #0284c7;
+              background: var(--apple-info-bg);
+              color: var(--apple-primary);
             }
             &.warning {
-              background: #f5f5f7;
-              color: #ff9500;
+              background: var(--apple-canvas-parchment);
+              color: var(--apple-warning);
             }
             &.primary {
-              background: #f5f5f7;
-              color: #0066cc;
+              background: var(--apple-canvas-parchment);
+              color: var(--apple-primary);
             }
             &.success {
-              background: #f5f5f7;
-              color: #34c759;
+              background: var(--apple-canvas-parchment);
+              color: var(--apple-success);
             }
             &.danger {
-              background: #fee2e2;
-              color: #dc2626;
+              background: var(--apple-danger-bg);
+              color: var(--apple-danger);
             }
           }
         }
@@ -2136,10 +2136,10 @@ const batchDelete = async () => {
   }
   
   .feedback-content {
-    background: #f5f5f7;
+    background: var(--apple-canvas-parchment);
     padding: 16px;
     border-radius: 11px;
-    border-left: 4px solid #0ea5e9;
+    border-left: 4px solid var(--apple-primary);
     line-height: 1.5;
   }
   
@@ -2148,7 +2148,7 @@ const batchDelete = async () => {
     
     h4 {
       margin: 0 0 16px 0;
-      color: #0f172a;
+      color: var(--apple-slate-ink);
       font-size: 1rem;
       font-weight: 600;
     }
@@ -2159,29 +2159,29 @@ const batchDelete = async () => {
         align-items: center;
         gap: 12px;
         padding: 12px;
-        border: 1px solid #e2e8f0;
+        border: 1px solid var(--apple-slate-border);
         border-radius: 11px;
         margin-bottom: 8px;
         background: white;
         transition: all 0.2s ease;
         
         &:hover {
-          border-color: #cbd5e1;
+          border-color: var(--apple-slate-border-strong);
           /* box-shadow removed */
         }
         
         .el-icon {
-          color: #64748b;
+          color: var(--apple-slate-sub);
         }
         
         .file-name {
           flex: 1;
-          color: #0f172a;
+          color: var(--apple-slate-ink);
           font-size: 0.875rem;
         }
         
         .file-size {
-          color: #64748b;
+          color: var(--apple-slate-sub);
           font-size: 0.75rem;
         }
         
@@ -2190,17 +2190,17 @@ const batchDelete = async () => {
           align-items: center;
           gap: 4px;
           padding: 4px 8px;
-          border: 1px solid #e2e8f0;
+          border: 1px solid var(--apple-slate-border);
           border-radius: 11px;
           background: white;
-          color: #64748b;
+          color: var(--apple-slate-sub);
           font-size: 0.75rem;
           cursor: pointer;
           transition: all 0.2s ease;
           
           &:hover {
-            border-color: #cbd5e1;
-            color: #0f172a;
+            border-color: var(--apple-slate-border-strong);
+            color: var(--apple-slate-ink);
           }
         }
       }
@@ -2218,8 +2218,8 @@ const batchDelete = async () => {
       align-items: center;
       gap: 8px;
       padding: 12px 16px;
-      background: #e0f2fe;
-      color: #0284c7;
+      background: var(--apple-info-bg);
+      color: var(--apple-primary);
       border-radius: 11px;
       
       .el-icon {
@@ -2237,13 +2237,13 @@ const batchDelete = async () => {
       
       .version-column {
         background: white;
-        border: 1px solid #e2e8f0;
+        border: 1px solid var(--apple-slate-border);
         border-radius: 11px;
         padding: 20px;
         
         h4 {
           margin: 0 0 16px 0;
-          color: #0f172a;
+          color: var(--apple-slate-ink);
           font-size: 1rem;
           font-weight: 600;
         }
@@ -2254,7 +2254,7 @@ const batchDelete = async () => {
             justify-content: space-between;
             align-items: center;
             padding: 8px 0;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid var(--apple-slate-border);
             
             &:last-child {
               border-bottom: none;
@@ -2262,12 +2262,12 @@ const batchDelete = async () => {
             
             .info-label {
               font-size: 0.875rem;
-              color: #64748b;
+              color: var(--apple-slate-sub);
             }
             
             .info-value {
               font-size: 0.875rem;
-              color: #0f172a;
+              color: var(--apple-slate-ink);
               font-weight: 600;
             }
           }
@@ -2278,28 +2278,28 @@ const batchDelete = async () => {
     .diff-section {
       h4 {
         margin: 0 0 16px 0;
-        color: #0f172a;
+        color: var(--apple-slate-ink);
         font-size: 1rem;
         font-weight: 600;
       }
       
       .diff-table {
         background: white;
-        border: 1px solid #e2e8f0;
+        border: 1px solid var(--apple-slate-border);
         border-radius: 11px;
         overflow: hidden;
         
         .table-header {
           display: grid;
           grid-template-columns: 120px 1fr 1fr 100px;
-          background: #f5f5f7;
+          background: var(--apple-canvas-parchment);
           padding: 12px 16px;
-          border-bottom: 1px solid #e2e8f0;
+          border-bottom: 1px solid var(--apple-slate-border);
           
           .table-cell {
             font-size: 0.75rem;
             font-weight: 600;
-            color: #64748b;
+            color: var(--apple-slate-sub);
             text-transform: uppercase;
             letter-spacing: 0.5px;
           }
@@ -2309,7 +2309,7 @@ const batchDelete = async () => {
           display: grid;
           grid-template-columns: 120px 1fr 1fr 100px;
           padding: 12px 16px;
-          border-bottom: 1px solid #e2e8f0;
+          border-bottom: 1px solid var(--apple-slate-border);
           
           &:last-child {
             border-bottom: none;
@@ -2317,7 +2317,7 @@ const batchDelete = async () => {
           
           .table-cell {
             font-size: 0.875rem;
-            color: #0f172a;
+            color: var(--apple-slate-ink);
             
             &.field {
               font-weight: 600;
@@ -2334,12 +2334,12 @@ const batchDelete = async () => {
                 font-weight: 600;
                 
                 &.increase {
-                  background: #fee2e2;
-                  color: #dc2626;
+                  background: var(--apple-danger-bg);
+                  color: var(--apple-danger);
                 }
                 &.decrease {
-                  background: #f5f5f7;
-                  color: #34c759;
+                  background: var(--apple-canvas-parchment);
+                  color: var(--apple-success);
                 }
               }
             }

@@ -935,7 +935,7 @@ onMounted(() => {
 
 .page-header {
   margin-bottom: 1.5rem;
-  background: #0066cc;
+  background: var(--apple-primary);
   border-radius: 18px;
   padding: 24px;
   
@@ -956,12 +956,12 @@ onMounted(() => {
 .interaction-content {
   .el-card {
     border-radius: 18px;
-    border: 1px solid #f1f2f6;
+    border: 1px solid var(--apple-slate-border);
     margin-bottom: 1.5rem;
     
     :deep(.el-card__header) {
       padding: 1rem 1.25rem;
-      border-bottom: 1px solid #f1f2f6;
+      border-bottom: 1px solid var(--apple-slate-border);
       
       .card-header {
         display: flex;
@@ -972,11 +972,11 @@ onMounted(() => {
           display: flex;
           align-items: center;
           font-weight: 600;
-          color: #1d1d1f;
+          color: var(--apple-ink);
           
           .el-icon {
             margin-right: 0.5rem;
-            color: #0066cc;
+            color: var(--apple-primary);
           }
         }
       }
@@ -992,33 +992,33 @@ onMounted(() => {
     gap: 1rem;
     margin-bottom: 1.5rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--apple-divider-soft);
 
     .advisor-dialog-title {
       h3 {
         margin: 0 0 0.25rem 0;
         font-size: 1.2rem;
         font-weight: 600;
-        color: #1d1d1f;
+        color: var(--apple-ink);
       }
 
       p {
         margin: 0 0 0.25rem 0;
-        color: #0066cc;
+        color: var(--apple-primary);
         font-weight: 600;
         font-size: 0.9rem;
       }
 
       .advisor-dialog-field {
         margin: 0;
-        color: #86868b;
+        color: var(--apple-ink-secondary);
         font-size: 0.85rem;
         display: flex;
         align-items: center;
         gap: 0.5rem;
 
         .el-icon {
-          color: #0066cc;
+          color: var(--apple-primary);
           font-size: 16px;
         }
       }
@@ -1034,21 +1034,21 @@ onMounted(() => {
 
   .advisor-dialog-bio {
     padding: 1rem;
-    background: #f5f5f7;
+    background: var(--apple-canvas-parchment);
     border-radius: 11px;
 
     h4 {
       margin: 0 0 0.5rem 0;
       font-size: 0.9rem;
       font-weight: 600;
-      color: #1d1d1f;
+      color: var(--apple-ink);
     }
 
     p {
       margin: 0;
       font-size: 0.85rem;
       line-height: 1.5;
-      color: #86868b;
+      color: var(--apple-ink-secondary);
     }
   }
 }
@@ -1058,11 +1058,11 @@ onMounted(() => {
   align-items: flex-start;
   gap: 0.75rem;
   padding: 0.75rem;
-  background: #f5f5f7;
+  background: var(--apple-canvas-parchment);
   border-radius: 11px;
 
   .detail-icon {
-    color: #0066cc;
+    color: var(--apple-primary);
     font-size: 16px;
     margin-top: 2px;
   }
@@ -1073,14 +1073,14 @@ onMounted(() => {
     .detail-label {
       display: block;
       font-size: 0.75rem;
-      color: #86868b;
+      color: var(--apple-ink-secondary);
       margin-bottom: 2px;
     }
 
     .detail-value {
       display: block;
       font-size: 0.85rem;
-      color: #1d1d1f;
+      color: var(--apple-ink);
       word-break: break-all;
     }
   }
@@ -1093,18 +1093,18 @@ onMounted(() => {
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--apple-divider-soft);
     
     &:last-child {
       border-bottom: none;
     }
     
     &:hover {
-      background-color: #f5f5f7;
+      background-color: var(--apple-canvas-parchment);
     }
     
     &.session-active {
-      background-color: #f0f9eb;
+      background-color: var(--apple-success-bg);
     }
     
     .session-avatar {
@@ -1124,7 +1124,7 @@ onMounted(() => {
         right: 0;
         width: 10px;
         height: 10px;
-        background: #0066cc;
+        background: var(--apple-primary);
         border: 2px solid white;
         border-radius: 50%;
       }
@@ -1142,13 +1142,13 @@ onMounted(() => {
         
         .session-name {
           font-weight: 600;
-          color: #1d1d1f;
+          color: var(--apple-ink);
           font-size: 17px;
         }
         
         .session-time {
           font-size: 11px;
-          color: #86868b;
+          color: var(--apple-ink-secondary);
           flex-shrink: 0;
           margin-left: 8px;
         }
@@ -1156,7 +1156,7 @@ onMounted(() => {
       
       .session-preview {
         font-size: 13px;
-        color: #86868b;
+        color: var(--apple-ink-secondary);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -1174,7 +1174,7 @@ onMounted(() => {
           line-height: 16px;
           padding: 0 6px;
           border-radius: 10px;
-          background: #ff4d4f;
+          background: var(--apple-danger);
           color: white;
           font-weight: 600;
         }
@@ -1187,16 +1187,16 @@ onMounted(() => {
   height: 500px;
   overflow-y: auto;
   padding: 1.25rem;
-  background: #f5f5f7;
+  background: var(--apple-canvas-parchment);
   border-radius: 18px;
   position: relative;
   scrollbar-width: thin;
-  scrollbar-color: #d2d2d7 #f5f5f7;
+  scrollbar-color: var(--apple-surface-chip-translucent) var(--apple-canvas-parchment);
   
   .loading-more {
     text-align: center;
     padding: 12px;
-    color: #86868b;
+    color: var(--apple-ink-secondary);
     font-size: 13px;
   }
   
@@ -1206,9 +1206,9 @@ onMounted(() => {
     gap: 8px;
     margin-bottom: 16px;
     padding: 12px;
-    background: #f5f5f7;
+    background: var(--apple-canvas-parchment);
     border-radius: 18px;
-    border: 1px solid #e8ecf1;
+    border: 1px solid var(--apple-slate-border);
 
     .el-tag {
       cursor: pointer;
@@ -1216,7 +1216,7 @@ onMounted(() => {
       border-width: 1.5px;
 
       &:hover {
-        border-color: #0066cc;
+        border-color: var(--apple-primary);
       }
 
       &:active {
@@ -1230,8 +1230,8 @@ onMounted(() => {
         display: inline-block;
         margin: 10px auto;
         padding: 4px 10px;
-        background: #eef6ff;
-        color: #6b7785;
+        background: var(--apple-info-bg);
+        color: var(--apple-slate-sub);
         font-size: 12px;
         border-radius: 18px;
         text-align: center;
@@ -1267,7 +1267,7 @@ onMounted(() => {
         }
 
         .message-bubble {
-          background: #0066cc;
+          background: var(--apple-primary);
           color: white;
           border: none;
           position: relative;
@@ -1282,7 +1282,7 @@ onMounted(() => {
             right: -8px;
             width: 0;
             height: 0;
-            border-left: 8px solid #0066cc;
+            border-left: 8px solid var(--apple-primary);
             border-top: 8px solid transparent;
             border-bottom: 8px solid transparent;
           }
@@ -1308,9 +1308,9 @@ onMounted(() => {
         }
 
         .message-bubble {
-          background: #ffffff;
-          color: #1d1d1f;
-          border: 1px solid #e6e6e6;
+          background: var(--apple-surface);
+          color: var(--apple-ink);
+          border: 1px solid var(--apple-hairline);
           position: relative;
           max-width: 80%;
           border-radius: 14px 14px 14px 8px;
@@ -1323,13 +1323,13 @@ onMounted(() => {
             bottom: 8px;
             width: 0;
             height: 0;
-            border-right: 8px solid #ffffff;
+            border-right: 8px solid var(--apple-surface);
             border-top: 8px solid transparent;
             border-bottom: 8px solid transparent;
-            border-left: 1px solid #e6e6e6;
+            border-left: 1px solid var(--apple-hairline);
           }
 
-          .message-text { font-size: 17px; color: #1d1d1f; }
+          .message-text { font-size: 17px; color: var(--apple-ink); }
         }
       }
 
@@ -1339,7 +1339,7 @@ onMounted(() => {
         border-radius: 50%;
         margin: 0 0.5rem;
         flex-shrink: 0;
-        border: 1px solid #e8ecf1;
+        border: 1px solid var(--apple-slate-border);
       }
       
       .message-content {
@@ -1351,13 +1351,13 @@ onMounted(() => {
           align-items: center;
           margin-bottom: 4px;
           font-size: 0.7rem;
-          color: #86868b;
+          color: var(--apple-ink-secondary);
           padding: 0 4px;
           gap: 8px;
           
           .message-sender {
             font-weight: 600;
-            color: #86868b;
+            color: var(--apple-ink-secondary);
             font-size: 0.75rem;
           }
 
@@ -1366,7 +1366,7 @@ onMounted(() => {
 
           .message-time {
             opacity: 0.7;
-            color: #86868b;
+            color: var(--apple-ink-secondary);
             font-size: 0.65rem;
           }
         }
@@ -1393,18 +1393,18 @@ onMounted(() => {
           align-items: center;
           gap: 8px;
           padding: 8px;
-          background: #f5f5f7;
+          background: var(--apple-canvas-parchment);
           border-radius: 11px;
           margin-top: 4px;
           
           .el-icon {
-            color: #0066cc;
+            color: var(--apple-primary);
           }
           
           span {
             flex: 1;
             font-size: 13px;
-            color: #1d1d1f;
+            color: var(--apple-ink);
             word-break: break-all;
           }
         }
@@ -1448,7 +1448,7 @@ onMounted(() => {
     
     .toolbar-tip {
       font-size: 12px;
-      color: #86868b;
+      color: var(--apple-ink-secondary);
       margin-left: auto;
     }
   }
@@ -1456,7 +1456,7 @@ onMounted(() => {
   .emoji-picker {
     margin-bottom: 8px;
     padding: 12px;
-    background: #f5f5f7;
+    background: var(--apple-canvas-parchment);
     border-radius: 11px;
     
     .emoji-grid {
@@ -1473,7 +1473,7 @@ onMounted(() => {
         transition: all 0.2s ease;
         
         &:hover {
-          background: #e8ecf1;
+          background: var(--apple-slate-border);
           transform: scale(1.1);
         }
       }
@@ -1482,14 +1482,14 @@ onMounted(() => {
   
   :deep(.el-textarea__wrapper) {
     border-radius: 11px;
-    border: 1px solid #e8ecf1;
+    border: 1px solid var(--apple-slate-border);
     
     &:hover {
-      border-color: #0066cc;
+      border-color: var(--apple-primary);
     }
     
     &:focus-within {
-      border-color: #0066cc;
+      border-color: var(--apple-primary);
       box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
     }
   }
@@ -1503,7 +1503,7 @@ onMounted(() => {
     .input-info {
       .attachment-count {
         font-size: 12px;
-        color: #0066cc;
+        color: var(--apple-primary);
         display: flex;
         align-items: center;
         gap: 4px;
@@ -1512,12 +1512,12 @@ onMounted(() => {
     
     .send-button {
       border-radius: 11px;
-      background: #0066cc;
-      border-color: #0066cc;
+      background: var(--apple-primary);
+      border-color: var(--apple-primary);
       
       &:hover {
-        background: #0066cc;
-        border-color: #0066cc;
+        background: var(--apple-primary);
+        border-color: var(--apple-primary);
       }
     }
   }

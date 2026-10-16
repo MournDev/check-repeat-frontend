@@ -100,8 +100,8 @@
                 </div>
               </div>
               <div v-if="paperForm.file" class="upload-success">
-                <el-icon color="#10b981"><Check /></el-icon>
-                <span style="margin-left: 8px; color: #10b981;">文件已上传</span>
+                <el-icon color="var(--apple-success)"><Check /></el-icon>
+                <span style="margin-left: 8px; color: var(--apple-success);">文件已上传</span>
               </div>
             </div>
           </div>
@@ -720,7 +720,7 @@ const resetForm = () => {
 // 论文提交页面样式
 .paper-submit-container {
   min-height: 100vh;
-  background: #f5f5f7; // Slate-50
+  background: var(--apple-canvas-parchment); // Slate-50
   padding: 24px 0;
   display: flex;
   justify-content: center;
@@ -731,19 +731,19 @@ const resetForm = () => {
   width: 100%;
   max-width: 900px;
   margin: 0 auto;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-slate-border);
   border-radius: 18px;
   overflow: hidden;
   transition: all 0.2s ease;
   
   &:hover {
     /* box-shadow removed */
-    border-color: #cbd5e1;
+    border-color: var(--apple-slate-border-strong);
   }
 
   .card-header {
-    background: #0066cc;
+    background: var(--apple-primary);
     color: white;
     padding: 24px 32px;
     text-align: center;
@@ -776,7 +776,7 @@ const resetForm = () => {
     left: 32px;
     right: 32px;
     height: 2px;
-    background: #e2e8f0;
+    background: var(--apple-slate-border);
     z-index: 0;
   }
   
@@ -805,41 +805,41 @@ const resetForm = () => {
       .step-title {
         font-size: 17px;
         font-weight: 600;
-        color: #64748b;
+        color: var(--apple-slate-sub);
         transition: all 0.2s ease;
       }
     }
     
     &.step-active {
       .step-number {
-        background: #10b981;
+        background: var(--apple-success);
         color: white;
       }
       .step-title {
-        color: #0f172a;
+        color: var(--apple-slate-ink);
         font-weight: 600;
       }
     }
     
     &.step-current {
       .step-number {
-        background: #0ea5e9;
+        background: var(--apple-primary);
         color: white;
         /* box-shadow removed */
       }
       .step-title {
-        color: #0f172a;
+        color: var(--apple-slate-ink);
         font-weight: 600;
       }
     }
     
     &.step-pending {
       .step-number {
-        background: #f1f5f9;
-        color: #64748b;
+        background: var(--apple-slate-bg);
+        color: var(--apple-slate-sub);
       }
       .step-title {
-        color: #94a3b8;
+        color: var(--apple-slate-faint);
       }
     }
   }
@@ -860,7 +860,7 @@ const resetForm = () => {
       display: block;
       font-size: 0.875rem;
       font-weight: 600;
-      color: #0f172a;
+      color: var(--apple-slate-ink);
       margin-bottom: 8px;
     }
 
@@ -869,10 +869,10 @@ const resetForm = () => {
     .form-tip-error {
       margin-top: 6px;
       font-size: 0.8125rem;
-      color: #dc2626;
+      color: var(--apple-danger);
 
       a {
-        color: #0ea5e9;
+        color: var(--apple-primary);
         text-decoration: underline;
       }
     }
@@ -882,11 +882,11 @@ const resetForm = () => {
       transition: all 0.2s ease;
       
       &:hover {
-        border-color: #cbd5e1;
+        border-color: var(--apple-slate-border-strong);
       }
       
       &:focus {
-        border-color: #0ea5e9;
+        border-color: var(--apple-primary);
         box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
       }
     }
@@ -895,15 +895,15 @@ const resetForm = () => {
 
 // 上传区域
 .upload-area {
-  border: 2px dashed #e2e8f0;
+  border: 2px dashed var(--apple-slate-border);
   border-radius: 18px;
   padding: 40px;
   text-align: center;
   transition: all 0.2s ease;
   
   &:hover {
-    border-color: #0ea5e9;
-    background: #f5f5f7;
+    border-color: var(--apple-primary);
+    background: var(--apple-canvas-parchment);
   }
 }
 
@@ -915,19 +915,19 @@ const resetForm = () => {
   
   .upload-icon {
     font-size: 48px;
-    color: #0ea5e9;
+    color: var(--apple-primary);
   }
   
   .upload-text {
     p {
       margin: 0;
-      color: #0f172a;
+      color: var(--apple-slate-ink);
       font-size: 1rem;
       font-weight: 600;
     }
     .upload-tip {
       margin-top: 8px;
-      color: #64748b;
+      color: var(--apple-slate-sub);
       font-size: 0.875rem;
     }
   }
@@ -939,13 +939,13 @@ const resetForm = () => {
   
   .progress-bar {
     height: 6px;
-    background: #e2e8f0;
+    background: var(--apple-slate-border);
     border-radius: 3px;
     overflow: hidden;
     
     .progress-fill {
       height: 100%;
-      background: #0ea5e9;
+      background: var(--apple-primary);
       border-radius: 3px;
       transition: width 0.3s ease;
     }
@@ -961,13 +961,13 @@ const resetForm = () => {
 
 // 确认内容
 .confirm-content {
-  background: #f5f5f7;
+  background: var(--apple-canvas-parchment);
   border-radius: 18px;
   padding: 24px;
   
   h4 {
     margin-top: 0;
-    color: #0f172a;
+    color: var(--apple-slate-ink);
     font-size: 1.125rem;
     font-weight: 600;
     margin-bottom: 20px;
@@ -979,7 +979,7 @@ const resetForm = () => {
       justify-content: space-between;
       align-items: flex-start;
       padding: 16px;
-      background: #ffffff;
+      background: var(--apple-surface);
       border-radius: 11px;
       margin-bottom: 12px;
       transition: all 0.2s ease;
@@ -995,13 +995,13 @@ const resetForm = () => {
       .detail-label {
         font-size: 0.875rem;
         font-weight: 600;
-        color: #64748b;
+        color: var(--apple-slate-sub);
         min-width: 120px;
       }
       
       .detail-value {
         font-size: 0.875rem;
-        color: #0f172a;
+        color: var(--apple-slate-ink);
         flex: 1;
         text-align: right;
       }
@@ -1012,8 +1012,8 @@ const resetForm = () => {
 // 操作按钮
 .step-actions {
   padding: 24px 32px;
-  background: #f5f5f7;
-  border-top: 1px solid #e2e8f0;
+  background: var(--apple-canvas-parchment);
+  border-top: 1px solid var(--apple-slate-border);
   display: flex;
   justify-content: flex-end;
   gap: 12px;

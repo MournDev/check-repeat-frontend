@@ -814,7 +814,7 @@ onUnmounted(() => {
 
   .page-title {
     margin-bottom: 24px;
-    color: #1d1d1f;
+    color: var(--apple-ink);
     font-size: 1.5rem;
     font-weight: 600;
   }
@@ -824,7 +824,7 @@ onUnmounted(() => {
     display: flex;
     align-items: center;
     padding: 16px;
-    background-color: #f5f5f7;
+    background-color: var(--apple-canvas-parchment);
     border-radius: 11px;
   }
 
@@ -860,7 +860,7 @@ onUnmounted(() => {
   }
 
   .paper-type-name {
-    color: #1d1d1f;
+    color: var(--apple-ink);
   }
 
   .stat-item {
@@ -872,14 +872,14 @@ onUnmounted(() => {
 
   .stat-label {
     font-size: 17px;
-    color: #86868b;
+    color: var(--apple-ink-secondary);
     margin-bottom: 8px;
   }
 
   .stat-value {
     font-size: 24px;
     font-weight: 600;
-    color: #0066cc;
+    color: var(--apple-primary);
   }
 
   .table-card {
@@ -923,17 +923,17 @@ onUnmounted(() => {
 
     h3 {
       margin-bottom: 16px;
-      color: #0066cc;
+      color: var(--apple-primary);
     }
 
     h4 {
       margin: 16px 0 8px 0;
-      color: #1d1d1f;
+      color: var(--apple-ink);
     }
 
     h5 {
       margin: 8px 0;
-      color: #86868b;
+      color: var(--apple-ink-secondary);
     }
 
     p {
@@ -943,14 +943,14 @@ onUnmounted(() => {
     .report-sections {
       margin: 16px 0;
       padding: 16px;
-      background-color: #f5f5f5;
+      background-color: var(--apple-canvas-parchment);
       border-radius: 11px;
     }
 
     .report-recommendations {
       margin: 16px 0;
       padding: 16px;
-      background-color: #f5f5f7;
+      background-color: var(--apple-canvas-parchment);
       border-radius: 11px;
     }
 
@@ -981,7 +981,7 @@ onUnmounted(() => {
 
   .author-info {
     font-size: 12px;
-    color: #86868b;
+    color: var(--apple-ink-secondary);
   }
 
   .mb-4 {
@@ -990,18 +990,18 @@ onUnmounted(() => {
 
   .fragment-item {
     padding: 8px;
-    background-color: #fff;
+    background-color: var(--apple-surface);
     border-radius: 11px;
     margin-bottom: 8px;
-    border-left: 3px solid #f56c6c;
+    border-left: 3px solid var(--apple-danger);
   }
 
   .recommendation-item {
     padding: 8px;
-    background-color: #f5f5f7;
+    background-color: var(--apple-canvas-parchment);
     border-radius: 11px;
     margin-bottom: 8px;
-    border-left: 3px solid #67c23a;
+    border-left: 3px solid var(--apple-success);
   }
 
   .loading {
@@ -1013,7 +1013,7 @@ onUnmounted(() => {
 
   .loading-text {
     font-size: 16px;
-    color: #86868b;
+    color: var(--apple-ink-secondary);
   }
 }
 </style>

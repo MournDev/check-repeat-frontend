@@ -146,7 +146,7 @@
     >
       <div class="completion-content">
         <div class="completion-icon">
-          <el-icon color="#67c23a" size="48"><SuccessFilled /></el-icon>
+          <el-icon color="var(--apple-success)" size="48"><SuccessFilled /></el-icon>
         </div>
         <p>论文查重检测已完成！</p>
         <p>总相似比: <strong>{{ finalSimilarity }}%</strong></p>
@@ -260,9 +260,9 @@ const elapsedTime = computed(() => {
 
 const getProgressColor = computed(() => {
   const progress = currentStatus.value.overallProgress
-  if (progress < 30) return '#67c23a'
-  if (progress < 70) return '#e6a23c'
-  return '#f56c6c'
+  if (progress < 30) return '#34c759'
+  if (progress < 70) return '#ff9500'
+  return '#ff3b30'
 })
 
 // 方法
@@ -360,9 +360,9 @@ const getStatusColor = (status) => {
   const colors = {
     'pending': '#86868b',
     'processing': '#0066cc',
-    'completed': '#67c23a',
-    'failed': '#f56c6c',
-    'cancelled': '#e6a23c'
+    'completed': '#34c759',
+    'failed': '#ff3b30',
+    'cancelled': '#ff9500'
   }
   return colors[status] || '#86868b'
 }
@@ -574,7 +574,7 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .check-monitor-page {
   padding: 20px;
-  background-color: #f5f5f7;
+  background-color: var(--apple-canvas-parchment);
   min-height: 100vh;
 
   .page-header {
@@ -583,7 +583,7 @@ onUnmounted(() => {
     .page-title {
       font-size: 18px;
       font-weight: 600;
-      color: #1d1d1f;
+      color: var(--apple-ink);
     }
   }
 
@@ -598,7 +598,7 @@ onUnmounted(() => {
       
       .status-icon {
         padding: 16px;
-        background: #0066cc;
+        background: var(--apple-primary);
         border-radius: 18px;
         color: white;
       }
@@ -610,20 +610,20 @@ onUnmounted(() => {
           margin: 0 0 12px 0;
           font-size: 20px;
           font-weight: 600;
-          color: #1d1d1f;
+          color: var(--apple-ink);
         }
         
         .status-details {
           display: flex;
           gap: 24px;
-          color: #86868b;
+          color: var(--apple-ink-secondary);
           font-size: 17px;
         }
       }
       
       .refresh-button {
         .el-button {
-          border: 1px solid #dcdfe6;
+          border: 1px solid var(--apple-hairline);
         }
       }
     }
@@ -638,7 +638,7 @@ onUnmounted(() => {
       align-items: center;
       gap: 8px;
       font-weight: 600;
-      color: #1d1d1f;
+      color: var(--apple-ink);
       
       .el-tag {
         margin-left: auto;
@@ -659,7 +659,7 @@ onUnmounted(() => {
           left: 40px;
           right: 40px;
           height: 2px;
-          background: #e4e7ed;
+          background: var(--apple-hairline);
           z-index: 1;
         }
         
@@ -672,14 +672,14 @@ onUnmounted(() => {
           
           &.completed {
             .stage-icon {
-              background: #67c23a;
+              background: var(--apple-success);
               color: white;
             }
           }
           
           &.current {
             .stage-icon {
-              background: #0066cc;
+              background: var(--apple-primary);
               color: white;
               animation: pulse 2s infinite;
             }
@@ -687,8 +687,8 @@ onUnmounted(() => {
           
           &.pending {
             .stage-icon {
-              background: #e4e7ed;
-              color: #86868b;
+              background: var(--apple-hairline);
+              color: var(--apple-ink-secondary);
             }
           }
           
@@ -708,14 +708,14 @@ onUnmounted(() => {
             
             .stage-name {
               font-size: 12px;
-              color: #86868b;
+              color: var(--apple-ink-secondary);
               margin-bottom: 4px;
             }
             
             .stage-progress, .stage-duration {
               font-size: 11px;
               font-weight: 600;
-              color: #0066cc;
+              color: var(--apple-primary);
             }
           }
         }
@@ -732,11 +732,11 @@ onUnmounted(() => {
       align-items: center;
       gap: 8px;
       font-weight: 600;
-      color: #1d1d1f;
+      color: var(--apple-ink);
       
       .el-button {
         margin-left: auto;
-        color: #86868b;
+        color: var(--apple-ink-secondary);
         
         .el-icon {
           margin-right: 4px;
@@ -747,7 +747,7 @@ onUnmounted(() => {
     .log-container {
       max-height: 300px;
       overflow-y: auto;
-      background: #f5f5f7;
+      background: var(--apple-canvas-parchment);
       border-radius: 11px;
       padding: 16px;
       
@@ -755,26 +755,26 @@ onUnmounted(() => {
         display: flex;
         gap: 12px;
         padding: 8px 0;
-        border-bottom: 1px solid #e4e7ed;
+        border-bottom: 1px solid var(--apple-hairline);
         
         &:last-child {
           border-bottom: none;
         }
         
         &.log-info {
-          color: #0066cc;
+          color: var(--apple-primary);
         }
         
         &.log-warning {
-          color: #e6a23c;
+          color: var(--apple-warning);
         }
         
         &.log-error {
-          color: #f56c6c;
+          color: var(--apple-danger);
         }
         
         &.log-success {
-          color: #67c23a;
+          color: var(--apple-success);
         }
         
         .log-time {
@@ -793,7 +793,7 @@ onUnmounted(() => {
       .no-logs {
         text-align: center;
         padding: 40px 0;
-        color: #86868b;
+        color: var(--apple-ink-secondary);
         
         .el-icon {
           font-size: 24px;
@@ -811,7 +811,7 @@ onUnmounted(() => {
       align-items: center;
       gap: 8px;
       font-weight: 600;
-      color: #1d1d1f;
+      color: var(--apple-ink);
     }
     
     .estimate-content {
@@ -823,14 +823,14 @@ onUnmounted(() => {
         
         .estimate-label {
           font-size: 17px;
-          color: #86868b;
+          color: var(--apple-ink-secondary);
           margin-bottom: 8px;
         }
         
         .estimate-value {
           font-size: 18px;
           font-weight: 600;
-          color: #0066cc;
+          color: var(--apple-primary);
         }
       }
     }
@@ -846,10 +846,10 @@ onUnmounted(() => {
     
     p {
       margin: 8px 0;
-      color: #86868b;
+      color: var(--apple-ink-secondary);
       
       strong {
-        color: #1d1d1f;
+        color: var(--apple-ink);
         font-size: 18px;
       }
     }

@@ -102,7 +102,7 @@
                     <el-row :gutter="20">
                       <el-col :span="12">
                         <div class="comparison-section good">
-                          <h3><el-icon color="#67c23a"><SuccessFilled /></el-icon> 合理引用</h3>
+                          <h3><el-icon color="var(--apple-success)"><SuccessFilled /></el-icon> 合理引用</h3>
                           <ul>
                             <li>明确标注引用来源</li>
                             <li>用自己的话表述核心观点</li>
@@ -114,7 +114,7 @@
                       </el-col>
                       <el-col :span="12">
                         <div class="comparison-section bad">
-                          <h3><el-icon color="#f56c6c"><CircleClose /></el-icon> 抄袭行为</h3>
+                          <h3><el-icon color="var(--apple-danger)"><CircleClose /></el-icon> 抄袭行为</h3>
                           <ul>
                             <li>未标注任何引用信息</li>
                             <li>大量复制原文内容</li>
@@ -200,7 +200,7 @@
                   
                   <div class="personal-content">
                     <div class="advice-section high-risk">
-                      <h3><el-icon color="#f56c6c"><Warning /></el-icon> 需要重点关注的章节</h3>
+                      <h3><el-icon color="var(--apple-danger)"><Warning /></el-icon> 需要重点关注的章节</h3>
                       <div 
                         v-for="(area, index) in personalAdvice.highRiskAreas" 
                         :key="index"
@@ -219,7 +219,7 @@
                     </div>
                     
                     <div class="advice-section good-aspects">
-                      <h3><el-icon color="#67c23a"><SuccessFilled /></el-icon> 表现良好的方面</h3>
+                      <h3><el-icon color="var(--apple-success)"><SuccessFilled /></el-icon> 表现良好的方面</h3>
                       <div 
                         v-for="(aspect, index) in personalAdvice.goodAspects" 
                         :key="index"
@@ -238,7 +238,7 @@
                     </div>
                     
                     <div class="advice-section general-tips">
-                      <h3><el-icon color="#0066cc"><InfoFilled /></el-icon> 通用改进建议</h3>
+                      <h3><el-icon color="var(--apple-primary)"><InfoFilled /></el-icon> 通用改进建议</h3>
                       <div class="tips-list">
                         <div 
                           v-for="(tip, index) in personalAdvice.generalTips" 
@@ -557,13 +557,13 @@ const openResource = async (resource) => {
 
 const getResourceColor = (type) => {
   const colors = {
-    book: '#67c23a',
+    book: '#34c759',
     online: '#0066cc',
-    video: '#e6a23c',
-    document: '#909399',
+    video: '#ff9500',
+    document: '#8e8e93',
     course: '#0066cc'
   }
-  return colors[type] || '#909399'
+  return colors[type] || '#8e8e93'
 }
 
 const getResourceIcon = (type) => {
@@ -604,7 +604,7 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .academic-integrity-page {
   padding: 20px;
-  background-color: #f5f5f7;
+  background-color: var(--apple-canvas-parchment);
   min-height: 100vh;
 
   .page-header {
@@ -614,13 +614,13 @@ onUnmounted(() => {
     .page-title {
       font-size: 28px;
       font-weight: 600;
-      color: #1d1d1f;
+      color: var(--apple-ink);
       margin-bottom: 12px;
     }
     
     .page-subtitle {
       font-size: 16px;
-      color: #86868b;
+      color: var(--apple-ink-secondary);
       margin: 0;
     }
   }
@@ -644,7 +644,7 @@ onUnmounted(() => {
         align-items: center;
         gap: 8px;
         font-weight: 600;
-        color: #1d1d1f;
+        color: var(--apple-ink);
         
         .el-tag {
           margin-left: auto;
@@ -660,10 +660,10 @@ onUnmounted(() => {
           
           li {
             margin-bottom: 8px;
-            color: #86868b;
+            color: var(--apple-ink-secondary);
             
             strong {
-              color: #1d1d1f;
+              color: var(--apple-ink);
             }
           }
         }
@@ -678,13 +678,13 @@ onUnmounted(() => {
             gap: 16px;
             margin-bottom: 20px;
             padding: 16px;
-            background: #f5f5f7;
+            background: var(--apple-canvas-parchment);
             border-radius: 11px;
             
             .step-number {
               width: 32px;
               height: 32px;
-              background: #0066cc;
+              background: var(--apple-primary);
               color: white;
               border-radius: 50%;
               display: flex;
@@ -697,12 +697,12 @@ onUnmounted(() => {
             .step-content {
               h4 {
                 margin: 0 0 8px 0;
-                color: #1d1d1f;
+                color: var(--apple-ink);
               }
               
               p {
                 margin: 0;
-                color: #86868b;
+                color: var(--apple-ink-secondary);
               }
             }
           }
@@ -714,20 +714,20 @@ onUnmounted(() => {
           margin-bottom: 20px;
           
           &.good {
-            background: #f0f9ff;
-            border: 1px solid #b3e0ff;
+            background: var(--apple-info-bg);
+            border: 1px solid var(--apple-info-border);
             
             h3 {
-              color: #67c23a;
+              color: var(--apple-success);
             }
           }
           
           &.bad {
-            background: #fef0f0;
-            border: 1px solid #fab6b6;
+            background: var(--apple-danger-bg);
+            border: 1px solid var(--apple-danger-border);
             
             h3 {
-              color: #f56c6c;
+              color: var(--apple-danger);
             }
           }
           
@@ -744,7 +744,7 @@ onUnmounted(() => {
             
             li {
               margin-bottom: 12px;
-              color: #1d1d1f;
+              color: var(--apple-ink);
             }
           }
         }
@@ -754,27 +754,27 @@ onUnmounted(() => {
           
           h3 {
             margin: 0 0 20px 0;
-            color: #1d1d1f;
+            color: var(--apple-ink);
           }
           
           .format-example {
             h4 {
               margin: 0 0 12px 0;
-              color: #86868b;
+              color: var(--apple-ink-secondary);
               font-size: 16px;
             }
             
             .example {
-              background: #f5f5f7;
+              background: var(--apple-canvas-parchment);
               padding: 12px;
               border-radius: 11px;
               font-family: monospace;
               margin-bottom: 8px;
-              color: #1d1d1f;
+              color: var(--apple-ink);
             }
             
             .example-text {
-              color: #86868b;
+              color: var(--apple-ink-secondary);
               font-size: 17px;
               margin-bottom: 20px;
             }
@@ -792,13 +792,13 @@ onUnmounted(() => {
         align-items: center;
         gap: 8px;
         font-weight: 600;
-        color: #1d1d1f;
+        color: var(--apple-ink);
       }
       
       .checklist {
         .checklist-item {
           padding: 12px 0;
-          border-bottom: 1px solid #f0f2f5;
+          border-bottom: 1px solid var(--apple-canvas-parchment);
           
           &:last-child {
             border-bottom: none;
@@ -806,8 +806,8 @@ onUnmounted(() => {
           
           &.checked {
             :deep(.el-checkbox__input.is-checked .el-checkbox__inner) {
-              background-color: #67c23a;
-              border-color: #67c23a;
+              background-color: var(--apple-success);
+              border-color: var(--apple-success);
             }
           }
         }
@@ -825,19 +825,19 @@ onUnmounted(() => {
             gap: 8px;
             margin: 0 0 20px 0;
             padding-bottom: 12px;
-            border-bottom: 2px solid #f0f2f5;
+            border-bottom: 2px solid var(--apple-canvas-parchment);
           }
           
           .advice-item {
-            background: #fef0f0;
-            border: 1px solid #fab6b6;
+            background: var(--apple-danger-bg);
+            border: 1px solid var(--apple-danger-border);
             border-radius: 18px;
             padding: 20px;
             margin-bottom: 16px;
             
             &.positive {
-              background: #f0f9ff;
-              border-color: #b3e0ff;
+              background: var(--apple-info-bg);
+              border-color: var(--apple-info-border);
             }
             
             .area-header {
@@ -849,16 +849,16 @@ onUnmounted(() => {
               .similarity-rate {
                 font-weight: 600;
                 font-size: 18px;
-                color: #f56c6c;
+                color: var(--apple-danger);
                 
                 &.good {
-                  color: #67c23a;
+                  color: var(--apple-success);
                 }
               }
             }
             
             .area-issue {
-              color: #1d1d1f;
+              color: var(--apple-ink);
               margin-bottom: 12px;
               font-weight: 600;
             }
@@ -867,12 +867,12 @@ onUnmounted(() => {
               display: flex;
               align-items: flex-start;
               gap: 8px;
-              color: #86868b;
+              color: var(--apple-ink-secondary);
               line-height: 1.5;
               
               .el-icon {
                 margin-top: 3px;
-                color: #0066cc;
+                color: var(--apple-primary);
               }
             }
           }
@@ -883,18 +883,18 @@ onUnmounted(() => {
               align-items: flex-start;
               gap: 12px;
               padding: 16px;
-              background: #f5f5f7;
+              background: var(--apple-canvas-parchment);
               border-radius: 11px;
               margin-bottom: 12px;
               
               .el-icon {
-                color: #67c23a;
+                color: var(--apple-success);
                 margin-top: 3px;
               }
               
               span {
                 flex: 1;
-                color: #1d1d1f;
+                color: var(--apple-ink);
                 line-height: 1.5;
               }
             }
@@ -912,7 +912,7 @@ onUnmounted(() => {
         align-items: center;
         gap: 8px;
         font-weight: 600;
-        color: #1d1d1f;
+        color: var(--apple-ink);
       }
       
       .resources {
@@ -927,7 +927,7 @@ onUnmounted(() => {
           transition: all 0.3s ease;
           
           &:hover {
-            background: #f0f2f5;
+            background: var(--apple-canvas-parchment);
           }
 
           &:active {
@@ -943,13 +943,13 @@ onUnmounted(() => {
             
             .resource-title {
               font-weight: 600;
-              color: #1d1d1f;
+              color: var(--apple-ink);
               margin-bottom: 4px;
             }
             
             .resource-type {
               font-size: 12px;
-              color: #86868b;
+              color: var(--apple-ink-secondary);
             }
           }
         }
@@ -964,7 +964,7 @@ onUnmounted(() => {
         align-items: center;
         gap: 8px;
         font-weight: 600;
-        color: #1d1d1f;
+        color: var(--apple-ink);
         
         .el-tag {
           margin-left: auto;
@@ -977,11 +977,11 @@ onUnmounted(() => {
           
           h4 {
             margin: 0 0 8px 0;
-            color: #1d1d1f;
+            color: var(--apple-ink);
           }
           
           p {
-            color: #86868b;
+            color: var(--apple-ink-secondary);
             line-height: 1.5;
           }
         }
@@ -991,28 +991,28 @@ onUnmounted(() => {
           
           h4 {
             margin: 0 0 12px 0;
-            color: #1d1d1f;
+            color: var(--apple-ink);
           }
           
           .example-content {
-            background: #f5f5f7;
+            background: var(--apple-canvas-parchment);
             border-radius: 11px;
             padding: 20px;
             
             .quote {
               font-style: italic;
               margin: 0 0 16px 0;
-              color: #1d1d1f;
+              color: var(--apple-ink);
               line-height: 1.6;
             }
             
             .citation {
               text-align: right;
-              color: #86868b;
+              color: var(--apple-ink-secondary);
               font-size: 17px;
               
               &.warning {
-                color: #f56c6c;
+                color: var(--apple-danger);
                 font-weight: 600;
               }
             }
@@ -1022,7 +1022,7 @@ onUnmounted(() => {
         .case-analysis {
           h4 {
             margin: 0 0 12px 0;
-            color: #1d1d1f;
+            color: var(--apple-ink);
           }
           
           ul {
@@ -1030,7 +1030,7 @@ onUnmounted(() => {
             
             li {
               margin-bottom: 8px;
-              color: #86868b;
+              color: var(--apple-ink-secondary);
             }
           }
         }
@@ -1046,12 +1046,12 @@ onUnmounted(() => {
         align-items: center;
         gap: 8px;
         font-weight: 600;
-        color: #1d1d1f;
+        color: var(--apple-ink);
       }
       
       .contact-content {
         p {
-          color: #86868b;
+          color: var(--apple-ink-secondary);
           margin-bottom: 20px;
           line-height: 1.5;
         }
@@ -1062,16 +1062,16 @@ onUnmounted(() => {
             align-items: center;
             gap: 12px;
             padding: 12px;
-            background: #f5f5f7;
+            background: var(--apple-canvas-parchment);
             border-radius: 11px;
             margin-bottom: 12px;
             
             .el-icon {
-              color: #0066cc;
+              color: var(--apple-primary);
             }
             
             span {
-              color: #1d1d1f;
+              color: var(--apple-ink);
             }
           }
         }
@@ -1092,12 +1092,12 @@ onUnmounted(() => {
       
       .el-icon {
         margin-right: 12px;
-        color: #0066cc;
+        color: var(--apple-primary);
       }
     }
     
     .el-collapse-item__wrap {
-      border-bottom: 1px solid #e4e7ed;
+      border-bottom: 1px solid var(--apple-hairline);
     }
     
     .el-collapse-item__content {
@@ -1105,25 +1105,25 @@ onUnmounted(() => {
       
       .faq-answer {
         p {
-          color: #86868b;
+          color: var(--apple-ink-secondary);
           line-height: 1.6;
           margin-bottom: 16px;
         }
         
         .faq-example {
-          background: #f5f5f7;
+          background: var(--apple-canvas-parchment);
           border-radius: 11px;
           padding: 16px;
           margin-top: 16px;
           
           h4 {
             margin: 0 0 8px 0;
-            color: #1d1d1f;
+            color: var(--apple-ink);
           }
           
           p {
             margin: 0;
-            color: #86868b;
+            color: var(--apple-ink-secondary);
             font-style: italic;
           }
         }

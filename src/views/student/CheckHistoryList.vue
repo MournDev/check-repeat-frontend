@@ -352,7 +352,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 .check-history-list-page {
   padding: 20px;
-  background-color: #f5f5f7;
+  background-color: var(--apple-canvas-parchment);
   min-height: 100vh;
 
   .page-header {
@@ -361,7 +361,7 @@ onMounted(() => {
     .page-title {
       font-size: 18px;
       font-weight: 600;
-      color: #1d1d1f;
+      color: var(--apple-ink);
     }
   }
 
@@ -383,12 +383,12 @@ onMounted(() => {
       justify-content: space-between;
       gap: 8px;
       font-weight: 600;
-      color: #1d1d1f;
+      color: var(--apple-ink);
 
       .header-right {
         .total-count {
           font-size: 17px;
-          color: #86868b;
+          color: var(--apple-ink-secondary);
           font-weight: normal;
         }
       }
@@ -406,25 +406,25 @@ onMounted(() => {
     
     .paper-title {
       font-weight: 600;
-      color: #1d1d1f;
+      color: var(--apple-ink);
       cursor: pointer;
 
       &:hover {
-        color: #0066cc;
+        color: var(--apple-primary);
       }
     }
   }
 
-  .similarity-excellent { color: #67c23a; }
-  .similarity-good { color: #0066cc; }
-  .similarity-warning { color: #e6a23c; }
-  .similarity-danger { color: #f56c6c; }
+  .similarity-excellent { color: var(--apple-success); }
+  .similarity-good { color: var(--apple-primary); }
+  .similarity-warning { color: var(--apple-warning); }
+  .similarity-danger { color: var(--apple-danger); }
   
   .pagination-container {
     padding: 20px;
     display: flex;
     justify-content: flex-end;
-    border-top: 1px solid #ebeef5;
+    border-top: 1px solid var(--apple-hairline);
   }
 }
 

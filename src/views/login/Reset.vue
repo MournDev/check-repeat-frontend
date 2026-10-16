@@ -299,44 +299,44 @@ const goLogin = () => {
 
   :deep(.el-input__wrapper) {
     height: 48px !important;
-    background: #f5f5f7 !important;
-    border: 1px solid #d2d2d7 !important;
+    background: var(--apple-canvas-parchment) !important;
+    border: 1px solid var(--apple-surface-chip-translucent) !important;
     border-radius: 9999px !important;
     transition: border-color 0.2s, box-shadow 0.2s !important;
   }
 
   :deep(.el-input__wrapper:hover) {
-    border-color: #0066cc !important;
+    border-color: var(--apple-primary) !important;
   }
 
   :deep(.el-input__wrapper.is-focus),
   :deep(.el-input__wrapper:focus) {
-    border-color: #0066cc !important;
+    border-color: var(--apple-primary) !important;
     box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.12) !important;
-    background: #ffffff !important;
+    background: var(--apple-surface) !important;
   }
 
   :deep(.el-input__inner) {
     background: transparent !important;
     font-size: 14px !important;
-    color: #1d1d1f !important;
+    color: var(--apple-ink) !important;
   }
 
   :deep(.el-input__inner::placeholder) {
-    color: #86868b !important;
+    color: var(--apple-ink-secondary) !important;
   }
 }
 
 .field-label {
   font-size: 13px;
   font-weight: 400;
-  color: #1d1d1f;
+  color: var(--apple-ink);
   margin-bottom: 6px;
   letter-spacing: 0.2px;
 }
 
 .eye-toggle {
-  color: #86868b;
+  color: var(--apple-ink-secondary);
   cursor: pointer;
   font-size: 16px;
   display: flex;
@@ -345,7 +345,7 @@ const goLogin = () => {
 }
 
 .eye-toggle:hover {
-  color: #1d1d1f;
+  color: var(--apple-ink);
 }
 
 .code-row {
@@ -371,16 +371,16 @@ const goLogin = () => {
   font-size: 15px !important;
   font-weight: 600 !important;
   border-radius: 9999px !important;
-  background: #0066cc !important;
-  border-color: #0066cc !important;
+  background: var(--apple-primary) !important;
+  border-color: var(--apple-primary) !important;
   letter-spacing: 1px;
   transition: background 0.2s, opacity 0.2s !important;
   cursor: pointer;
 }
 
 .submit-btn:hover {
-  background: #0055aa !important;
-  border-color: #0055aa !important;
+  background: var(--apple-primary-active) !important;
+  border-color: var(--apple-primary-active) !important;
   opacity: 1 !important;
 }
 
@@ -393,7 +393,7 @@ const goLogin = () => {
   align-items: center;
   gap: 12px;
   margin: 20px 0 0;
-  color: #d2d2d7;
+  color: var(--apple-surface-chip-translucent);
   font-size: 13px;
 }
 
@@ -402,23 +402,23 @@ const goLogin = () => {
   content: '';
   flex: 1;
   height: 1px;
-  background: #d2d2d7;
+  background: var(--apple-surface-chip-translucent);
 }
 
 .divider span {
-  color: #86868b;
+  color: var(--apple-ink-secondary);
   white-space: nowrap;
 }
 
 .signup-row {
   text-align: center;
   font-size: 13px;
-  color: #86868b;
+  color: var(--apple-ink-secondary);
   margin-top: 28px;
 }
 
 .signup-link {
-  color: #0066cc !important;
+  color: var(--apple-primary) !important;
   font-weight: 400;
   text-decoration: none;
   cursor: pointer;
@@ -426,6 +426,6 @@ const goLogin = () => {
 
 .signup-link:hover {
   text-decoration: underline;
-  color: #0055aa !important;
+  color: var(--apple-primary-active) !important;
 }
 </style>

@@ -1438,13 +1438,13 @@ onMounted(() => {
 .paper-details-container {
     padding: 24px;
     min-height: 100vh;
-    background: #f5f5f7;
+    background: var(--apple-canvas-parchment);
 }
 
 // 页面头部
 .paper-header {
     margin-bottom: 24px;
-    background: #0066cc;
+    background: var(--apple-primary);
     border-radius: 16px;
     padding: 28px 32px;
 
@@ -1499,12 +1499,12 @@ onMounted(() => {
     .section-card {
         margin-bottom: 20px;
         border-radius: 12px;
-        border: 1px solid #e8ecf1;
+        border: 1px solid var(--apple-slate-border);
 
         :deep(.el-card__header) {
             padding: 14px 20px;
-            border-bottom: 1px solid #f0f2f5;
-            background: #fafbfc;
+            border-bottom: 1px solid var(--apple-canvas-parchment);
+            background: var(--apple-surface-pearl);
         }
 
         :deep(.el-card__body) {
@@ -1518,11 +1518,11 @@ onMounted(() => {
     align-items: center;
     gap: 8px;
     font-weight: 600;
-    color: #1d1d1f;
+    color: var(--apple-ink);
     font-size: 15px;
 
     .el-icon {
-        color: #0066cc;
+        color: var(--apple-primary);
     }
 
     .header-tag {
@@ -1531,7 +1531,7 @@ onMounted(() => {
 
     .advisor-name {
         margin-left: auto;
-        color: #0066cc;
+        color: var(--apple-primary);
         font-size: 13px;
         font-weight: 500;
     }
@@ -1543,18 +1543,18 @@ onMounted(() => {
 
     .info-label {
         font-size: 13px;
-        color: #86868b;
+        color: var(--apple-ink-secondary);
         margin-bottom: 8px;
         font-weight: 500;
     }
 
     .info-value {
-        color: #1d1d1f;
+        color: var(--apple-ink);
         line-height: 1.6;
     }
 
     .abstract-text {
-        color: #4a5568;
+        color: var(--apple-slate-body);
         font-size: 14px;
         line-height: 1.7;
     }
@@ -1562,7 +1562,7 @@ onMounted(() => {
 
 .info-divider {
     height: 1px;
-    background: #f0f2f5;
+    background: var(--apple-canvas-parchment);
     margin: 16px 0;
 }
 
@@ -1578,12 +1578,12 @@ onMounted(() => {
 
         .info-label {
             font-size: 12px;
-            color: #86868b;
+            color: var(--apple-ink-secondary);
         }
 
         .info-value {
             font-size: 14px;
-            color: #1d1d1f;
+            color: var(--apple-ink);
             font-weight: 500;
         }
     }
@@ -1616,7 +1616,7 @@ onMounted(() => {
 
         .similarity-tip {
             font-size: 13px;
-            color: #86868b;
+            color: var(--apple-ink-secondary);
         }
     }
 
@@ -1629,7 +1629,7 @@ onMounted(() => {
 .check-task-info {
     margin-top: 16px;
     padding-top: 16px;
-    border-top: 1px solid #f0f2f5;
+    border-top: 1px solid var(--apple-canvas-parchment);
 
     .task-row {
         display: flex;
@@ -1638,16 +1638,16 @@ onMounted(() => {
         font-size: 13px;
 
         .task-label {
-            color: #86868b;
+            color: var(--apple-ink-secondary);
             min-width: 70px;
         }
 
         .task-value {
-            color: #1d1d1f;
+            color: var(--apple-ink);
         }
 
         .error-text {
-            color: #f56c6c;
+            color: var(--apple-danger);
         }
     }
 }
@@ -1661,7 +1661,7 @@ onMounted(() => {
 
     .el-step__description {
         font-size: 12px;
-        color: #86868b;
+        color: var(--apple-ink-secondary);
     }
 }
 
@@ -1669,11 +1669,11 @@ onMounted(() => {
 .feedback-text {
     font-size: 14px;
     line-height: 1.7;
-    color: #4a5568;
+    color: var(--apple-slate-body);
     padding: 16px;
-    background: #f8f9fb;
+    background: var(--apple-surface-pearl);
     border-radius: 8px;
-    border-left: 3px solid #0066cc;
+    border-left: 3px solid var(--apple-primary);
     margin-bottom: 16px;
 }
 
@@ -1692,8 +1692,8 @@ onMounted(() => {
     .file-card {
         padding: 14px;
         border-radius: 8px;
-        background: #f8f9fb;
-        border: 1px solid #e8ecf1;
+        background: var(--apple-surface-pearl);
+        border: 1px solid var(--apple-slate-border);
     }
 
     .file-header {
@@ -1712,12 +1712,12 @@ onMounted(() => {
         justify-content: center;
         flex-shrink: 0;
 
-        &.file-icon-doc { background: rgba(0, 102, 204, 0.1); color: #0066cc; }
-        &.file-icon-pdf { background: rgba(255, 77, 79, 0.08); color: #ff4d4f; }
-        &.file-icon-excel { background: rgba(82, 196, 26, 0.08); color: #52c41a; }
+        &.file-icon-doc { background: rgba(0, 102, 204, 0.1); color: var(--apple-primary); }
+        &.file-icon-pdf { background: rgba(255, 77, 79, 0.08); color: var(--apple-danger); }
+        &.file-icon-excel { background: rgba(82, 196, 26, 0.08); color: var(--apple-success); }
         &.file-icon-ppt { background: rgba(114, 46, 209, 0.08); color: #722ed1; }
-        &.file-icon-txt { background: rgba(250, 173, 20, 0.08); color: #faad14; }
-        &.file-icon-default { background: rgba(0, 102, 204, 0.1); color: #0066cc; }
+        &.file-icon-txt { background: rgba(250, 173, 20, 0.08); color: var(--apple-warning); }
+        &.file-icon-default { background: rgba(0, 102, 204, 0.1); color: var(--apple-primary); }
     }
 
     .file-main-info {
@@ -1726,7 +1726,7 @@ onMounted(() => {
 
         .file-name {
             font-weight: 600;
-            color: #1d1d1f;
+            color: var(--apple-ink);
             margin-bottom: 4px;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -1738,7 +1738,7 @@ onMounted(() => {
             display: flex;
             gap: 12px;
             font-size: 12px;
-            color: #86868b;
+            color: var(--apple-ink-secondary);
         }
     }
 
@@ -1760,7 +1760,7 @@ onMounted(() => {
 .review-history {
     .review-item {
         padding: 12px;
-        background: #f8f9fb;
+        background: var(--apple-surface-pearl);
         border-radius: 8px;
         margin-bottom: 10px;
 
@@ -1781,20 +1781,20 @@ onMounted(() => {
 
                 .reviewer-name {
                     font-weight: 600;
-                    color: #1d1d1f;
+                    color: var(--apple-ink);
                     font-size: 13px;
                 }
             }
 
             .review-time {
                 font-size: 12px;
-                color: #86868b;
+                color: var(--apple-ink-secondary);
             }
         }
 
         .review-content {
             font-size: 13px;
-            color: #4a5568;
+            color: var(--apple-slate-body);
             line-height: 1.5;
             padding-left: 26px;
         }
@@ -1805,7 +1805,7 @@ onMounted(() => {
 .preview-wrapper {
     height: 70vh;
     position: relative;
-    background: #f5f5f7;
+    background: var(--apple-canvas-parchment);
 
     .preview-iframe {
         width: 100%;
@@ -1824,7 +1824,7 @@ onMounted(() => {
 
         .error-detail {
             margin-top: 8px;
-            color: #86868b;
+            color: var(--apple-ink-secondary);
             font-size: 14px;
             text-align: center;
         }
@@ -1838,7 +1838,7 @@ onMounted(() => {
 
     .file-info .file-name {
         font-weight: 600;
-        color: #1d1d1f;
+        color: var(--apple-ink);
     }
 
     .footer-actions {

@@ -21,15 +21,15 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: #f5f5f7; /* Slate-50 */
+  background: var(--apple-canvas-parchment); /* Slate-50 */
   text-align: center;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   padding: 24px;
 }
 
 .not-found-content {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-slate-border);
   border-radius: 18px;
   padding: 48px;
   transition: all 0.2s ease;
@@ -37,25 +37,25 @@
   width: 100%;
 
   &:hover {
-    border-color: #cbd5e1;
+    border-color: var(--apple-slate-border-strong);
   }
 
   h1 {
     font-size: 120px;
     margin: 0;
-    color: #0066cc; /* Blue-500 */
+    color: var(--apple-primary); /* Blue-500 */
     font-weight: 700;
   }
   
   h2 {
     font-size: 24px;
     margin: 16px 0;
-    color: #0f172a; /* Slate-900 */
+    color: var(--apple-slate-ink); /* Slate-900 */
     font-weight: 600;
   }
   
   p {
-    color: #64748b; /* Slate-500 */
+    color: var(--apple-slate-sub); /* Slate-500 */
     margin-bottom: 32px;
     font-size: 1rem;
     line-height: 1.5;
@@ -64,7 +64,7 @@
   .el-button {
     border-radius: 8px;
     transition: all 0.2s ease;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--apple-slate-border);
     padding: 10px 24px;
     font-size: 1rem;
     

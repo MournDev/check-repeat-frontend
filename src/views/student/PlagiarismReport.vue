@@ -34,7 +34,7 @@
       <el-card class="paper-info-card" shadow="never">
         <div class="paper-basic-info">
           <div class="info-icon">
-            <el-icon size="24" color="#0066cc"><Document /></el-icon>
+            <el-icon size="24" color="var(--apple-primary)"><Document /></el-icon>
           </div>
           <div class="info-content">
             <h2 class="paper-title">{{ reportData.paperTitle || '暂无标题' }}</h2>
@@ -307,7 +307,7 @@
                     :key="index"
                     class="recommendation-item"
                   >
-                    <el-icon color="#0066cc"><Check /></el-icon>
+                    <el-icon color="var(--apple-primary)"><Check /></el-icon>
                     <span>{{ rec }}</span>
                   </div>
                   <div v-if="recommendations.length === 0" class="empty-recommendations">
@@ -722,7 +722,7 @@ const getSimilarityRating = (similarity) => {
 }
 
 const getBarColor = (index) => {
-  const colors = ['#67c23a', '#90c657', '#e6a23c', '#f59a4c', '#f56c6c']
+  const colors = ['#34c759', '#90c657', '#ff9500', '#f59a4c', '#ff3b30']
   return colors[index] || '#86868b'
 }
 
@@ -797,18 +797,18 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 // Apple 配色方案
-$primary-color: #0066cc;
-$primary-dark: #0055aa;
-$secondary-color: #0066cc;
-$success-color: #34c759;
-$warning-color: #ff9500;
-$danger-color: #ff3b30;
-$info-color: #86868b;
-$light-bg: #f5f5f7;
-$card-bg: #ffffff;
-$text-primary: #1d1d1f;
-$text-secondary: #86868b;
-$border-color: #e2e8f0;
+$primary-color: var(--apple-primary);
+$primary-dark: var(--apple-primary-active);
+$secondary-color: var(--apple-primary);
+$success-color: var(--apple-success);
+$warning-color: var(--apple-warning);
+$danger-color: var(--apple-danger);
+$info-color: var(--apple-ink-secondary);
+$light-bg: var(--apple-canvas-parchment);
+$card-bg: var(--apple-surface);
+$text-primary: var(--apple-ink);
+$text-secondary: var(--apple-ink-secondary);
+$border-color: var(--apple-slate-border);
 
 .plagiarism-report-page {
   padding: 20px;
@@ -984,7 +984,7 @@ $border-color: #e2e8f0;
       .similarity-card {
         text-align: center;
         padding: 32px;
-        background: #f5f5f7;
+        background: var(--apple-canvas-parchment);
         border-radius: 18px;
         /* box-shadow removed */
         transition: all 0.3s ease;
@@ -1393,7 +1393,7 @@ $border-color: #e2e8f0;
           gap: 16px;
           padding: 16px 20px;
           margin-bottom: 12px;
-          background: #f5f5f7;
+          background: var(--apple-canvas-parchment);
           border-radius: 18px;
           transition: all 0.3s ease;
           border: 1px solid $border-color;

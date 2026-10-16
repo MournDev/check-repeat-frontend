@@ -184,7 +184,7 @@ const handleVerify = async () => {
 
 .card-subtitle {
   font-size: 14px;
-  color: #86868b;
+  color: var(--apple-ink-secondary);
   margin: 0;
   line-height: 1.6;
 }
@@ -294,7 +294,7 @@ const handleVerify = async () => {
 }
 
 .row-label {
-  color: #86868b;
+  color: var(--apple-ink-secondary);
   flex-shrink: 0;
 }
 

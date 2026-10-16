@@ -925,24 +925,24 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.user-settings { padding: 20px; min-height: 100vh; background: #f5f5f7; }
+.user-settings { padding: 20px; min-height: 100vh; background: var(--apple-canvas-parchment); }
 
 // Page header
 .page-header {
-  margin-bottom: 24px; border-radius: 18px; padding: 24px; border: 1px solid #d2d2d7;
+  margin-bottom: 24px; border-radius: 18px; padding: 24px; border: 1px solid var(--apple-surface-chip-translucent);
   .header-content { display: flex; justify-content: space-between; align-items: center; }
   .header-left {
-    .page-title { margin: 0 0 8px; font-size: 1.75rem; font-weight: 700; color: #1d1d1f; }
-    .page-subtitle { margin: 0; color: #86868b; font-size: 0.875rem; }
+    .page-title { margin: 0 0 8px; font-size: 1.75rem; font-weight: 700; color: var(--apple-ink); }
+    .page-subtitle { margin: 0; color: var(--apple-ink-secondary); font-size: 0.875rem; }
   }
 }
-.role-ADMIN .page-header { background: #f5f5f7; }
-.role-TEACHER .page-header { background: #ffffff; }
+.role-ADMIN .page-header { background: var(--apple-canvas-parchment); }
+.role-TEACHER .page-header { background: var(--apple-surface); }
 .role-STUDENT .page-header { background: none; border: none; padding: 0 0 16px; margin-bottom: 0; }
 
 // 研究方向里「已失效」的旧值提示（迁移遗留短码，保存后会被清除）
 .legacy-tip {
-  margin-top: 6px; font-size: 12px; line-height: 1.8; color: #909399;
+  margin-top: 6px; font-size: 12px; line-height: 1.8; color: var(--apple-info);
   .legacy-tag { margin-right: 6px; }
 }
 
@@ -950,84 +950,84 @@ onUnmounted(() => {
 .main-content {
   max-width: 1200px; margin: 0 auto;
   .section-card {
-    margin-bottom: 16px; border-radius: 18px; border: 1px solid #d2d2d7;
-    :deep(.el-card__header) { padding: 16px 20px; border-bottom: 1px solid #d2d2d7; }
+    margin-bottom: 16px; border-radius: 18px; border: 1px solid var(--apple-surface-chip-translucent);
+    :deep(.el-card__header) { padding: 16px 20px; border-bottom: 1px solid var(--apple-surface-chip-translucent); }
     :deep(.el-card__body) { padding: 20px; }
   }
-  .section-header { display: flex; align-items: center; gap: 8px; font-weight: 600; color: #1d1d1f; .el-icon { color: #0066cc; } }
+  .section-header { display: flex; align-items: center; gap: 8px; font-weight: 600; color: var(--apple-ink); .el-icon { color: var(--apple-primary); } }
 }
 .role-TEACHER .main-content .section-card {
-  border-color: #f1f2f6;
-  &:hover { border-color: #86868b; }
-  :deep(.el-card__header) { border-bottom-color: #f1f2f6; }
+  border-color: var(--apple-slate-border);
+  &:hover { border-color: var(--apple-ink-secondary); }
+  :deep(.el-card__header) { border-bottom-color: var(--apple-slate-border); }
 }
 
 // Profile section (Admin/Teacher)
 .profile-section {
   display: flex; gap: 24px; align-items: flex-start;
   .avatar-upload .avatar-preview { text-align: center; .avatar-actions { display: flex; justify-content: center; gap: 8px; margin-top: 12px; } }
-  .settings-form { flex: 1; :deep(.el-form-item__label) { font-weight: 400; color: #86868b; } }
+  .settings-form { flex: 1; :deep(.el-form-item__label) { font-weight: 400; color: var(--apple-ink-secondary); } }
 }
 .role-ADMIN .profile-section .avatar-upload { width: 220px; }
 .role-TEACHER .profile-section .avatar-upload { display: flex; justify-content: center; margin-bottom: 24px; width: 100%; }
 
 // Security section
 .security-section .security-item {
-  display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #d2d2d7;
+  display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--apple-surface-chip-translucent);
   &:last-child { border-bottom: none; }
-  .security-info { .security-title { font-weight: 400; color: #1d1d1f; margin-bottom: 4px; } .security-desc { font-size: 0.875rem; color: #86868b; } }
+  .security-info { .security-title { font-weight: 400; color: var(--apple-ink); margin-bottom: 4px; } .security-desc { font-size: 0.875rem; color: var(--apple-ink-secondary); } }
 }
-.role-TEACHER .security-section .security-item { border-bottom-color: #f1f2f6; }
+.role-TEACHER .security-section .security-item { border-bottom-color: var(--apple-slate-border); }
 
 // Notification section
 .notification-section .notification-item {
-  display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #d2d2d7;
+  display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--apple-surface-chip-translucent);
   &:last-child { border-bottom: none; }
-  .notification-info { .notification-title { font-weight: 400; color: #1d1d1f; margin-bottom: 4px; } .notification-desc { font-size: 0.875rem; color: #86868b; } }
+  .notification-info { .notification-title { font-weight: 400; color: var(--apple-ink); margin-bottom: 4px; } .notification-desc { font-size: 0.875rem; color: var(--apple-ink-secondary); } }
 }
-.role-TEACHER .notification-section .notification-item { border-bottom-color: #f1f2f6; }
+.role-TEACHER .notification-section .notification-item { border-bottom-color: var(--apple-slate-border); }
 
 // Preference section (Admin)
 .preference-section .preference-item {
-  padding: 12px 0; border-bottom: 1px solid #d2d2d7; display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 0; border-bottom: 1px solid var(--apple-surface-chip-translucent); display: flex; align-items: center; justify-content: space-between;
   &:last-child { border-bottom: none; }
-  .preference-label { font-weight: 400; color: #1d1d1f; flex: 1 1 55%; }
+  .preference-label { font-weight: 400; color: var(--apple-ink); flex: 1 1 55%; }
   :deep(.el-slider), :deep(.el-select) { flex: 0 0 45%; max-width: 260px; }
 }
 // Preference section (Teacher)
 .role-TEACHER .preference-section .preference-item {
-  padding: 16px 0; border-bottom-color: #f1f2f6; display: block;
+  padding: 16px 0; border-bottom-color: var(--apple-slate-border); display: block;
   .preference-label { margin-bottom: 12px; }
 }
 
 // ============ Student styles ============
 .role-STUDENT { padding: 0; }
 .profile-content {
-  .el-card { border-radius: 18px; border: 1px solid #f1f2f6; margin-bottom: 1.5rem;
-    :deep(.el-card__header) { padding: 1rem 1.25rem; border-bottom: 1px solid #f1f2f6; }
+  .el-card { border-radius: 18px; border: 1px solid var(--apple-slate-border); margin-bottom: 1.5rem;
+    :deep(.el-card__header) { padding: 1rem 1.25rem; border-bottom: 1px solid var(--apple-slate-border); }
     :deep(.el-card__body) { padding: 1.25rem; }
   }
   .card-header { display: flex; justify-content: space-between; align-items: center;
-    .card-title { display: flex; align-items: center; font-weight: 600; color: #1d1d1f; .el-icon { margin-right: 0.5rem; color: #0066cc; } }
+    .card-title { display: flex; align-items: center; font-weight: 600; color: var(--apple-ink); .el-icon { margin-right: 0.5rem; color: var(--apple-primary); } }
   }
 }
 .profile-overview { text-align: center;
   .avatar-section { margin-bottom: 1.5rem; .avatar-actions { margin-top: 0.75rem; } }
   .user-details {
-    .user-name { margin: 0 0 0.5rem; color: #1d1d1f; font-size: 1.25rem; }
-    .detail-item { display: flex; align-items: center; justify-content: flex-start; margin: 0.75rem 0; color: #86868b;
-      .el-icon { margin-right: 0.5rem; color: #0066cc; width: 16px; }
+    .user-name { margin: 0 0 0.5rem; color: var(--apple-ink); font-size: 1.25rem; }
+    .detail-item { display: flex; align-items: center; justify-content: flex-start; margin: 0.75rem 0; color: var(--apple-ink-secondary);
+      .el-icon { margin-right: 0.5rem; color: var(--apple-primary); width: 16px; }
       span { margin-right: 0.5rem; min-width: 60px; text-align: right; }
-      strong { color: #1d1d1f; }
+      strong { color: var(--apple-ink); }
     }
   }
 }
 .security-items .security-item {
-  display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid #f5f5f7;
+  display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid var(--apple-canvas-parchment);
   &:last-child { border-bottom: none; }
   .security-info { display: flex; align-items: center;
-    .el-icon { margin-right: 0.75rem; color: #0066cc; font-size: 1.25rem; }
-    .security-details { .security-title { font-weight: 600; color: #1d1d1f; margin-bottom: 0.25rem; } .security-desc { font-size: 0.875rem; color: #86868b; } }
+    .el-icon { margin-right: 0.75rem; color: var(--apple-primary); font-size: 1.25rem; }
+    .security-details { .security-title { font-weight: 600; color: var(--apple-ink); margin-bottom: 0.25rem; } .security-desc { font-size: 0.875rem; color: var(--apple-ink-secondary); } }
   }
 }
 .form-actions { display: flex; gap: 0.75rem; }
@@ -1037,7 +1037,7 @@ onUnmounted(() => {
 }
 .code-input { display: flex; align-items: center; .el-input { flex: 1; } .el-button { margin-left: 10px; white-space: nowrap; } }
 .table-footer { margin-top: 12px; display: flex; justify-content: space-between; align-items: center; }
-.page-size-selector { color: #86868b; }
+.page-size-selector { color: var(--apple-ink-secondary); }
 
 // Responsive
 @media (max-width: 768px) {
