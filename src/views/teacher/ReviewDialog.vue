@@ -794,12 +794,12 @@ const loadPaperContent = async () => {
         
         .paper-item-card {
           margin-bottom: 12px;
-          border: 1px solid #d2d2d7;
+          border: 1px solid var(--apple-surface-chip-translucent);
           border-radius: 11px;
           transition: border-color 0.2s ease;
           
           &:hover {
-            border-color: #0066cc;
+            border-color: var(--apple-primary);
             /* box-shadow removed for Apple HIG */
           }
 
@@ -815,7 +815,7 @@ const loadPaperContent = async () => {
             .paper-title {
               flex: 1;
               font-weight: 400;
-              color: #303133;
+              color: var(--apple-ink);
               overflow: hidden;
               text-overflow: ellipsis;
               white-space: nowrap;
@@ -830,7 +830,7 @@ const loadPaperContent = async () => {
             display: flex;
             justify-content: space-between;
             font-size: 17px;
-            color: #606266;
+            color: var(--apple-ink-muted-80);
             
             .student-name {
               margin-right: 20px;
@@ -860,12 +860,12 @@ const loadPaperContent = async () => {
         
         label {
           font-weight: 400;
-          color: #606266;
+          color: var(--apple-ink-muted-80);
           margin-right: 8px;
         }
         
         .info-value {
-          color: #303133;
+          color: var(--apple-ink);
         }
       }
     }
@@ -880,7 +880,7 @@ const loadPaperContent = async () => {
         }
         
         .content-area {
-          border: 1px solid #dcdfe6;
+          border: 1px solid var(--apple-hairline);
           border-radius: 8px;
           padding: 16px;
           min-height: 400px;
@@ -906,7 +906,7 @@ const loadPaperContent = async () => {
           }
           
           .opinion {
-            color: #606266;
+            color: var(--apple-ink-muted-80);
             font-size: 17px;
             line-height: 1.5;
           }
@@ -930,7 +930,7 @@ const loadPaperContent = async () => {
   
   .batch-opinion-card {
     margin-bottom: 16px;
-    border: 1px solid #d2d2d7;
+    border: 1px solid var(--apple-surface-chip-translucent);
     border-radius: 11px;
     
     .card-header {
@@ -941,7 +941,7 @@ const loadPaperContent = async () => {
       
       .paper-title {
         flex: 1;
-        color: #303133;
+        color: var(--apple-ink);
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -950,7 +950,7 @@ const loadPaperContent = async () => {
       
       .student-name {
         font-size: 17px;
-        color: #606266;
+        color: var(--apple-ink-muted-80);
       }
     }
   }
@@ -970,7 +970,7 @@ const loadPaperContent = async () => {
     transition: border-color 0.2s ease;
 
     &:hover {
-      border-color: #0066cc;
+      border-color: var(--apple-primary);
       /* box-shadow removed for Apple HIG */
     }
 
@@ -982,7 +982,7 @@ const loadPaperContent = async () => {
       .template-title {
         font-size: 16px;
         font-weight: 600;
-        color: #303133;
+        color: var(--apple-ink);
       }
     }
     
@@ -997,7 +997,7 @@ const loadPaperContent = async () => {
           display: flex;
           align-items: center;
           font-size: 17px;
-          color: #606266;
+          color: var(--apple-ink-muted-80);
           
           .el-icon {
             margin-right: 4px;
@@ -1008,11 +1008,11 @@ const loadPaperContent = async () => {
       .template-preview {
         .preview-content {
           padding: 12px;
-          background-color: #f5f5f7;
+          background-color: var(--apple-canvas-parchment);
           border-radius: 8px;
           font-size: 17px;
           line-height: 1.5;
-          color: #606266;
+          color: var(--apple-ink-muted-80);
           max-height: 120px;
           overflow-y: auto;
         }

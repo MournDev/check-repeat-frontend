@@ -116,7 +116,7 @@
                   <el-dropdown-item :icon="Document" command="paper">
                     论文详情
                   </el-dropdown-item>
-                  <el-dropdown-item :icon="Delete" command="delete" divided style="color: #F56C6C;">
+                  <el-dropdown-item :icon="Delete" command="delete" divided style="color: var(--apple-danger);">
                     删除
                   </el-dropdown-item>
                 </el-dropdown-menu>

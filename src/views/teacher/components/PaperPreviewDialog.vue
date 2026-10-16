@@ -159,8 +159,8 @@ defineExpose({
 .fallback-panel {
   margin-top: 4px;
   padding: 14px 16px;
-  background: color-mix(in srgb, var(--apple-warning) 8%, #ffffff);
-  border: 1px solid color-mix(in srgb, var(--apple-warning) 35%, #ffffff);
+  background: color-mix(in srgb, var(--apple-warning) 8%, var(--apple-surface));
+  border: 1px solid color-mix(in srgb, var(--apple-warning) 35%, var(--apple-surface));
   border-radius: var(--apple-rounded-md);
 }
 

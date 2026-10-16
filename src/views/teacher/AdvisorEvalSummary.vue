@@ -80,7 +80,7 @@
                 <el-progress
                   :percentage="tagPercent(item.count)"
                   :stroke-width="8"
-                  :color="isNegativeTag(item.tag) ? '#ff3b30' : '#34c759'"
+                  :color="isNegativeTag(item.tag) ? 'var(--apple-danger)' : 'var(--apple-success)'"
                   :show-text="false"
                 />
               </div>

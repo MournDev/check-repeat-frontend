@@ -440,7 +440,7 @@ onMounted(() => {
       
       .page-subtitle {
         margin: 0;
-        color: #606266;
+        color: var(--apple-ink-muted-80);
       }
     }
   }
@@ -470,7 +470,7 @@ onMounted(() => {
             display: flex;
             gap: 16px;
             font-size: 12px;
-            color: #909399;
+            color: var(--apple-info);
           }
         }
         
@@ -526,14 +526,14 @@ onMounted(() => {
         display: block;
         margin-bottom: 12px;
         padding: 12px;
-        border: 1px solid #ebeef5;
+        border: 1px solid var(--apple-hairline);
         border-radius: 8px;
         cursor: pointer;
         transition: border-color 0.2s ease;
         
         &:hover {
-          border-color: #0066cc;
-          background-color: #f5f5f7;
+          border-color: var(--apple-primary);
+          background-color: var(--apple-canvas-parchment);
         }
         
         .student-info {
@@ -544,7 +544,7 @@ onMounted(() => {
           
           .student-details {
             font-size: 12px;
-            color: #909399;
+            color: var(--apple-info);
           }
         }
       }
@@ -552,7 +552,7 @@ onMounted(() => {
     
     .selected-count {
       font-size: 17px;
-      color: #606266;
+      color: var(--apple-ink-muted-80);
       margin-bottom: 20px;
     }
   }

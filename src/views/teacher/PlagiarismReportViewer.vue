@@ -100,7 +100,7 @@
                         <div class="bar-track">
                           <div 
                             class="bar-fill" 
-                            :style="{ width: `${100 - reportData.similarity}%`, backgroundColor: '#67c23a' }"
+                            :style="{ width: `${100 - reportData.similarity}%`, backgroundColor: 'var(--apple-success)' }"
                           ></div>
                         </div>
                         <div class="bar-percent">{{ 100 - reportData.similarity }}%</div>
@@ -110,7 +110,7 @@
                         <div class="bar-track">
                           <div 
                             class="bar-fill" 
-                            :style="{ width: `${reportData.similarity}%`, backgroundColor: '#f56c6c' }"
+                            :style="{ width: `${reportData.similarity}%`, backgroundColor: 'var(--apple-danger)' }"
                           ></div>
                         </div>
                         <div class="bar-percent">{{ reportData.similarity }}%</div>
@@ -924,12 +924,12 @@ onMounted(() => {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: #f5f5f7;
+  background-color: var(--apple-canvas-parchment);
 }
 
 /* 报告头部 */
 .report-header {
-  background: #0066cc;
+  background: var(--apple-primary);
   color: white;
   padding: 24px;
   border-radius: 11px 11px 0 0;
@@ -1094,20 +1094,20 @@ onMounted(() => {
 .stat-item {
   text-align: center;
   padding: 16px;
-  background: #f5f5f7;
+  background: var(--apple-canvas-parchment);
   border-radius: 11px;
 }
 
 .stat-value {
   font-size: 24px;
   font-weight: 700;
-  color: #0066cc;
+  color: var(--apple-primary);
   margin-bottom: 8px;
 }
 
 .stat-label {
   font-size: 17px;
-  color: #606266;
+  color: var(--apple-ink-muted-80);
 }
 
 /* 来源表格 */
@@ -1123,7 +1123,7 @@ onMounted(() => {
 
 .source-title {
   font-weight: 600;
-  color: #303133;
+  color: var(--apple-ink);
 }
 
 .source-meta {
@@ -1131,7 +1131,7 @@ onMounted(() => {
   align-items: center;
   gap: 12px;
   font-size: 12px;
-  color: #909399;
+  color: var(--apple-info);
 }
 
 .source-similarity {
@@ -1147,7 +1147,7 @@ onMounted(() => {
 
 .matched-count {
   font-weight: 600;
-  color: #f56c6c;
+  color: var(--apple-danger);
 }
 
 /* 对比容器 */
@@ -1178,14 +1178,14 @@ onMounted(() => {
 }
 
 .panel-header {
-  background: #f5f5f7;
+  background: var(--apple-canvas-parchment);
   padding: 16px;
   border-bottom: 1px solid #e6e8eb;
 }
 
 .panel-header h4 {
   margin: 0;
-  color: #303133;
+  color: var(--apple-ink);
 }
 
 .panel-content {
@@ -1202,8 +1202,8 @@ onMounted(() => {
 }
 
 .text-segment.highlight {
-  background: #fef0f0;
-  border-color: #fecaca;
+  background: var(--apple-danger-bg);
+  border-color: var(--apple-danger-bg);
 }
 
 /* 建议列表 */
@@ -1220,8 +1220,8 @@ onMounted(() => {
 }
 
 .suggestion-item.priority-high {
-  background: #fef0f0;
-  border-color: #fecaca;
+  background: var(--apple-danger-bg);
+  border-color: var(--apple-danger-bg);
 }
 
 .suggestion-item.priority-medium {
@@ -1230,8 +1230,8 @@ onMounted(() => {
 }
 
 .suggestion-item.priority-low {
-  background: #f0f9eb;
-  border-color: #67c23a;
+  background: var(--apple-success-bg);
+  border-color: var(--apple-success);
 }
 
 .suggestion-header {
@@ -1243,7 +1243,7 @@ onMounted(() => {
 
 .suggestion-location {
   font-size: 12px;
-  color: #909399;
+  color: var(--apple-info);
 }
 
 .suggestion-content {
@@ -1252,12 +1252,12 @@ onMounted(() => {
 
 .suggestion-desc {
   margin-bottom: 8px;
-  color: #303133;
+  color: var(--apple-ink);
 }
 
 .suggestion-action {
   font-size: 17px;
-  color: #0066cc;
+  color: var(--apple-primary);
   font-weight: 400;
 }
 
@@ -1276,12 +1276,12 @@ onMounted(() => {
 
 .summary-label {
   font-size: 17px;
-  color: #606266;
+  color: var(--apple-ink-muted-80);
 }
 
 .summary-value {
   font-weight: 600;
-  color: #303133;
+  color: var(--apple-ink);
 }
 
 /* 快速操作 */
@@ -1309,7 +1309,7 @@ onMounted(() => {
 
 .loading-content {
   text-align: center;
-  color: #606266;
+  color: var(--apple-ink-muted-80);
 }
 
 .loading-content p {

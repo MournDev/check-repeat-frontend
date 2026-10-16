@@ -1045,18 +1045,18 @@ onMounted(() => {
     flex-shrink: 0;
     
     &.student-icon {
-      background: #f0f9ff;
-      color: #0ea5e9;
+      background: var(--apple-info-bg);
+      color: var(--apple-primary);
     }
     
     &.pending-icon {
-      background: #fef3c7;
-      color: #f59e0b;
+      background: var(--apple-warning-bg);
+      color: var(--apple-warning);
     }
     
     &.reviewed-icon {
-      background: #d1fae5;
-      color: #10b981;
+      background: var(--apple-success-bg);
+      color: var(--apple-success);
     }
     
     &.rate-icon {
@@ -1147,17 +1147,17 @@ onMounted(() => {
     }
 
     &.high {
-      background: #fef2f2;
-      border-color: #fecaca;
+      background: var(--apple-danger-bg);
+      border-color: var(--apple-danger-bg);
     }
 
     &.medium {
-      background: #fffbeb;
-      border-color: #fde68a;
+      background: var(--apple-warning-bg);
+      border-color: var(--apple-warning-bg);
     }
 
     &.low {
-      background: #f0fdf4;
+      background: var(--apple-success-bg);
       border-color: #bbf7d0;
     }
     
@@ -1198,17 +1198,17 @@ onMounted(() => {
         font-weight: 400;
 
         &.high {
-          background: #fee2e2;
+          background: var(--apple-danger-bg);
           color: var(--danger-red);
         }
 
         &.medium {
-          background: #fef3c7;
+          background: var(--apple-warning-bg);
           color: var(--warning-yellow);
         }
 
         &.low {
-          background: #d1fae5;
+          background: var(--apple-success-bg);
           color: var(--success-green);
         }
       }
@@ -1274,7 +1274,7 @@ onMounted(() => {
         font-weight: 400;
 
         &.danger {
-          background: #fee2e2;
+          background: var(--apple-danger-bg);
           color: var(--danger-red);
         }
       }
@@ -1304,17 +1304,17 @@ onMounted(() => {
     }
 
     &.urgent {
-      background: #fef2f2;
-      border-color: #fecaca;
+      background: var(--apple-danger-bg);
+      border-color: var(--apple-danger-bg);
     }
 
     &.high {
-      background: #fffbeb;
-      border-color: #fde68a;
+      background: var(--apple-warning-bg);
+      border-color: var(--apple-warning-bg);
     }
 
     &.normal {
-      background: #f0fdf4;
+      background: var(--apple-success-bg);
       border-color: #bbf7d0;
     }
     
@@ -1349,23 +1349,23 @@ onMounted(() => {
             font-weight: 400;
             
             &.warning {
-              background: #fef3c7;
-              color: #f59e0b;
+              background: var(--apple-warning-bg);
+              color: var(--apple-warning);
             }
             
             &.danger {
-              background: #fee2e2;
-              color: #ef4444;
+              background: var(--apple-danger-bg);
+              color: var(--apple-danger);
             }
             
             &.info {
-              background: #e0f2fe;
-              color: #0284c7;
+              background: var(--apple-info-bg);
+              color: var(--apple-primary);
             }
             
             &.success {
-              background: #d1fae5;
-              color: #10b981;
+              background: var(--apple-success-bg);
+              color: var(--apple-success);
             }
           }
         }
@@ -1568,7 +1568,7 @@ onMounted(() => {
       
       .bar-fill {
         height: 100%;
-        background: #0ea5e9;
+        background: var(--apple-primary);
         border-radius: 8px;
         transition: width 0.5s ease;
       }
@@ -1652,19 +1652,19 @@ onMounted(() => {
         transition: width 0.5s ease;
         
         &.warning {
-          background: #f59e0b;
+          background: var(--apple-warning);
         }
         
         &.success {
-          background: #10b981;
+          background: var(--apple-success);
         }
         
         &.danger {
-          background: #ef4444;
+          background: var(--apple-danger);
         }
         
         &:not(.warning):not(.success):not(.danger) {
-          background: #0ea5e9;
+          background: var(--apple-primary);
         }
       }
     }
@@ -1706,7 +1706,7 @@ onMounted(() => {
     }
     
     &.primary {
-      background: #0066cc;
+      background: var(--apple-primary);
       color: white;
       border: none;
       

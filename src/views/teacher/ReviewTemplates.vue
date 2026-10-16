@@ -500,7 +500,7 @@ onMounted(async () => {
       
       .page-subtitle {
         margin: 0;
-        color: #606266;
+        color: var(--apple-ink-muted-80);
       }
     }
   }
@@ -516,14 +516,14 @@ onMounted(async () => {
       gap: 20px;
       
       .template-card {
-        border: 1px solid #ebeef5;
+        border: 1px solid var(--apple-hairline);
         border-radius: 11px;
         padding: 16px;
         cursor: pointer;
         transition: border-color 0.2s ease;
         
         &:hover {
-          border-color: #0066cc;
+          border-color: var(--apple-primary);
           /* box-shadow removed for Apple HIG */
         }
         
@@ -536,7 +536,7 @@ onMounted(async () => {
           .template-title {
             font-weight: 400;
             font-size: 16px;
-            color: #303133;
+            color: var(--apple-ink);
             flex: 1;
             margin-right: 12px;
           }
@@ -548,7 +548,7 @@ onMounted(async () => {
         }
         
         .template-content {
-          color: #606266;
+          color: var(--apple-ink-muted-80);
           line-height: 1.5;
           margin-bottom: 16px;
           font-size: 17px;
@@ -566,13 +566,13 @@ onMounted(async () => {
             
             .usage-count {
               font-size: 12px;
-              color: #909399;
+              color: var(--apple-info);
             }
           }
           
           .template-time {
             font-size: 12px;
-            color: #909399;
+            color: var(--apple-info);
           }
         }
       }
@@ -590,7 +590,7 @@ onMounted(async () => {
       font-size: 18px;
       font-weight: 400;
       margin-bottom: 12px;
-      color: #303133;
+      color: var(--apple-ink);
     }
     
     .preview-category {
@@ -599,7 +599,7 @@ onMounted(async () => {
     
     .preview-content {
       line-height: 1.6;
-      color: #606266;
+      color: var(--apple-ink-muted-80);
       white-space: pre-wrap;
     }
   }
@@ -613,9 +613,9 @@ onMounted(async () => {
       font-size: 16px;
       font-weight: 400;
       margin: 20px 0 12px 0;
-      color: #303133;
+      color: var(--apple-ink);
       padding-bottom: 8px;
-      border-bottom: 1px solid #ebeef5;
+      border-bottom: 1px solid var(--apple-hairline);
     }
     
     .template-item {
@@ -623,15 +623,15 @@ onMounted(async () => {
       justify-content: space-between;
       align-items: center;
       padding: 12px;
-      border: 1px solid #ebeef5;
+      border: 1px solid var(--apple-hairline);
       border-radius: 8px;
       margin-bottom: 8px;
       cursor: pointer;
       transition: border-color 0.2s ease;
 
       &:hover {
-        border-color: #0066cc;
-        background-color: #f5f5f7;
+        border-color: var(--apple-primary);
+        background-color: var(--apple-canvas-parchment);
       }
       
       .template-info {
@@ -641,12 +641,12 @@ onMounted(async () => {
         .template-name {
           font-weight: 400;
           margin-bottom: 4px;
-          color: #303133;
+          color: var(--apple-ink);
         }
         
         .template-preview-text {
           font-size: 12px;
-          color: #909399;
+          color: var(--apple-info);
           margin-bottom: 4px;
         }
         
@@ -659,7 +659,7 @@ onMounted(async () => {
   
   .help-text {
     font-size: 12px;
-    color: #909399;
+    color: var(--apple-info);
     margin-top: 4px;
   }
 }
