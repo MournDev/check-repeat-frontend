@@ -16,9 +16,9 @@
 //   hidden true 表示该路由刻意不进菜单（详情页、容器路由等），仅作文档标注
 //   spacer 在这一项之前渲染一段留白（各角色菜单尾部设置项前）
 //
-// 同一路由出现在多个角色菜单的不同位置时（如「查重规则」：ADMIN 菜单无
-// 分组、超管菜单归「系统运维」组），用角色名作 key 写覆盖块：
-//   menu: { icon: 'Setting', ADMIN: { order: 10 }, SUPER_ADMIN: { group: '系统运维', order: 7 } }
+// 同一路由出现在多个角色菜单的不同位置时（如「查重配置」：ADMIN 归
+// 「系统管理」组、超管归「系统运维」组），用角色名作 key 写覆盖块：
+//   menu: { icon: 'Operation', ADMIN: { group: '系统管理', order: 8 }, SUPER_ADMIN: { group: '系统运维', order: 8 } }
 
 import * as ElIcons from '@element-plus/icons-vue'
 

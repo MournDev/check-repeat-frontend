@@ -306,7 +306,7 @@ const topNavItems = computed(() => {
   if (role === 'ADMIN') return [
     { key: 'dashboard', label: '工作台', path: '/dashboard/admin' },
     { key: 'papers', label: '论文管理', path: '/admin/paper-library' },
-    { key: 'assign', label: '论文分配', path: '/admin/paper-assignment/manual' },
+    { key: 'assign', label: '论文分配', path: '/admin/paper-assignment' },
   ]
   if (role === 'SUPER_ADMIN') return [
     { key: 'users', label: '人员管理', path: '/admin/user-management' },
