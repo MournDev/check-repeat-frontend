@@ -133,4 +133,26 @@
   --apple-danger: #ff3b30;                   // Apple system red
   --apple-info: #8e8e93;                     // Apple system gray
   --apple-rounded-xl: 22px;                  // 大于 --apple-rounded-lg(18) 的卡片层级
+
+  // ── 高频存量色收敛（2026-10-16 硬编码治理第二批）──────────
+  // 下列值在业务页面中被大量硬编码且无前述 token 对应，按实际使用语义命名收录，
+  // 新代码一律引用变量，禁止再写字面值。
+  --apple-ink-secondary: #86868b;            // 次级说明文字灰（页面副标题/元信息）
+  --apple-primary-active: #0055aa;           // 主色按下/hover 深档
+  // 浅色语义底与描边（正/负/提示示例块）
+  --apple-success-bg: #f0f9eb;
+  --apple-warning-bg: #fef3c7;
+  --apple-info-bg: #f0f9ff;
+  --apple-danger-bg: #fef0f0;
+  --apple-info-border: #b3e0ff;
+  --apple-danger-border: #fab6b6;
+  // slate 灰阶（存量卡片边框/正文，来源 Tailwind slate，已沉淀为站点事实色板）
+  --apple-slate-ink: #0f172a;
+  --apple-slate-body: #334155;
+  --apple-slate-muted: #475569;
+  --apple-slate-sub: #64748b;
+  --apple-slate-faint: #94a3b8;
+  --apple-slate-border: #e2e8f0;
+  --apple-slate-border-strong: #cbd5e1;
+  --apple-slate-bg: #f1f5f9;
 }
