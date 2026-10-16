@@ -482,8 +482,8 @@ onMounted(() => {
 <style lang="scss" scoped>
 .system-config {
   min-height: 100vh;
-  background: #f5f5f7; // Slate-50
-  color: #1d1d1f; // Slate-900
+  background: var(--apple-canvas-parchment); // Slate-50
+  color: var(--apple-ink); // Slate-900
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   padding: 24px;
 }
@@ -497,14 +497,14 @@ onMounted(() => {
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 24px;
-  background: #ffffff;
-  border: 1px solid #d2d2d7;
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-surface-chip-translucent);
   border-radius: 18px;
   padding: 24px;
   transition: all 0.2s ease;
   
   &:hover {
-    border-color: #d2d2d7;
+    border-color: var(--apple-surface-chip-translucent);
   }
   
   .header-content {
@@ -512,12 +512,12 @@ onMounted(() => {
       margin: 0 0 8px 0;
       font-size: 1.75rem;
       font-weight: 700;
-      color: #1d1d1f; // Slate-900
+      color: var(--apple-ink); // Slate-900
     }
     
     .page-desc {
       margin: 0;
-      color: #86868b; // Slate-500
+      color: var(--apple-ink-secondary); // Slate-500
       font-size: 0.95rem;
     }
   }
@@ -529,10 +529,10 @@ onMounted(() => {
     .el-button {
       border-radius: 8px;
       transition: all 0.2s ease;
-      border: 1px solid #d2d2d7;
+      border: 1px solid var(--apple-surface-chip-translucent);
       
       &:hover {
-        border-color: #d2d2d7;
+        border-color: var(--apple-surface-chip-translucent);
       }
     }
   }
@@ -540,13 +540,13 @@ onMounted(() => {
 
 .nav-card {
   margin-bottom: 24px;
-  background: #ffffff;
-  border: 1px solid #d2d2d7;
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-surface-chip-translucent);
   border-radius: 18px;
   transition: all 0.2s ease;
   
   &:hover {
-    border-color: #d2d2d7;
+    border-color: var(--apple-surface-chip-translucent);
   }
   
   :deep(.el-card__body) {
@@ -559,7 +559,7 @@ onMounted(() => {
       
       &:hover {
         .el-step__title {
-          color: #0066cc; // Blue-500
+          color: var(--apple-primary); // Blue-500
         }
       }
     }
@@ -567,13 +567,13 @@ onMounted(() => {
 }
 
 .config-card {
-  background: #ffffff;
-  border: 1px solid #d2d2d7;
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-surface-chip-translucent);
   border-radius: 18px;
   transition: all 0.2s ease;
   
   &:hover {
-    border-color: #d2d2d7;
+    border-color: var(--apple-surface-chip-translucent);
   }
   
   :deep(.el-card__body) {
@@ -584,9 +584,9 @@ onMounted(() => {
     .tab-title {
       margin: 0 0 24px 0;
       font-size: 1.25rem;
-      color: #1d1d1f; // Slate-900
+      color: var(--apple-ink); // Slate-900
       padding-bottom: 12px;
-      border-bottom: 2px solid #d2d2d7;
+      border-bottom: 2px solid var(--apple-surface-chip-translucent);
     }
     
     .config-form {
@@ -595,7 +595,7 @@ onMounted(() => {
         
         .el-form-item__label {
           font-weight: 400;
-          color: #86868b; // Slate-500
+          color: var(--apple-ink-secondary); // Slate-500
         }
         
         .el-input,
@@ -605,22 +605,22 @@ onMounted(() => {
           
           :deep(.el-input__wrapper) {
             border-radius: 8px;
-            border: 1px solid #d2d2d7;
+            border: 1px solid var(--apple-surface-chip-translucent);
             transition: all 0.2s ease;
             
             &:hover {
-              border-color: #d2d2d7;
+              border-color: var(--apple-surface-chip-translucent);
               /* box-shadow removed for Apple HIG */
             }
           }
           
           :deep(.el-select__wrapper) {
             border-radius: 8px;
-            border: 1px solid #d2d2d7;
+            border: 1px solid var(--apple-surface-chip-translucent);
             transition: all 0.2s ease;
             
             &:hover {
-              border-color: #d2d2d7;
+              border-color: var(--apple-surface-chip-translucent);
               /* box-shadow removed for Apple HIG */
             }
           }
@@ -629,24 +629,24 @@ onMounted(() => {
         .el-button {
           border-radius: 8px;
           transition: all 0.2s ease;
-          border: 1px solid #d2d2d7;
+          border: 1px solid var(--apple-surface-chip-translucent);
           
           &:hover {
-            border-color: #86868b;
+            border-color: var(--apple-ink-secondary);
           }
         }
       }
       
       .form-tip {
         font-size: 0.875rem;
-        color: #86868b; // Slate-400
+        color: var(--apple-ink-secondary); // Slate-400
         margin-top: 4px;
         line-height: 1.4;
       }
       
       .unit {
         margin-left: 8px;
-        color: #86868b; // Slate-400
+        color: var(--apple-ink-secondary); // Slate-400
         font-size: 0.875rem;
       }
     }
@@ -668,7 +668,7 @@ onMounted(() => {
       font-weight: 600;
       font-size: 0.9rem;
       color: #6e6e73;
-      .el-icon { margin-right: 6px; color: #86868b; }
+      .el-icon { margin-right: 6px; color: var(--apple-ink-secondary); }
     }
   }
 
@@ -678,10 +678,10 @@ onMounted(() => {
 }
 
 .backup-card {
-  background: #ffffff;
-  border: 1px solid #d2d2d7;
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-surface-chip-translucent);
   border-radius: 18px;
-  border-top: 3px solid #0ea5e9;
+  border-top: 3px solid var(--apple-primary);
   transition: all 0.2s ease;
 
   :deep(.el-card__header) {
@@ -694,8 +694,8 @@ onMounted(() => {
       align-items: center;
       font-weight: 600;
       font-size: 1rem;
-      color: #1d1d1f;
-      .el-icon { margin-right: 8px; color: #0ea5e9; }
+      color: var(--apple-ink);
+      .el-icon { margin-right: 8px; color: var(--apple-primary); }
     }
   }
 
@@ -718,7 +718,7 @@ onMounted(() => {
         margin-bottom: 6px;
         line-height: 1.5;
         font-size: 0.8rem;
-        color: #86868b;
+        color: var(--apple-ink-secondary);
         strong { color: #515154; }
       }
     }
@@ -729,7 +729,7 @@ onMounted(() => {
 
   .setting-hint {
     font-size: 0.8rem;
-    color: #86868b;
+    color: var(--apple-ink-secondary);
   }
 }
 
@@ -746,7 +746,7 @@ onMounted(() => {
   p {
     margin: 4px 0;
     font-size: 0.875rem;
-    color: #86868b; // Slate-400
+    color: var(--apple-ink-secondary); // Slate-400
   }
 }
 

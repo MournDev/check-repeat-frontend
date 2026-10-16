@@ -396,7 +396,7 @@ const initCollegeChart = async () => {
           avoidLabelOverlap: false,
           itemStyle: {
             borderRadius: 10,
-            borderColor: '#fff',
+            borderColor: '#ffffff',
             borderWidth: 2
           },
           label: {
@@ -444,7 +444,7 @@ const initCollegeChart = async () => {
           avoidLabelOverlap: false,
           itemStyle: {
             borderRadius: 10,
-            borderColor: '#fff',
+            borderColor: '#ffffff',
             borderWidth: 2
           },
           label: {
@@ -785,7 +785,7 @@ const initRoleChart = async () => {
           avoidLabelOverlap: false,
           itemStyle: {
             borderRadius: 10,
-            borderColor: '#fff',
+            borderColor: '#ffffff',
             borderWidth: 2
           },
           label: {
@@ -840,7 +840,7 @@ const initRoleChart = async () => {
           avoidLabelOverlap: false,
           itemStyle: {
             borderRadius: 10,
-            borderColor: '#fff',
+            borderColor: '#ffffff',
             borderWidth: 2
           },
           label: {
@@ -921,12 +921,12 @@ onUnmounted(() => {
       margin: 0 0 0.5rem 0;
       font-size: 1.75rem;
       font-weight: 600;
-      color: #1d1d1f;
+      color: var(--apple-ink);
     }
     
     .page-desc {
       margin: 0;
-      color: #86868b;
+      color: var(--apple-ink-secondary);
       font-size: 0.95rem;
     }
   }
@@ -958,15 +958,15 @@ onUnmounted(() => {
         margin-right: 1rem;
         
         &.bg-primary {
-          background: #0066cc;
+          background: var(--apple-primary);
         }
 
         &.bg-success {
-          background: #34c759;
+          background: var(--apple-success);
         }
 
         &.bg-warning {
-          background: #ff9500;
+          background: var(--apple-warning);
         }
 
         &.bg-info {
@@ -985,13 +985,13 @@ onUnmounted(() => {
         .card-value {
           font-size: 1.75rem;
           font-weight: 700;
-          color: #1d1d1f;
+          color: var(--apple-ink);
           line-height: 1;
         }
         
         .card-label {
           font-size: 0.875rem;
-          color: #86868b;
+          color: var(--apple-ink-secondary);
           margin: 0.25rem 0;
         }
         
@@ -1001,11 +1001,11 @@ onUnmounted(() => {
           font-size: 0.75rem;
           
           &.positive {
-            color: #34c759;
+            color: var(--apple-success);
           }
           
           &.negative {
-            color: #ff3b30;
+            color: var(--apple-danger);
           }
           
           .el-icon {
@@ -1020,12 +1020,12 @@ onUnmounted(() => {
 .charts-section {
   .chart-card {
     border-radius: 18px;
-    border: 1px solid #d2d2d7;
+    border: 1px solid var(--apple-surface-chip-translucent);
     margin-bottom: 1rem;
     
     :deep(.el-card__header) {
       padding: 1rem 1.25rem;
-      border-bottom: 1px solid #d2d2d7;
+      border-bottom: 1px solid var(--apple-surface-chip-translucent);
       
       .card-header {
         display: flex;
@@ -1035,11 +1035,11 @@ onUnmounted(() => {
           display: flex;
           align-items: center;
           font-weight: 600;
-          color: #1d1d1f;
+          color: var(--apple-ink);
           
           .el-icon {
             margin-right: 0.5rem;
-            color: #0066cc;
+            color: var(--apple-primary);
           }
         }
       }
@@ -1061,12 +1061,12 @@ onUnmounted(() => {
 
 .info-card {
   border-radius: 18px;
-  border: 1px solid #d2d2d7;
+  border: 1px solid var(--apple-surface-chip-translucent);
   margin-bottom: 1rem;
   
   :deep(.el-card__header) {
     padding: 1rem 1.25rem;
-    border-bottom: 1px solid #d2d2d7;
+    border-bottom: 1px solid var(--apple-surface-chip-translucent);
     
     .card-header {
       display: flex;
@@ -1076,11 +1076,11 @@ onUnmounted(() => {
         display: flex;
         align-items: center;
         font-weight: 600;
-        color: #1d1d1f;
+        color: var(--apple-ink);
         
         .el-icon {
           margin-right: 0.5rem;
-          color: #0066cc;
+          color: var(--apple-primary);
         }
       }
     }
@@ -1105,18 +1105,18 @@ onUnmounted(() => {
     }
     
     &.info {
-      background: #f5f5f7;
-      border-left: 4px solid #0066cc;
+      background: var(--apple-canvas-parchment);
+      border-left: 4px solid var(--apple-primary);
     }
     
     &.warning {
-      background: #f5f5f7;
-      border-left: 4px solid #ff9500;
+      background: var(--apple-canvas-parchment);
+      border-left: 4px solid var(--apple-warning);
     }
     
     &.success {
-      background: #f5f5f7;
-      border-left: 4px solid #34c759;
+      background: var(--apple-canvas-parchment);
+      border-left: 4px solid var(--apple-success);
     }
     
     .notice-icon {
@@ -1134,19 +1134,19 @@ onUnmounted(() => {
         margin: 0 0 0.25rem 0;
         font-size: 0.95rem;
         font-weight: 600;
-        color: #1d1d1f;
+        color: var(--apple-ink);
       }
       
       .notice-desc {
         margin: 0 0 0.5rem 0;
         font-size: 0.875rem;
-        color: #86868b;
+        color: var(--apple-ink-secondary);
         line-height: 1.4;
       }
       
       .notice-time {
         font-size: 0.75rem;
-        color: #86868b;
+        color: var(--apple-ink-secondary);
       }
     }
   }
@@ -1158,7 +1158,7 @@ onUnmounted(() => {
     justify-content: space-between;
     align-items: center;
     padding: 0.75rem 0;
-    border-bottom: 1px solid #f5f5f7;
+    border-bottom: 1px solid var(--apple-canvas-parchment);
     
     &:last-child {
       border-bottom: none;
@@ -1166,13 +1166,13 @@ onUnmounted(() => {
     
     .stat-label {
       font-size: 0.875rem;
-      color: #86868b;
+      color: var(--apple-ink-secondary);
     }
     
     .stat-value {
       font-size: 1.25rem;
       font-weight: 700;
-      color: #1d1d1f;
+      color: var(--apple-ink);
     }
   }
 }

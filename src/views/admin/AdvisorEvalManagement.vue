@@ -34,7 +34,7 @@
               :percentage="Number(stats.completionRate ?? 0)"
               :width="90"
               :stroke-width="8"
-              color="#0066cc"
+              color="var(--apple-primary)"
             >
               <span class="rate-text">{{ formatPercent(stats.completionRate) }}</span>
             </el-progress>
@@ -607,7 +607,7 @@ onBeforeUnmount(() => {
     line-height: 1.2;
 
     &.warning-text {
-      color: var(--apple-danger, #ff3b30);
+      color: var(--apple-danger);
     }
   }
 
@@ -719,12 +719,12 @@ onBeforeUnmount(() => {
 
 .warn-icon {
   margin-left: 4px;
-  color: var(--apple-danger, #ff3b30);
+  color: var(--apple-danger);
   vertical-align: middle;
 }
 
 .danger-text {
-  color: var(--apple-danger, #ff3b30);
+  color: var(--apple-danger);
   font-weight: 600;
 }
 

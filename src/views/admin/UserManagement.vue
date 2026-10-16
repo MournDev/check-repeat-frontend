@@ -834,8 +834,8 @@ const rowKey = (row) => {
 <style lang="scss" scoped>
 .user-management {
   min-height: 100vh;
-  background: #f5f5f7; // Slate-50
-  color: #1d1d1f; // Slate-900
+  background: var(--apple-canvas-parchment); // Slate-50
+  color: var(--apple-ink); // Slate-900
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   padding: 24px;
 }
@@ -845,14 +845,14 @@ const rowKey = (row) => {
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 24px;
-  background: #ffffff;
-  border: 1px solid #d2d2d7;
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-surface-chip-translucent);
   border-radius: 18px;
   padding: 24px;
   transition: all 0.2s ease;
   
   &:hover {
-    border-color: #d2d2d7;
+    border-color: var(--apple-surface-chip-translucent);
   }
   
   .header-content {
@@ -860,12 +860,12 @@ const rowKey = (row) => {
       margin: 0 0 8px 0;
       font-size: 1.75rem;
       font-weight: 700;
-      color: #1d1d1f; // Slate-900
+      color: var(--apple-ink); // Slate-900
     }
     
     .page-desc {
       margin: 0;
-      color: #86868b; // Slate-500
+      color: var(--apple-ink-secondary); // Slate-500
       font-size: 0.95rem;
     }
   }
@@ -878,29 +878,29 @@ const rowKey = (row) => {
     .el-button {
       border-radius: 8px;
       transition: all 0.2s ease;
-      border: 1px solid #d2d2d7;
+      border: 1px solid var(--apple-surface-chip-translucent);
       
       &:hover {
-        border-color: #d2d2d7;
+        border-color: var(--apple-surface-chip-translucent);
       }
     }
     
     .el-switch {
-      --el-switch-on-color: #0066cc; // Blue-500
-      --el-switch-off-color: #86868b; // Slate-400
+      --el-switch-on-color: var(--apple-primary); // Blue-500
+      --el-switch-off-color: var(--apple-ink-secondary); // Slate-400
     }
   }
 }
 
 .filter-card {
   margin-bottom: 24px;
-  background: #ffffff;
-  border: 1px solid #d2d2d7;
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-surface-chip-translucent);
   border-radius: 18px;
   transition: all 0.2s ease;
   
   &:hover {
-    border-color: #d2d2d7;
+    border-color: var(--apple-surface-chip-translucent);
   }
   
   :deep(.el-card__body) {
@@ -917,22 +917,22 @@ const rowKey = (row) => {
         
         :deep(.el-input__wrapper) {
           border-radius: 8px;
-          border: 1px solid #d2d2d7;
+          border: 1px solid var(--apple-surface-chip-translucent);
           transition: all 0.2s ease;
           
           &:hover {
-            border-color: #d2d2d7;
+            border-color: var(--apple-surface-chip-translucent);
             /* box-shadow removed for Apple HIG */
           }
         }
         
         :deep(.el-select__wrapper) {
           border-radius: 8px;
-          border: 1px solid #d2d2d7;
+          border: 1px solid var(--apple-surface-chip-translucent);
           transition: all 0.2s ease;
           
           &:hover {
-            border-color: #d2d2d7;
+            border-color: var(--apple-surface-chip-translucent);
             /* box-shadow removed for Apple HIG */
           }
         }
@@ -942,30 +942,30 @@ const rowKey = (row) => {
     .el-button {
       border-radius: 8px;
       transition: all 0.2s ease;
-      border: 1px solid #d2d2d7;
+      border: 1px solid var(--apple-surface-chip-translucent);
       
       &:hover {
-        border-color: #d2d2d7;
+        border-color: var(--apple-surface-chip-translucent);
       }
     }
   }
 }
 
 .table-card {
-  background: #ffffff;
-  border: 1px solid #d2d2d7;
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-surface-chip-translucent);
   border-radius: 18px;
   transition: all 0.2s ease;
   overflow-x: auto;
   
   &:hover {
-    border-color: #d2d2d7;
+    border-color: var(--apple-surface-chip-translucent);
   }
   
   :deep(.el-card__header) {
     padding: 16px 20px;
-    border-bottom: 1px solid #d2d2d7;
-    background: #f5f5f7;
+    border-bottom: 1px solid var(--apple-surface-chip-translucent);
+    background: var(--apple-canvas-parchment);
     
     .card-header {
       display: flex;
@@ -976,11 +976,11 @@ const rowKey = (row) => {
         display: flex;
         align-items: center;
         font-weight: 600;
-        color: #1d1d1f; // Slate-900
+        color: var(--apple-ink); // Slate-900
         
         .el-icon {
           margin-right: 8px;
-          color: #475569; // Slate-600
+          color: var(--apple-slate-muted); // Slate-600
         }
       }
       
@@ -991,10 +991,10 @@ const rowKey = (row) => {
         .el-button {
           border-radius: 8px;
           transition: all 0.2s ease;
-          border: 1px solid #d2d2d7;
+          border: 1px solid var(--apple-surface-chip-translucent);
           
           &:hover {
-            border-color: #86868b;
+            border-color: var(--apple-ink-secondary);
           }
           &:active {
             transform: scale(0.95);
@@ -1014,18 +1014,18 @@ const rowKey = (row) => {
     overflow: hidden;
     
     .el-table__header-wrapper {
-      background-color: #f5f5f7;
+      background-color: var(--apple-canvas-parchment);
       
       th {
-        color: #1d1d1f; // Slate-900
+        color: var(--apple-ink); // Slate-900
         font-weight: 600;
-        border-bottom: 2px solid #d2d2d7;
+        border-bottom: 2px solid var(--apple-surface-chip-translucent);
         padding: 12px 16px;
       }
     }
     
     .el-table__row:hover {
-      background-color: #f5f5f7;
+      background-color: var(--apple-canvas-parchment);
       transition: background-color 0.2s ease;
     }
     
@@ -1035,12 +1035,12 @@ const rowKey = (row) => {
     }
     
     .el-table__row.el-table__row--striped {
-      background-color: #f1f5f9;
+      background-color: var(--apple-slate-bg);
     }
     
     .el-table__cell {
       padding: 16px;
-      color: #1d1d1f; // Slate-900
+      color: var(--apple-ink); // Slate-900
     }
   }
 }
@@ -1049,35 +1049,35 @@ const rowKey = (row) => {
   padding: 16px;
   display: flex;
   justify-content: flex-end;
-  border-top: 1px solid #d2d2d7;
-  background: #f5f5f7;
+  border-top: 1px solid var(--apple-surface-chip-translucent);
+  background: var(--apple-canvas-parchment);
   
   :deep(.el-pagination) {
     .el-pagination__item {
       border-radius: 8px;
-      border: 1px solid #d2d2d7;
+      border: 1px solid var(--apple-surface-chip-translucent);
       
       &:hover {
-        color: #0066cc; // Blue-500
+        color: var(--apple-primary); // Blue-500
         border-color: #93c5fd;
       }
       
       &.is-active {
-        background-color: #0066cc;
-        border-color: #0066cc;
+        background-color: var(--apple-primary);
+        border-color: var(--apple-primary);
       }
     }
   }
 }
 
 .unassigned {
-  color: #ef4444; // Red-500
+  color: var(--apple-danger); // Red-500
   font-style: italic;
 }
 
 .self-edit-tip {
   font-size: 12px;
-  color: #86868b; // Slate-500
+  color: var(--apple-ink-secondary); // Slate-500
   line-height: 1.6;
   margin-top: 4px;
 }

@@ -315,7 +315,7 @@ onMounted(() => {
       
       .page-subtitle {
         margin: 0;
-        color: #606266;
+        color: var(--apple-ink-muted-80);
       }
     }
   }
@@ -328,7 +328,7 @@ onMounted(() => {
         margin-top: 16px;
         
         .step-item {
-          border: 1px solid #ebeef5;
+          border: 1px solid var(--apple-hairline);
           border-radius: 11px;
           padding: 16px;
           margin-bottom: 16px;
@@ -348,7 +348,7 @@ onMounted(() => {
               .step-number {
                 width: 24px;
                 height: 24px;
-                background-color: #0066cc;
+                background-color: var(--apple-primary);
                 color: white;
                 border-radius: 50%;
                 display: flex;
@@ -378,7 +378,7 @@ onMounted(() => {
             
             .unit {
               margin-left: 8px;
-              color: #606266;
+              color: var(--apple-ink-muted-80);
             }
           }
         }

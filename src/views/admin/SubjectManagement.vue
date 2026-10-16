@@ -57,8 +57,8 @@
               v-model="row.isEnabled"
               :active-value="1"
               :inactive-value="0"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
+              active-color="#34c759"
+              inactive-color="#ff3b30"
               @change="handleToggleEnabled(row, $event)"
             />
           </template>
@@ -364,7 +364,7 @@ onMounted(() => {
   margin: 0 0 4px 0;
 }
 .page-desc {
-  color: #909399;
+  color: var(--apple-info);
   margin: 0;
   font-size: 14px;
 }
@@ -389,11 +389,11 @@ onMounted(() => {
   font-family: Consolas, Monaco, monospace;
 }
 .ref-zero {
-  color: #909399;
+  color: var(--apple-info);
 }
 .form-tip {
   font-size: 12px;
-  color: #909399;
+  color: var(--apple-info);
   line-height: 1.5;
   margin-top: 4px;
 }

@@ -505,7 +505,7 @@ onMounted(() => {
   margin: 0 0 4px 0;
 }
 .page-desc {
-  color: #909399;
+  color: var(--apple-info);
   margin: 0;
   font-size: 14px;
 }
@@ -537,7 +537,7 @@ onMounted(() => {
 }
 .form-tip {
   font-size: 12px;
-  color: #909399;
+  color: var(--apple-info);
   line-height: 1.5;
   margin-top: 4px;
 }

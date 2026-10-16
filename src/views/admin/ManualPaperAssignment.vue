@@ -844,12 +844,12 @@ onMounted(() => {
       margin: 0 0 0.5rem 0;
       font-size: 1.75rem;
       font-weight: 600;
-      color: #1d1d1f;
+      color: var(--apple-ink);
     }
 
     .page-desc {
       margin: 0;
-      color: #86868b;
+      color: var(--apple-ink-secondary);
       font-size: 0.95rem;
     }
   }
@@ -881,15 +881,15 @@ onMounted(() => {
         margin-right: 1rem;
         
         &.bg-primary {
-          background: #0066cc;
+          background: var(--apple-primary);
         }
 
         &.bg-success {
-          background: #34c759;
+          background: var(--apple-success);
         }
 
         &.bg-warning {
-          background: #ff9500;
+          background: var(--apple-warning);
         }
 
         &.bg-info {
@@ -906,13 +906,13 @@ onMounted(() => {
         .stat-value {
           font-size: 1.75rem;
           font-weight: 700;
-          color: #1d1d1f;
+          color: var(--apple-ink);
           line-height: 1;
         }
 
         .stat-label {
           font-size: 0.875rem;
-          color: #86868b;
+          color: var(--apple-ink-secondary);
           margin-top: 0.25rem;
         }
       }
@@ -930,7 +930,7 @@ onMounted(() => {
     
     :deep(.el-card__header) {
       padding: 1rem 1.25rem;
-      border-bottom: 1px solid #d2d2d7;
+      border-bottom: 1px solid var(--apple-surface-chip-translucent);
       
       .card-header {
         display: flex;
@@ -941,11 +941,11 @@ onMounted(() => {
           display: flex;
           align-items: center;
           font-weight: 600;
-          color: #1d1d1f;
+          color: var(--apple-ink);
           
           .el-icon {
             margin-right: 0.5rem;
-            color: #0066cc;
+            color: var(--apple-primary);
           }
           
           .el-tag {
@@ -968,17 +968,17 @@ onMounted(() => {
   .student-item,
   .teacher-item {
     padding: 1rem;
-    border-bottom: 1px solid #f5f5f7;
+    border-bottom: 1px solid var(--apple-canvas-parchment);
     cursor: pointer;
     transition: all 0.3s ease;
     
     &:hover {
-      background-color: #f5f5f7;
+      background-color: var(--apple-canvas-parchment);
     }
     
     &.selected {
       background-color: rgba(0, 102, 204, 0.08);
-      border-left: 3px solid #0066cc;
+      border-left: 3px solid var(--apple-primary);
     }
     
     .student-info,
@@ -995,13 +995,13 @@ onMounted(() => {
           margin: 0;
           font-size: 1rem;
           font-weight: 600;
-          color: #1d1d1f;
+          color: var(--apple-ink);
         }
         
         .student-id,
         .teacher-title {
           font-size: 0.875rem;
-          color: #86868b;
+          color: var(--apple-ink-secondary);
         }
       }
       
@@ -1009,7 +1009,7 @@ onMounted(() => {
       .teacher-department {
         margin-bottom: 0.5rem;
         font-size: 0.875rem;
-        color: #86868b;
+        color: var(--apple-ink-secondary);
         
         .grade {
           margin-left: 0.5rem;
@@ -1027,7 +1027,7 @@ onMounted(() => {
       .student-load,
       .teacher-load {
         font-size: 0.875rem;
-        color: #86868b;
+        color: var(--apple-ink-secondary);
       }
     }
     
@@ -1059,7 +1059,7 @@ onMounted(() => {
     
     .selected-info {
       font-size: 1rem;
-      color: #1d1d1f;
+      color: var(--apple-ink);
     }
     
     .batch-buttons {
@@ -1071,7 +1071,7 @@ onMounted(() => {
 
 .student-preview {
   padding: 0.75rem;
-  background-color: #f5f5f7;
+  background-color: var(--apple-canvas-parchment);
   border-radius: 8px;
   
   div {
@@ -1098,7 +1098,7 @@ onMounted(() => {
   
   .teacher-detail {
     font-size: 0.875rem;
-    color: #86868b;
+    color: var(--apple-ink-secondary);
     margin-top: 0.25rem;
   }
 }

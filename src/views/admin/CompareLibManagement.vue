@@ -55,7 +55,7 @@
         <el-table-column prop="libUrl" label="库地址" min-width="200" show-overflow-tooltip />
         <el-table-column label="启用状态" width="100">
           <template #default="{ row }">
-            <el-switch v-model="row.isEnabled" :active-value="1" :inactive-value="0" active-color="#13ce66" inactive-color="#ff4949" @change="handleToggleEnabled(row, $event)" />
+            <el-switch v-model="row.isEnabled" :active-value="1" :inactive-value="0" active-color="#34c759" inactive-color="#ff3b30" @change="handleToggleEnabled(row, $event)" />
           </template>
         </el-table-column>
         <el-table-column prop="description" label="描述" min-width="150" show-overflow-tooltip />
@@ -260,7 +260,7 @@ onMounted(() => {
   margin: 0 0 4px 0;
 }
 .page-desc {
-  color: #909399;
+  color: var(--apple-info);
   margin: 0;
   font-size: 14px;
 }

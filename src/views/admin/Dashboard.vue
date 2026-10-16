@@ -393,13 +393,13 @@ const loadResponseTimeTrend = async (minutes) => {
             {
               name: '平均响应(ms)', type: 'line', smooth: true,
               data: d.avgResponseTime || [],
-              itemStyle: { color: '#0ea5e9' },
+              itemStyle: { color: '#0066cc' },
               areaStyle: { color: 'rgba(14,165,233,0.1)' }
             },
             {
               name: 'P95响应(ms)', type: 'line', smooth: true,
               data: d.p95ResponseTime || [],
-              itemStyle: { color: '#f59e0b' },
+              itemStyle: { color: '#ff9500' },
               lineStyle: { type: 'dashed' }
             },
             {
@@ -463,8 +463,8 @@ onUnmounted(() => {
 .admin-dashboard {
   padding: 24px;
   min-height: 100vh;
-  background: #f5f5f7; // Slate-50
-  color: #1d1d1f; // Slate-900
+  background: var(--apple-canvas-parchment); // Slate-50
+  color: var(--apple-ink); // Slate-900
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
@@ -483,14 +483,14 @@ onUnmounted(() => {
       .welcome-title {
         font-size: 2rem;
         font-weight: 700;
-        color: #1d1d1f;
+        color: var(--apple-ink);
         margin: 0 0 8px 0;
         line-height: 1.2;
       }
       
       .welcome-subtitle {
         font-size: 1rem;
-        color: #86868b;
+        color: var(--apple-ink-secondary);
         margin: 0;
       }
     }
@@ -511,8 +511,8 @@ onUnmounted(() => {
 }
 
 .stat-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-slate-border);
   border-radius: 18px;
   padding: 20px;
   display: flex;
@@ -521,7 +521,7 @@ onUnmounted(() => {
   transition: all 0.2s ease;
   
   &:hover {
-    border-color: #cbd5e1;
+    border-color: var(--apple-slate-border-strong);
   }
 
   &:active {
@@ -540,18 +540,18 @@ onUnmounted(() => {
     flex-shrink: 0;
     
     &.user-icon {
-      background: #f0f9ff;
-      color: #0ea5e9;
+      background: var(--apple-info-bg);
+      color: var(--apple-primary);
     }
     
     &.paper-icon {
-      background: #fef3c7;
-      color: #f59e0b;
+      background: var(--apple-warning-bg);
+      color: var(--apple-warning);
     }
     
     &.unassigned-icon {
-      background: #d1fae5;
-      color: #10b981;
+      background: var(--apple-success-bg);
+      color: var(--apple-success);
     }
     
     &.health-icon {
@@ -566,14 +566,14 @@ onUnmounted(() => {
     .stat-value {
       font-size: 1.75rem;
       font-weight: 700;
-      color: #1d1d1f;
+      color: var(--apple-ink);
       line-height: 1.2;
       margin-bottom: 4px;
     }
     
     .stat-label {
       font-size: 0.875rem;
-      color: #86868b;
+      color: var(--apple-ink-secondary);
     }
   }
 }
@@ -591,15 +591,15 @@ onUnmounted(() => {
 
 // 通用卡片样式
 .card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-slate-border);
   border-radius: 18px;
   padding: 24px;
   margin-bottom: 24px;
   transition: all 0.2s ease;
   
   &:hover {
-    border-color: #cbd5e1;
+    border-color: var(--apple-slate-border-strong);
   }
 
   .card-header {
@@ -614,10 +614,10 @@ onUnmounted(() => {
       gap: 8px;
       font-size: 1.125rem;
       font-weight: 600;
-      color: #1d1d1f;
+      color: var(--apple-ink);
       
       .el-icon {
-        color: #86868b;
+        color: var(--apple-ink-secondary);
       }
     }
   }
@@ -634,24 +634,24 @@ onUnmounted(() => {
   
   .metric-item {
     padding: 16px;
-    background: #f5f5f7;
+    background: var(--apple-canvas-parchment);
     border-radius: 8px;
     transition: all 0.2s ease;
     
     &:hover {
-      background: #f1f5f9;
-      border-color: #cbd5e1;
+      background: var(--apple-slate-bg);
+      border-color: var(--apple-slate-border-strong);
     }
     
     .metric-value {
       font-size: 1.5rem;
       font-weight: 700;
-      color: #1d1d1f;
+      color: var(--apple-ink);
       margin-bottom: 8px;
     }
     
     .metric-label {
-      color: #86868b;
+      color: var(--apple-ink-secondary);
       font-size: 0.875rem;
       margin-bottom: 12px;
     }
@@ -662,7 +662,7 @@ onUnmounted(() => {
     
     h4 {
       margin: 0 0 16px 0;
-      color: #1d1d1f;
+      color: var(--apple-ink);
       font-weight: 600;
     }
     
@@ -677,16 +677,16 @@ onUnmounted(() => {
       justify-content: space-between;
       align-items: center;
       padding: 12px;
-      background: #f5f5f7;
+      background: var(--apple-canvas-parchment);
       border-radius: 8px;
       
       .detail-label {
-        color: #86868b;
+        color: var(--apple-ink-secondary);
         font-size: 0.875rem;
       }
       
       .detail-value {
-        color: #1d1d1f;
+        color: var(--apple-ink);
         font-weight: 400;
       }
     }
@@ -711,11 +711,11 @@ onUnmounted(() => {
       .dist-value {
         font-size: 1.125rem;
         font-weight: 700;
-        color: #1d1d1f;
+        color: var(--apple-ink);
       }
       
       .dist-label {
-        color: #86868b;
+        color: var(--apple-ink-secondary);
         font-size: 0.875rem;
       }
     }
@@ -725,7 +725,7 @@ onUnmounted(() => {
 // 进度条
 .progress-bar {
   height: 6px;
-  background: #e2e8f0;
+  background: var(--apple-slate-border);
   border-radius: 3px;
   overflow: hidden;
   
@@ -735,19 +735,19 @@ onUnmounted(() => {
     transition: width 0.5s ease;
     
     &:not(.student):not(.teacher):not(.admin) {
-      background: #0ea5e9;
+      background: var(--apple-primary);
     }
     
     &.student {
-      background: #0066cc;
+      background: var(--apple-primary);
     }
     
     &.teacher {
-      background: #f5576c;
+      background: var(--apple-danger);
     }
     
     &.admin {
-      background: #10b981;
+      background: var(--apple-success);
     }
   }
 }
@@ -763,8 +763,8 @@ onUnmounted(() => {
   font-weight: 400;
   
   &.success {
-    background: #d1fae5;
-    color: #10b981;
+    background: var(--apple-success-bg);
+    color: var(--apple-success);
   }
   
   .el-icon {
@@ -799,19 +799,19 @@ onUnmounted(() => {
 
   .metric-item {
     padding: 16px;
-    background: #f5f5f7;
+    background: var(--apple-canvas-parchment);
     border-radius: 8px;
     text-align: center;
 
     .metric-value {
       font-size: 1.75rem;
       font-weight: 700;
-      color: #1d1d1f;
+      color: var(--apple-ink);
       margin-bottom: 8px;
     }
 
     .metric-label {
-      color: #86868b;
+      color: var(--apple-ink-secondary);
       font-size: 0.875rem;
     }
   }

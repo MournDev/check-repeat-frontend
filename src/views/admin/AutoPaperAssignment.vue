@@ -773,12 +773,12 @@ onUnmounted(() => {
       margin: 0 0 0.5rem 0;
       font-size: 1.75rem;
       font-weight: 600;
-      color: #1d1d1f;
+      color: var(--apple-ink);
     }
     
     .page-desc {
       margin: 0;
-      color: #86868b;
+      color: var(--apple-ink-secondary);
       font-size: 0.95rem;
     }
   }
@@ -798,7 +798,7 @@ onUnmounted(() => {
     
     :deep(.el-card__header) {
       padding: 1rem 1.25rem;
-      border-bottom: 1px solid #d2d2d7;
+      border-bottom: 1px solid var(--apple-surface-chip-translucent);
       
       .card-header {
         display: flex;
@@ -809,11 +809,11 @@ onUnmounted(() => {
           display: flex;
           align-items: center;
           font-weight: 600;
-          color: #1d1d1f;
+          color: var(--apple-ink);
           
           .el-icon {
             margin-right: 0.5rem;
-            color: #0066cc;
+            color: var(--apple-primary);
           }
         }
       }
@@ -832,7 +832,7 @@ onUnmounted(() => {
       justify-content: space-between;
       align-items: center;
       padding: 0.75rem 0;
-      border-bottom: 1px solid #f5f5f7;
+      border-bottom: 1px solid var(--apple-canvas-parchment);
       
       &:last-child {
         border-bottom: none;
@@ -840,20 +840,20 @@ onUnmounted(() => {
       
       .preview-label {
         font-size: 0.9rem;
-        color: #86868b;
+        color: var(--apple-ink-secondary);
       }
       
       .preview-value {
         font-size: 1.2rem;
         font-weight: 600;
-        color: #1d1d1f;
+        color: var(--apple-ink);
         
         &.success {
-          color: #0066cc;
+          color: var(--apple-primary);
         }
         
         &.warning {
-          color: #ff3b30;
+          color: var(--apple-danger);
         }
       }
     }
@@ -862,11 +862,11 @@ onUnmounted(() => {
   .weight-distribution {
     margin-top: 1.5rem;
     padding-top: 1.5rem;
-    border-top: 1px solid #d2d2d7;
+    border-top: 1px solid var(--apple-surface-chip-translucent);
     
     h4 {
       margin: 0 0 1rem 0;
-      color: #1d1d1f;
+      color: var(--apple-ink);
       font-size: 1rem;
     }
     
@@ -878,7 +878,7 @@ onUnmounted(() => {
           display: block;
           margin-bottom: 0.5rem;
           font-size: 0.875rem;
-          color: #86868b;
+          color: var(--apple-ink-secondary);
         }
       }
     }
@@ -891,7 +891,7 @@ onUnmounted(() => {
   
   :deep(.el-card__header) {
     padding: 1rem 1.25rem;
-    border-bottom: 1px solid #d2d2d7;
+    border-bottom: 1px solid var(--apple-surface-chip-translucent);
     
     .card-header {
       display: flex;
@@ -902,11 +902,11 @@ onUnmounted(() => {
         display: flex;
         align-items: center;
         font-weight: 600;
-        color: #1d1d1f;
+        color: var(--apple-ink);
         
         .el-icon {
           margin-right: 0.5rem;
-          color: #0066cc;
+          color: var(--apple-primary);
         }
       }
     }
@@ -920,24 +920,24 @@ onUnmounted(() => {
     .current-step {
       font-size: 1.1rem;
       font-weight: 600;
-      color: #1d1d1f;
+      color: var(--apple-ink);
       margin-bottom: 0.5rem;
     }
     
     .progress-stats {
       font-size: 0.95rem;
-      color: #86868b;
+      color: var(--apple-ink-secondary);
     }
   }
   
   .step-details {
     margin-top: 1.5rem;
     padding-top: 1.5rem;
-    border-top: 1px solid #d2d2d7;
+    border-top: 1px solid var(--apple-surface-chip-translucent);
     
     h4 {
       margin: 0 0 1rem 0;
-      color: #1d1d1f;
+      color: var(--apple-ink);
     }
     
     .details-content {
@@ -948,7 +948,7 @@ onUnmounted(() => {
         display: flex;
         align-items: center;
         padding: 0.5rem 0;
-        border-bottom: 1px solid #f5f5f7;
+        border-bottom: 1px solid var(--apple-canvas-parchment);
         
         &:last-child {
           border-bottom: none;
@@ -956,17 +956,17 @@ onUnmounted(() => {
         
         .student-name {
           font-weight: 400;
-          color: #1d1d1f;
+          color: var(--apple-ink);
           min-width: 80px;
         }
         
         .arrow-icon {
           margin: 0 0.75rem;
-          color: #86868b;
+          color: var(--apple-ink-secondary);
         }
         
         .teacher-name {
-          color: #86868b;
+          color: var(--apple-ink-secondary);
           min-width: 80px;
         }
       }
@@ -980,7 +980,7 @@ onUnmounted(() => {
     
     h3 {
       margin: 0 0 1rem 0;
-      color: #1d1d1f;
+      color: var(--apple-ink);
       font-size: 1.1rem;
     }
   }

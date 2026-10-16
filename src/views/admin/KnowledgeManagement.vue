@@ -149,7 +149,7 @@ const categories = ref([])
 const form = ref({ title: '', content: '', summary: '', categoryId: null, tags: '', status: 'DRAFT' })
 
 const previewHtml = computed(() => {
-  if (!form.value.content) return '<p style="color:#999">预览区域</p>'
+  if (!form.value.content) return '<p style="color:var(--apple-slate-faint)">预览区域</p>'
   return renderMarkdown(form.value.content)
 })
 
@@ -264,17 +264,17 @@ function formatDate(d) {
 .editor-pane { flex: 1; min-width: 0; }
 .editor-pane :deep(.el-textarea__inner) { font-family: 'JetBrains Mono', monospace; font-size: 13px; }
 .preview-pane {
-  flex: 1; min-width: 0; padding: 12px; border: 1px solid #e0e0e0;
-  border-radius: 8px; background: #fafafa; overflow-y: auto; max-height: 440px;
+  flex: 1; min-width: 0; padding: 12px; border: 1px solid var(--apple-hairline);
+  border-radius: 8px; background: var(--apple-surface-pearl); overflow-y: auto; max-height: 440px;
   font-size: 14px; line-height: 1.7;
 }
 .preview-pane :deep(h2) { font-size: 16px; margin: 16px 0 8px; }
 .preview-pane :deep(h3) { font-size: 14px; }
 .preview-pane :deep(table) { width: 100%; border-collapse: collapse; }
-.preview-pane :deep(th), .preview-pane :deep(td) { border: 1px solid #ddd; padding: 4px 8px; font-size: 13px; }
-.preview-pane :deep(th) { background: #f0f0f0; }
-.preview-pane :deep(code) { background: #eee; padding: 2px 5px; border-radius: 3px; font-size: 12px; }
-.preview-pane :deep(pre) { background: #1e1e1e; color: #d4d4d4; padding: 10px; border-radius: 6px; overflow-x: auto; }
+.preview-pane :deep(th), .preview-pane :deep(td) { border: 1px solid var(--apple-hairline); padding: 4px 8px; font-size: 13px; }
+.preview-pane :deep(th) { background: var(--apple-divider-soft); }
+.preview-pane :deep(code) { background: var(--apple-hairline); padding: 2px 5px; border-radius: 3px; font-size: 12px; }
+.preview-pane :deep(pre) { background: var(--apple-ink); color: var(--apple-slate-border); padding: 10px; border-radius: 6px; overflow-x: auto; }
 .preview-pane :deep(pre code) { background: none; padding: 0; }
-.preview-pane :deep(blockquote) { border-left: 3px solid #2997ff; padding: 4px 12px; margin: 8px 0; background: #f0f6ff; }
+.preview-pane :deep(blockquote) { border-left: 3px solid var(--apple-primary-on-dark); padding: 4px 12px; margin: 8px 0; background: var(--apple-info-bg); }
 </style>

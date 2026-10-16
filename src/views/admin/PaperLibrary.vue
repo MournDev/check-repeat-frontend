@@ -1250,12 +1250,12 @@ onMounted(async () => {
       margin: 0 0 0.5rem 0;
       font-size: 1.75rem;
       font-weight: 600;
-      color: #1d1d1f;
+      color: var(--apple-ink);
     }
 
     .page-desc {
       margin: 0;
-      color: #86868b;
+      color: var(--apple-ink-secondary);
       font-size: 0.95rem;
     }
   }
@@ -1287,15 +1287,15 @@ onMounted(async () => {
         margin-right: 1rem;
 
         &.bg-primary {
-          background: #0066cc;
+          background: var(--apple-primary);
         }
 
         &.bg-success {
-          background: #34c759;
+          background: var(--apple-success);
         }
 
         &.bg-warning {
-          background: #ff9500;
+          background: var(--apple-warning);
         }
 
         &.bg-info {
@@ -1312,13 +1312,13 @@ onMounted(async () => {
         .stat-value {
           font-size: 1.75rem;
           font-weight: 700;
-          color: #1d1d1f;
+          color: var(--apple-ink);
           line-height: 1;
         }
 
         .stat-label {
           font-size: 0.875rem;
-          color: #86868b;
+          color: var(--apple-ink-secondary);
           margin-top: 0.25rem;
         }
       }
@@ -1340,7 +1340,7 @@ onMounted(async () => {
 
   :deep(.el-card__header) {
     padding: 1rem 1.25rem;
-    border-bottom: 1px solid #d2d2d7;
+    border-bottom: 1px solid var(--apple-surface-chip-translucent);
 
     .card-header {
       display: flex;
@@ -1351,11 +1351,11 @@ onMounted(async () => {
         display: flex;
         align-items: center;
         font-weight: 600;
-        color: #1d1d1f;
+        color: var(--apple-ink);
 
         .el-icon {
           margin-right: 0.5rem;
-          color: #0066cc;
+          color: var(--apple-primary);
         }
       }
 
@@ -1373,7 +1373,7 @@ onMounted(async () => {
 
 .paper-title {
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--apple-ink);
   margin-bottom: 0.5rem;
 }
 
@@ -1386,7 +1386,7 @@ onMounted(async () => {
 
 .paper-abstract {
   font-size: 0.85rem;
-  color: #86868b;
+  color: var(--apple-ink-secondary);
   margin-top: 0.25rem;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -1404,8 +1404,8 @@ onMounted(async () => {
   margin-top: 6px;
 
   .el-tag {
-    background: #f5f5f7;
-    color: #1d1d1f;
+    background: var(--apple-canvas-parchment);
+    color: var(--apple-ink);
     border-radius: 8px;
     padding: 2px 8px;
     font-size: 12px;
@@ -1415,7 +1415,7 @@ onMounted(async () => {
 
 .check-time {
   font-size: 0.75rem;
-  color: #86868b;
+  color: var(--apple-ink-secondary);
   margin-top: 0.25rem;
 }
 
@@ -1423,7 +1423,7 @@ onMounted(async () => {
   padding: 1rem;
   display: flex;
   justify-content: flex-end;
-  border-top: 1px solid #d2d2d7;
+  border-top: 1px solid var(--apple-surface-chip-translucent);
 }
 
 .paper-detail {
@@ -1432,7 +1432,7 @@ onMounted(async () => {
 
     h3 {
       margin: 0 0 1rem 0;
-      color: #1d1d1f;
+      color: var(--apple-ink);
       font-size: 1.1rem;
     }
 
@@ -1445,7 +1445,7 @@ onMounted(async () => {
 
     .summary {
       line-height: 1.6;
-      color: #86868b;
+      color: var(--apple-ink-secondary);
       text-align: justify;
     }
 
@@ -1458,7 +1458,7 @@ onMounted(async () => {
 
         li {
           margin-bottom: 0.25rem;
-          color: #86868b;
+          color: var(--apple-ink-secondary);
         }
       }
     }

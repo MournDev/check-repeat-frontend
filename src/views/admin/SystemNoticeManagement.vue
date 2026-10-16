@@ -573,27 +573,27 @@ onMounted(() => {
 .notice-management { padding: 0; }
 .page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
 .page-title { font-size: 22px; font-weight: 600; margin: 0 0 4px 0; }
-.page-desc { color: #909399; margin: 0; font-size: 14px; }
+.page-desc { color: var(--apple-info); margin: 0; font-size: 14px; }
 .notice-tabs { margin-bottom: 16px; }
 .notice-tabs :deep(.el-tabs__header) { margin-bottom: 16px; }
 .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 16px; }
 .stat-card { text-align: center; padding: 8px 0; }
-.stat-value { font-size: 28px; font-weight: 700; color: #303133; }
-.stat-value.unread { color: #E6A23C; }
-.stat-value.urgent { color: #F56C6C; }
-.stat-value.read { color: #67C23A; }
-.stat-label { font-size: 13px; color: #909399; margin-top: 4px; }
+.stat-value { font-size: 28px; font-weight: 700; color: var(--apple-ink); }
+.stat-value.unread { color: var(--apple-warning); }
+.stat-value.urgent { color: var(--apple-danger); }
+.stat-value.read { color: var(--apple-success); }
+.stat-label { font-size: 13px; color: var(--apple-info); margin-top: 4px; }
 .filter-card { margin-bottom: 16px; }
 .table-card { margin-bottom: 16px; }
 .card-header { display: flex; justify-content: space-between; align-items: center; }
 .card-title { font-weight: 600; font-size: 15px; }
 .card-actions { display: flex; gap: 8px; }
-.table-footer { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid #EBEEF5; margin-top: 12px; }
-.selected-count { font-size: 13px; color: #606266; }
+.table-footer { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid var(--apple-hairline); margin-top: 12px; }
+.selected-count { font-size: 13px; color: var(--apple-ink-muted-80); }
 .pagination-wrapper { display: flex; justify-content: flex-end; margin-top: 16px; }
 .publish-card { max-width: 760px; }
 .publish-tip { margin-bottom: 16px; }
 .maintenance-card { max-width: 760px; }
 .maintenance-status { margin-bottom: 16px; }
-.form-hint { font-size: 12px; color: #909399; margin-left: 12px; }
+.form-hint { font-size: 12px; color: var(--apple-info); margin-left: 12px; }
 </style>

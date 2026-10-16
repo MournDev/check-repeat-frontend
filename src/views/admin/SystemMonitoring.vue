@@ -125,7 +125,7 @@
           <div class="app-metric-item" v-for="item in appMetrics" :key="item.label">
             <div class="app-metric-row">
               <span class="app-metric-label">{{ item.label }}</span>
-              <span class="app-metric-value" :style="{ color: item.color || '#303133' }">{{ item.value }}</span>
+              <span class="app-metric-value" :style="{ color: item.color || 'var(--apple-ink)' }">{{ item.value }}</span>
             </div>
             <el-progress v-if="item.percent !== undefined" :percentage="item.percent" :stroke-width="6" :color="item.color" />
           </div>
@@ -186,9 +186,9 @@ const getStatusClass = (value) => {
 }
 
 const getProgressColor = (value) => {
-  if (!value || value < 60) return '#67C23A'
-  if (value < 80) return '#E6A23C'
-  return '#F56C6C'
+  if (!value || value < 60) return '#34c759'
+  if (value < 80) return '#ff9500'
+  return '#ff3b30'
 }
 
 const loadResources = async () => {
@@ -242,9 +242,9 @@ const renderPerfChart = (data) => {
     xAxis: { type: 'category', data: times, boundaryGap: false },
     yAxis: { type: 'value', max: 100, axisLabel: { formatter: '{value}%' } },
     series: [
-      { name: 'CPU', type: 'line', smooth: true, data: cpuData, itemStyle: { color: '#409EFF' } },
-      { name: '内存', type: 'line', smooth: true, data: memData, itemStyle: { color: '#67C23A' } },
-      { name: '磁盘', type: 'line', smooth: true, data: diskData, itemStyle: { color: '#E6A23C' } }
+      { name: 'CPU', type: 'line', smooth: true, data: cpuData, itemStyle: { color: '#0066cc' } },
+      { name: '内存', type: 'line', smooth: true, data: memData, itemStyle: { color: '#34c759' } },
+      { name: '磁盘', type: 'line', smooth: true, data: diskData, itemStyle: { color: '#ff9500' } }
     ]
   })
 }
@@ -274,9 +274,9 @@ const renderRtChart = (data) => {
     xAxis: { type: 'category', data: times, boundaryGap: false },
     yAxis: { type: 'value', axisLabel: { formatter: '{value}ms' } },
     series: [
-      { name: '平均响应时间', type: 'line', smooth: true, data: avgData, itemStyle: { color: '#409EFF' } },
-      { name: '最大响应时间', type: 'line', smooth: true, data: maxData, itemStyle: { color: '#F56C6C' } },
-      { name: 'P99', type: 'line', smooth: true, data: p99Data, itemStyle: { color: '#E6A23C' } }
+      { name: '平均响应时间', type: 'line', smooth: true, data: avgData, itemStyle: { color: '#0066cc' } },
+      { name: '最大响应时间', type: 'line', smooth: true, data: maxData, itemStyle: { color: '#ff3b30' } },
+      { name: 'P99', type: 'line', smooth: true, data: p99Data, itemStyle: { color: '#ff9500' } }
     ]
   })
 }
@@ -328,9 +328,9 @@ const loadAppMetrics = async () => {
       appMetrics.value = [
         { label: 'JVM 堆内存', value: d.heapUsed + ' / ' + d.heapMax, percent: d.heapPercent, color: getProgressColor(d.heapPercent) },
         { label: '非堆内存', value: d.nonHeapUsed || '-', percent: d.nonHeapPercent, color: getProgressColor(d.nonHeapPercent) },
-        { label: '线程数', value: d.threadCount || 0, color: '#409EFF' },
-        { label: 'GC 次数 (Young)', value: d.youngGcCount || 0, color: '#67C23A' },
-        { label: 'GC 次数 (Full)', value: d.fullGcCount || 0, color: d.fullGcCount > 5 ? '#F56C6C' : '#67C23A' },
+        { label: '线程数', value: d.threadCount || 0, color: '#0066cc' },
+        { label: 'GC 次数 (Young)', value: d.youngGcCount || 0, color: '#34c759' },
+        { label: 'GC 次数 (Full)', value: d.fullGcCount || 0, color: d.fullGcCount > 5 ? '#ff3b30' : '#34c759' },
         { label: '类加载数', value: d.loadedClassCount || 0 }
       ]
     }
@@ -402,22 +402,22 @@ onUnmounted(() => {
 .system-monitoring { padding: 0; }
 .page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
 .page-title { font-size: 22px; font-weight: 600; margin: 0 0 4px 0; }
-.page-desc { color: #909399; margin: 0; font-size: 14px; }
+.page-desc { color: var(--apple-info); margin: 0; font-size: 14px; }
 .header-actions { display: flex; gap: 8px; align-items: center; }
 
 .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 16px; }
 .stat-card { display: flex; align-items: center; gap: 16px; padding: 16px; }
-.stat-icon { width: 56px; height: 56px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0; }
-.stat-icon.cpu { background: linear-gradient(135deg, #409EFF, #337ecc); }
-.stat-icon.memory { background: linear-gradient(135deg, #67C23A, #529b2e); }
-.stat-icon.disk { background: linear-gradient(135deg, #E6A23C, #b88230); }
+.stat-icon { width: 56px; height: 56px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--apple-surface); flex-shrink: 0; }
+.stat-icon.cpu { background: linear-gradient(135deg, var(--apple-primary), #337ecc); }
+.stat-icon.memory { background: linear-gradient(135deg, var(--apple-success), #529b2e); }
+.stat-icon.disk { background: linear-gradient(135deg, var(--apple-warning), #b88230); }
 .stat-icon.db { background: linear-gradient(135deg, #9B59B6, #7d3c98); }
 .stat-info { flex: 1; min-width: 0; }
-.stat-value { font-size: 28px; font-weight: 700; color: #303133; line-height: 1.2; }
-.stat-value.status-normal { color: #67C23A; }
-.stat-value.status-warning { color: #E6A23C; }
-.stat-value.status-danger { color: #F56C6C; }
-.stat-label { font-size: 13px; color: #909399; margin: 4px 0 8px; }
+.stat-value { font-size: 28px; font-weight: 700; color: var(--apple-ink); line-height: 1.2; }
+.stat-value.status-normal { color: var(--apple-success); }
+.stat-value.status-warning { color: var(--apple-warning); }
+.stat-value.status-danger { color: var(--apple-danger); }
+.stat-label { font-size: 13px; color: var(--apple-info); margin: 4px 0 8px; }
 
 .overview-card { margin-bottom: 16px; }
 .card-title { font-weight: 600; font-size: 15px; }
@@ -429,13 +429,13 @@ onUnmounted(() => {
 .chart-container-small { width: 100%; height: 200px; }
 
 .db-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
-.db-metric-item { text-align: center; padding: 12px; background: #f5f7fa; border-radius: 8px; }
-.db-metric-value { font-size: 20px; font-weight: 600; color: #303133; }
-.db-metric-label { font-size: 12px; color: #909399; margin-top: 4px; }
+.db-metric-item { text-align: center; padding: 12px; background: var(--apple-canvas-parchment); border-radius: 8px; }
+.db-metric-value { font-size: 20px; font-weight: 600; color: var(--apple-ink); }
+.db-metric-label { font-size: 12px; color: var(--apple-info); margin-top: 4px; }
 
 .app-metrics { display: flex; flex-direction: column; gap: 16px; }
 .app-metric-item { }
 .app-metric-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-.app-metric-label { font-size: 13px; color: #606266; }
+.app-metric-label { font-size: 13px; color: var(--apple-ink-muted-80); }
 .app-metric-value { font-size: 16px; font-weight: 600; }
 </style>

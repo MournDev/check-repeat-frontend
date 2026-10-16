@@ -686,7 +686,7 @@ watch(
       
       .page-subtitle {
         margin: 0;
-        color: #606266;
+        color: var(--apple-ink-muted-80);
       }
     }
   }
@@ -705,7 +705,7 @@ watch(
     
     .help-text {
       font-size: 12px;
-      color: #909399;
+      color: var(--apple-info);
       margin-top: 8px;
     }
     
@@ -718,7 +718,7 @@ watch(
 
       // 「全部类型」是占位语义（该行不带类型限定），压低存在感避免被读成一个真实取值
       .all-types-label {
-        color: #909399;
+        color: var(--apple-info);
       }
     }
   }

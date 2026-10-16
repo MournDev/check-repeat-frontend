@@ -304,12 +304,12 @@ onMounted(() => {
 .template-management { padding: 0; }
 .page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
 .page-title { font-size: 22px; font-weight: 600; margin: 0 0 4px 0; }
-.page-desc { color: #909399; margin: 0; font-size: 14px; }
+.page-desc { color: var(--apple-info); margin: 0; font-size: 14px; }
 .header-actions { display: flex; gap: 8px; }
 .filter-card { margin-bottom: 16px; }
 .table-card { margin-bottom: 16px; }
 .pagination-wrapper { display: flex; justify-content: flex-end; margin-top: 16px; }
 .preview-result { padding: 12px; background: #f5f7fa; border-radius: 8px; }
 .preview-title { margin-bottom: 12px; }
-.preview-content .content-box { margin-top: 8px; padding: 12px; background: #fff; border: 1px solid #dcdfe6; border-radius: 4px; white-space: pre-wrap; line-height: 1.6; }
+.preview-content .content-box { margin-top: 8px; padding: 12px; background: #fff; border: 1px solid var(--apple-hairline); border-radius: 4px; white-space: pre-wrap; line-height: 1.6; }
 </style>

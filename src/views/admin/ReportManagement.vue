@@ -96,7 +96,7 @@
         <div class="card-header">
           <el-checkbox v-model="selectAll" @change="handleSelectAll">全选</el-checkbox>
           <span style="margin-left: 20px;">报告列表</span>
-          <span style="margin-left: 10px; color: #86868b;">(共 {{ total }} 条)</span>
+          <span style="margin-left: 10px; color: var(--apple-ink-secondary);">(共 {{ total }} 条)</span>
         </div>
       </template>
 
@@ -553,7 +553,7 @@ onMounted(() => {
 <style scoped>
 .admin-report-management {
   padding: 20px;
-  background-color: #f5f5f7;
+  background-color: var(--apple-canvas-parchment);
   min-height: 100vh;
 }
 
@@ -564,7 +564,7 @@ onMounted(() => {
 .page-title {
   font-size: 24px;
   font-weight: 700;
-  color: #1d1d1f;
+  color: var(--apple-ink);
 }
 
 .header-actions {
@@ -589,7 +589,7 @@ onMounted(() => {
 }
 
 .stat-card:hover {
-  border-color: #86868b;
+  border-color: var(--apple-ink-secondary);
 }
 
 .stat-card:active {
@@ -605,13 +605,13 @@ onMounted(() => {
 .stat-value {
   font-size: 32px;
   font-weight: 700;
-  color: #0066cc;
+  color: var(--apple-primary);
   margin-bottom: 8px;
 }
 
 .stat-label {
   font-size: 14px;
-  color: #86868b;
+  color: var(--apple-ink-secondary);
 }
 
 .report-list-card {
@@ -624,7 +624,7 @@ onMounted(() => {
   align-items: center;
   gap: 12px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--apple-ink);
   font-size: 16px;
 }
 
@@ -669,12 +669,12 @@ onMounted(() => {
 .percentage {
   font-size: 24px;
   font-weight: 700;
-  color: #1d1d1f;
+  color: var(--apple-ink);
 }
 
 .rating {
   font-size: 14px;
-  color: #86868b;
+  color: var(--apple-ink-secondary);
   margin-top: 4px;
 }
 
@@ -689,11 +689,11 @@ onMounted(() => {
 }
 
 .source-item {
-  background: #f5f5f7;
+  background: var(--apple-canvas-parchment);
   border-radius: 18px;
   padding: 20px;
   margin-bottom: 20px;
-  border: 1px solid #d2d2d7;
+  border: 1px solid var(--apple-surface-chip-translucent);
 }
 
 .source-header {
@@ -707,14 +707,14 @@ onMounted(() => {
   margin: 0;
   font-size: 16px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--apple-ink);
   flex: 1;
   margin-right: 20px;
 }
 
 .source-meta {
   margin-bottom: 16px;
-  color: #86868b;
+  color: var(--apple-ink-secondary);
   font-size: 14px;
 }
 
@@ -726,15 +726,15 @@ onMounted(() => {
   margin: 0 0 16px 0;
   font-size: 14px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--apple-ink);
 }
 
 .paragraph-item {
-  background: #ffffff;
+  background: var(--apple-surface);
   border-radius: 11px;
   padding: 16px;
   margin-bottom: 12px;
-  border-left: 4px solid #0066cc;
+  border-left: 4px solid var(--apple-primary);
 }
 
 .source-text,
@@ -747,7 +747,7 @@ onMounted(() => {
 .match-similarity {
   text-align: right;
   font-size: 14px;
-  color: #ef4444;
+  color: var(--apple-danger);
   font-weight: 600;
 }
 

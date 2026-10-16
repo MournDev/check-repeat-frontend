@@ -328,12 +328,12 @@ onMounted(() => {
       margin: 0 0 0.5rem 0; 
       font-size: 1.75rem; 
       font-weight: 600; 
-      color: #1d1d1f; 
+      color: var(--apple-ink); 
     }
     
     .page-desc { 
       margin: 0; 
-      color: #86868b; 
+      color: var(--apple-ink-secondary); 
       font-size: 0.95rem; 
     }
   }
@@ -361,14 +361,14 @@ onMounted(() => {
   :deep(.el-statistic) {
     .el-statistic__head {
       font-size: 0.875rem;
-      color: #86868b;
+      color: var(--apple-ink-secondary);
       margin-bottom: 0.5rem;
     }
     
     .el-statistic__content {
       font-size: 1.5rem;
       font-weight: 700;
-      color: #1d1d1f;
+      color: var(--apple-ink);
     }
   }
 }
@@ -378,7 +378,7 @@ onMounted(() => {
   
   :deep(.el-card__header) {
     padding: 1rem 1.25rem;
-    border-bottom: 1px solid #d2d2d7;
+    border-bottom: 1px solid var(--apple-surface-chip-translucent);
     
     .card-header {
       display: flex;
@@ -389,11 +389,11 @@ onMounted(() => {
         display: flex;
         align-items: center;
         font-weight: 600;
-        color: #1d1d1f;
+        color: var(--apple-ink);
         
         .el-icon {
           margin-right: 0.5rem;
-          color: #0066cc;
+          color: var(--apple-primary);
         }
       }
     }
@@ -408,7 +408,7 @@ onMounted(() => {
   padding: 1rem;
   display: flex;
   justify-content: flex-end;
-  border-top: 1px solid #d2d2d7;
+  border-top: 1px solid var(--apple-surface-chip-translucent);
 }
 
 @media (max-width: 768px) {
