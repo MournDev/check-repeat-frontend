@@ -14,12 +14,13 @@
           <span class="brand-name">论文管理系统</span>
         </div>
         <nav class="global-nav-links">
-          <a
+          <!-- 顶栏导航用 router-link：可键盘聚焦、可中键新开，与侧边栏同一可访问性约定 -->
+          <router-link
             v-for="item in topNavItems"
             :key="item.key"
+            :to="item.path"
             :class="['nav-link', { active: isActiveSection(item.key) }]"
-            @click="navigateTo(item.path)"
-          >{{ item.label }}</a>
+          >{{ item.label }}</router-link>
         </nav>
       </div>
       <div class="global-nav-right">
@@ -90,7 +91,7 @@
     <div class="sub-nav">
       <div class="sub-nav-left">
         <el-breadcrumb separator="/" class="sub-nav-breadcrumb">
-          <el-breadcrumb-item v-for="(item, index) in breadcrumbItems" :key="index" :to="item.path">
+          <el-breadcrumb-item v-for="(item, index) in breadcrumbItems" :key="index" :to="item.path || undefined">
             {{ item.title }}
           </el-breadcrumb-item>
         </el-breadcrumb>
@@ -178,12 +179,12 @@ import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { useMaintenanceStore } from '@/stores/maintenance'
 import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
-import { getMessageList } from '@/api/user.js'
+import { getMessageList, markAsRead } from '@/api/user.js'
 import { useMessageStore } from '@/stores/message'
 import { useMessageWebSocket } from '@/composables/useMessageWebSocket'
 import { subscribeTopic } from '@/utils/stompClient'
 import { buildMenus, SECTION_LABELS } from '@/utils/menu'
-import { asyncRoutes } from '@/router'
+import { asyncRoutes, ROLE_HOME } from '@/router'
 
 import {
   User, Setting, SwitchButton, ArrowDown,
@@ -357,23 +358,17 @@ const isActiveSection = (key) => {
 // 层级改由路由嵌套决定，不再按 URL 分段拆：好处是 /student/check-monitor/:paperId
 // 这类不再把雪花 ID 当成一级面包屑显示出来；代价是扁平注册的路由少一层
 // （/admin/paper-assignment/manual 由「论文分配 / 手动分配」变成「手动论文分配」）。
-// 各角色的落地页。以前这里是一律拼 `/dashboard/<role>`，但 /dashboard 下只有 student
-// 和 admin 两个子路由：TEACHER 会拼出并不存在的 /dashboard/teacher，教师点面包屑里的
-// 「首页」直接落 404。取值与侧边栏 topNavItems 里那条「工作台」保持一致 ——
-// 教师的工作台就是 /teacher，侧边栏一直是这么指的，只有这里拼错了。
-// 认不出的角色（LAB_ASSISTANT 等）在侧边栏没有入口，退回不需要角色权限的消息中心，
-// 否则「首页」会是个死链。
-const ROLE_HOME = {
-  STUDENT: '/dashboard/student',
-  TEACHER: '/teacher',
-  ADMIN: '/dashboard/admin',
-  SUPER_ADMIN: '/super-admin',
-}
+// 面包屑「首页」指向的 ROLE_HOME 也统一从 @/router 导入（原本地定义已迁走，
+// 与路由守卫 403 兜底、Login 已登录重定向共用同一张表）。
 
 // 角色分区父路由（/student /teacher /admin /super-admin）的面包屑父级按当前
 // 角色显示侧边栏同款分区名：超管访问 /admin/* 时「管理员」这个父级对不上
 // 他的视角，应显示「系统管理」；ADMIN 同理显示「业务管理」。
 const ROLE_SECTION_PATHS = new Set(['/student', '/teacher', '/admin', '/super-admin'])
+
+// 无默认子路由的父级容器：点击只会落到没有内容的空 MainLayout（白屏），
+// 面包屑里渲染为纯文本，不给 :to。/teacher、/super-admin 有 '' 子路由可正常跳转。
+const BREADCRUMB_TEXT_ONLY = new Set(['/dashboard', '/student', '/admin'])
 
 const breadcrumbItems = computed(() => {
   const homePath = ROLE_HOME[userStore.role] || '/message-center'
@@ -387,7 +382,8 @@ const breadcrumbItems = computed(() => {
     // 父级布局与默认子路由可能同标题（/message-center 两级都是「消息中心」），
     // 连出两条一模一样的面包屑没有意义，跳过重复的那条
     if (title === items[items.length - 1].title) return
-    items.push({ title, path: record.path })
+    // path 为 null 的项只显示文字不可点击
+    items.push({ title, path: BREADCRUMB_TEXT_ONLY.has(record.path) ? null : record.path })
   })
   return items
 })
@@ -396,11 +392,6 @@ const currentPageTitle = computed(() => {
   const last = breadcrumbItems.value[breadcrumbItems.value.length - 1]
   return last?.title || '论文管理系统'
 })
-
-const navigateTo = (path) => {
-  router.push(path)
-  if (isMobile.value) sidebarVisible.value = false
-}
 
 const toggleSidebar = () => { sidebarVisible.value = !sidebarVisible.value }
 
@@ -450,7 +441,18 @@ const loadNotifications = async () => {
 }
 
 const getNotificationIcon = (messageType) => {
-  const iconMap = { SUCCESS: 'CircleCheckFilled', INFO: 'InfoFilled', WARNING: 'WarningFilled', ERROR: 'CircleCloseFilled' }
+  // 后端 messageType 存在两族取值：严重级（SUCCESS/INFO/WARNING/ERROR）与
+  // 业务型（PAPER_REVIEW/ADVISOR_MESSAGE/SYSTEM_NOTICE）。两族都给图标，
+  // 未识别的返回空由模板 v-if 隐藏，避免业务消息永远拿不到图标
+  const iconMap = {
+    SUCCESS: 'CircleCheckFilled',
+    INFO: 'InfoFilled',
+    WARNING: 'WarningFilled',
+    ERROR: 'CircleCloseFilled',
+    PAPER_REVIEW: 'Document',
+    ADVISOR_MESSAGE: 'ChatDotRound',
+    SYSTEM_NOTICE: 'Bell'
+  }
   return iconMap[messageType]
 }
 
@@ -463,12 +465,28 @@ const formatTime = (time) => {
   return new Date(time).toLocaleDateString()
 }
 
-const handleNotificationClick = (notification) => {
-  if (!notification.isRead) { notification.isRead = true }
+// 通知点击：未读的先调已读接口并回源角标（SSOT 约定：页面操作后 loadSystemUnread 回源，
+// 不做本地加减），再按消息类型深链。深链按角色兜底——学生点教师的 PAPER_REVIEW、
+// 教师点学生的 ADVISOR_MESSAGE 都会被路由守卫 403 弹回，这里先判角色再跳。
+const handleNotificationClick = async (notification) => {
+  const userId = currentUserId.value
+  if (!notification.isRead && userId) {
+    try {
+      const res = await markAsRead(notification.id)
+      if (res.code === 200) {
+        notification.isRead = true
+        messageStore.loadSystemUnread(userId)
+      }
+    } catch { /* 已读失败不阻断跳转，角标以服务端下次回源为准 */ }
+  }
   setTimeout(() => {
     switch (notification.messageType) {
-      case 'PAPER_REVIEW': router.push('/teacher/paper-review/pending'); break
-      case 'ADVISOR_MESSAGE': router.push('/student/advisor-interaction'); break
+      case 'PAPER_REVIEW':
+        router.push(userStore.role === 'TEACHER' ? '/teacher/paper-review/pending' : '/message-center')
+        break
+      case 'ADVISOR_MESSAGE':
+        router.push(userStore.role === 'STUDENT' ? '/student/advisor-interaction' : '/message-center')
+        break
       default: router.push('/message-center')
     }
   }, 50)
@@ -507,11 +525,6 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss" scoped>
-// ── Icon sizing ───────────────────────────────────────────
-:deep(.el-icon) {
-  svg { width: 20px !important; height: 20px !important; max-width: 20px !important; max-height: 20px !important; }
-}
-
 // ── App Shell ─────────────────────────────────────────────
 .app-shell {
   display: flex;

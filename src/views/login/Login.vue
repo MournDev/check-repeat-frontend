@@ -144,15 +144,25 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import { tokenManager } from '@/utils/tokenManager'
+import { ROLE_HOME } from '@/router'
 import { ElMessage } from 'element-plus'
 import { User, Lock, View, Hide } from '@element-plus/icons-vue'
 import AnimatedCharacters from '@/components/animated-characters/AnimatedCharacters.vue'
 
 const router = useRouter()
 const userStore = useUserStore()
+
+// 已登录用户访问 / 或 /login 时直接送回角色落地页，避免重复登录覆盖会话
+onMounted(() => {
+  const token = tokenManager.get()
+  if (token && !tokenManager.isExpired()) {
+    router.replace(ROLE_HOME[tokenManager.getRole()] || '/message-center')
+  }
+})
 
 const loading = ref(false)
 const showPassword = ref(false)

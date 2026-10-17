@@ -46,6 +46,19 @@ const constantRoutes = [
   },
 ];
 
+// 各角色的落地页（单一出处，供路由守卫 403 兜底、MainLayout 面包屑「首页」、
+// Login 已登录重定向共用）。以前 MainLayout 里一律拼 `/dashboard/<role>`，但
+// /dashboard 下只有 student 和 admin 两个子路由：TEACHER 会拼出并不存在的
+// /dashboard/teacher，教师点面包屑「首页」直接落 404。取值与侧边栏 topNavItems
+// 里那条「工作台」保持一致 —— 教师的工作台就是 /teacher。
+// 认不出的角色（LAB_ASSISTANT 等）在侧边栏没有入口，退回不需要角色权限的消息中心。
+export const ROLE_HOME = {
+  STUDENT: '/dashboard/student',
+  TEACHER: '/teacher',
+  ADMIN: '/dashboard/admin',
+  SUPER_ADMIN: '/super-admin',
+}
+
 // 权限路由（需登录+对应角色）
 //
 // 侧边栏菜单的唯一事实来源（SSOT）就是这张表：需要出现在侧边栏的路由在
@@ -221,7 +234,9 @@ export const asyncRoutes = [
     path: "/:pathMatch(.*)*",
     name: "NotFound",
     component: () => import("@/views/common/NotFound.vue"),
-    meta: { title: "页面不存在" },
+    // requiresAuth: false：未登录访问不存在的路径也应该看到 404，
+    // 而不是被守卫弹去登录页（404 与认证无关）
+    meta: { title: "页面不存在", requiresAuth: false },
   },
 ];
 
@@ -248,7 +263,9 @@ router.beforeEach((to, from, next) => {
     const allowedRoles = to.meta.roles || [];
     if (allowedRoles.length > 0 && !allowedRoles.includes(role)) {
       ElMessage.error("无权限访问该页面");
-      return next(from.path);
+      // 兜底回该角色的落地页：此前 next(from.path) 在「直接打开越权 URL」时
+      // from 是 '/'（登录页），已登录用户会被弹回登录页，体验割裂
+      return next(ROLE_HOME[role] || '/message-center');
     }
   }
 
