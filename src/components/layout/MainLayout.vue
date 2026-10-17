@@ -17,9 +17,9 @@
           <!-- 顶栏导航用 router-link：可键盘聚焦、可中键新开，与侧边栏同一可访问性约定 -->
           <router-link
             v-for="item in topNavItems"
-            :key="item.key"
+            :key="item.path"
             :to="item.path"
-            :class="['nav-link', { active: isActiveSection(item.key) }]"
+            :class="['nav-link', { active: activeTopNav === item.path }]"
           >{{ item.label }}</router-link>
         </nav>
       </div>
@@ -183,7 +183,7 @@ import { getMessageList, markAsRead } from '@/api/user.js'
 import { useMessageStore } from '@/stores/message'
 import { useMessageWebSocket } from '@/composables/useMessageWebSocket'
 import { subscribeTopic } from '@/utils/stompClient'
-import { buildMenus, SECTION_LABELS } from '@/utils/menu'
+import { buildMenus, buildTopNav, SECTION_LABELS } from '@/utils/menu'
 import { asyncRoutes, ROLE_HOME } from '@/router'
 
 import {
@@ -302,54 +302,22 @@ const getRoleName = computed(() => {
   return roleMap[userStore.role] || '用户'
 })
 
-// Top nav items based on role
-const topNavItems = computed(() => {
-  const role = userStore.role
-  if (role === 'STUDENT') return [
-    { key: 'dashboard', label: '工作台', path: '/dashboard/student' },
-    { key: 'paper', label: '论文管理', path: '/student/my-papers' },
-    { key: 'check', label: '查重检测', path: '/student/student-check-with-websocket' },
-  ]
-  if (role === 'TEACHER') return [
-    { key: 'dashboard', label: '工作台', path: '/teacher' },
-    { key: 'review', label: '论文审核', path: '/teacher/paper-review/pending' },
-    { key: 'students', label: '学生管理', path: '/teacher/student-list' },
-  ]
-  if (role === 'ADMIN') return [
-    { key: 'dashboard', label: '工作台', path: '/dashboard/admin' },
-    { key: 'papers', label: '论文管理', path: '/admin/paper-library' },
-    { key: 'assign', label: '论文分配', path: '/admin/paper-assignment' },
-  ]
-  if (role === 'SUPER_ADMIN') return [
-    { key: 'users', label: '人员管理', path: '/admin/user-management' },
-    { key: 'dashboard', label: '系统运维', path: '/super-admin' },
-    { key: 'config', label: '系统配置', path: '/admin/system-config' },
-    { key: 'logs', label: '日志中心', path: '/admin/log-center' },
-  ]
-  return []
-})
+// Top nav：与侧边栏同一事实源，从路由 meta.menu.top 派生（见 src/utils/menu.js）。
+const topNavItems = computed(() => buildTopNav(asyncRoutes, userStore.role))
 
-const isActiveSection = (key) => {
+// 顶栏高亮：对每项的 match 前缀（exact 时精确）做匹配，多命中取最长前缀——
+// 与侧边栏 activeMenu 同一约定，详情页点亮所属顶栏项。
+const activeTopNav = computed(() => {
   const path = route.path
-  const role = userStore.role
-  // 'dashboard' 是三个角色共用 key，按角色各判各的，学生/管理员的工作台此前永远不亮
-  if (key === 'dashboard') {
-    if (role === 'STUDENT') return path === '/dashboard/student'
-    if (role === 'ADMIN') return path === '/dashboard/admin'
-    if (role === 'SUPER_ADMIN') return path === '/super-admin'
-    return false
+  let best = null
+  for (const item of topNavItems.value) {
+    for (const m of item.match) {
+      const hit = item.exact ? path === m : (path === m || path.startsWith(m))
+      if (hit && (!best || m.length > best.len)) best = { path: item.path, len: m.length }
+    }
   }
-  if (key === 'paper') return path.includes('/student/paper') || path.includes('/student/my-papers')
-  if (key === 'check') return path.includes('/student/check') || path.includes('/student/student-check')
-  if (key === 'review') return path.includes('/teacher/paper-review')
-  if (key === 'students') return path.includes('/teacher/student')
-  if (key === 'users') return path.includes('/admin/user')
-  if (key === 'papers') return path.includes('/admin/paper-library')
-  if (key === 'assign') return path.includes('/admin/paper-assignment')
-  if (key === 'config') return path.includes('/admin/system-config')
-  if (key === 'logs') return path.includes('/admin/log-center')
-  return false
-}
+  return best?.path || ''
+})
 
 // 面包屑直接读路由的 meta.title —— 文案只有路由这一处出处。
 //

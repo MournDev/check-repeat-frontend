@@ -17,6 +17,13 @@
 //   spacer 在这一项之前渲染一段留白（各角色菜单尾部设置项前）
 //   badge  角标数据源标识；目前支持 'chat'（聊天未读，由 messageStore.chatUnread
 //          供给），MainLayout 据此渲染 el-badge，菜单数据本身不含计数
+//   top    顶栏导航声明 { order, label?, match?, exact? }；缺省不进顶栏。
+//          order 顶栏内排序；label 顶栏短文案（常与菜单 label 不同，如
+//          「工作台」vs「论文工作台」），缺省用菜单 label/meta.title；
+//          match 高亮前缀数组，缺省 [path]——一项要覆盖多个路径族时显式给
+//          （如「论文管理」match: ['/student/paper', '/student/my-papers']）；
+//          exact: true 只精确匹配（一级路径上的工作台项用，否则前缀匹配
+//          会在所有下属页常亮）
 //
 // 同一路由出现在多个角色菜单的不同位置时（如「查重配置」：ADMIN 归
 // 「系统管理」组、超管归「系统运维」组），用角色名作 key 写覆盖块：
@@ -82,4 +89,36 @@ export function buildMenus(routes, role) {
       groupLabel: item.group && item.group !== items[index - 1]?.group ? item.group : null,
     })),
   }
+}
+
+function collectTop(records, inheritedRoles, basePath, role, out) {
+  for (const record of records) {
+    const meta = record.meta || {}
+    const path = joinPath(basePath, record.path)
+    const menu = meta.menu ? resolve(meta.menu, role) : null
+    // 与侧边栏同一套 roles 解析：顶栏项也能用 menu.roles 限定角色
+    // （如「论文管理」只进 ADMIN 顶栏、不进超管顶栏）
+    const roles = (menu && menu.roles) || meta.roles || inheritedRoles
+    if (menu?.top && roles.includes(role)) {
+      out.push({
+        path,
+        label: menu.top.label || menu.label || meta.title || path,
+        order: typeof menu.top.order === 'number' ? menu.top.order : Number.MAX_SAFE_INTEGER,
+        match: menu.top.match || [path],
+        exact: Boolean(menu.top.exact),
+      })
+    }
+    if (record.children?.length) {
+      collectTop(record.children, roles, path, role, out)
+    }
+  }
+}
+
+// 从路由表构建指定角色的顶栏导航。返回 [{ path, label, match, exact }]，
+// 已按 top.order 排序；高亮逻辑（match 前缀/exact）在 MainLayout。
+export function buildTopNav(routes, role) {
+  const items = []
+  collectTop(routes, [], '/', role, items)
+  items.sort((a, b) => a.order - b.order)
+  return items
 }
