@@ -2,19 +2,18 @@
 // Apple Design Language — Global SCSS Entry
 // ============================================================
 
-// 1. Design tokens & variables
-@use 'variables' as *;
-
-// 2. Element Plus theme overrides (CSS custom properties)
+// 1. Element Plus theme overrides (CSS custom properties)
+// 设计令牌唯一真源是 @/styles/design-tokens.scss（CSS 变量），
+// 本文件与其他样式一律 var() 引用，不再维护 SCSS 变量层。
 @use '@/styles/element-plus-theme.scss';
 
-// 3. Element Plus chalk theme
+// 2. Element Plus chalk theme
 @use 'element-plus/theme-chalk/src/index.scss';
 
-// 4. Apple Design Tokens
+// 3. Apple Design Tokens（唯一真源）
 @use '@/styles/design-tokens.scss';
 
-// 5. Typography system
+// 4. Typography system
 @use '@/styles/typography.scss';
 
 // ── Global Reset ──────────────────────────────────────────
@@ -30,22 +29,22 @@ html {
 }
 
 body {
-  font-family: $font-text;
-  background-color: $canvas-parchment;
-  color: $ink;
-  font-size: $font-size-base;
+  font-family: var(--apple-font-text);
+  background-color: var(--apple-canvas-parchment);
+  color: var(--apple-ink);
+  font-size: var(--apple-fs-body);
   line-height: 1.47;
   letter-spacing: -0.374px;
 }
 
 // ── Page title ───────────────────────────────────────────
 h1, h2, h3, h4, h5, h6 {
-  color: $ink;
+  color: var(--apple-ink);
   font-weight: 600;
 }
 
 h1 {
-  font-family: $font-display;
+  font-family: var(--apple-font-display);
   font-size: 40px;
   line-height: 1.10;
 }
@@ -58,19 +57,19 @@ h2 {
 
 // ── Link ──────────────────────────────────────────────────
 a {
-  color: $primary-color;
+  color: var(--apple-primary);
   text-decoration: none;
   transition: color 0.2s ease;
 
   &:hover {
-    color: $primary-focus;
+    color: var(--apple-primary-focus);
   }
 }
 
 // ── Selection ─────────────────────────────────────────────
 ::selection {
   background: rgba(0, 102, 204, 0.2);
-  color: $ink;
+  color: var(--apple-ink);
 }
 
 // ── Scrollbar ─────────────────────────────────────────────
@@ -84,7 +83,7 @@ a {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d2d2d7;
+  background: var(--apple-surface-chip-translucent);
   border-radius: 3px;
 }
 

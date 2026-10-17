@@ -1,23 +1,9 @@
 // ============================================================
 // Apple Design Language — Report Page Styles
 // Reference: DESIGN.md
+// 颜色一律 var() 引用 design-tokens.scss（唯一真源），本文件不再
+// 维护 SCSS 变量层（2026-10-17 三源并一源）。
 // ============================================================
-
-// ── Apple Color Palette ───────────────────────────────────
-$primary-color: #0066cc;
-$primary-focus: #0071e3;
-$primary-on-dark: #2997ff;
-$secondary-color: #8b5cf6;
-$success-color: #10b981;
-$warning-color: #f59e0b;
-$danger-color: #ef4444;
-$info-color: #64748b;
-$light-bg: #f5f5f7;
-$card-bg: #ffffff;
-$text-primary: #1d1d1f;
-$text-secondary: #7a7a7a;
-$border-color: #e0e0e0;
-$divider-soft: #f0f0f0;
 
 // ── Animations (no translateY, no shadow pulse) ──────────
 @keyframes fadeIn {
@@ -38,13 +24,13 @@ $divider-soft: #f0f0f0;
 // ── Report Page Container ─────────────────────────────────
 .report-page {
   padding: 0;
-  background: $light-bg;
+  background: var(--apple-canvas-parchment);
   min-height: 100vh;
 }
 
 .report-header {
-  background: $card-bg;
-  border-bottom: 1px solid $border-color;
+  background: var(--apple-surface);
+  border-bottom: 1px solid var(--apple-hairline);
   padding: 32px 0;
   margin-bottom: 32px;
 }
@@ -56,12 +42,12 @@ $divider-soft: #f0f0f0;
 }
 
 .report-title {
-  font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
+  font-family: var(--apple-font-display);
   font-size: 34px;
   font-weight: 600;
   line-height: 1.47;
   letter-spacing: -0.374px;
-  color: $text-primary;
+  color: var(--apple-ink);
   margin: 0 0 8px 0;
 }
 
@@ -70,20 +56,20 @@ $divider-soft: #f0f0f0;
   font-weight: 400;
   line-height: 1.47;
   letter-spacing: -0.374px;
-  color: $text-secondary;
+  color: var(--apple-ink-muted-48);
   margin: 0;
 }
 
 // ── Similarity Overview Card ──────────────────────────────
 .report-overview-card {
-  background: $card-bg;
-  border: 1px solid $border-color;
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-hairline);
   border-radius: 18px;
   padding: 32px;
   margin-bottom: 24px;
   transition: border-color 0.2s ease;
 
-  &:hover { border-color: #d0d0d0; }
+  &:hover { border-color: var(--apple-surface-chip-translucent); }
 }
 
 .report-overview-grid {
@@ -95,19 +81,19 @@ $divider-soft: #f0f0f0;
 .report-stat-item {
   text-align: center;
   padding: 24px 17px;
-  background: $light-bg;
+  background: var(--apple-canvas-parchment);
   border-radius: 11px;
   transition: background-color 0.2s ease;
 
-  &:hover { background: #f0f0f5; }
+  &:hover { background: var(--apple-divider-soft); }
 }
 
 .report-stat-value {
-  font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
+  font-family: var(--apple-font-display);
   font-size: 40px;
   font-weight: 600;
   line-height: 1.10;
-  color: $primary-color;
+  color: var(--apple-primary);
   margin-bottom: 4px;
 }
 
@@ -116,7 +102,7 @@ $divider-soft: #f0f0f0;
   font-weight: 400;
   line-height: 1.43;
   letter-spacing: -0.224px;
-  color: $text-secondary;
+  color: var(--apple-ink-muted-48);
 }
 
 // ── Similarity Indicator (circular) ───────────────────────
@@ -138,23 +124,23 @@ $divider-soft: #f0f0f0;
 }
 
 .report-similarity-number {
-  font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
+  font-family: var(--apple-font-display);
   font-size: 40px;
   font-weight: 600;
   line-height: 1.10;
-  color: $text-primary;
+  color: var(--apple-ink);
 }
 
 .report-similarity-unit {
   font-size: 17px;
   font-weight: 400;
-  color: $text-secondary;
+  color: var(--apple-ink-muted-48);
 }
 
 // ── Similar Sources Section ───────────────────────────────
 .report-sources-card {
-  background: $card-bg;
-  border: 1px solid $border-color;
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-hairline);
   border-radius: 18px;
   padding: 0;
   margin-bottom: 24px;
@@ -163,26 +149,26 @@ $divider-soft: #f0f0f0;
 
 .report-sources-header {
   padding: 24px 32px;
-  border-bottom: 1px solid $divider-soft;
+  border-bottom: 1px solid var(--apple-divider-soft);
 }
 
 .report-sources-title {
-  font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
+  font-family: var(--apple-font-display);
   font-size: 21px;
   font-weight: 600;
   line-height: 1.19;
   letter-spacing: 0.231px;
-  color: $text-primary;
+  color: var(--apple-ink);
   margin: 0;
 }
 
 .report-source-item {
   padding: 24px 32px;
-  border-bottom: 1px solid $divider-soft;
+  border-bottom: 1px solid var(--apple-divider-soft);
   transition: background-color 0.15s ease;
 
   &:last-child { border-bottom: none; }
-  &:hover { background-color: $light-bg; }
+  &:hover { background-color: var(--apple-canvas-parchment); }
 }
 
 .report-source-header {
@@ -197,7 +183,7 @@ $divider-soft: #f0f0f0;
   font-weight: 600;
   line-height: 1.24;
   letter-spacing: -0.374px;
-  color: $text-primary;
+  color: var(--apple-ink);
 }
 
 .report-source-similarity {
@@ -205,7 +191,7 @@ $divider-soft: #f0f0f0;
   font-weight: 600;
   line-height: 1.29;
   letter-spacing: -0.224px;
-  color: $primary-color;
+  color: var(--apple-primary);
   padding: 4px 12px;
   background: rgba(0, 102, 204, 0.08);
   border-radius: 9999px;
@@ -215,11 +201,11 @@ $divider-soft: #f0f0f0;
   font-size: 14px;
   font-weight: 400;
   line-height: 1.43;
-  color: $text-secondary;
+  color: var(--apple-ink-muted-48);
   padding: 12px 17px;
-  background: $light-bg;
+  background: var(--apple-canvas-parchment);
   border-radius: 8px;
-  border-left: 3px solid $primary-color;
+  border-left: 3px solid var(--apple-primary);
 }
 
 // ── Report History Timeline ───────────────────────────────
@@ -233,7 +219,7 @@ $divider-soft: #f0f0f0;
   position: relative;
   padding-left: 32px;
   padding-bottom: 32px;
-  border-left: 1px solid $border-color;
+  border-left: 1px solid var(--apple-hairline);
 
   &:last-child { border-left-color: transparent; padding-bottom: 0; }
 
@@ -245,8 +231,8 @@ $divider-soft: #f0f0f0;
     width: 11px;
     height: 11px;
     border-radius: 50%;
-    background: $primary-color;
-    border: 2px solid $card-bg;
+    background: var(--apple-primary);
+    border: 2px solid var(--apple-surface);
   }
 }
 
@@ -255,7 +241,7 @@ $divider-soft: #f0f0f0;
   font-weight: 400;
   line-height: 1.0;
   letter-spacing: -0.12px;
-  color: $text-secondary;
+  color: var(--apple-ink-muted-48);
   margin-bottom: 4px;
 }
 
@@ -263,32 +249,32 @@ $divider-soft: #f0f0f0;
   font-size: 17px;
   font-weight: 600;
   line-height: 1.24;
-  color: $text-primary;
+  color: var(--apple-ink);
   margin-bottom: 4px;
 }
 
 .report-timeline-desc {
   font-size: 14px;
   line-height: 1.43;
-  color: $text-secondary;
+  color: var(--apple-ink-muted-48);
 }
 
 // ── Chart Containers ──────────────────────────────────────
 .report-chart-card {
-  background: $card-bg;
-  border: 1px solid $border-color;
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-hairline);
   border-radius: 18px;
   padding: 24px;
   margin-bottom: 24px;
 }
 
 .report-chart-title {
-  font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
+  font-family: var(--apple-font-display);
   font-size: 21px;
   font-weight: 600;
   line-height: 1.19;
   letter-spacing: 0.231px;
-  color: $text-primary;
+  color: var(--apple-ink);
   margin: 0 0 17px 0;
 }
 
@@ -316,10 +302,10 @@ $divider-soft: #f0f0f0;
   font-weight: 400;
   line-height: 1.0;
 
-  &.status-passed   { background: #d1fae5; color: $success-color; }
-  &.status-warning  { background: #fef3c7; color: $warning-color; }
-  &.status-failed   { background: #fee2e2; color: $danger-color; }
-  &.status-reviewing { background: #e0f2fe; color: $info-color; }
+  &.status-passed   { background: var(--apple-success-bg); color: var(--apple-success); }
+  &.status-warning  { background: var(--apple-warning-bg); color: var(--apple-warning); }
+  &.status-failed   { background: var(--apple-danger-bg); color: var(--apple-danger); }
+  &.status-reviewing { background: var(--apple-info-bg); color: var(--apple-slate-sub); }
 }
 
 // ── Responsive ────────────────────────────────────────────

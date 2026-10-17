@@ -1,41 +1,33 @@
 /* ============================================================
    Apple Design Language — Base Style Overrides
    No decorative gradients, single Action Blue, scale(0.95) active
+   颜色/动效一律 var() 引用 design-tokens.scss（唯一真源），
+   本文件不再定义变量（2026-10-17 三源并一源）。
    ============================================================ */
 
 :root {
-  font-family: "SF Pro Text", "Inter", system-ui, -apple-system, sans-serif;
+  font-family: var(--apple-font-text);
   line-height: 1.47;
   font-weight: 400;
 
   color-scheme: light;
-  color: #1d1d1f;
-  background-color: #f5f5f7;
+  color: var(--apple-ink);
+  background-color: var(--apple-canvas-parchment);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  --transition-fast: 0.15s ease;
-  --transition-normal: 0.2s ease;
-  --transition-slow: 0.3s ease;
-  --shadow-sm: none;
-  --shadow-md: none;
-  --shadow-lg: none;
-  --border-radius-sm: 5px;
-  --border-radius-md: 8px;
-  --border-radius-lg: 18px;
 }
 
 a {
   font-weight: 400;
-  color: #0066cc;
+  color: var(--apple-primary);
   text-decoration: none;
-  transition: color var(--transition-fast);
+  transition: color var(--apple-transition-fast);
 }
 a:hover {
-  color: #005bb8;
+  color: var(--apple-primary-active);
 }
 
 body {
@@ -45,7 +37,7 @@ body {
 }
 
 h1 {
-  font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
+  font-family: var(--apple-font-display);
   font-size: 40px;
   font-weight: 600;
   line-height: 1.10;
@@ -59,20 +51,20 @@ button {
   font-size: 17px;
   font-weight: 400;
   font-family: inherit;
-  background-color: #f5f5f7;
-  color: #1d1d1f;
+  background-color: var(--apple-canvas-parchment);
+  color: var(--apple-ink);
   cursor: pointer;
-  transition: transform var(--transition-fast), background-color var(--transition-normal);
+  transition: transform var(--apple-transition-fast), background-color var(--apple-transition-normal);
 }
 button:hover {
-  border-color: #0066cc;
+  border-color: var(--apple-primary);
 }
 button:active {
   transform: scale(0.95);
 }
 button:focus,
 button:focus-visible {
-  outline: 2px solid #0071e3;
+  outline: 2px solid var(--apple-primary-focus);
   outline-offset: 2px;
 }
 
@@ -80,19 +72,19 @@ button:focus-visible {
 .card {
   padding: 24px;
   border-radius: 18px;
-  border: 1px solid #e0e0e0;
-  transition: border-color var(--transition-normal);
-  background: #ffffff;
+  border: 1px solid var(--apple-hairline);
+  transition: border-color var(--apple-transition-normal);
+  background: var(--apple-canvas);
 }
 .card:hover {
-  border-color: #d0d0d0;
+  border-color: var(--apple-surface-chip-translucent);
 }
 
 /* ── Input: clean focus ───────────────────────────────── */
 input,
 textarea,
 select {
-  transition: border-color var(--transition-fast);
+  transition: border-color var(--apple-transition-fast);
   border-radius: 9999px;
   font-size: 17px;
   font-family: inherit;
@@ -101,23 +93,23 @@ select {
 input:focus,
 textarea:focus,
 select:focus {
-  outline: 2px solid #0071e3;
+  outline: 2px solid var(--apple-primary-focus);
   outline-offset: -2px;
 }
 
 /* ── Table row hover: no translate ────────────────────── */
 tr {
-  transition: background-color var(--transition-fast);
+  transition: background-color var(--apple-transition-fast);
 }
 tr:hover {
-  background-color: #f5f5f7 !important;
+  background-color: var(--apple-canvas-parchment) !important;
 }
 
 /* ── Element Plus component overrides ─────────────────── */
 
 /* Tag: pill, no shadow hover */
 .el-tag {
-  transition: background-color var(--transition-fast);
+  transition: background-color var(--apple-transition-fast);
   border-radius: 9999px !important;
 }
 .el-tag:hover {
@@ -126,12 +118,12 @@ tr:hover {
 
 /* Progress bar: clean */
 .el-progress-bar__inner {
-  transition: width var(--transition-normal);
+  transition: width var(--apple-transition-normal);
 }
 
 /* Menu item: no translateX hover */
 .el-menu-item {
-  transition: background-color var(--transition-fast);
+  transition: background-color var(--apple-transition-fast);
 }
 .el-menu-item:hover {
   transform: none;
@@ -141,17 +133,17 @@ tr:hover {
 .el-dialog {
   border-radius: 18px;
   box-shadow: none;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--apple-hairline);
 }
 .el-dialog__header {
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--apple-divider-soft);
   padding: 24px 24px 17px;
 }
 .el-dialog__body {
   padding: 24px;
 }
 .el-dialog__footer {
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--apple-divider-soft);
   padding: 17px 24px 24px;
 }
 
@@ -159,12 +151,12 @@ tr:hover {
 .el-dropdown-menu {
   border-radius: 8px;
   box-shadow: none;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--apple-hairline);
 }
 
 /* Pagination: pill buttons */
 .el-pagination__item {
-  transition: background-color var(--transition-fast);
+  transition: background-color var(--apple-transition-fast);
   border-radius: 9999px;
 }
 .el-pagination__item:hover {
@@ -173,7 +165,7 @@ tr:hover {
 
 /* Upload */
 .el-upload {
-  transition: border-color var(--transition-fast);
+  transition: border-color var(--apple-transition-fast);
 }
 .el-upload:hover {
   box-shadow: none;
@@ -183,7 +175,7 @@ tr:hover {
 [disabled] {
   opacity: 0.48;
   cursor: not-allowed;
-  transition: opacity var(--transition-fast);
+  transition: opacity var(--apple-transition-fast);
 }
 [disabled]:hover {
   transform: none !important;
@@ -206,7 +198,7 @@ tr:hover {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #d2d2d7;
+  background: var(--apple-surface-chip-translucent);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -216,7 +208,7 @@ tr:hover {
 /* ── Selection ────────────────────────────────────────── */
 ::selection {
   background: rgba(0, 102, 204, 0.2);
-  color: #1d1d1f;
+  color: var(--apple-ink);
 }
 
 /* ── Responsive ───────────────────────────────────────── */
@@ -259,9 +251,9 @@ tr:hover {
 /* ── Light mode (default) ─────────────────────────────── */
 @media (prefers-color-scheme: light) {
   :root {
-    color: #1d1d1f;
-    background-color: #f5f5f7;
+    color: var(--apple-ink);
+    background-color: var(--apple-canvas-parchment);
   }
-  a:hover { color: #005bb8; }
-  button { background-color: #f5f5f7; }
+  a:hover { color: var(--apple-primary-active); }
+  button { background-color: var(--apple-canvas-parchment); }
 }

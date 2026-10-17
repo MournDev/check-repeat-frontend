@@ -6,7 +6,9 @@
 
 :root {
   // ── Primary Color ───────────────────────────────────────
-  --el-color-primary: #0066cc;
+  // 主色引用 design-tokens.scss（唯一真源）；light/dark 色阶为
+  // 从 #0066cc 派生的实现细节，无 token 对应，保留字面值。
+  --el-color-primary: var(--apple-primary);
   --el-color-primary-light-1: #1a75d1;
   --el-color-primary-light-2: #3385d6;
   --el-color-primary-light-3: #4d94db;
@@ -40,28 +42,28 @@
   --el-border-radius-circle: 9999px;
 
   // ── Border Color ────────────────────────────────────────
-  --el-border-color: #e0e0e0;
-  --el-border-color-light: #f0f0f0;
-  --el-border-color-lighter: #f5f5f7;
-  --el-border-color-extra-light: #fafafc;
+  --el-border-color: var(--apple-hairline);
+  --el-border-color-light: var(--apple-divider-soft);
+  --el-border-color-lighter: var(--apple-canvas-parchment);
+  --el-border-color-extra-light: var(--apple-surface-pearl);
 
   // ── Text Color ──────────────────────────────────────────
-  --el-text-color-primary: #1d1d1f;
-  --el-text-color-regular: #333333;
-  --el-text-color-secondary: #7a7a7a;
-  --el-text-color-placeholder: #cccccc;
+  --el-text-color-primary: var(--apple-ink);
+  --el-text-color-regular: var(--apple-ink-muted-80);
+  --el-text-color-secondary: var(--apple-ink-muted-48);
+  --el-text-color-placeholder: var(--apple-body-muted);
 
   // ── Background ──────────────────────────────────────────
-  --el-bg-color: #ffffff;
-  --el-bg-color-page: #f5f5f7;
-  --el-bg-color-overlay: #ffffff;
+  --el-bg-color: var(--apple-canvas);
+  --el-bg-color-page: var(--apple-canvas-parchment);
+  --el-bg-color-overlay: var(--apple-canvas);
 
   // ── Fill ────────────────────────────────────────────────
-  --el-fill-color: #f5f5f7;
-  --el-fill-color-light: #fafafc;
+  --el-fill-color: var(--apple-canvas-parchment);
+  --el-fill-color-light: var(--apple-surface-pearl);
   --el-fill-color-lighter: #fafafa;
   --el-fill-color-extra-light: #fcfcfd;
-  --el-fill-color-blank: #ffffff;
+  --el-fill-color-blank: var(--apple-canvas);
 
   // ── Button Component ────────────────────────────────────
   --el-button-font-size: 17px;
@@ -75,18 +77,18 @@
   --el-input-font-size: 17px;
   --el-input-border-radius: 9999px;
   --el-input-height: 44px;
-  --el-input-focus-border-color: #0071e3;
+  --el-input-focus-border-color: var(--apple-primary-focus);
 
   // ── Card Component ──────────────────────────────────────
   --el-card-border-radius: 18px;
-  --el-card-border-color: #e0e0e0;
+  --el-card-border-color: var(--apple-hairline);
   --el-card-padding: 24px;
 
   // ── Table Component ─────────────────────────────────────
   --el-table-font-size: 14px;
   --el-table-header-font-size: 14px;
-  --el-table-row-hover-bg-color: #f5f5f7;
-  --el-table-border-color: #f0f0f0;
+  --el-table-row-hover-bg-color: var(--apple-canvas-parchment);
+  --el-table-border-color: var(--apple-divider-soft);
 
   // ── Dialog Component ────────────────────────────────────
   --el-dialog-border-radius: 18px;
@@ -146,7 +148,7 @@
 // ── Dialog: no heavy shadow ──────────────────────────────
 .el-dialog {
   box-shadow: none;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--apple-hairline);
 }
 
 // ── Menu: clean style ───────────────────────────────────
@@ -162,7 +164,7 @@
 // ── Remove default Element Plus shadow on dropdown ───────
 .el-dropdown__popper,
 .el-popper {
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--apple-hairline);
   box-shadow: none !important;
 }
 
@@ -170,5 +172,5 @@
 .el-form-item__label {
   font-size: 14px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--apple-ink);
 }
