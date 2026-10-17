@@ -247,9 +247,11 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { getNoticeList, getNoticeStats, markAsRead, batchMarkAsRead, markAllAsRead, deleteNotice, batchDeleteNotice, clearAllNotice, broadcastNotice } from '@/api/admin/notices'
 import { updateMaintenance } from '@/api/admin/systemStatus'
 import { useUserStore } from '@/stores/user'
+import { useMessageStore } from '@/stores/message'
 import { useMaintenanceStore } from '@/stores/maintenance'
 
 const userStore = useUserStore()
+const messageStore = useMessageStore()
 const maintenanceStore = useMaintenanceStore()
 const activeTab = ref('list')
 
@@ -346,6 +348,8 @@ const handleMarkRead = async (row) => {
       row.isRead = 1
       ElMessage.success('已标记为已读')
       fetchStats()
+      // 已读/删除/清空一律回源铃铛未读数（message store SSOT），不本地加减
+      messageStore.loadSystemUnread(userStore.userInfo?.userId)
     }
   } catch {
     ElMessage.error('操作失败')
@@ -360,6 +364,7 @@ const handleMarkAllRead = async () => {
       ElMessage.success(res.message || '操作成功')
       fetchList()
       fetchStats()
+      messageStore.loadSystemUnread(userStore.userInfo?.userId)
     }
   } catch {}
 }
@@ -372,6 +377,7 @@ const handleDelete = async (row) => {
       ElMessage.success('删除成功')
       fetchList()
       fetchStats()
+      messageStore.loadSystemUnread(userStore.userInfo?.userId)
     }
   } catch {}
 }
@@ -384,6 +390,7 @@ const handleBatchRead = async () => {
       ElMessage.success(res.message || '操作成功')
       fetchList()
       fetchStats()
+      messageStore.loadSystemUnread(userStore.userInfo?.userId)
     }
   } catch {}
 }
@@ -397,6 +404,7 @@ const handleBatchDelete = async () => {
       ElMessage.success(res.message || '操作成功')
       fetchList()
       fetchStats()
+      messageStore.loadSystemUnread(userStore.userInfo?.userId)
     }
   } catch {}
 }
@@ -409,6 +417,7 @@ const handleClearAll = async () => {
       ElMessage.success(res.message || '清空成功')
       fetchList()
       fetchStats()
+      messageStore.loadSystemUnread(userStore.userInfo?.userId)
     }
   } catch {}
 }

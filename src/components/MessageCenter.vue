@@ -305,9 +305,9 @@ const notifications = computed(() => messageStore.notifications)
 // 计算属性
 const totalCount = computed(() => allNotifications.value.length)
 
-const unreadCount = computed(() =>
-  allNotifications.value.filter(item => !item.isRead).length
-)
+// 未读数以服务端计数为准（message store SSOT，/api/message/unread-count）：
+// 列表是服务端分页数据，本地过滤条数在翻页/筛选下必然失真
+const unreadCount = computed(() => messageStore.systemUnread)
 
 const readCount = computed(() =>
   allNotifications.value.filter(item => item.isRead).length
