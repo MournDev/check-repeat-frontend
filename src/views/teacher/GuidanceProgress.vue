@@ -1,13 +1,14 @@
 <template>
   <div class="guidance-progress">
-    <!-- 页头 -->
-    <el-card class="console-card console-page-head-card" shadow="never">
-      <div class="head-left">
-        <h2 class="head-title">指导进度看板</h2>
-        <p class="head-desc">我指导论文的状态分布与查重 / 成绩一览，查重完成的论文可直接签核查重报告。</p>
-      </div>
-      <el-button type="primary" :icon="Refresh" @click="fetchData">刷新</el-button>
-    </el-card>
+    <!-- 页头（全站统一 PageHeader 组件） -->
+    <PageHeader
+      title="指导进度看板"
+      description="我指导论文的状态分布与查重 / 成绩一览，查重完成的论文可直接签核查重报告。"
+    >
+      <template #actions>
+        <el-button type="primary" :icon="Refresh" @click="fetchData">刷新</el-button>
+      </template>
+    </PageHeader>
 
     <!-- 总数 + 状态分布 -->
     <div class="stats-row">
@@ -18,12 +19,12 @@
 
       <el-card class="console-card chart-card" shadow="never" v-loading="loading">
         <div class="section-title">论文状态分布</div>
-        <div v-show="statusSummary.length > 0" ref="chartRef" class="status-chart"></div>
         <el-empty
-          v-if="!loading && statusSummary.length === 0"
+          v-if="statusChart.empty"
           description="暂无论文状态数据"
           :image-size="80"
         />
+        <div v-else :ref="statusChart.chartRef" class="status-chart"></div>
       </el-card>
     </div>
 
@@ -76,11 +77,12 @@
 </template>
 
 <script setup>
-import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
-import * as echarts from 'echarts'
+import { onMounted, ref } from 'vue'
 import { Refresh } from '@element-plus/icons-vue'
 import { getGuidanceProgress } from '@/api/p5.js'
 import { loadDefenseDict, getDefenseDictText, DICT_PAPER_STATUS } from '@/utils/defenseDict.js'
+import { useChart } from '@/composables/useChart'
+import PageHeader from '@/components/common/PageHeader.vue'
 import CheckSignoffDialog from '@/views/teacher/components/CheckSignoffDialog.vue'
 
 const loading = ref(false)
@@ -127,47 +129,45 @@ const rateClass = (rate) => {
   return 'rate-low'
 }
 
-// ── 状态分布饼图 ──────────────────────────────────────────
-const chartRef = ref(null)
-let chart = null
+// ── 状态分布饼图（useChart 托管容器/dispose/resize/空态）──────────────────
+const statusChart = useChart()
 const CHART_COLORS = [
   '#0066cc', '#34c759', '#ff9500', '#ff3b30', '#8e8e93',
   '#2997ff', '#5856d6', '#af52de', '#ff2d55', '#5ac8fa',
   '#ffcc00', '#64d2ff', '#30d158'
 ]
 
-const renderChart = () => {
-  if (!chartRef.value || statusSummary.value.length === 0) return
-  if (!chart) chart = echarts.init(chartRef.value)
-  chart.setOption({
-    color: CHART_COLORS,
-    tooltip: { trigger: 'item', formatter: '{b}：{c} 篇（{d}%）' },
-    legend: {
-      orient: 'vertical',
-      right: 0,
-      top: 'middle',
-      type: 'scroll',
-      textStyle: { fontSize: 12, color: '#7a7a7a' }
-    },
-    series: [
-      {
-        name: '论文状态',
-        type: 'pie',
-        radius: ['42%', '68%'],
-        center: ['36%', '50%'],
-        avoidLabelOverlap: true,
-        label: { show: false },
-        emphasis: { label: { show: true, fontSize: 13, fontWeight: 600 } },
-        data: statusSummary.value.map((s) => ({
-          name: statusText(s.paperStatus),
-          value: s.count
-        }))
+// 供「数据加载」与「字典加载完成后的图例翻译重绘」两个入口复用
+const renderChart = () => statusChart.render(
+  statusSummary.value.length === 0
+    ? null
+    : {
+        color: CHART_COLORS,
+        tooltip: { trigger: 'item', formatter: '{b}：{c} 篇（{d}%）' },
+        legend: {
+          orient: 'vertical',
+          right: 0,
+          top: 'middle',
+          type: 'scroll',
+          textStyle: { fontSize: 12, color: '#7a7a7a' }
+        },
+        series: [
+          {
+            name: '论文状态',
+            type: 'pie',
+            radius: ['42%', '68%'],
+            center: ['36%', '50%'],
+            avoidLabelOverlap: true,
+            label: { show: false },
+            emphasis: { label: { show: true, fontSize: 13, fontWeight: 600 } },
+            data: statusSummary.value.map((s) => ({
+              name: statusText(s.paperStatus),
+              value: s.count
+            }))
+          }
+        ]
       }
-    ]
-  })
-}
-
-const handleResize = () => chart?.resize()
+)
 
 // ── 数据加载 ──────────────────────────────────────────────
 const fetchData = async () => {
@@ -178,8 +178,7 @@ const fetchData = async () => {
     total.value = d.total ?? 0
     statusSummary.value = d.statusSummary || []
     papers.value = d.papers || []
-    await nextTick()
-    renderChart()
+    await renderChart()
   } finally {
     loading.value = false
   }
@@ -197,13 +196,6 @@ onMounted(() => {
   fetchData()
   // paper_status 字典：失败不阻塞页面（文案走本地兜底）；加载完成后重绘饼图翻译图例
   loadDefenseDict(DICT_PAPER_STATUS).then(renderChart).catch(() => {})
-  window.addEventListener('resize', handleResize)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', handleResize)
-  chart?.dispose()
-  chart = null
 })
 </script>
 
@@ -214,18 +206,6 @@ onBeforeUnmount(() => {
   gap: 16px;
   color: var(--apple-ink);
   font-family: var(--apple-font-text);
-}
-
-.head-title {
-  margin: 0 0 6px;
-  font-size: 1.25rem;
-  font-weight: 600;
-}
-
-.head-desc {
-  margin: 0;
-  font-size: 0.8125rem;
-  color: var(--apple-ink-muted-48);
 }
 
 .stats-row {
