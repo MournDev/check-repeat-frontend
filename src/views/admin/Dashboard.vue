@@ -228,19 +228,22 @@
           </el-button-group>
         </div>
       </div>
-      <div ref="responseTimeChartRef" class="chart-container" v-loading="rtLoading"></div>
+      <div class="chart-wrap" v-loading="rtLoading">
+        <el-empty v-if="rtChart.empty" description="暂无响应时间数据" :image-size="60" />
+        <div v-else :ref="rtChart.chartRef" class="chart-container"></div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { ElMessage } from 'element-plus'
 
 // 导入管理员API
 import { getDashboardStats, getBusinessMetrics, getResponseTimeTrend } from '@/api/admin/dashboard'
-import * as echarts from 'echarts'
+import { useChart } from '@/composables/useChart'
 import { getUserList } from '@/api/admin/users'
 import { getPaperList } from '@/api/admin/papers'
 import { getAssignmentStats } from '@/api/admin/assignment'
@@ -253,9 +256,8 @@ import {
 
 const userStore = useUserStore()
 
-// 响应时间趋势
-const responseTimeChartRef = ref(null)
-let responseTimeChart = null
+// 响应时间趋势（useChart 托管容器/dispose/resize/空态）
+const rtChart = useChart()
 const rtTrendPeriod = ref(15)
 
 // 响应式数据
@@ -389,57 +391,47 @@ const loadResponseTimeTrend = async (minutes) => {
   rtLoading.value = true
   try {
     const res = await getResponseTimeTrend(minutes)
-    if (res.code === 200 && res.data) {
-      const d = res.data
-      if (responseTimeChart) {
-        responseTimeChart.setOption({
-          tooltip: { trigger: 'axis' },
-          legend: { data: ['平均响应(ms)', 'P95响应(ms)', '请求数'] },
-          grid: { left: 60, right: 60, top: 20, bottom: 30 },
-          xAxis: { type: 'category', data: d.timestamps || [], boundaryGap: false },
-          yAxis: [
-            { type: 'value', name: 'ms', min: 0 },
-            { type: 'value', name: '次', min: 0 }
-          ],
-          series: [
-            {
-              name: '平均响应(ms)', type: 'line', smooth: true,
-              data: d.avgResponseTime || [],
-              itemStyle: { color: '#0066cc' },
-              areaStyle: { color: 'rgba(14,165,233,0.1)' }
-            },
-            {
-              name: 'P95响应(ms)', type: 'line', smooth: true,
-              data: d.p95ResponseTime || [],
-              itemStyle: { color: '#ff9500' },
-              lineStyle: { type: 'dashed' }
-            },
-            {
-              name: '请求数', type: 'bar',
-              data: d.requestCount || [],
-              yAxisIndex: 1,
-              itemStyle: { color: 'rgba(0,102,204,0.2)', borderColor: '#0066cc', borderRadius: [4, 4, 0, 0] },
-              barMaxWidth: 20
-            }
-          ]
-        }, true)
-      }
-    }
+    const d = res?.code === 200 ? res.data : null
+    await rtChart.render(
+      d
+        ? {
+            tooltip: { trigger: 'axis' },
+            legend: { data: ['平均响应(ms)', 'P95响应(ms)', '请求数'] },
+            grid: { left: 60, right: 60, top: 20, bottom: 30 },
+            xAxis: { type: 'category', data: d.timestamps || [], boundaryGap: false },
+            yAxis: [
+              { type: 'value', name: 'ms', min: 0 },
+              { type: 'value', name: '次', min: 0 }
+            ],
+            series: [
+              {
+                name: '平均响应(ms)', type: 'line', smooth: true,
+                data: d.avgResponseTime || [],
+                itemStyle: { color: '#0066cc' },
+                areaStyle: { color: 'rgba(14,165,233,0.1)' }
+              },
+              {
+                name: 'P95响应(ms)', type: 'line', smooth: true,
+                data: d.p95ResponseTime || [],
+                itemStyle: { color: '#ff9500' },
+                lineStyle: { type: 'dashed' }
+              },
+              {
+                name: '请求数', type: 'bar',
+                data: d.requestCount || [],
+                yAxisIndex: 1,
+                itemStyle: { color: 'rgba(0,102,204,0.2)', borderColor: '#0066cc', borderRadius: [4, 4, 0, 0] },
+                barMaxWidth: 20
+              }
+            ]
+          }
+        : null
+    )
   } catch (error) {
     console.error('加载响应时间趋势失败:', error)
   } finally {
     rtLoading.value = false
   }
-}
-
-const initResponseTimeChart = () => {
-  nextTick(() => {
-    if (responseTimeChartRef.value) {
-      responseTimeChart = echarts.init(responseTimeChartRef.value)
-      window.addEventListener('resize', () => responseTimeChart?.resize())
-      loadResponseTimeTrend(15)
-    }
-  })
 }
 
 // 待办相关功能已移除
@@ -460,14 +452,7 @@ onMounted(() => {
   loadDashboardData()
   if (userStore.role === 'ADMIN' || userStore.role === 'SUPER_ADMIN') {
     loadBusinessMetrics()
-    initResponseTimeChart()
-  }
-})
-
-onUnmounted(() => {
-  if (responseTimeChart) {
-    responseTimeChart.dispose()
-    responseTimeChart = null
+    loadResponseTimeTrend(15)
   }
 })
 </script>
@@ -798,6 +783,10 @@ onUnmounted(() => {
   .header-right {
     display: flex;
     align-items: center;
+  }
+
+  .chart-wrap {
+    min-height: 120px;
   }
 
   .chart-container {

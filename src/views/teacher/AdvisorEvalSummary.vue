@@ -52,7 +52,8 @@
                 </span>
               </div>
             </template>
-            <div ref="radarChartRef" class="chart-container" v-loading="loading"></div>
+            <el-empty v-if="radarChart.empty" description="暂无评分数据" :image-size="60" />
+            <div v-else :ref="radarChart.chartRef" class="chart-container" v-loading="loading"></div>
           </el-card>
         </el-col>
         <el-col :xs="24" :lg="10">
@@ -94,11 +95,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
-import * as echarts from 'echarts'
+import { ref, onMounted, nextTick } from 'vue'
 import { Refresh, Histogram, CollectionTag, Hide } from '@element-plus/icons-vue'
 import { getAdvisorEvalSummary } from '@/api/advisorEvaluation'
 import { isNegativeAdvisorEvalTag } from '@/utils/advisorEvalTag'
+import { useChart } from '@/composables/useChart'
 
 const loading = ref(false)
 const summary = ref({
@@ -113,8 +114,8 @@ const summary = ref({
   tagStats: []
 })
 
-const radarChartRef = ref()
-let radarChart = null
+// 五维雷达图（useChart 托管容器/dispose/resize/空态）
+const radarChart = useChart()
 
 // 标签负向判定统一取 utils/advisorEvalTag.js（SSOT）
 const isNegativeTag = isNegativeAdvisorEvalTag
@@ -134,10 +135,18 @@ const dimensionLabels = ['指导及时性', '反馈质量', '责任心态度', '
 const dimensionKeys = ['avgTimeliness', 'avgQuality', 'avgAttitude', 'avgProfessional', 'avgOverall']
 
 const renderRadar = () => {
-  if (!radarChartRef.value || summary.value.masked) return
-  const values = dimensionKeys.map((k) => Number(summary.value[k] ?? 0))
-  if (!radarChart) radarChart = echarts.init(radarChartRef.value)
-  radarChart.setOption({
+  if (summary.value.masked) {
+    radarChart.render(null)
+    return
+  }
+  // 五维均分全为空时显空态
+  const rawValues = dimensionKeys.map((k) => summary.value[k])
+  if (rawValues.every((v) => v === null || v === undefined)) {
+    radarChart.render(null)
+    return
+  }
+  const values = rawValues.map((v) => Number(v ?? 0))
+  radarChart.render({
     tooltip: { trigger: 'item' },
     radar: {
       indicator: dimensionLabels.map((name) => ({ name, max: 5 })),
@@ -183,19 +192,8 @@ const fetchSummary = async () => {
   renderRadar()
 }
 
-const handleResize = () => {
-  radarChart?.resize()
-}
-
 onMounted(() => {
   fetchSummary()
-  window.addEventListener('resize', handleResize)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', handleResize)
-  radarChart?.dispose()
-  radarChart = null
 })
 </script>
 

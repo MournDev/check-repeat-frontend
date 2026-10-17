@@ -240,8 +240,8 @@
               <div class="chart-title">论文状态分布</div>
               <div class="chart-container" v-if="reviewChartData && hasValidData(reviewChartData)">
                 <!-- ECharts饼图容器 -->
-                <div 
-                  ref="statusChartRef" 
+                <div
+                  :ref="statusChart.chartRef"
                   class="echarts-container"
                 ></div>
                 <!-- 状态详情 -->
@@ -455,7 +455,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, reactive, watch, computed } from 'vue'
+import { ref, onMounted, reactive, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { ElMessage } from 'element-plus'
@@ -471,7 +471,7 @@ import {
   getReviewStatusDistribution,
   getCollegeDistribution
 } from '@/api/teacher.js'
-import * as echarts from 'echarts'
+import { useChart } from '@/composables/useChart'
 
 // 图标引入
 import {
@@ -506,20 +506,13 @@ const isLoading = computed(() => {
   return Object.values(loading).some(value => value)
 })
 
-// 监听图表数据变化，自动更新图表
-watch(reviewChartData, () => {
-  if (reviewChartData.value) {
-    if (statusChartInstance) {
-      updateStatusChart()
-    } else {
-      initStatusChart()
-    }
-  }
-}, { deep: true })
+// 论文状态分布饼图（useChart 托管容器/dispose/resize；空态由模板 hasValidData 分支承载）
+const statusChart = useChart()
 
-// 图表引用
-const statusChartRef = ref(null)
-let statusChartInstance = null
+// 监听图表数据变化，自动重绘
+watch(reviewChartData, () => {
+  renderStatusChart()
+})
 
 // 方法
 const refreshData = async () => {
@@ -624,12 +617,7 @@ const loadDashboardData = async () => {
         values: distData.map(item => Number(item.value) || 0),
         colors: distData.map((_, i) => colors[i % colors.length])
       }
-
-      if (statusChartInstance) {
-        updateStatusChart()
-      } else {
-        initStatusChart()
-      }
+      // 重绘由 reviewChartData 的 watch 触发
     }
     loading.review = false
 
@@ -766,41 +754,14 @@ const hasValidData = (chartData) => {
   return chartData.values.some(value => value > 0)
 }
 
-// 窗口大小改变时重绘图表
-const handleResize = () => {
-  if (statusChartInstance) {
-    statusChartInstance.resize()
+// 渲染状态分布饼图（数据无效时走空态；容器由模板 v-if 切换，render 内部 nextTick 兜底挂载时机）
+const renderStatusChart = () => {
+  const d = reviewChartData.value
+  if (!d || !hasValidData(d)) {
+    statusChart.render(null)
+    return
   }
-}
-
-// 组件卸载时清理资源
-onUnmounted(() => {
-  if (statusChartInstance) {
-    statusChartInstance.dispose()
-    statusChartInstance = null
-  }
-  window.removeEventListener('resize', handleResize)
-})
-
-// 组件挂载时添加事件监听
-onMounted(() => {
-  window.addEventListener('resize', handleResize)
-})
-
-// 初始化状态分布图表
-const initStatusChart = () => {
-  if (!statusChartRef.value || !reviewChartData.value) return
-  
-  // 销毁现有实例
-  if (statusChartInstance) {
-    statusChartInstance.dispose()
-  }
-  
-  // 创建新实例
-  statusChartInstance = echarts.init(statusChartRef.value)
-  
-  // 配置选项
-  const option = {
+  statusChart.render({
     tooltip: {
       trigger: 'item',
       formatter: function(params) {
@@ -846,49 +807,17 @@ const initStatusChart = () => {
         labelLine: {
           show: false
         },
-        data: reviewChartData.value.labels.map((label, index) => ({
-          value: reviewChartData.value.values[index],
+        data: d.labels.map((label, index) => ({
+          value: d.values[index],
           name: label,
           itemStyle: {
-            color: reviewChartData.value.colors[index],
+            color: d.colors[index],
             borderRadius: 4
           }
         })).filter(item => item.value > 0) // 过滤掉值为0的数据项
       }
     ]
-  }
-  
-  // 设置配置项
-  statusChartInstance.setOption(option)
-  
-  // 添加点击事件
-  statusChartInstance.on('click', function(params) {
-    // 可以根据点击的状态跳转到相应的页面
-    // 例如：router.push(`/teacher/paper-review?status=${params.name}`)
   })
-  
-  // 添加鼠标悬停事件
-  statusChartInstance.on('mouseover', function(params) {
-    // 可以添加悬停效果，例如显示更详细的信息
-  })
-}
-
-// 更新图表数据
-const updateStatusChart = () => {
-  if (statusChartInstance && reviewChartData.value) {
-    const option = {
-      series: [{
-        data: reviewChartData.value.labels.map((label, index) => ({
-          value: reviewChartData.value.values[index],
-          name: label,
-          itemStyle: {
-            color: reviewChartData.value.colors[index]
-          }
-        })).filter(item => item.value > 0) // 过滤掉值为0的数据项
-      }]
-    }
-    statusChartInstance.setOption(option)
-  }
 }
 
 // 计算审核完成率

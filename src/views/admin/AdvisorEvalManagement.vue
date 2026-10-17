@@ -143,7 +143,7 @@
               </span>
             </div>
           </template>
-          <div v-show="collegeCompare.length" ref="collegeChartRef" class="chart-container"></div>
+          <div v-show="collegeCompare.length" :ref="collegeChart.chartRef" class="chart-container"></div>
           <el-empty v-if="!statsLoading && !collegeCompare.length" description="暂无学院数据" :image-size="80" />
         </el-card>
       </el-col>
@@ -290,9 +290,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
-import * as echarts from 'echarts'
 import { Download, Refresh, Warning, Trophy, DataAnalysis, Document, InfoFilled } from '@element-plus/icons-vue'
 import {
   getAdvisorEvalPage,
@@ -303,6 +302,7 @@ import { getAllColleges } from '@/api/user'
 import { getAvailableTeachers } from '@/api/admin/assignment'
 import { saveBlobAs } from '@/utils/download'
 import { advisorEvalTagLabel, isNegativeAdvisorEvalTag } from '@/utils/advisorEvalTag'
+import { useChart } from '@/composables/useChart'
 
 // ── 标签字典统一取 utils/advisorEvalTag.js（SSOT），此处仅做模板别名 ──
 const tagLabel = advisorEvalTagLabel
@@ -324,15 +324,16 @@ const lowScoreList = computed(() => stats.value.lowScoreTeachers || [])
 
 const lowScoreRowClass = ({ row }) => (row.lowScore ? 'low-score-row' : '')
 
-// ── 学院对比图 ──
-const collegeChartRef = ref()
-let collegeChart = null
+// ── 学院对比图（useChart 托管容器/dispose/resize）──
+const collegeChart = useChart()
 
 const renderCollegeChart = () => {
-  if (!collegeChartRef.value || !collegeCompare.value.length) return
-  if (!collegeChart) collegeChart = echarts.init(collegeChartRef.value)
+  if (!collegeCompare.value.length) {
+    collegeChart.render(null)
+    return
+  }
   const rows = [...collegeCompare.value].reverse()
-  collegeChart.setOption({
+  collegeChart.render({
     tooltip: {
       trigger: 'axis',
       axisPointer: { type: 'shadow' },
@@ -513,21 +514,10 @@ const handleExport = async () => {
 }
 
 // ── 生命周期 ──
-const handleResize = () => {
-  collegeChart?.resize()
-}
-
 onMounted(() => {
   fetchStats()
   fetchPage()
   fetchFilterOptions()
-  window.addEventListener('resize', handleResize)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', handleResize)
-  collegeChart?.dispose()
-  collegeChart = null
 })
 </script>
 
