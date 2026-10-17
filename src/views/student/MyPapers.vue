@@ -1,20 +1,11 @@
 <template>
   <div class="my-papers-page">
     <!-- 页面标题 -->
-    <div class="page-header">
-      <div class="header-content">
-        <div class="header-left">
-          <h1 class="page-title">我的论文</h1>
-          <p class="page-desc">管理您的所有论文提交记录</p>
-        </div>
-        <div class="header-actions">
-          <button class="primary-button" @click="goToPaperSubmit">
-            <el-icon><UploadFilled /></el-icon>
-            <span>提交新论文</span>
-          </button>
-        </div>
-      </div>
-    </div>
+    <PageHeader title="我的论文" description="管理您的所有论文提交记录">
+      <template #actions>
+        <el-button type="primary" :icon="UploadFilled" @click="goToPaperSubmit">提交新论文</el-button>
+      </template>
+    </PageHeader>
 
     <!-- 筛选和搜索 -->
     <div class="filter-card">
@@ -516,6 +507,7 @@ import { ElMessage, ElMessageBox, ElSelect, ElOption, ElInput } from "element-pl
 import { getDictDataByType } from "@/api/user.js";
 // 论文类型统一走共享模块（真相源是后端 PaperTypeEnum），本页不再自持一份映射
 import { loadPaperTypes, getPaperTypeText } from "@/utils/paperType.js";
+import PageHeader from '@/components/common/PageHeader.vue';
 import { 
   getStudentPaperPage, 
   withdrawPaper as withdrawPaperApi, 
@@ -1258,58 +1250,6 @@ const batchDelete = async () => {
   color: var(--apple-slate-ink); // Slate-900
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   padding: 24px 0;
-}
-
-// 页面头部
-.page-header {
-  margin-bottom: 32px;
-  
-  .header-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    
-    .header-left {
-      .page-title {
-        margin: 0 0 8px 0;
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: var(--apple-slate-ink);
-      }
-      
-      .page-desc {
-        margin: 0;
-        color: var(--apple-slate-sub);
-        font-size: 0.875rem;
-      }
-    }
-    
-    .header-actions {
-      .primary-button {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 16px;
-        background: var(--apple-primary);
-        color: white;
-        border: none;
-        border-radius: 11px;
-        font-size: 0.875rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        
-        &:hover {
-          background: var(--apple-primary-active);
-          /* translateY removed */
-          /* box-shadow removed */
-        }
-      }
-    }
-  }
 }
 
 // 筛选卡片
@@ -2360,38 +2300,13 @@ const batchDelete = async () => {
   .papers-card {
     padding: 0 16px;
   }
-  
-  .page-header {
-    .header-content {
-      padding: 0 16px;
-    }
-  }
 }
 
 @media (max-width: 768px) {
   .my-papers-page {
     padding: 16px 0;
   }
-  
-  .page-header {
-    margin-bottom: 24px;
-    
-    .header-content {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 16px;
-      
-      .header-actions {
-        align-self: stretch;
-        
-        .primary-button {
-          width: 100%;
-          justify-content: center;
-        }
-      }
-    }
-  }
-  
+
   .filter-card {
     margin-bottom: 16px;
     

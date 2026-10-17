@@ -1,10 +1,7 @@
 <template>
   <div class="academic-integrity-page">
     <!-- 页面头部 -->
-    <div class="page-header">
-      <h1 class="page-title">学术诚信指导中心</h1>
-      <p class="page-subtitle">提升学术素养，规范引用行为</p>
-    </div>
+    <PageHeader title="学术诚信指导中心" description="提升学术素养，规范引用行为" />
 
     <!-- 导航Tabs -->
     <el-card class="navigation-card" shadow="never">
@@ -437,6 +434,7 @@ import {
   DocumentChecked, DocumentDelete, QuestionFilled, Service,
   ChatLineSquare, Phone, Message
 } from '@element-plus/icons-vue'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 const userStore = useUserStore()
 
@@ -606,24 +604,6 @@ onUnmounted(() => {
   padding: 20px;
   background-color: var(--apple-canvas-parchment);
   min-height: 100vh;
-
-  .page-header {
-    text-align: center;
-    margin-bottom: 30px;
-    
-    .page-title {
-      font-size: 28px;
-      font-weight: 600;
-      color: var(--apple-ink);
-      margin-bottom: 12px;
-    }
-    
-    .page-subtitle {
-      font-size: 16px;
-      color: var(--apple-ink-secondary);
-      margin: 0;
-    }
-  }
 
   .navigation-card {
     border-radius: 18px;
@@ -1136,13 +1116,7 @@ onUnmounted(() => {
 @media (max-width: 768px) {
   .academic-integrity-page {
     padding: 12px;
-    
-    .page-header {
-      .page-title {
-        font-size: 24px;
-      }
-    }
-    
+
     .comparison-section {
       .el-col {
         width: 100%;

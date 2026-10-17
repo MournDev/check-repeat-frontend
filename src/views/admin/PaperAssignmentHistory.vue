@@ -1,20 +1,16 @@
 <template>
   <div class="assignment-history">
     <!-- 页面头部 -->
-    <div class="page-header">
-      <div class="header-content">
-        <h1 class="page-title">分配记录</h1>
-        <p class="page-desc">查看和管理所有论文指导老师分配的历史记录</p>
-      </div>
-      <div class="header-actions">
+    <PageHeader title="分配记录" description="查看和管理所有论文指导老师分配的历史记录">
+      <template #actions>
         <el-button type="primary" :icon="Refresh" @click="refreshHistory">
           刷新记录
         </el-button>
         <el-button :icon="Download" @click="handleExportHistory">
           导出记录
         </el-button>
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
     <!-- 筛选和搜索 -->
     <el-card class="filter-card" shadow="never">
@@ -382,6 +378,7 @@ import {
   Refresh, Download, Search, RefreshLeft, Document, Check,
   User, UserFilled, Files, Delete
 } from '@element-plus/icons-vue'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 // 响应式数据
 const loading = ref(false)
@@ -765,33 +762,6 @@ onMounted(() => {
   padding: 0;
 }
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1.5rem;
-  
-  .header-content {
-    .page-title {
-      margin: 0 0 0.5rem 0;
-      font-size: 1.75rem;
-      font-weight: 600;
-      color: var(--apple-ink);
-    }
-
-    .page-desc {
-      margin: 0;
-      color: var(--apple-ink-secondary);
-      font-size: 0.95rem;
-    }
-  }
-
-  .header-actions {
-    display: flex;
-    gap: 0.75rem;
-  }
-}
-
 .filter-card {
   margin-bottom: 1.5rem;
   border-radius: 18px;
@@ -948,19 +918,6 @@ onMounted(() => {
 }
 
 @media (max-width: 768px) {
-  .page-header {
-    flex-direction: column;
-    gap: 1rem;
-    
-    .header-actions {
-      width: 100%;
-      
-      .el-button {
-        flex: 1;
-      }
-    }
-  }
-  
   .stats-cards {
     .el-col {
       margin-bottom: 0.75rem;

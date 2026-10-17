@@ -1,16 +1,12 @@
 <template>
   <div class="paper-assignment">
-    <div class="page-header">
-      <div class="header-content">
-        <h1 class="page-title">论文分配管理</h1>
-        <p class="page-desc">管理学生论文指导老师分配</p>
-      </div>
-      <div class="header-actions">
+    <PageHeader title="论文分配管理" description="管理学生论文指导老师分配">
+      <template #actions>
         <el-button type="primary" :icon="MagicStick" @click="handleAutoAssign">自动分配</el-button>
         <el-button :icon="Pointer" @click="handleManualAssign">手动分配</el-button>
         <el-button :icon="Refresh" @click="refreshData">刷新</el-button>
-      </div>
-    </div>
+      </template>
+    </PageHeader>
     
     <el-card class="stats-card">
       <div class="assignment-stats">
@@ -130,6 +126,7 @@ import { getStudentDetail } from '@/api/admin/users'
 import {
   MagicStick, Pointer, Refresh, User, Checked, UserFilled, DataAnalysis
 } from '@element-plus/icons-vue'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 // 响应式数据
 const loading = ref(false)
@@ -317,33 +314,6 @@ onMounted(() => {
   padding: 0;
 }
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1.5rem;
-  
-  .header-content {
-    .page-title { 
-      margin: 0 0 0.5rem 0; 
-      font-size: 1.75rem; 
-      font-weight: 600; 
-      color: var(--apple-ink); 
-    }
-    
-    .page-desc { 
-      margin: 0; 
-      color: var(--apple-ink-secondary); 
-      font-size: 0.95rem; 
-    }
-  }
-  
-  .header-actions { 
-    display: flex; 
-    gap: 0.75rem; 
-  }
-}
-
 .stats-card {
   margin-bottom: 1.5rem;
   border-radius: 18px;
@@ -412,19 +382,6 @@ onMounted(() => {
 }
 
 @media (max-width: 768px) {
-  .page-header {
-    flex-direction: column;
-    gap: 1rem;
-    
-    .header-actions {
-      width: 100%;
-      
-      .el-button {
-        flex: 1;
-      }
-    }
-  }
-  
   .assignment-stats {
     :deep(.el-row) {
       .el-col {

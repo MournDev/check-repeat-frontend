@@ -1,11 +1,6 @@
 <template>
   <div class="notice-management">
-    <div class="page-header">
-      <div class="header-content">
-        <h1 class="page-title">系统公告与维护</h1>
-        <p class="page-desc">管理系统站内通知；超级管理员可向全员广播公告并控制维护模式</p>
-      </div>
-    </div>
+    <PageHeader title="系统公告与维护" description="管理系统站内通知；超级管理员可向全员广播公告并控制维护模式" />
 
     <el-tabs v-model="activeTab" class="notice-tabs" @tab-change="handleTabChange">
       <!-- ============ 页签 1：通知列表（管理员/超管可见） ============ -->
@@ -249,6 +244,7 @@ import { updateMaintenance } from '@/api/admin/systemStatus'
 import { useUserStore } from '@/stores/user'
 import { useMessageStore } from '@/stores/message'
 import { useMaintenanceStore } from '@/stores/maintenance'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 const userStore = useUserStore()
 const messageStore = useMessageStore()
@@ -580,9 +576,6 @@ onMounted(() => {
 
 <style scoped>
 .notice-management { padding: 0; }
-.page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
-.page-title { font-size: 22px; font-weight: 600; margin: 0 0 4px 0; }
-.page-desc { color: var(--apple-info); margin: 0; font-size: 14px; }
 .notice-tabs { margin-bottom: 16px; }
 .notice-tabs :deep(.el-tabs__header) { margin-bottom: 16px; }
 .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 16px; }

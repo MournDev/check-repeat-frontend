@@ -1,16 +1,12 @@
 <template>
   <div class="log-center">
-    <div class="page-header">
-      <div class="header-content">
-        <h1 class="page-title">日志中心</h1>
-        <p class="page-desc">操作审计、登录记录与备份历史</p>
-      </div>
-      <div class="header-actions">
+    <PageHeader title="日志中心" description="操作审计、登录记录与备份历史">
+      <template #actions>
         <el-button type="primary" :icon="Refresh" @click="refreshLogs">刷新数据</el-button>
         <el-button :icon="Download" @click="exportLogs">导出日志</el-button>
         <el-button type="danger" :icon="Delete" @click="handleCleanExpired">清理过期日志</el-button>
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
     <el-tabs v-model="activeTab" class="log-tabs" @tab-change="onTabChange">
       <!-- 操作日志 -->
@@ -359,6 +355,7 @@ import { getOperationLogSummary } from '@/api/p5'
 import { useUserStore } from '@/stores/user'
 import { Refresh, Download, Search, Delete } from '@element-plus/icons-vue'
 import { useChart } from '@/composables/useChart'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 // ==================== 操作类型字典 ====================
 const OPERATION_MODULES = [
@@ -960,24 +957,6 @@ onMounted(() => {
 <style lang="scss" scoped>
 .log-center { padding: 0; }
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1.5rem;
-
-  .header-content {
-    .page-title {
-      margin: 0 0 0.5rem 0;
-      font-size: 1.75rem;
-      font-weight: 600;
-      color: var(--apple-ink);
-    }
-    .page-desc { margin: 0; color: var(--apple-ink-secondary); font-size: 0.95rem; }
-  }
-  .header-actions { display: flex; gap: 0.75rem; }
-}
-
 .log-tabs {
   :deep(.el-tabs__content) { padding: 0; }
   .tab-header {
@@ -1031,11 +1010,6 @@ onMounted(() => {
 .selected-count { font-size: 13px; color: var(--apple-ink-muted-80); }
 
 @media (max-width: 768px) {
-  .page-header {
-    flex-direction: column;
-    gap: 1rem;
-    .header-actions { width: 100%; .el-button { flex: 1; } }
-  }
   .log-tabs .tab-header .header-filters {
     flex-direction: column;
     align-items: stretch;

@@ -1,20 +1,16 @@
 <template>
   <div class="manual-assignment">
     <!-- 页面头部 -->
-    <div class="page-header">
-      <div class="header-content">
-        <h1 class="page-title">手动论文分配</h1>
-        <p class="page-desc">为学生手动指定指导老师，支持批量分配和精细调整</p>
-      </div>
-      <div class="header-actions">
+    <PageHeader title="手动论文分配" description="为学生手动指定指导老师，支持批量分配和精细调整">
+      <template #actions>
         <el-button type="primary" :icon="Refresh" @click="refreshData">
           刷新数据
         </el-button>
         <el-button :icon="Setting" @click="showRuleConfig">
           分配规则
         </el-button>
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
     <!-- 统计概览 -->
     <el-row :gutter="16" class="stats-cards">
@@ -462,6 +458,7 @@ import {
   Refresh, Setting, User, UserFilled, Connection, TrendCharts,
   Avatar, Search
 } from '@element-plus/icons-vue'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 // 响应式数据
 const loading = ref(false)
@@ -833,33 +830,6 @@ onMounted(() => {
   padding: 0;
 }
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1.5rem;
-  
-  .header-content {
-    .page-title {
-      margin: 0 0 0.5rem 0;
-      font-size: 1.75rem;
-      font-weight: 600;
-      color: var(--apple-ink);
-    }
-
-    .page-desc {
-      margin: 0;
-      color: var(--apple-ink-secondary);
-      font-size: 0.95rem;
-    }
-  }
-  
-  .header-actions {
-    display: flex;
-    gap: 0.75rem;
-  }
-}
-
 .stats-cards {
   margin-bottom: 1.5rem;
   
@@ -1104,19 +1074,6 @@ onMounted(() => {
 }
 
 @media (max-width: 768px) {
-  .page-header {
-    flex-direction: column;
-    gap: 1rem;
-    
-    .header-actions {
-      width: 100%;
-      
-      .el-button {
-        flex: 1;
-      }
-    }
-  }
-  
   .stats-cards {
     .el-col {
       margin-bottom: 0.75rem;

@@ -1,23 +1,18 @@
 <template>
   <div class="check-history-page">
     <!-- 页面头部 -->
-    <div class="page-header">
-      <div class="header-content">
-        <div class="header-left">
-          <button class="back-button" @click="goBack">
-            <el-icon><ArrowLeft /></el-icon>
-            <span>返回</span>
-          </button>
-          <h1 class="page-title">查重历史记录</h1>
-        </div>
-        <div class="header-actions">
-          <button class="refresh-button" @click="refreshHistory">
-            <el-icon><Refresh /></el-icon>
-            <span>刷新</span>
-          </button>
-        </div>
-      </div>
-    </div>
+    <PageHeader title="查重历史记录">
+      <template #actions>
+        <button class="back-button" @click="goBack">
+          <el-icon><ArrowLeft /></el-icon>
+          <span>返回</span>
+        </button>
+        <button class="refresh-button" @click="refreshHistory">
+          <el-icon><Refresh /></el-icon>
+          <span>刷新</span>
+        </button>
+      </template>
+    </PageHeader>
 
     <!-- 论文信息 -->
     <div class="paper-info-card" v-loading="historyLoading">
@@ -347,6 +342,7 @@ import { getCheckHistory, getSimilarityTrend, compareVersionHistory } from '@/ap
 import { getPaperSimilarityTrend } from '@/api/p5'
 import { getSimilarityColor } from '@/utils/dataType.js'
 import { useChart } from '@/composables/useChart'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -913,71 +909,45 @@ onMounted(async () => {
   color: var(--apple-slate-ink); // Slate-900
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-  // 页面头部
-  .page-header {
-    margin-bottom: 32px;
-    
-    .header-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      
-      .header-left {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        
-        .back-button {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          padding: 8px 16px;
-          border: 1px solid var(--apple-slate-border);
-          border-radius: 11px;
-          background: white;
-          color: var(--apple-slate-muted);
-          font-size: 0.875rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          
-          &:hover {
-            border-color: var(--apple-slate-border-strong);
-            background: var(--apple-canvas-parchment);
-            /* translateY removed */
-          }
-        }
-        
-        .page-title {
-          font-size: 1.5rem;
-          font-weight: 600;
-          color: var(--apple-slate-ink);
-          margin: 0;
-        }
-      }
-      
-      .header-actions {
-        .refresh-button {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          padding: 8px 16px;
-          border: 1px solid var(--apple-slate-border);
-          border-radius: 11px;
-          background: white;
-          color: var(--apple-slate-muted);
-          font-size: 0.875rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          
-          &:hover {
-            border-color: var(--apple-slate-border-strong);
-            background: var(--apple-canvas-parchment);
-            /* translateY removed */
-          }
-        }
-      }
+  .back-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: 1px solid var(--apple-slate-border);
+    border-radius: 11px;
+    background: white;
+    color: var(--apple-slate-muted);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: var(--apple-slate-border-strong);
+      background: var(--apple-canvas-parchment);
+      /* translateY removed */
+    }
+  }
+
+  .refresh-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: 1px solid var(--apple-slate-border);
+    border-radius: 11px;
+    background: white;
+    color: var(--apple-slate-muted);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: var(--apple-slate-border-strong);
+      background: var(--apple-canvas-parchment);
+      /* translateY removed */
     }
   }
 
@@ -1669,19 +1639,7 @@ onMounted(async () => {
 @media (max-width: 768px) {
   .check-history-page {
     padding: 16px;
-    
-    .page-header {
-      .header-content {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
-        
-        .header-actions {
-          align-self: stretch;
-        }
-      }
-    }
-    
+
     .paper-info-card {
       padding: 20px;
       

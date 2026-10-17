@@ -1,20 +1,16 @@
 <template>
   <div class="paper-library">
     <!-- 页面头部 -->
-    <div class="page-header">
-      <div class="header-content">
-        <h1 class="page-title">论文库管理</h1>
-        <p class="page-desc">统一管理校内所有论文资源，支持校内查重和第三方查重</p>
-      </div>
-      <div class="header-actions">
+    <PageHeader title="论文库管理" description="统一管理校内所有论文资源，支持校内查重和第三方查重">
+      <template #actions>
         <el-button type="primary" :icon="Upload" @click="showUploadDialog">
           上传论文
         </el-button>
         <el-button :icon="Refresh" @click="refreshLibrary">
           刷新
         </el-button>
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
     <!-- 统计概览 -->
     <el-row :gutter="16" class="stats-cards">
@@ -552,6 +548,7 @@ import {
   Upload, Refresh, Search, RefreshLeft, Document, Check, Warning,
   TrendCharts, Files, Download, MagicStick, UploadFilled, Stamp
 } from '@element-plus/icons-vue'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 // 响应式数据
 const loading = ref(false)
@@ -1239,33 +1236,6 @@ onMounted(async () => {
   padding: 0;
 }
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1.5rem;
-
-  .header-content {
-    .page-title {
-      margin: 0 0 0.5rem 0;
-      font-size: 1.75rem;
-      font-weight: 600;
-      color: var(--apple-ink);
-    }
-
-    .page-desc {
-      margin: 0;
-      color: var(--apple-ink-secondary);
-      font-size: 0.95rem;
-    }
-  }
-
-  .header-actions {
-    display: flex;
-    gap: 0.75rem;
-  }
-}
-
 .stats-cards {
   margin-bottom: 1.5rem;
 
@@ -1466,19 +1436,6 @@ onMounted(async () => {
 }
 
 @media (max-width: 768px) {
-  .page-header {
-    flex-direction: column;
-    gap: 1rem;
-
-    .header-actions {
-      width: 100%;
-
-      .el-button {
-        flex: 1;
-      }
-    }
-  }
-
   .stats-cards {
     .el-col {
       margin-bottom: 0.75rem;

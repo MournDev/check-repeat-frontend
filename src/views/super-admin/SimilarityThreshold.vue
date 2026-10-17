@@ -1,14 +1,7 @@
 <template>
   <div class="similarity-threshold">
     <!-- 页面头部 -->
-    <div class="page-header">
-      <div class="header-content">
-        <div class="header-left">
-          <h1 class="page-title">相似度阈值设置</h1>
-          <p class="page-subtitle">设置论文查重的相似度阈值，超过阈值的论文将被标记为需要重点审核</p>
-        </div>
-      </div>
-    </div>
+    <PageHeader title="相似度阈值设置" description="设置论文查重的相似度阈值，超过阈值的论文将被标记为需要重点审核" />
 
     <!-- 阈值设置表单 -->
     <el-card shadow="never" class="threshold-card">
@@ -264,6 +257,7 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 // 图标导入
 import {
@@ -674,23 +668,6 @@ watch(
 
 <style lang="scss" scoped>
 .similarity-threshold {
-  .page-header {
-    margin-bottom: 20px;
-    
-    .header-content {
-      .page-title {
-        margin: 0 0 8px 0;
-        font-size: 24px;
-        font-weight: 600;
-      }
-      
-      .page-subtitle {
-        margin: 0;
-        color: var(--apple-ink-muted-80);
-      }
-    }
-  }
-  
   .threshold-card {
     .threshold-slider {
       display: flex;

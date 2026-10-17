@@ -1,19 +1,13 @@
 <template>
   <div class="teacher-review">
     <!-- 页面头部 -->
-    <div class="page-header">
-      <div class="header-content console-page-head-card">
-        <div class="header-left">
-          <h1 class="page-title">审核记录</h1>
-          <p class="page-subtitle">查看您审核过的论文记录</p>
-        </div>
-        <div class="header-right">
-          <el-button type="primary" :icon="Refresh" @click="refreshData">
-            刷新数据
-          </el-button>
-        </div>
-      </div>
-    </div>
+    <PageHeader title="审核记录" description="查看您审核过的论文记录">
+      <template #actions>
+        <el-button type="primary" :icon="Refresh" @click="refreshData">
+          刷新数据
+        </el-button>
+      </template>
+    </PageHeader>
 
     <!-- 筛选条件 -->
     <el-card class="filter-card console-card" shadow="never">
@@ -176,8 +170,8 @@
 
         <el-table-column prop="feedback" label="审核意见" min-width="150">
           <template #default="{ row }">
-            <div class="feedback-text" :title="row.reviewOpinion || row.reviewOperateInfo?.reviewOpinion || row.reviewOpinion?.opinion || row.reviewOpinion?.reviewOpinion || ''">
-              {{ row.reviewOpinion || row.reviewOperateInfo?.reviewOpinion || row.reviewOpinion?.opinion || row.reviewOpinion?.reviewOpinion || '无意见' }}
+            <div class="feedback-text" :title="row.feedback || row.reviewOpinion || row.reviewOperateInfo?.reviewOpinion || row.reviewOpinion?.opinion || row.reviewOpinion?.reviewOpinion || ''">
+              {{ row.feedback || row.reviewOpinion || row.reviewOperateInfo?.reviewOpinion || row.reviewOpinion?.opinion || row.reviewOpinion?.reviewOpinion || '无意见' }}
             </div>
           </template>
         </el-table-column>
@@ -240,6 +234,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import PageHeader from '@/components/common/PageHeader.vue'
 import PaperDetail from '@/views/student/PaperDetail.vue'
 import { getReviewedList, downloadPaper, contactStudent, exportReviewRecords } from '@/api/teacher.js'
 import { getStatusText, getStatusType, getSimilarityColor, getSimilarityClass } from '@/utils/reviewStatus.js'
@@ -460,24 +455,6 @@ onMounted(() => {
   font-family: var(--apple-font-text);
 }
 
-.page-header {
-  margin-bottom: 16px;
-}
-
-.header-left .page-title {
-  margin: 0 0 4px 0;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--apple-ink);
-  line-height: 1.2;
-}
-
-.header-left .page-subtitle {
-  margin: 0;
-  font-size: 0.8125rem;
-  color: var(--apple-ink-muted-48);
-}
-
 .filter-card {
   margin-bottom: 16px;
 }
@@ -615,11 +592,6 @@ onMounted(() => {
 @media (max-width: 768px) {
   .teacher-review {
     padding: 12px;
-  }
-  
-  .header-content {
-    flex-direction: column;
-    align-items: stretch;
   }
   
   .header-right {

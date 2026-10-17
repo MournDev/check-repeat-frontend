@@ -1,10 +1,7 @@
 <template>
   <div class="advisor-interaction-page">
     <!-- 页面标题 -->
-    <div class="page-header">
-      <h1 class="page-title">导师互动</h1>
-      <p class="page-desc">与指导老师沟通交流，获取论文指导</p>
-    </div>
+    <PageHeader title="导师互动" description="与指导老师沟通交流，获取论文指导" />
 
     <el-row :gutter="20" class="interaction-content">
       <!-- 左侧：消息会话列表 -->
@@ -341,6 +338,7 @@ import { ElMessage } from 'element-plus'
 import Cookies from 'js-cookie'
 import { useUserStore } from '@/stores/user'
 import { useMessageStore } from '@/stores/message'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 // API 导入
 import { 
@@ -944,26 +942,6 @@ onMounted(() => {
 <style lang="scss" scoped>
 .advisor-interaction-page {
   padding: 0;
-}
-
-.page-header {
-  margin-bottom: 1.5rem;
-  background: var(--apple-primary);
-  border-radius: 18px;
-  padding: 24px;
-  
-  .page-title {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.75rem;
-    font-weight: 600;
-    color: white;
-  }
-  
-  .page-desc {
-    margin: 0;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.95rem;
-  }
 }
 
 .interaction-content {

@@ -1,12 +1,8 @@
 <template>
   <div class="auto-assignment">
     <!-- 页面头部 -->
-    <div class="page-header">
-      <div class="header-content">
-        <h1 class="page-title">自动论文分配</h1>
-        <p class="page-desc">基于智能算法自动分配指导老师，支持多种分配策略</p>
-      </div>
-      <div class="header-actions">
+    <PageHeader title="自动论文分配" description="基于智能算法自动分配指导老师，支持多种分配策略">
+      <template #actions>
         <el-button type="primary" :icon="MagicStick" @click="handleStartAutoAssignment" :loading="processing">
           开始自动分配
         </el-button>
@@ -16,8 +12,8 @@
         <el-button :icon="Refresh" @click="refreshData">
           刷新数据
         </el-button>
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
     <!-- 算法配置面板 -->
     <el-row :gutter="16" class="config-panel">
@@ -422,6 +418,7 @@ import {
 import {
   MagicStick, Setting, Refresh, Histogram, Document, ArrowRight
 } from '@element-plus/icons-vue'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 // 响应式数据
 const processing = ref(false)
@@ -762,33 +759,6 @@ onUnmounted(() => {
   padding: 0;
 }
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1.5rem;
-  
-  .header-content {
-    .page-title {
-      margin: 0 0 0.5rem 0;
-      font-size: 1.75rem;
-      font-weight: 600;
-      color: var(--apple-ink);
-    }
-    
-    .page-desc {
-      margin: 0;
-      color: var(--apple-ink-secondary);
-      font-size: 0.95rem;
-    }
-  }
-  
-  .header-actions {
-    display: flex;
-    gap: 0.75rem;
-  }
-}
-
 .config-panel {
   margin-bottom: 1.5rem;
   
@@ -987,19 +957,6 @@ onUnmounted(() => {
 }
 
 @media (max-width: 768px) {
-  .page-header {
-    flex-direction: column;
-    gap: 1rem;
-    
-    .header-actions {
-      width: 100%;
-      
-      .el-button {
-        flex: 1;
-      }
-    }
-  }
-  
   .config-panel {
     .el-col {
       margin-bottom: 1rem;

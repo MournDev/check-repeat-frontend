@@ -1,11 +1,9 @@
 <template>
   <div class="subject-management">
-    <div class="page-header">
-      <h1 class="page-title">学科领域管理</h1>
-      <p class="page-desc">
-        学科领域只支持两级：一级门类与二级学科。论文的学科领域、相似度阈值、教师研究方向都用这一套取值域。
-      </p>
-    </div>
+    <PageHeader
+      title="学科领域管理"
+      description="学科领域只支持两级：一级门类与二级学科。论文的学科领域、相似度阈值、教师研究方向都用这一套取值域。"
+    />
 
     <el-card class="table-card" shadow="never">
       <template #header>
@@ -148,6 +146,7 @@ import {
   setSubjectEnabled,
   deleteSubject
 } from '@/api/admin/subject'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 const loading = ref(false)
 const submitting = ref(false)
@@ -354,19 +353,6 @@ onMounted(() => {
 <style scoped>
 .subject-management {
   padding: 0;
-}
-.page-header {
-  margin-bottom: 20px;
-}
-.page-title {
-  font-size: 22px;
-  font-weight: 600;
-  margin: 0 0 4px 0;
-}
-.page-desc {
-  color: var(--apple-info);
-  margin: 0;
-  font-size: 14px;
 }
 .table-card {
   margin-bottom: 16px;

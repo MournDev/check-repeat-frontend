@@ -1,19 +1,13 @@
 <template>
   <div class="student-groups">
     <!-- 页面头部 -->
-    <div class="page-header">
-      <div class="header-content">
-        <div class="header-left">
-          <h1 class="page-title">学生分组管理</h1>
-          <p class="page-subtitle">创建和管理学生分组，方便批量操作</p>
-        </div>
-        <div class="header-right">
-          <el-button type="primary" :icon="Plus" @click="showGroupDialog">
-            新建分组
-          </el-button>
-        </div>
-      </div>
-    </div>
+    <PageHeader title="学生分组管理" description="创建和管理学生分组，方便批量操作">
+      <template #actions>
+        <el-button type="primary" :icon="Plus" @click="showGroupDialog">
+          新建分组
+        </el-button>
+      </template>
+    </PageHeader>
 
     <!-- 分组列表 -->
     <div class="groups-list">
@@ -171,6 +165,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 // 图标导入
 import {
@@ -424,27 +419,6 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .student-groups {
-  .page-header {
-    margin-bottom: 20px;
-    
-    .header-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      
-      .page-title {
-        margin: 0 0 8px 0;
-        font-size: 24px;
-        font-weight: 600;
-      }
-      
-      .page-subtitle {
-        margin: 0;
-        color: var(--apple-ink-muted-80);
-      }
-    }
-  }
-  
   .groups-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));

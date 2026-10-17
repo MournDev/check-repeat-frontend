@@ -1,30 +1,24 @@
 <template>
   <div class="teacher-dashboard">
     <!-- 页面头部 -->
-    <div class="page-header">
-      <div class="header-content">
-        <div class="header-left">
-          <h1 class="page-title">数据统计</h1>
-          <p class="page-subtitle">查看您的论文审核数据和工作统计</p>
-        </div>
-        <div class="header-right">
-          <el-button-group>
-            <el-button :type="timeRange === 'week' ? 'primary' : ''" @click="handleTimeRangeChange('week')">
-              本周
-            </el-button>
-            <el-button :type="timeRange === 'month' ? 'primary' : ''" @click="handleTimeRangeChange('month')">
-              本月
-            </el-button>
-            <el-button :type="timeRange === 'quarter' ? 'primary' : ''" @click="handleTimeRangeChange('quarter')">
-              本季度
-            </el-button>
-            <el-button :type="timeRange === 'year' ? 'primary' : ''" @click="handleTimeRangeChange('year')">
-              本年
-            </el-button>
-          </el-button-group>
-        </div>
-      </div>
-    </div>
+    <PageHeader title="数据统计" description="查看您的论文审核数据和工作统计">
+      <template #actions>
+        <el-button-group>
+          <el-button :type="timeRange === 'week' ? 'primary' : ''" @click="handleTimeRangeChange('week')">
+            本周
+          </el-button>
+          <el-button :type="timeRange === 'month' ? 'primary' : ''" @click="handleTimeRangeChange('month')">
+            本月
+          </el-button>
+          <el-button :type="timeRange === 'quarter' ? 'primary' : ''" @click="handleTimeRangeChange('quarter')">
+            本季度
+          </el-button>
+          <el-button :type="timeRange === 'year' ? 'primary' : ''" @click="handleTimeRangeChange('year')">
+            本年
+          </el-button>
+        </el-button-group>
+      </template>
+    </PageHeader>
 
     <!-- 主要统计卡片 -->
     <el-row :gutter="16" class="stats-row">
@@ -207,6 +201,7 @@
 import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { ElMessage, ElLoading } from 'element-plus'
+import PageHeader from '@/components/common/PageHeader.vue'
 import { getSimilarityTagType } from '@/utils/reviewStatus.js'
 
 // API 接口导入
@@ -484,27 +479,6 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 .teacher-dashboard {
-  .page-header {
-    margin-bottom: 20px;
-    
-    .header-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      
-      .page-title {
-        margin: 0 0 8px 0;
-        font-size: 24px;
-        font-weight: 600;
-      }
-      
-      .page-subtitle {
-        margin: 0;
-        color: var(--apple-ink-muted-48);
-      }
-    }
-  }
-  
   .stats-row {
     margin-bottom: 20px;
     

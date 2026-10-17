@@ -1,23 +1,17 @@
 <template>
   <div class="admin-report-management">
     <!-- 页面头部 -->
-    <div class="page-header">
-      <el-page-header @back="goBack">
-        <template #content>
-          <span class="page-title">报告管理</span>
-        </template>
-        <template #extra>
-          <div class="header-actions">
-            <el-button type="primary" @click="batchExport">
-              <el-icon><Download /></el-icon>批量导出
-            </el-button>
-            <el-button @click="refreshList">
-              <el-icon><Refresh /></el-icon>刷新
-            </el-button>
-          </div>
-        </template>
-      </el-page-header>
-    </div>
+    <PageHeader title="报告管理">
+      <template #actions>
+        <el-button text :icon="ArrowLeft" @click="goBack">返回</el-button>
+        <el-button type="primary" @click="batchExport">
+          <el-icon><Download /></el-icon>批量导出
+        </el-button>
+        <el-button @click="refreshList">
+          <el-icon><Refresh /></el-icon>刷新
+        </el-button>
+      </template>
+    </PageHeader>
 
     <!-- 搜索和筛选 -->
     <el-card class="filter-card" shadow="never">
@@ -296,11 +290,12 @@ import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   Download, Refresh, Search, Document, DataAnalysis,
-  Check
+  Check, ArrowLeft
 } from '@element-plus/icons-vue'
 import { getReportList, getReportStats, getReportDetail, batchExportReports } from '@/api/admin/reports'
 import { getSimilarityColor } from '@/utils/dataType.js'
 import { getSimilarityTagType } from '@/utils/reviewStatus.js'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 const router = useRouter()
 
@@ -555,21 +550,6 @@ onMounted(() => {
   padding: 20px;
   background-color: var(--apple-canvas-parchment);
   min-height: 100vh;
-}
-
-.page-header {
-  margin-bottom: 24px;
-}
-
-.page-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--apple-ink);
-}
-
-.header-actions {
-  display: flex;
-  gap: 12px;
 }
 
 .filter-card {

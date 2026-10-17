@@ -1,19 +1,15 @@
 <template>
   <div class="system-monitoring">
-    <div class="page-header">
-      <div class="header-content">
-        <h1 class="page-title">系统监控</h1>
-        <p class="page-desc">实时监控系统性能指标、资源使用率和API响应时间</p>
-      </div>
-      <div class="header-actions">
+    <PageHeader title="系统监控" description="实时监控系统性能指标、资源使用率和API响应时间">
+      <template #actions>
         <el-select v-model="refreshInterval" style="width: 120px" @change="handleRefreshChange">
           <el-option label="手动刷新" :value="0" />
           <el-option label="30秒刷新" :value="30" />
           <el-option label="60秒刷新" :value="60" />
         </el-select>
         <el-button type="primary" :icon="Refresh" @click="refreshAll">刷新</el-button>
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
     <!-- 指标卡片 -->
     <div class="stats-row">
@@ -141,6 +137,7 @@ import { ElMessage } from 'element-plus'
 import { Refresh, Monitor, Cpu, Coin, DataLine } from '@element-plus/icons-vue'
 import { getResourceUsage, getPerformanceData, getSystemOverview, getDatabaseMonitor, getApplicationMetrics, getResponseTimeTrend } from '@/api/admin/monitoring'
 import { useChart } from '@/composables/useChart'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 const refreshInterval = ref(0)
 let refreshTimer = null
@@ -380,10 +377,6 @@ onUnmounted(() => {
 
 <style scoped>
 .system-monitoring { padding: 0; }
-.page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
-.page-title { font-size: 22px; font-weight: 600; margin: 0 0 4px 0; }
-.page-desc { color: var(--apple-info); margin: 0; font-size: 14px; }
-.header-actions { display: flex; gap: 8px; align-items: center; }
 
 .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 16px; }
 .stat-card { display: flex; align-items: center; gap: 16px; padding: 16px; }

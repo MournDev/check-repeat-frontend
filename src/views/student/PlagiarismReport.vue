@@ -1,30 +1,27 @@
 <template>
   <div class="plagiarism-report-page">
     <!-- 页面头部 -->
-    <div class="page-header">
-      <el-page-header @back="goBack">
-        <template #content>
-          <span class="page-title">查重报告详情</span>
-        </template>
-        <template #extra>
-          <div class="header-actions">
-            <el-button :icon="Share" @click="shareReport">分享</el-button>
-            <el-dropdown @command="handleExport">
-              <el-button :icon="Download">
-                导出报告<el-icon class="el-icon--right"><arrow-down /></el-icon>
-              </el-button>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item command="pdf">导出PDF</el-dropdown-item>
-                  <el-dropdown-item command="doc">导出Word</el-dropdown-item>
-                  <el-dropdown-item command="html">导出HTML</el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-          </div>
-        </template>
-      </el-page-header>
-    </div>
+    <PageHeader title="查重报告详情">
+      <template #actions>
+        <el-button text @click="goBack">
+          <el-icon><ArrowLeft /></el-icon>
+          <span>返回</span>
+        </el-button>
+        <el-button :icon="Share" @click="shareReport">分享</el-button>
+        <el-dropdown @command="handleExport">
+          <el-button :icon="Download">
+            导出报告<el-icon class="el-icon--right"><arrow-down /></el-icon>
+          </el-button>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item command="pdf">导出PDF</el-dropdown-item>
+              <el-dropdown-item command="doc">导出Word</el-dropdown-item>
+              <el-dropdown-item command="html">导出HTML</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </template>
+    </PageHeader>
 
     <!-- 加载状态 -->
     <el-skeleton v-if="loading" :rows="10" animated />
@@ -412,13 +409,14 @@ import { ref, reactive, onMounted, onUnmounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { 
-  Share, Download, ArrowDown, Document, User, Calendar, 
+  Share, Download, ArrowDown, ArrowLeft, Document, User, Calendar, 
   Timer, DataAnalysis, Search, Check, Lightning
 } from '@element-plus/icons-vue'
 import { getPaperReport, exportCheckReport, getSimpleCheckReport } from '@/api/student'
 import { getSimilarityColor } from '@/utils/dataType.js'
 import { getSimilarityTagType } from '@/utils/reviewStatus.js'
 import '@/styles/report-styles.scss'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -812,32 +810,6 @@ onUnmounted(() => {
     to {
       opacity: 1;
       transform: translateY(0);
-    }
-  }
-
-  .page-header {
-    margin-bottom: 24px;
-    
-    .page-title {
-      font-size: 24px;
-      font-weight: 600;
-      color: var(--apple-ink);
-      margin-bottom: 8px;
-    }
-    
-    .header-actions {
-      display: flex;
-      gap: 12px;
-      
-      .el-button {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        border-radius: 11px;
-        
-        &:hover {
-          /* translateY removed */
-          /* box-shadow removed */
-        }
-      }
     }
   }
 
@@ -1488,22 +1460,7 @@ onUnmounted(() => {
 @media (max-width: 768px) {
   .plagiarism-report-page {
     padding: 16px;
-    
-    .page-header {
-      .page-title {
-        font-size: 20px;
-      }
-      
-      .header-actions {
-        flex-direction: column;
-        gap: 8px;
-        
-        .el-button {
-          width: 100%;
-        }
-      }
-    }
-    
+
     .paper-basic-info {
       flex-direction: column;
       gap: 16px;

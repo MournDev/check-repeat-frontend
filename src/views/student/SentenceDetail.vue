@@ -1,16 +1,15 @@
 <template>
   <div class="sentence-detail-page">
     <!-- 页面头部 -->
-    <div class="page-header console-page-head-card">
-      <div class="header-left">
+    <PageHeader title="句级检测明细">
+      <template #actions>
         <el-button text @click="goBack">
           <el-icon><ArrowLeft /></el-icon>
           <span>返回</span>
         </el-button>
-        <h1 class="page-title">句级检测明细</h1>
-      </div>
-      <el-button :icon="Refresh" @click="loadDetail">刷新</el-button>
-    </div>
+        <el-button :icon="Refresh" @click="loadDetail">刷新</el-button>
+      </template>
+    </PageHeader>
 
     <!-- 错误态（403 等）：按后端 message 提示 -->
     <el-result
@@ -148,6 +147,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ArrowLeft, Refresh } from '@element-plus/icons-vue'
 import { getSentenceDetail } from '@/api/p5'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -233,23 +233,6 @@ onMounted(() => {
   padding: 24px;
   min-height: 100vh;
   background: var(--apple-canvas-parchment);
-
-  .page-header {
-    margin-bottom: 24px;
-
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-
-      .page-title {
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: var(--apple-ink);
-        margin: 0;
-      }
-    }
-  }
 
   .error-result {
     background: var(--apple-surface);

@@ -1,20 +1,16 @@
 <template>
   <div class="system-config">
     <!-- 页面头部 -->
-    <div class="page-header">
-      <div class="header-content">
-        <h1 class="page-title">系统配置</h1>
-        <p class="page-desc">管理系统各项配置参数和运行设置</p>
-      </div>
-      <div class="header-actions">
+    <PageHeader title="系统配置" description="管理系统各项配置参数和运行设置">
+      <template #actions>
         <el-button type="primary" :icon="Refresh" @click="refreshConfig">
           刷新配置
         </el-button>
         <el-button v-if="userStore.isSuperAdmin" type="success" :icon="Check" @click="savePerformanceConfig" :loading="saving">
           保存性能配置
         </el-button>
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
     <!-- 配置导航 -->
     <el-card class="nav-card" shadow="never">
@@ -259,6 +255,7 @@ const userStore = useUserStore()
 import {
   Refresh, Check, QuestionFilled, Upload
 } from '@element-plus/icons-vue'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 // 响应式数据
 const activeTab = ref(0)
@@ -492,52 +489,6 @@ onMounted(() => {
   margin-bottom: 16px;
 }
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 24px;
-  background: var(--apple-surface);
-  border: 1px solid var(--apple-surface-chip-translucent);
-  border-radius: 18px;
-  padding: 24px;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    border-color: var(--apple-surface-chip-translucent);
-  }
-  
-  .header-content {
-    .page-title {
-      margin: 0 0 8px 0;
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: var(--apple-ink); // Slate-900
-    }
-    
-    .page-desc {
-      margin: 0;
-      color: var(--apple-ink-secondary); // Slate-500
-      font-size: 0.95rem;
-    }
-  }
-  
-  .header-actions {
-    display: flex;
-    gap: 12px;
-    
-    .el-button {
-      border-radius: 8px;
-      transition: all 0.2s ease;
-      border: 1px solid var(--apple-surface-chip-translucent);
-      
-      &:hover {
-        border-color: var(--apple-surface-chip-translucent);
-      }
-    }
-  }
-}
-
 .nav-card {
   margin-bottom: 24px;
   background: var(--apple-surface);
@@ -757,19 +708,6 @@ onMounted(() => {
 @media (max-width: 768px) {
   .system-config {
     padding: 16px;
-  }
-  
-  .page-header {
-    flex-direction: column;
-    gap: 16px;
-    
-    .header-actions {
-      width: 100%;
-      
-      .el-button {
-        flex: 1;
-      }
-    }
   }
   
   :deep(.el-row) {

@@ -1,14 +1,7 @@
 <template>
   <div class="review-workflow">
     <!-- 页面头部 -->
-    <div class="page-header">
-      <div class="header-content">
-        <div class="header-left">
-          <h1 class="page-title">审核工作流配置</h1>
-          <p class="page-subtitle">配置论文审核的工作流程，包括审核步骤和审批人设置</p>
-        </div>
-      </div>
-    </div>
+    <PageHeader title="审核工作流配置" description="配置论文审核的工作流程，包括审核步骤和审批人设置" />
 
     <!-- 工作流配置 -->
     <el-card shadow="never" class="workflow-card">
@@ -165,6 +158,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 // 图标导入
 import {
@@ -303,23 +297,6 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .review-workflow {
-  .page-header {
-    margin-bottom: 20px;
-    
-    .header-content {
-      .page-title {
-        margin: 0 0 8px 0;
-        font-size: 24px;
-        font-weight: 600;
-      }
-      
-      .page-subtitle {
-        margin: 0;
-        color: var(--apple-ink-muted-80);
-      }
-    }
-  }
-  
   .workflow-card {
     .workflow-steps {
       margin-top: 16px;

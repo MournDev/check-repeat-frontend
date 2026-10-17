@@ -1,11 +1,6 @@
 <template>
   <div class="check-rule-management">
-    <div class="page-header">
-      <div class="header-content">
-        <h1 class="page-title">查重规则管理</h1>
-        <p class="page-desc">管理论文查重的规则配置，包括阈值、次数限制和关联比对库</p>
-      </div>
-    </div>
+    <PageHeader title="查重规则管理" description="管理论文查重的规则配置，包括阈值、次数限制和关联比对库" />
 
     <!-- 筛选栏 -->
     <el-card class="filter-card" shadow="never">
@@ -199,6 +194,7 @@ import dayjs from 'dayjs'
 import { getCheckRuleList, saveOrUpdateCheckRule, deleteCheckRule, getRuleRelatedLibs, getCompareLibList } from '@/api/admin/config'
 import { getColleges } from '@/api/admin/common'
 import { getCheckQuotaList, saveCheckQuota } from '@/api/p5'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 const loading = ref(false)
 const submitting = ref(false)
@@ -495,19 +491,6 @@ onMounted(() => {
 <style scoped>
 .check-rule-management {
   padding: 0;
-}
-.page-header {
-  margin-bottom: 20px;
-}
-.page-title {
-  font-size: 22px;
-  font-weight: 600;
-  margin: 0 0 4px 0;
-}
-.page-desc {
-  color: var(--apple-info);
-  margin: 0;
-  font-size: 14px;
 }
 .filter-card {
   margin-bottom: 16px;

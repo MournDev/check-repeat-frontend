@@ -1,19 +1,13 @@
 <template>
   <div class="teacher-pending">
     <!-- 页面头部（仅保留说明与刷新，批量操作收敛到表格底栏） -->
-    <div class="page-header">
-      <div class="header-content console-page-head-card">
-        <div class="header-left">
-          <h1 class="page-title">待审核论文</h1>
-          <p class="page-subtitle">需要您审核的学生论文</p>
-        </div>
-        <div class="header-right">
-          <el-button type="primary" :icon="Refresh" @click="refreshList">
-            刷新
-          </el-button>
-        </div>
-      </div>
-    </div>
+    <PageHeader title="待审核论文" description="需要您审核的学生论文">
+      <template #actions>
+        <el-button type="primary" :icon="Refresh" @click="refreshList">
+          刷新
+        </el-button>
+      </template>
+    </PageHeader>
 
     <!-- 超时 / 紧急合并状态条 -->
     <el-alert
@@ -135,6 +129,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import PageHeader from '@/components/common/PageHeader.vue'
 import { Refresh, FullScreen } from '@element-plus/icons-vue'
 import { sendReminder } from '@/api/teacher.js'
 import ReviewDialog from '@/views/teacher/ReviewDialog.vue'
@@ -342,29 +337,6 @@ onMounted(async () => {
   font-family: var(--apple-font-text);
 }
 
-/* ── 页头 ─────────────────────────────────────────── */
-.page-header {
-  margin-bottom: 16px;
-}
-
-.header-left {
-  min-width: 0;
-}
-
-.page-title {
-  margin: 0 0 4px 0;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--apple-ink);
-  line-height: 1.2;
-}
-
-.page-subtitle {
-  margin: 0;
-  font-size: 0.8125rem;
-  color: var(--apple-ink-muted-48);
-}
-
 /* ── 状态提醒条 ───────────────────────────────────── */
 .urgent-alert {
   margin-bottom: 16px;
@@ -380,13 +352,5 @@ onMounted(async () => {
 :deep(.urgent-alert .el-alert__action) {
   display: flex;
   gap: 8px;
-}
-
-@media (max-width: 768px) {
-  .header-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
 }
 </style>

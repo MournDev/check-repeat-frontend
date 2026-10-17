@@ -1,25 +1,19 @@
 <template>
   <div class="student-management">
     <!-- 页面头部 -->
-    <div class="page-header">
-      <div class="header-content console-page-head-card">
-        <div class="header-left">
-          <h1 class="page-title">学生管理</h1>
-          <p class="page-subtitle">管理所有学生信息，分配导师，跟踪论文进度</p>
-        </div>
-        <div class="header-right">
-          <el-button type="primary" :icon="Plus" @click="addNewStudent" size="large">
-            添加学生
-          </el-button>
-          <el-button :icon="Upload" @click="importStudents" size="large">
-            批量导入
-          </el-button>
-          <el-button :icon="Download" @click="exportData" size="large">
-            导出数据
-          </el-button>
-        </div>
-      </div>
-    </div>
+    <PageHeader title="学生管理" description="管理所有学生信息，分配导师，跟踪论文进度">
+      <template #actions>
+        <el-button type="primary" :icon="Plus" @click="addNewStudent" size="large">
+          添加学生
+        </el-button>
+        <el-button :icon="Upload" @click="importStudents" size="large">
+          批量导入
+        </el-button>
+        <el-button :icon="Download" @click="exportData" size="large">
+          导出数据
+        </el-button>
+      </template>
+    </PageHeader>
 
     <!-- 统计卡片（可点击过滤） -->
     <StudentStats
@@ -284,6 +278,7 @@ import { getSimilarityColor } from '@/utils/reviewStatus.js'
 import StudentStats from './components/StudentStats.vue'
 import StudentFilterBar from './components/StudentFilterBar.vue'
 import StudentTable from './components/StudentTable.vue'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 // 图标引入
 import {
@@ -1070,33 +1065,6 @@ onMounted(async () => {
   padding: var(--apple-spacing-xl);
 }
 
-// 页面头部
-.page-header {
-  margin-bottom: var(--apple-spacing-lg);
-
-  .header-content {
-    background: var(--apple-surface);
-    border: 1px solid var(--apple-hairline);
-    border-radius: var(--apple-rounded-lg);
-    padding: var(--apple-spacing-lg);
-
-    .header-left {
-      .page-title {
-        margin: 0 0 8px 0;
-        font-size: 1.75rem;
-        font-weight: 700;
-        color: var(--apple-ink);
-      }
-
-      .page-subtitle {
-        margin: 0;
-        color: var(--apple-ink-muted-48);
-        font-size: 0.875rem;
-      }
-    }
-  }
-}
-
 // 论文预览弹层样式（append-to-body，scoped :deep() 不生效，外壳依赖全局；slot 内元素可正常 scoped）
 .paper-preview-dialog {
   .preview-container {
@@ -1232,23 +1200,6 @@ onMounted(async () => {
   .empty-papers {
     text-align: center;
     padding: 40px 0;
-  }
-}
-
-// 响应式（仅保留 dialog 内部响应式，区块级响应式由子组件处理）
-@media (max-width: 768px) {
-  .page-header {
-    .header-content {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 16px;
-
-      .header-right {
-        width: 100%;
-        justify-content: flex-start;
-        flex-wrap: wrap;
-      }
-    }
   }
 }
 </style>

@@ -1,12 +1,8 @@
 <template>
   <div class="user-management">
     <!-- 页面头部 -->
-    <div class="page-header">
-      <div class="header-content">
-        <h1 class="page-title">人员管理</h1>
-        <p class="page-desc">统一管理系统内所有人员账号（学生/教师）</p>
-      </div>
-      <div class="header-actions">
+    <PageHeader title="人员管理" description="统一管理系统内所有人员账号（学生/教师）">
+      <template #actions>
         <el-button type="primary" :icon="Plus" @click="showAddUserDialog">
           新增用户
         </el-button>
@@ -14,8 +10,8 @@
           刷新
         </el-button>
         <el-switch v-model="fetchAllUsers" active-text="全部显示" inactive-text="分页显示" style="margin-left:12px" />
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
     <!-- 筛选条件 -->
     <el-card class="filter-card" shadow="never">
@@ -303,6 +299,7 @@ import { useUserStore } from '@/stores/user'
 import {
   Plus, Refresh, Search, RefreshLeft, User, Delete, Download
 } from '@element-plus/icons-vue'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 // 响应式数据
 const loading = ref(false)
@@ -840,58 +837,6 @@ const rowKey = (row) => {
   padding: 24px;
 }
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 24px;
-  background: var(--apple-surface);
-  border: 1px solid var(--apple-surface-chip-translucent);
-  border-radius: 18px;
-  padding: 24px;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    border-color: var(--apple-surface-chip-translucent);
-  }
-  
-  .header-content {
-    .page-title {
-      margin: 0 0 8px 0;
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: var(--apple-ink); // Slate-900
-    }
-    
-    .page-desc {
-      margin: 0;
-      color: var(--apple-ink-secondary); // Slate-500
-      font-size: 0.95rem;
-    }
-  }
-  
-  .header-actions {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    
-    .el-button {
-      border-radius: 8px;
-      transition: all 0.2s ease;
-      border: 1px solid var(--apple-surface-chip-translucent);
-      
-      &:hover {
-        border-color: var(--apple-surface-chip-translucent);
-      }
-    }
-    
-    .el-switch {
-      --el-switch-on-color: var(--apple-primary); // Blue-500
-      --el-switch-off-color: var(--apple-ink-secondary); // Slate-400
-    }
-  }
-}
-
 .filter-card {
   margin-bottom: 24px;
   background: var(--apple-surface);
@@ -1085,19 +1030,6 @@ const rowKey = (row) => {
 @media (max-width: 768px) {
   .user-management {
     padding: 16px;
-  }
-  
-  .page-header {
-    flex-direction: column;
-    gap: 16px;
-    
-    .header-actions {
-      width: 100%;
-      
-      .el-button {
-        flex: 1;
-      }
-    }
   }
   
   .filter-card {

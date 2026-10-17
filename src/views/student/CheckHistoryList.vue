@@ -1,13 +1,14 @@
 <template>
   <div class="check-history-list-page">
     <!-- 页面标题 -->
-    <div class="page-header">
-      <el-page-header @back="goBack">
-        <template #content>
-          <span class="page-title">查重历史</span>
-        </template>
-      </el-page-header>
-    </div>
+    <PageHeader title="查重历史">
+      <template #actions>
+        <el-button text @click="goBack">
+          <el-icon><ArrowLeft /></el-icon>
+          <span>返回</span>
+        </el-button>
+      </template>
+    </PageHeader>
 
     <!-- 筛选和搜索 -->
     <el-card class="filter-card" shadow="never">
@@ -173,7 +174,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Histogram, Document, Search, Refresh } from '@element-plus/icons-vue'
+import { Histogram, Document, Search, Refresh, ArrowLeft } from '@element-plus/icons-vue'
 import { getStudentPaperPage } from '@/api/student'
 import { useUserStore } from '@/stores/user'
 import {
@@ -183,6 +184,7 @@ import {
   usePaperTypeOptions,
   usePaperTypesLoaded
 } from '@/utils/paperType.js'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -354,16 +356,6 @@ onMounted(() => {
   padding: 20px;
   background-color: var(--apple-canvas-parchment);
   min-height: 100vh;
-
-  .page-header {
-    margin-bottom: 20px;
-    
-    .page-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--apple-ink);
-    }
-  }
 
   .filter-card {
     margin-bottom: 20px;

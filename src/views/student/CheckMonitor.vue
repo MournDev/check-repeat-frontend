@@ -1,13 +1,14 @@
 <template>
   <div class="check-monitor-page">
     <!-- 页面头部 -->
-    <div class="page-header">
-      <el-page-header @back="goBack">
-        <template #content>
-          <span class="page-title">查重进度监控</span>
-        </template>
-      </el-page-header>
-    </div>
+    <PageHeader title="查重进度监控">
+      <template #actions>
+        <el-button text @click="goBack">
+          <el-icon><ArrowLeft /></el-icon>
+          <span>返回</span>
+        </el-button>
+      </template>
+    </PageHeader>
 
     <!-- 当前状态显示 -->
     <el-card class="status-card" shadow="never">
@@ -169,12 +170,13 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { 
   Refresh, DataLine, Tickets, Delete, InfoFilled, SuccessFilled,
-  Check, Loading, Clock, Document, Files, Connection, DocumentChecked
+  Check, Loading, Clock, Document, Files, Connection, DocumentChecked, ArrowLeft
 } from '@element-plus/icons-vue'
 // 注意：后端没有 /api/student/check-tasks/status 这个接口，
 // 任务状态要用 taskDetail（按 paperId 查），它同时带回推送订阅需要的 taskId
 import { getCheckTaskDetail } from '@/api/student'
 import { useCheckProgress } from '@/composables/useCheckProgress'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -576,16 +578,6 @@ onUnmounted(() => {
   padding: 20px;
   background-color: var(--apple-canvas-parchment);
   min-height: 100vh;
-
-  .page-header {
-    margin-bottom: 20px;
-    
-    .page-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--apple-ink);
-    }
-  }
 
   .status-card {
     margin-bottom: 20px;

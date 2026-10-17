@@ -1,11 +1,6 @@
 <template>
   <div class="compare-lib-management">
-    <div class="page-header">
-      <div class="header-content">
-        <h1 class="page-title">比对库管理</h1>
-        <p class="page-desc">管理查重系统使用的比对数据源（本地库/远程库）</p>
-      </div>
-    </div>
+    <PageHeader title="比对库管理" description="管理查重系统使用的比对数据源（本地库/远程库）" />
 
     <!-- 筛选栏 -->
     <el-card class="filter-card" shadow="never">
@@ -108,6 +103,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getCompareLibList, saveOrUpdateCompareLib, toggleLibEnabled } from '@/api/admin/config'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 const loading = ref(false)
 const submitting = ref(false)
@@ -250,19 +246,6 @@ onMounted(() => {
 <style scoped>
 .compare-lib-management {
   padding: 0;
-}
-.page-header {
-  margin-bottom: 20px;
-}
-.page-title {
-  font-size: 22px;
-  font-weight: 600;
-  margin: 0 0 4px 0;
-}
-.page-desc {
-  color: var(--apple-info);
-  margin: 0;
-  font-size: 14px;
 }
 .filter-card {
   margin-bottom: 16px;

@@ -1,19 +1,13 @@
 <template>
   <div class="review-templates">
     <!-- 页面头部 -->
-    <div class="page-header">
-      <div class="header-content">
-        <div class="header-left">
-          <h1 class="page-title">审核意见模板</h1>
-          <p class="page-subtitle">管理常用的审核意见模板，提高审核效率</p>
-        </div>
-        <div class="header-right">
-          <el-button type="primary" :icon="Plus" @click="showTemplateDialog">
-            新建模板
-          </el-button>
-        </div>
-      </div>
-    </div>
+    <PageHeader title="审核意见模板" description="管理常用的审核意见模板，提高审核效率">
+      <template #actions>
+        <el-button type="primary" :icon="Plus" @click="showTemplateDialog">
+          新建模板
+        </el-button>
+      </template>
+    </PageHeader>
 
     <!-- 模板分类导航 -->
     <div class="category-nav">
@@ -234,6 +228,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 // 图标导入
 import {
@@ -484,27 +479,6 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 .review-templates {
-  .page-header {
-    margin-bottom: 20px;
-    
-    .header-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      
-      .page-title {
-        margin: 0 0 8px 0;
-        font-size: 24px;
-        font-weight: 600;
-      }
-      
-      .page-subtitle {
-        margin: 0;
-        color: var(--apple-ink-muted-80);
-      }
-    }
-  }
-  
   .category-nav {
     :deep(.el-tabs__content) {
       padding: 20px 0;
