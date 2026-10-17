@@ -105,7 +105,7 @@
                 <div class="security-title">登录密码</div>
                 <div class="security-desc">定期更改密码以保证账户安全</div>
               </div>
-              <el-button link :icon="Edit" @click="changePasswordPrompt">修改密码</el-button>
+              <el-button link :icon="Edit" @click="changePasswordDialog">修改密码</el-button>
             </div>
             <div v-if="role === 'TEACHER'" class="security-item">
               <div class="security-info">
@@ -180,6 +180,20 @@
         </el-card>
       </el-col>
     </el-row>
+
+    <!-- 修改密码：教师/管理员统一走 /api/user/update-password（@RequestBody，oldPassword 必填），
+         与学生端同一契约。此前的 prompt 单输入分支打不通后端校验（见 confirmStaffChangePassword 注释） -->
+    <el-dialog v-model="passwordDialogVisible" title="修改密码" width="400px" :close-on-click-modal="false">
+      <el-form ref="passwordFormRef" :model="passwordForm" :rules="staffPwdRules" label-width="100px">
+        <el-form-item label="原密码" prop="oldPassword"><el-input v-model="passwordForm.oldPassword" type="password" show-password /></el-form-item>
+        <el-form-item label="新密码" prop="newPassword"><el-input v-model="passwordForm.newPassword" type="password" show-password /></el-form-item>
+        <el-form-item label="确认密码" prop="confirmPassword"><el-input v-model="passwordForm.confirmPassword" type="password" show-password /></el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="passwordDialogVisible = false">取消</el-button>
+        <el-button type="primary" :loading="changingPassword" @click="confirmStaffChangePassword">确认修改</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -190,7 +204,7 @@ import { User, Phone, Lock, Bell, Setting, Edit } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
 import { updatePassword, getSubjectFieldTree } from '@/api/user'
 import { updateUser } from '@/api/admin/users'
-import { updateInfo, getInfo, changePassword } from '@/api/teacher'
+import { updateInfo, getInfo } from '@/api/teacher'
 import AvatarUploader from './AvatarUploader.vue'
 import { useCollegeMajor } from '@/composables/useCollegeMajor'
 
@@ -281,17 +295,46 @@ async function saveSettings() {
 }
 
 // ============ 修改密码 ============
-function changePasswordPrompt() {
-  ElMessageBox.prompt('请输入新密码：', '修改密码', { confirmButtonText: '确定', cancelButtonText: '取消', inputType: 'password' }).then(async ({ value }) => {
-    if (!value) { ElMessage.error('新密码不能为空'); return }
-    try {
-      let res
-      if (role.value === 'TEACHER') res = await changePassword({ oldPassword: value, newPassword: value })
-      else res = await updatePassword({ userId: userStore.userInfo.userId, newPassword: value })
-      if (res.code === 200) { ElMessage.success('密码修改成功，请重新登录'); userStore.logout(); setTimeout(() => location.reload(), 1000) }
-      else ElMessage.error(res.message || '密码修改失败')
-    } catch (e) { ElMessage.error(e?.message || '密码修改失败') }
-  }).catch(() => {})
+// 与学生端同一契约：PUT /api/user/update-password（@RequestBody UpdatePasswordReq，
+// oldPassword 必填）。此前是 ElMessageBox.prompt 只收一个新密码：教师分支把新密码
+// 同时当旧密码发给 @RequestParam 端点（读不到 JSON body 且缺 userId），管理员分支
+// 缺 oldPassword 被 @NotBlank 拦下，两条路都过不了后端校验，故改为表单弹窗。
+const passwordDialogVisible = ref(false)
+const changingPassword = ref(false)
+const passwordFormRef = ref()
+const passwordForm = reactive({ oldPassword: '', newPassword: '', confirmPassword: '' })
+const staffPwdRules = {
+  oldPassword: [{ required: true, message: '请输入原密码', trigger: 'blur' }],
+  newPassword: [
+    { required: true, message: '请输入新密码', trigger: 'blur' },
+    { min: 6, max: 50, message: '密码长度必须在6-50位之间', trigger: 'blur' },
+  ],
+  confirmPassword: [
+    { required: true, message: '请确认密码', trigger: 'blur' },
+    { validator: (rule, value, callback) => { callback(value !== passwordForm.newPassword ? new Error('两次输入密码不一致') : undefined) }, trigger: 'blur' },
+  ],
+}
+
+function changePasswordDialog() {
+  passwordDialogVisible.value = true
+  Object.keys(passwordForm).forEach(k => passwordForm[k] = '')
+  passwordFormRef.value?.clearValidate()
+}
+
+async function confirmStaffChangePassword() {
+  try { await passwordFormRef.value.validate() } catch { return }
+  changingPassword.value = true
+  try {
+    const res = await updatePassword({ oldPassword: passwordForm.oldPassword, newPassword: passwordForm.newPassword })
+    if (res.code === 200) {
+      ElMessage.success('密码修改成功，请重新登录')
+      // 后端已使该用户全部旧 token 失效（含当前设备），清干净本地会话再回登录页
+      userStore.logout()
+      passwordDialogVisible.value = false
+      setTimeout(() => location.reload(), 500)
+    } else ElMessage.error(res.message || '密码修改失败')
+  } catch (e) { ElMessage.error(e?.response?.data?.message || e?.message || '密码修改失败') }
+  finally { changingPassword.value = false }
 }
 
 // ============ TEACHER: two factor ============
