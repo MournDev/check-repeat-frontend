@@ -389,7 +389,10 @@ const handleLogout = async () => {
     await ElMessageBox.confirm('确定要退出登录吗？', '提示', {
       confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
     })
-    userStore.logout()
+    // 必须 await：logout 内部要等 apiLogout 返回后才清 token。
+    // 不 await 的话跳转登录页时 token 仍在，Login onMounted 的「已登录跳角色首页」
+    // 会把人弹回工作台，卡在无菜单无数据的空壳页
+    await userStore.logout()
     ElMessage.success('退出登录成功')
     router.push({ name: 'Login' })
   } catch {}

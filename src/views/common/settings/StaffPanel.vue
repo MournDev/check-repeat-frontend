@@ -328,8 +328,9 @@ async function confirmStaffChangePassword() {
     const res = await updatePassword({ oldPassword: passwordForm.oldPassword, newPassword: passwordForm.newPassword })
     if (res.code === 200) {
       ElMessage.success('密码修改成功，请重新登录')
-      // 后端已使该用户全部旧 token 失效（含当前设备），清干净本地会话再回登录页
-      userStore.logout()
+      // 后端已使该用户全部旧 token 失效（含当前设备），清干净本地会话再回登录页；
+      // await 确保 reload 前 token 已清，否则刷新后守卫见到有效 token 又进应用
+      await userStore.logout()
       passwordDialogVisible.value = false
       setTimeout(() => location.reload(), 500)
     } else ElMessage.error(res.message || '密码修改失败')

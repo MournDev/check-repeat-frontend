@@ -400,7 +400,8 @@ async function confirmStudentChangePassword() {
     const res = await updatePassword({ oldPassword: passwordForm.oldPassword, newPassword: passwordForm.newPassword })
     if (res.code === 200 || (res.status >= 200 && res.status < 300)) {
       ElMessage.success('密码修改成功，请重新登录')
-      userStore.logout()
+      // await 确保 token 已清再跳登录页，否则 Login 的「已登录跳角色首页」会把人弹回应用
+      await userStore.logout()
       passwordDialogVisible.value = false
       setTimeout(() => router.push({ name: 'Login' }), 500)
     } else ElMessage.error(res.message || '密码修改失败')
