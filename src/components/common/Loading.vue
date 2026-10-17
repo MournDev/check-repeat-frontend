@@ -47,15 +47,15 @@ const props = defineProps({
 .spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid #f0f0f0;
-  border-top: 4px solid #0066cc;
+  border: 4px solid var(--apple-divider-soft);
+  border-top: 4px solid var(--apple-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
 .loading-text {
   font-size: 17px;
-  color: #0066cc;
+  color: var(--apple-primary);
   font-weight: 400;
 }
 

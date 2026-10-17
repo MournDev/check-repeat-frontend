@@ -95,7 +95,7 @@ const props = withDefaults(defineProps<AuthLayoutProps>(), {
   flex-direction: column;
   justify-content: space-between;
   padding: 48px;
-  background: #272729;
+  background: var(--apple-surface-tile-1);
   overflow: hidden;
 }
 
@@ -124,7 +124,7 @@ const props = withDefaults(defineProps<AuthLayoutProps>(), {
   font-size: 21px;
   font-weight: 600;
   letter-spacing: 0.231px;
-  color: #ffffff;
+  color: var(--apple-canvas);
 }
 
 .characters-area {
@@ -154,7 +154,7 @@ const props = withDefaults(defineProps<AuthLayoutProps>(), {
   align-items: center;
   justify-content: center;
   padding: 32px;
-  background: #ffffff;
+  background: var(--apple-canvas);
 }
 
 .form-wrapper {
@@ -169,7 +169,7 @@ const props = withDefaults(defineProps<AuthLayoutProps>(), {
   gap: 8px;
   font-size: 18px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--apple-ink);
   margin-bottom: 48px;
 }
 
@@ -177,7 +177,7 @@ const props = withDefaults(defineProps<AuthLayoutProps>(), {
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background: #f5f5f7;
+  background: var(--apple-canvas-parchment);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -193,7 +193,7 @@ const props = withDefaults(defineProps<AuthLayoutProps>(), {
   font-size: 40px;
   font-weight: 600;
   line-height: 1.10;
-  color: #1d1d1f;
+  color: var(--apple-ink);
   margin: 0 0 10px 0;
 }
 
@@ -202,7 +202,7 @@ const props = withDefaults(defineProps<AuthLayoutProps>(), {
   font-weight: 400;
   line-height: 1.47;
   letter-spacing: -0.374px;
-  color: #7a7a7a;
+  color: var(--apple-ink-muted-48);
   margin: 0;
 }
 

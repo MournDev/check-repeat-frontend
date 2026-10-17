@@ -169,7 +169,7 @@ watch(() => props.paperIds, (newVal) => {
       align-items: center;
       gap: 8px;
       font-weight: 600;
-      color: #303133;
+      color: var(--apple-ink);
       
       .el-tag {
         margin-left: auto;
@@ -182,7 +182,7 @@ watch(() => props.paperIds, (newVal) => {
         justify-content: space-around;
         margin-top: 24px;
         padding: 16px 0;
-        background: #f5f7fa;
+        background: var(--apple-canvas-parchment);
         border-radius: 8px;
         
         .stat-item {
@@ -193,35 +193,35 @@ watch(() => props.paperIds, (newVal) => {
           
           .el-icon {
             font-size: 24px;
-            color: #909399;
+            color: var(--apple-ink-secondary);
           }
           
           .label {
             font-size: 14px;
-            color: #909399;
+            color: var(--apple-ink-secondary);
           }
           
           .value {
             font-size: 20px;
             font-weight: 700;
-            color: #606266;
+            color: var(--apple-ink-muted-80);
           }
           
           &.processing {
             .el-icon, .value {
-              color: #409eff;
+              color: var(--apple-primary);
             }
           }
           
           &.completed {
             .el-icon, .value {
-              color: #67c23a;
+              color: var(--apple-success);
             }
           }
           
           &.failed {
             .el-icon, .value {
-              color: #f56c6c;
+              color: var(--apple-danger);
             }
           }
         }
@@ -237,7 +237,7 @@ watch(() => props.paperIds, (newVal) => {
       align-items: center;
       gap: 8px;
       font-weight: 600;
-      color: #303133;
+      color: var(--apple-ink);
       
       .el-button {
         margin-left: auto;
@@ -247,28 +247,28 @@ watch(() => props.paperIds, (newVal) => {
     .task-list {
       .task-item {
         padding: 16px;
-        border: 1px solid #e4e7ed;
+        border: 1px solid var(--apple-hairline);
         border-radius: 8px;
         margin-bottom: 16px;
         transition: all 0.3s ease;
         
         &.pending {
-          background: #f5f7fa;
+          background: var(--apple-canvas-parchment);
         }
         
         &.processing {
-          background: #ecf5ff;
-          border-color: #409eff;
+          background: var(--apple-info-bg);
+          border-color: var(--apple-primary);
         }
         
         &.completed {
-          background: #f0f9eb;
-          border-color: #67c23a;
+          background: var(--apple-success-bg);
+          border-color: var(--apple-success);
         }
         
         &.failed {
-          background: #fef0f0;
-          border-color: #f56c6c;
+          background: var(--apple-danger-bg);
+          border-color: var(--apple-danger);
         }
         
         .task-header {
@@ -285,14 +285,14 @@ watch(() => props.paperIds, (newVal) => {
             .task-title {
               font-size: 14px;
               font-weight: 600;
-              color: #303133;
+              color: var(--apple-ink);
             }
           }
           
           .task-progress {
             font-size: 14px;
             font-weight: 600;
-            color: #409eff;
+            color: var(--apple-primary);
           }
         }
         
@@ -302,7 +302,7 @@ watch(() => props.paperIds, (newVal) => {
           gap: 8px;
           margin-top: 12px;
           font-size: 13px;
-          color: #606266;
+          color: var(--apple-ink-muted-80);
         }
         
         .task-estimate {
@@ -311,7 +311,7 @@ watch(() => props.paperIds, (newVal) => {
           gap: 8px;
           margin-top: 8px;
           font-size: 12px;
-          color: #909399;
+          color: var(--apple-ink-secondary);
         }
       }
     }

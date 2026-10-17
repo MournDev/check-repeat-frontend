@@ -547,10 +547,10 @@ const getNotificationIcon = (messageType) => {
 
 const getNotificationColor = (messageType) => {
   const colorMap = {
-    'SUCCESS': '#67C23A',
+    'SUCCESS': '#34c759',
     'INFO': '#0066cc',
-    'WARNING': '#E6A23C',
-    'ERROR': '#F56C6C'
+    'WARNING': '#ff9500',
+    'ERROR': '#ff3b30'
   }
   return colorMap[messageType] || '#0066cc'
 }
@@ -890,14 +890,14 @@ watch(
 <style lang="scss" scoped>
 .message-item {
   &.pending {
-    border-left: 4px solid #e6a23c;
-    background-color: #fdf6ec;
+    border-left: 4px solid var(--apple-warning);
+    background-color: var(--apple-warning-bg);
   }
 
   .assignment-details {
     margin: 8px 0;
     padding: 8px;
-    background: #f8f9fa;
+    background: var(--apple-surface-pearl);
     border-radius: 4px;
 
     .detail-item {
@@ -907,16 +907,16 @@ watch(
       font-size: 12px;
 
       .label {
-        color: #7f8c8d;
+        color: var(--apple-ink-secondary);
         min-width: 60px;
       }
 
       .value {
-        color: #2c3e50;
+        color: var(--apple-ink);
         flex: 1;
 
         &.deadline {
-          color: #f56c6c;
+          color: var(--apple-danger);
           font-weight: 400;
         }
       }
@@ -928,12 +928,12 @@ watch(
   .paper-info {
     h4 {
       margin: 0 0 12px 0;
-      color: #2c3e50;
+      color: var(--apple-ink);
       font-size: 14px;
     }
 
     .deadline-text {
-      color: #f56c6c;
+      color: var(--apple-danger);
       font-weight: 600;
     }
   }
@@ -951,11 +951,11 @@ watch(
     align-items: center;
     margin-bottom: 24px;
     padding-bottom: 16px;
-    border-bottom: 1px solid #e4e7ed;
+    border-bottom: 1px solid var(--apple-hairline);
 
     h1 {
       margin: 0;
-      color: #2c3e50;
+      color: var(--apple-ink);
       font-size: 24px;
     }
 
@@ -969,34 +969,34 @@ watch(
     margin-bottom: 24px;
 
     .stat-card {
-      background: #f8f9fa;
+      background: var(--apple-surface-pearl);
       padding: 20px;
       border-radius: 8px;
       text-align: center;
-      border-left: 4px solid #0066cc;
+      border-left: 4px solid var(--apple-primary);
 
       &.unread {
-        border-left-color: #F56C6C;
+        border-left-color: var(--apple-danger);
       }
 
       &.read {
-        border-left-color: #67C23A;
+        border-left-color: var(--apple-success);
       }
 
       &.today {
-        border-left-color: #E6A23C;
+        border-left-color: var(--apple-warning);
       }
 
       .stat-number {
         font-size: 28px;
         font-weight: bold;
-        color: #2c3e50;
+        color: var(--apple-ink);
         margin-bottom: 8px;
       }
 
       .stat-label {
         font-size: 14px;
-        color: #7f8c8d;
+        color: var(--apple-ink-secondary);
       }
     }
   }
@@ -1021,20 +1021,20 @@ watch(
       display: flex;
       align-items: flex-start;
       padding: 16px;
-      border: 1px solid #e4e7ed;
+      border: 1px solid var(--apple-hairline);
       border-radius: 8px;
       margin-bottom: 12px;
       transition: all 0.3s ease;
       cursor: pointer;
 
       &:hover {
-        border-color: #0066cc;
+        border-color: var(--apple-primary);
         box-shadow: 0 2px 8px rgba(64, 158, 255, 0.1);
       }
 
       &.unread {
-        background-color: #f0f8ff;
-        border-left: 4px solid #0066cc;
+        background-color: var(--apple-info-bg);
+        border-left: 4px solid var(--apple-primary);
       }
 
       .message-checkbox {
@@ -1060,7 +1060,7 @@ watch(
           align-items: center;
           gap: 8px;
           font-weight: 600;
-          color: #2c3e50;
+          color: var(--apple-ink);
           margin-bottom: 8px;
           font-size: 14px;
 
@@ -1075,7 +1075,7 @@ watch(
         }
 
         .message-desc {
-          color: #7f8c8d;
+          color: var(--apple-ink-secondary);
           font-size: 13px;
           line-height: 1.5;
           margin-bottom: 8px;
@@ -1086,10 +1086,10 @@ watch(
           display: flex;
           gap: 16px;
           font-size: 12px;
-          color: #bdc3c7;
+          color: var(--apple-slate-border-strong);
 
           .message-sender {
-            color: #95a5a6;
+            color: var(--apple-slate-faint);
           }
         }
       }
@@ -1112,14 +1112,14 @@ watch(
     bottom: 0;
     background: white;
     padding: 16px;
-    border-top: 1px solid #e4e7ed;
+    border-top: 1px solid var(--apple-hairline);
     display: flex;
     align-items: center;
     gap: 16px;
     margin-top: 20px;
 
     .selected-count {
-      color: #0066cc;
+      color: var(--apple-primary);
       font-weight: 600;
     }
   }

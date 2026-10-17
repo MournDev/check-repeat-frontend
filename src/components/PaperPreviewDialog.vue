@@ -246,14 +246,14 @@ onMounted(() => {
   overflow: hidden;
   
   :deep(.el-dialog__header) {
-    background: #f8fafc;
-    border-bottom: 1px solid #e2e8f0;
+    background: var(--apple-surface-pearl);
+    border-bottom: 1px solid var(--apple-slate-border);
     padding: 20px 24px;
     
     .el-dialog__title {
       font-size: 1.125rem;
       font-weight: 600;
-      color: #0f172a;
+      color: var(--apple-slate-ink);
     }
   }
   
@@ -283,11 +283,11 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #f8fafc;
+  background: var(--apple-surface-pearl);
   
   .loading-text {
     margin-top: 20px;
-    color: #64748b;
+    color: var(--apple-slate-sub);
     font-size: 14px;
   }
 }
@@ -299,11 +299,11 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #f8fafc;
+  background: var(--apple-surface-pearl);
   padding: 48px;
   
   .error-detail {
-    color: #64748b;
+    color: var(--apple-slate-sub);
     margin: 16px 0;
     text-align: center;
   }
@@ -314,8 +314,8 @@ onMounted(() => {
   justify-content: flex-end;
   gap: 12px;
   padding: 20px 24px;
-  border-top: 1px solid #e2e8f0;
-  background: #f8fafc;
+  border-top: 1px solid var(--apple-slate-border);
+  background: var(--apple-surface-pearl);
   
   :deep(.el-button) {
     border-radius: 8px;

@@ -150,7 +150,7 @@ const viewComparison = (source) => {
 .match-similarity {
   text-align: right;
   font-size: 14px;
-  color: #ef4444;
+  color: var(--apple-danger);
   font-weight: 600;
 }
 

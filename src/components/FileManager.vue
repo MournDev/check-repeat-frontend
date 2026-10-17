@@ -392,7 +392,7 @@ onMounted(() => {
   }
 
   &.active {
-    background: #ecf5ff;
+    background: var(--apple-info-bg);
     border: 1px solid var(--apple-primary);
   }
 

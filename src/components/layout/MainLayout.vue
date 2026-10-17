@@ -799,7 +799,7 @@ onUnmounted(() => {
 
   .maintenance-icon {
     font-size: 48px;
-    color: #f56c6c;
+    color: var(--apple-danger);
     margin-bottom: 16px;
   }
 
@@ -812,14 +812,14 @@ onUnmounted(() => {
 
   .maintenance-notice {
     font-size: 14px;
-    color: #606266;
+    color: var(--apple-ink-muted-80);
     white-space: pre-wrap;
     margin: 0;
   }
 
   .maintenance-time {
     font-size: 13px;
-    color: #909399;
+    color: var(--apple-ink-secondary);
     margin: 8px 0 0;
   }
 

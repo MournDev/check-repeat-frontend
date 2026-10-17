@@ -112,7 +112,7 @@ onUnmounted(() => {
   height: 100%;
   overflow-y: auto;
   position: relative;
-  border: 1px solid #e4e7ed;
+  border: 1px solid var(--apple-hairline);
   border-radius: 4px;
   background-color: #fff;
 }
