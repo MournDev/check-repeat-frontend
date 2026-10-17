@@ -175,7 +175,7 @@
             <el-button
               type="primary"
               :icon="Stamp"
-              :disabled="selectedPapers.length === 0"
+              :disabled="auditableSelected.length === 0"
               @click="showBatchAuditDialog"
             >
               批量审核
@@ -287,7 +287,10 @@
             <el-button size="small" type="warning" text @click="performThirdPartyCheck(row)">
               第三方查重
             </el-button>
-            <el-button size="small" type="primary" text @click="showAuditDialog(row)">
+            <el-button
+              v-if="row.paperStatus === 'auditing'"
+              size="small" type="primary" text @click="showAuditDialog(row)"
+            >
               审核
             </el-button>
             <el-button size="small" type="warning" text @click="handleRecomputeScore(row)">
@@ -556,6 +559,9 @@ const uploading = ref(false)
 const uploadProgress = ref(0)
 const paperList = ref([])
 const selectedPapers = ref([])
+// 审核阶段门：后端状态机仅接受 auditing → completed/rejected，其余流转返回 40305。
+// 单条审核按钮按行隐藏，批量入口只统计待审核的选中项，从入口挡住非法流转。
+const auditableSelected = computed(() => selectedPapers.value.filter(p => p.paperStatus === 'auditing'))
 const uploadDialogVisible = ref(false)
 const detailDialogVisible = ref(false)
 const currentPaper = ref(null)
@@ -1146,9 +1152,12 @@ const showAuditDialog = (paper) => {
 }
 
 const showBatchAuditDialog = () => {
-  if (selectedPapers.value.length === 0) {
-    ElMessage.warning('请先选择论文')
+  if (auditableSelected.value.length === 0) {
+    ElMessage.warning(selectedPapers.value.length === 0 ? '请先选择论文' : '所选论文均不在待审核状态，无法审核')
     return
+  }
+  if (auditableSelected.value.length < selectedPapers.value.length) {
+    ElMessage.warning(`已忽略 ${selectedPapers.value.length - auditableSelected.value.length} 篇非待审核状态的论文`)
   }
   isBatchAudit.value = true
   currentAuditPaper.value = null
@@ -1161,7 +1170,7 @@ const submitAudit = async () => {
   try {
     let res
     if (isBatchAudit.value) {
-      const paperIds = selectedPapers.value.map(p => p.id)
+      const paperIds = auditableSelected.value.map(p => p.id)
       res = await batchAuditPapers({
         paperIds,
         auditResult: auditForm.auditResult,
