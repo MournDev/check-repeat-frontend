@@ -231,7 +231,9 @@ const handleLogin = async () => {
       error.value = res.message || '登录失败，请检查账号密码'
     }
   } catch (err) {
-    error.value = err?.message || '账号或密码有误，请重新输入'
+    // HTTP 429 锁定等场景：真实原因在响应体 message，axios 的 error.message
+    // 只是「Request failed with status code 429」，直接展示是天书
+    error.value = err?.response?.data?.message || err?.message || '账号或密码有误，请重新输入'
     console.error('登录失败：', err)
   } finally {
     loading.value = false

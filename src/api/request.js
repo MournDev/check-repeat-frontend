@@ -142,23 +142,32 @@ service.interceptors.response.use(
       return Promise.reject(error)
     }
 
-    // blob响应的401处理
-    if (error.config?.responseType === 'blob' && error.response?.status === 401) {
-      const reader = new FileReader()
-      reader.onload = () => {
-        try {
-          const errorData = JSON.parse(reader.result)
-          ElMessage.error(errorData.message || '登录已过期')
-        } catch {
-          ElMessage.error('登录已过期，请重新登录')
-        }
-      }
-      reader.readAsText(error.response.data)
-      return Promise.reject(error)
-    }
-
     const status = error.response?.status
     const errorData = error.response?.data
+
+    // blob 错误体（导出接口返回的 JSON 报错等）：先读出真实 message 再提示，
+    // 否则 errorData 是 Blob 对象，各状态分支只能弹「请求参数错误」这类通用文案。
+    // 401 维持既有语义：文件下载的会话失效直接报错，不进入刷新重试链。
+    if (error.config?.responseType === 'blob' && errorData instanceof Blob) {
+      const message = await new Promise((resolve) => {
+        const reader = new FileReader()
+        reader.onload = () => {
+          try {
+            resolve(JSON.parse(reader.result)?.message || '')
+          } catch {
+            resolve('')
+          }
+        }
+        reader.onerror = () => resolve('')
+        reader.readAsText(errorData)
+      })
+      if (status === 401) {
+        ElMessage.error(message || '登录已过期，请重新登录')
+      } else {
+        ElMessage.error(message || '请求失败，请重试')
+      }
+      return Promise.reject(error)
+    }
 
     if (status === 401) {
       if (error.config?._skipLoginRedirect) {
@@ -229,7 +238,8 @@ service.interceptors.response.use(
       ElMessage.error(errorData?.message || '请求参数错误，请检查输入')
     }
     else if (status === 429) {
-      ElMessage.error('请求过于频繁，请稍后再试')
+      // 登录防爆破锁定（错误码 42901）：后端 message 带具体锁定原因，优先透出
+      ElMessage.error(errorData?.message || '请求过于频繁，请稍后再试')
     }
     else if (status === 500) {
       ElMessage.error(errorData?.message || '服务器内部错误，请联系管理员')
