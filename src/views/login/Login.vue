@@ -10,7 +10,7 @@
             <path d="M13 14L18 9L21 12V16L18 19L13 14Z" fill="white" fill-opacity="0.5" />
           </svg>
         </div>
-        <span class="brand-name">论文查重管理系统</span>
+        <span class="brand-name">{{ systemName }}</span>
       </div>
 
       <div class="characters-area">
@@ -36,7 +36,7 @@
               <path d="M13 14L18 9L21 12V16L18 19L13 14Z" fill="#5ac8fa" fill-opacity="0.7" />
             </svg>
           </div>
-          <span>论文查重管理系统</span>
+          <span>{{ systemName }}</span>
         </div>
 
         <div class="form-header">
@@ -155,6 +155,9 @@ import AnimatedCharacters from '@/components/animated-characters/AnimatedCharact
 
 const router = useRouter()
 const userStore = useUserStore()
+
+// 品牌名唯一来源：.env 的 VITE_SYSTEM_NAME（document.title 也用它，见 router 守卫）
+const systemName = import.meta.env.VITE_SYSTEM_NAME
 
 // 已登录用户访问 / 或 /login 时直接送回角色落地页，避免重复登录覆盖会话
 onMounted(() => {

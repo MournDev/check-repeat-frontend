@@ -10,7 +10,7 @@
             <path d="M13 14L18 9L21 12V16L18 19L13 14Z" fill="white" fill-opacity="0.5"/>
           </svg>
         </div>
-        <span class="brand-name">论文查重系统</span>
+        <span class="brand-name">{{ systemName }}</span>
       </div>
 
       <div class="characters-area">
@@ -36,7 +36,7 @@
               <path d="M13 14L18 9L21 12V16L18 19L13 14Z" fill="#2997ff" fill-opacity="0.7"/>
             </svg>
           </div>
-          <span>论文查重系统</span>
+          <span>{{ systemName }}</span>
         </div>
 
         <div class="form-header">
@@ -53,6 +53,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import AnimatedCharacters from '@/components/animated-characters/AnimatedCharacters.vue'
+
+// 品牌名唯一来源：.env 的 VITE_SYSTEM_NAME
+const systemName = import.meta.env.VITE_SYSTEM_NAME
 
 interface AuthLayoutProps {
   pageType?: 'login' | 'register' | 'reset';

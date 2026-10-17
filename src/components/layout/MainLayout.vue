@@ -11,7 +11,7 @@
             <path d="M7 14L12 9L17 14L12 19L7 14Z" fill="#2997ff" fill-opacity="0.9"/>
             <path d="M13 14L18 9L21 12V16L18 19L13 14Z" fill="#ffffff" fill-opacity="0.5"/>
           </svg>
-          <span class="brand-name">论文管理系统</span>
+          <span class="brand-name">{{ systemName }}</span>
         </div>
         <nav class="global-nav-links">
           <!-- 顶栏导航用 router-link：可键盘聚焦、可中键新开，与侧边栏同一可访问性约定 -->
@@ -164,7 +164,7 @@
                 <a href="#">隐私政策</a>
                 <a href="#">使用条款</a>
               </div>
-              <p class="footer-copy">&copy; 2026 论文管理系统 版权所有</p>
+              <p class="footer-copy">&copy; 2026 {{ systemName }} 版权所有</p>
             </div>
           </footer>
         </template>
@@ -196,6 +196,9 @@ const route = useRoute()
 const userStore = useUserStore()
 const messageStore = useMessageStore()
 const maintenanceStore = useMaintenanceStore()
+
+// 品牌名唯一来源：.env 的 VITE_SYSTEM_NAME（顶栏品牌、footer、页标题兜底共用）
+const systemName = import.meta.env.VITE_SYSTEM_NAME
 
 // WebSocket实时通知
 const { connect: wsConnect, disconnect: wsDisconnect } = useMessageWebSocket()
@@ -390,7 +393,7 @@ const breadcrumbItems = computed(() => {
 
 const currentPageTitle = computed(() => {
   const last = breadcrumbItems.value[breadcrumbItems.value.length - 1]
-  return last?.title || '论文管理系统'
+  return last?.title || systemName
 })
 
 const toggleSidebar = () => { sidebarVisible.value = !sidebarVisible.value }
