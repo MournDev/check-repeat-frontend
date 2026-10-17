@@ -27,7 +27,7 @@
             </div>
           </template>
           <div v-loading="distLoading" class="chart-body">
-            <div v-show="distList.length" ref="distChartRef" class="chart-container"></div>
+            <div v-show="distList.length" :ref="distChart.chartRef" class="chart-container"></div>
             <el-empty v-if="!distLoading && !distList.length" description="暂无查重结果数据" :image-size="80" />
           </div>
         </el-card>
@@ -44,7 +44,7 @@
             </div>
           </template>
           <div v-loading="trendLoading" class="chart-body">
-            <div v-show="trendList.length" ref="trendChartRef" class="chart-container"></div>
+            <div v-show="trendList.length" :ref="trendChart.chartRef" class="chart-container"></div>
             <el-empty v-if="!trendLoading && !trendList.length" description="暂无月度趋势数据" :image-size="80" />
           </div>
         </el-card>
@@ -62,7 +62,7 @@
         </div>
       </template>
       <div v-loading="compareLoading" class="chart-body">
-        <div v-show="compareList.length" ref="compareChartRef" class="chart-container compare"></div>
+        <div v-show="compareList.length" :ref="compareChart.chartRef" class="chart-container compare"></div>
         <el-empty v-if="!compareLoading && !compareList.length" description="暂无学院对比数据" :image-size="80" />
       </div>
     </el-card>
@@ -70,10 +70,10 @@
 </template>
 
 <script setup>
-import { ref, nextTick, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Download, Histogram, TrendCharts, DataAnalysis } from '@element-plus/icons-vue'
-import * as echarts from 'echarts'
+import { useChart } from '@/composables/useChart'
 import {
   getSimilarityDistribution,
   getCollegeCompare,
@@ -85,10 +85,9 @@ import {
 const formatPercent = (v) => (v === null || v === undefined || v === '' ? '—' : `${Number(v).toFixed(2)}%`)
 
 // ==================== 相似度分布 ====================
-const distChartRef = ref()
+const distChart = useChart()
 const distList = ref([])
 const distLoading = ref(false)
-let distChart = null
 
 const loadDistribution = async () => {
   distLoading.value = true
@@ -101,14 +100,11 @@ const loadDistribution = async () => {
   } finally {
     distLoading.value = false
   }
-  await nextTick()
   renderDistribution()
 }
 
 const renderDistribution = () => {
-  if (!distList.value.length || !distChartRef.value) return
-  if (!distChart) distChart = echarts.init(distChartRef.value)
-  distChart.setOption({
+  distChart.render(distList.value.length ? {
     tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
     grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
     xAxis: {
@@ -127,21 +123,23 @@ const renderDistribution = () => {
         data: distList.value.map((it) => Number(it.count ?? 0)),
         itemStyle: {
           borderRadius: [6, 6, 0, 0],
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: '#5ac8fa' },
-            { offset: 1, color: '#0066cc' }
-          ])
+          color: {
+            type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+            colorStops: [
+              { offset: 0, color: '#5ac8fa' },
+              { offset: 1, color: '#0066cc' }
+            ]
+          }
         }
       }
     ]
-  })
+  } : null)
 }
 
 // ==================== 学院对比 ====================
-const compareChartRef = ref()
+const compareChart = useChart()
 const compareList = ref([])
 const compareLoading = ref(false)
-let compareChart = null
 
 const loadCollegeCompare = async () => {
   compareLoading.value = true
@@ -155,16 +153,13 @@ const loadCollegeCompare = async () => {
   } finally {
     compareLoading.value = false
   }
-  await nextTick()
   renderCollegeCompare()
 }
 
 const renderCollegeCompare = () => {
-  if (!compareList.value.length || !compareChartRef.value) return
-  if (!compareChart) compareChart = echarts.init(compareChartRef.value)
   // 横向条形图：数值最大的显示在最上方
   const rows = [...compareList.value].reverse()
-  compareChart.setOption({
+  compareChart.render(compareList.value.length ? {
     tooltip: {
       trigger: 'axis',
       axisPointer: { type: 'shadow' },
@@ -198,14 +193,13 @@ const renderCollegeCompare = () => {
         itemStyle: { borderRadius: [0, 6, 6, 0], color: '#0066cc' }
       }
     ]
-  })
+  } : null)
 }
 
 // ==================== 月度趋势 ====================
-const trendChartRef = ref()
+const trendChart = useChart()
 const trendList = ref([])
 const trendLoading = ref(false)
-let trendChart = null
 
 const loadMonthlyTrend = async () => {
   trendLoading.value = true
@@ -219,14 +213,11 @@ const loadMonthlyTrend = async () => {
   } finally {
     trendLoading.value = false
   }
-  await nextTick()
   renderMonthlyTrend()
 }
 
 const renderMonthlyTrend = () => {
-  if (!trendList.value.length || !trendChartRef.value) return
-  if (!trendChart) trendChart = echarts.init(trendChartRef.value)
-  trendChart.setOption({
+  trendChart.render(trendList.value.length ? {
     tooltip: {
       trigger: 'axis',
       formatter: (params) => {
@@ -259,7 +250,7 @@ const renderMonthlyTrend = () => {
         itemStyle: { color: '#ff9500' }
       }
     ]
-  })
+  } : null)
 }
 
 // ==================== 导出 ====================
@@ -288,26 +279,9 @@ const handleExport = async () => {
 }
 
 // ==================== 生命周期 ====================
-const handleResize = () => {
-  distChart?.resize()
-  compareChart?.resize()
-  trendChart?.resize()
-}
-
 onMounted(() => {
   // 三个接口并行加载，各自独立空态（单个失败不影响其他图）
   Promise.all([loadDistribution(), loadCollegeCompare(), loadMonthlyTrend()])
-  window.addEventListener('resize', handleResize)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', handleResize)
-  distChart?.dispose()
-  compareChart?.dispose()
-  trendChart?.dispose()
-  distChart = null
-  compareChart = null
-  trendChart = null
 })
 </script>
 

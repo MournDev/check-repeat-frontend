@@ -82,7 +82,7 @@
             </el-select>
           </div>
         </template>
-        <div ref="perfChartRef" class="chart-container"></div>
+        <div :ref="perfChart.chartRef" class="chart-container"></div>
       </el-card>
 
       <!-- API 响应时间趋势 -->
@@ -97,7 +97,7 @@
             </el-select>
           </div>
         </template>
-        <div ref="rtChartRef" class="chart-container"></div>
+        <div :ref="rtChart.chartRef" class="chart-container"></div>
       </el-card>
     </div>
 
@@ -113,7 +113,7 @@
             <div class="db-metric-label">{{ item.label }}</div>
           </div>
         </div>
-        <div ref="dbChartRef" class="chart-container-small"></div>
+        <div :ref="dbChart.chartRef" class="chart-container-small"></div>
       </el-card>
 
       <!-- 应用性能指标 -->
@@ -136,11 +136,11 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Refresh, Monitor, Cpu, Coin, DataLine } from '@element-plus/icons-vue'
 import { getResourceUsage, getPerformanceData, getSystemOverview, getDatabaseMonitor, getApplicationMetrics, getResponseTimeTrend } from '@/api/admin/monitoring'
-import * as echarts from 'echarts'
+import { useChart } from '@/composables/useChart'
 
 const refreshInterval = ref(0)
 let refreshTimer = null
@@ -169,13 +169,10 @@ const overview = reactive({
 const dbMetrics = ref([])
 const appMetrics = ref([])
 
-// 图表相关
-const perfChartRef = ref(null)
-const rtChartRef = ref(null)
-const dbChartRef = ref(null)
-let perfChart = null
-let rtChart = null
-let dbChart = null
+// 图表相关（定时轮询刷新走 update 原地更新，避免每次销毁重建闪屏）
+const perfChart = useChart()
+const rtChart = useChart()
+const dbChart = useChart()
 const perfPeriod = ref('1h')
 const rtPeriod = ref(15)
 
@@ -230,12 +227,15 @@ const loadPerformanceData = async () => {
 }
 
 const renderPerfChart = (data) => {
-  if (!perfChart || !data) return
+  if (!data) {
+    perfChart.update(null)
+    return
+  }
   const times = data.times || data.timestamps || []
   const cpuData = data.cpu || data.cpuUsage || []
   const memData = data.memory || data.memoryUsage || []
   const diskData = data.disk || data.diskUsage || []
-  perfChart.setOption({
+  perfChart.update({
     tooltip: { trigger: 'axis' },
     legend: { data: ['CPU', '内存', '磁盘'], bottom: 0 },
     grid: { left: '3%', right: '4%', bottom: '12%', top: '10%', containLabel: true },
@@ -261,13 +261,16 @@ const loadResponseTimeTrend = async () => {
 }
 
 const renderRtChart = (data) => {
-  if (!rtChart || !data) return
+  if (!data) {
+    rtChart.update(null)
+    return
+  }
   // 字段名对齐后端 /api/admin/monitoring/response-time-trend 的规范字段
   const times = data.timestamps || []
   const avgData = data.avgResponseTime || []
   const maxData = data.maxResponseTime || []
   const p99Data = data.p99ResponseTime || []
-  rtChart.setOption({
+  rtChart.update({
     tooltip: { trigger: 'axis' },
     legend: { data: ['平均响应时间', '最大响应时间', 'P99'], bottom: 0 },
     grid: { left: '3%', right: '4%', bottom: '12%', top: '10%', containLabel: true },
@@ -302,9 +305,12 @@ const loadDatabaseData = async () => {
 }
 
 const renderDbChart = (data) => {
-  if (!dbChart) return
+  if (!data) {
+    dbChart.update(null)
+    return
+  }
   const poolData = data.poolUsageHistory || []
-  dbChart.setOption({
+  dbChart.update({
     tooltip: { trigger: 'axis' },
     grid: { left: '3%', right: '4%', bottom: '8%', top: '10%', containLabel: true },
     xAxis: { type: 'category', data: poolData.map(i => i.time || i.timestamp), boundaryGap: false },
@@ -339,27 +345,6 @@ const loadAppMetrics = async () => {
   }
 }
 
-const initCharts = () => {
-  nextTick(() => {
-    if (perfChartRef.value) {
-      perfChart = echarts.init(perfChartRef.value)
-    }
-    if (rtChartRef.value) {
-      rtChart = echarts.init(rtChartRef.value)
-    }
-    if (dbChartRef.value) {
-      dbChart = echarts.init(dbChartRef.value)
-    }
-    window.addEventListener('resize', handleResize)
-  })
-}
-
-const handleResize = () => {
-  perfChart?.resize()
-  rtChart?.resize()
-  dbChart?.resize()
-}
-
 const refreshAll = async () => {
   await Promise.all([
     loadResources(),
@@ -385,16 +370,11 @@ const handleRefreshChange = (val) => {
 }
 
 onMounted(() => {
-  initCharts()
   refreshAll()
 })
 
 onUnmounted(() => {
   if (refreshTimer) clearInterval(refreshTimer)
-  window.removeEventListener('resize', handleResize)
-  perfChart?.dispose()
-  rtChart?.dispose()
-  dbChart?.dispose()
 })
 </script>
 

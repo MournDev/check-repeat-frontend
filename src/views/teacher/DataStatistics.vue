@@ -113,7 +113,8 @@
             </div>
           </template>
           <div class="chart-container">
-            <div ref="reviewTrendChart" style="width: 100%; height: 300px;"></div>
+            <el-empty v-if="reviewTrendChart.empty" description="暂无审核趋势数据" :image-size="60" />
+            <div v-else :ref="reviewTrendChart.chartRef" style="width: 100%; height: 300px;"></div>
           </div>
         </el-card>
       </el-col>
@@ -128,7 +129,8 @@
             </div>
           </template>
           <div class="chart-container">
-            <div ref="statusDistributionChart" style="width: 100%; height: 300px;"></div>
+            <el-empty v-if="statusDistributionChart.empty" description="暂无状态分布数据" :image-size="60" />
+            <div v-else :ref="statusDistributionChart.chartRef" style="width: 100%; height: 300px;"></div>
           </div>
         </el-card>
       </el-col>
@@ -143,7 +145,8 @@
             </div>
           </template>
           <div class="chart-container">
-            <div ref="similarityChart" style="width: 100%; height: 300px;"></div>
+            <el-empty v-if="similarityChart.empty" description="暂无相似度分布数据" :image-size="60" />
+            <div v-else :ref="similarityChart.chartRef" style="width: 100%; height: 300px;"></div>
           </div>
         </el-card>
       </el-col>
@@ -158,7 +161,8 @@
             </div>
           </template>
           <div class="chart-container">
-            <div ref="collegeChart" style="width: 100%; height: 300px;"></div>
+            <el-empty v-if="collegeChart.empty" description="暂无学院分布数据" :image-size="60" />
+            <div v-else :ref="collegeChart.chartRef" style="width: 100%; height: 300px;"></div>
           </div>
         </el-card>
       </el-col>
@@ -200,7 +204,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { ElMessage, ElLoading } from 'element-plus'
 import { getSimilarityTagType } from '@/utils/reviewStatus.js'
@@ -215,7 +219,7 @@ import {
   getCollegeDistribution,
   exportData as exportTeacherData
 } from '@/api/teacher'
-import * as echarts from 'echarts'
+import { useChart } from '@/composables/useChart'
 
 // 图标导入
 import {
@@ -235,13 +239,12 @@ const statTrends = ref({
   currentStudentsTrend: { type: '', text: '' }
 })
 const detailData = ref([])
-const chartInstances = ref({})
 
-// 图表引用
-const reviewTrendChart = ref(null)
-const statusDistributionChart = ref(null)
-const similarityChart = ref(null)
-const collegeChart = ref(null)
+// 四张图表统一 useChart：容器 ref、dispose、resize、空态均由 composable 托管
+const reviewTrendChart = useChart()
+const statusDistributionChart = useChart()
+const similarityChart = useChart()
+const collegeChart = useChart()
 
 // 方法
 const handleTimeRangeChange = (range) => {
@@ -329,131 +332,41 @@ const loadDetailData = async () => {
 
 const initCharts = async () => {
   await Promise.all([
-    initReviewTrendChart(),
-    initStatusDistributionChart(),
-    initSimilarityChart(),
-    initCollegeChart()
+    loadReviewTrendChart(),
+    loadStatusDistributionChart(),
+    loadSimilarityChart(),
+    loadCollegeChart()
   ])
 }
 
-const initReviewTrendChart = async () => {
-  if (!reviewTrendChart.value) return
-  
-  try {
-    const params = {
-      teacherId: userStore.userInfo?.userId,
-      timeRange: timeRange.value,
-      chartType: 'line'
-    }
-    
-    const res = await getReviewTrend(params)
-    if (res.code === 200) {
-      const chart = echarts.init(reviewTrendChart.value)
-      chartInstances.value.reviewTrend = chart
-      
-      const option = {
-        tooltip: {
-          trigger: 'axis'
-        },
-        legend: {
-          data: res.data.series?.map(item => item.name) || ['审核数', '通过数']
-        },
-        xAxis: {
-          type: 'category',
-          data: res.data.categories || ['1月', '2月', '3月', '4月', '5月', '6月']
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: res.data.series || [
-          {
-            name: '审核数',
-            type: 'line',
-            data: [120, 132, 101, 134, 90, 230],
-            smooth: true
-          },
-          {
-            name: '通过数',
-            type: 'line',
-            data: [90, 110, 85, 115, 75, 190],
-            smooth: true
-          }
-        ]
-      }
-      
-      chart.setOption(option)
-    }
-  } catch (error) {
-    console.error('获取审核趋势数据失败:', error)
-    // 使用默认数据
-    const chart = echarts.init(reviewTrendChart.value)
-    chartInstances.value.reviewTrend = chart
-    
-    const option = {
+// 审核趋势折线图（接口失败/空数据显空态，不再 mock 兜底）
+const loadReviewTrendChart = () => reviewTrendChart.run(
+  () => getReviewTrend({
+    teacherId: userStore.userInfo?.userId,
+    timeRange: timeRange.value,
+    chartType: 'line'
+  }),
+  (res) => {
+    if (res.code !== 200 || !res.data?.series?.length) return null
+    return {
       tooltip: { trigger: 'axis' },
-      legend: { data: ['审核数', '通过数'] },
-      xAxis: { type: 'category', data: ['1月', '2月', '3月', '4月', '5月', '6月'] },
+      legend: { data: res.data.series.map(item => item.name) },
+      xAxis: { type: 'category', data: res.data.categories || [] },
       yAxis: { type: 'value' },
-      series: [
-        { name: '审核数', type: 'line', data: [120, 132, 101, 134, 90, 230], smooth: true },
-        { name: '通过数', type: 'line', data: [90, 110, 85, 115, 75, 190], smooth: true }
-      ]
+      series: res.data.series
     }
-    chart.setOption(option)
   }
-}
+)
 
-const initStatusDistributionChart = async () => {
-  if (!statusDistributionChart.value) return
-  
-  try {
-    const params = {
-      teacherId: userStore.userInfo?.userId,
-      timeRange: timeRange.value
-    }
-    const res = await getReviewStatusDistribution(params)
-    if (res.code === 200) {
-      const chart = echarts.init(statusDistributionChart.value)
-      chartInstances.value.statusDistribution = chart
-      
-      const option = {
-        tooltip: {
-          trigger: 'item'
-        },
-        legend: {
-          orient: 'vertical',
-          left: 'left'
-        },
-        series: [
-          {
-            name: '审核状态',
-            type: 'pie',
-            radius: '50%',
-            data: res.data || [
-              { value: 89, name: '通过' },
-              { value: 23, name: '需修改' },
-              { value: 16, name: '拒绝' }
-            ],
-            emphasis: {
-              itemStyle: {
-                shadowBlur: 0,
-                shadowOffsetX: 0,
-                shadowColor: 'transparent'
-              }
-            }
-          }
-        ]
-      }
-      
-      chart.setOption(option)
-    }
-  } catch (error) {
-    console.error('获取状态分布数据失败:', error)
-    // 使用默认数据
-    const chart = echarts.init(statusDistributionChart.value)
-    chartInstances.value.statusDistribution = chart
-    
-    const option = {
+// 审核状态分布饼图
+const loadStatusDistributionChart = () => statusDistributionChart.run(
+  () => getReviewStatusDistribution({
+    teacherId: userStore.userInfo?.userId,
+    timeRange: timeRange.value
+  }),
+  (res) => {
+    if (res.code !== 200 || !Array.isArray(res.data) || res.data.length === 0) return null
+    return {
       tooltip: { trigger: 'item' },
       legend: { orient: 'vertical', left: 'left' },
       series: [
@@ -461,154 +374,53 @@ const initStatusDistributionChart = async () => {
           name: '审核状态',
           type: 'pie',
           radius: '50%',
-          data: [
-            { value: 89, name: '通过' },
-            { value: 23, name: '需修改' },
-            { value: 16, name: '拒绝' }
-          ],
+          data: res.data,
           emphasis: {
             itemStyle: {
-              shadowBlur: 10,
+              shadowBlur: 0,
               shadowOffsetX: 0,
-              shadowColor: 'rgba(0, 0, 0, 0.5)'
+              shadowColor: 'transparent'
             }
           }
         }
       ]
     }
-    chart.setOption(option)
   }
-}
+)
 
-const initSimilarityChart = async () => {
-  if (!similarityChart.value) return
-  
-  try {
-    const params = {
-      teacherId: userStore.userInfo?.userId,
-      timeRange: timeRange.value
-    }
-    const res = await getSimilarityDistribution(params)
-    if (res.code === 200) {
-      const chart = echarts.init(similarityChart.value)
-      chartInstances.value.similarity = chart
-      
-      const option = {
-        tooltip: {
-          trigger: 'axis'
-        },
-        xAxis: {
-          type: 'category',
-          data: res.data.categories || ['0-10%', '10-20%', '20-30%', '30-40%', '40%以上']
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: res.data.series || [
-          {
-            name: '论文数量',
-            type: 'bar',
-            data: [45, 32, 28, 15, 8],
-            itemStyle: {
-              color: '#0066cc'
-            }
-          }
-        ]
-      }
-      
-      chart.setOption(option)
-    }
-  } catch (error) {
-    console.error('获取相似度分布数据失败:', error)
-    // 使用默认数据
-    const chart = echarts.init(similarityChart.value)
-    chartInstances.value.similarity = chart
-    
-    const option = {
+// 论文相似度分布柱状图
+const loadSimilarityChart = () => similarityChart.run(
+  () => getSimilarityDistribution({
+    teacherId: userStore.userInfo?.userId,
+    timeRange: timeRange.value
+  }),
+  (res) => {
+    if (res.code !== 200 || !res.data?.series?.length) return null
+    return {
       tooltip: { trigger: 'axis' },
-      xAxis: { type: 'category', data: ['0-10%', '10-20%', '20-30%', '30-40%', '40%以上'] },
+      xAxis: { type: 'category', data: res.data.categories || [] },
       yAxis: { type: 'value' },
-      series: [
-        {
-          name: '论文数量',
-          type: 'bar',
-          data: [45, 32, 28, 15, 8],
-          itemStyle: {
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              { offset: 0, color: '#0066cc' },
-              { offset: 0.5, color: '#0066cc' },
-              { offset: 1, color: '#0066cc' }
-            ])
-          }
-        }
-      ]
+      series: res.data.series
     }
-    chart.setOption(option)
   }
-}
+)
 
-const initCollegeChart = async () => {
-  if (!collegeChart.value) return
-  
-  try {
-    const params = {
-      teacherId: userStore.userInfo?.userId,
-      timeRange: timeRange.value
-    }
-    const res = await getCollegeDistribution(params)
-    if (res.code === 200) {
-      const chart = echarts.init(collegeChart.value)
-      chartInstances.value.college = chart
-      
-      const option = {
-        tooltip: {
-          trigger: 'axis'
-        },
-        xAxis: {
-          type: 'category',
-          data: res.data.categories || ['计算机学院', '软件学院', '人工智能学院', '电子信息学院']
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: res.data.series || [
-          {
-            name: '学生人数',
-            type: 'bar',
-            data: [25, 18, 12, 8],
-            itemStyle: {
-              color: '#0066cc'
-            }
-          }
-        ]
-      }
-      
-      chart.setOption(option)
-    }
-  } catch (error) {
-    console.error('获取学院分布数据失败:', error)
-    // 使用默认数据
-    const chart = echarts.init(collegeChart.value)
-    chartInstances.value.college = chart
-    
-    const option = {
+// 学生学院分布柱状图
+const loadCollegeChart = () => collegeChart.run(
+  () => getCollegeDistribution({
+    teacherId: userStore.userInfo?.userId,
+    timeRange: timeRange.value
+  }),
+  (res) => {
+    if (res.code !== 200 || !res.data?.series?.length) return null
+    return {
       tooltip: { trigger: 'axis' },
-      xAxis: { type: 'category', data: ['计算机学院', '软件学院', '人工智能学院', '电子信息学院'] },
+      xAxis: { type: 'category', data: res.data.categories || [] },
       yAxis: { type: 'value' },
-      series: [
-        {
-          name: '学生人数',
-          type: 'bar',
-          data: [25, 18, 12, 8],
-          itemStyle: {
-            color: '#0066cc'
-          }
-        }
-      ]
+      series: res.data.series
     }
-    chart.setOption(option)
   }
-}
+)
 
 const getPendingReviewsTrend = () => {
   return { type: 'down', text: '-5% 同比下降' }
@@ -667,24 +479,6 @@ const exportData = async () => {
 // 生命周期
 onMounted(async () => {
   await loadData()
-  
-  // 监听窗口大小变化
-  window.addEventListener('resize', () => {
-    Object.values(chartInstances.value).forEach(chart => {
-      if (chart) {
-        chart.resize()
-      }
-    })
-  })
-})
-
-onUnmounted(() => {
-  // 销毁图表实例
-  Object.values(chartInstances.value).forEach(chart => {
-    if (chart) {
-      chart.dispose()
-    }
-  })
 })
 </script>
 

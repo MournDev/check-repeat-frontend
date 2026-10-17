@@ -40,13 +40,13 @@
               <template #header>
                 <span class="card-title">按操作类型 TOP10</span>
               </template>
-              <div ref="summaryBarRef" class="summary-chart"></div>
+              <div :ref="summaryBarChart.chartRef" class="summary-chart"></div>
             </el-card>
             <el-card shadow="never" class="summary-chart-card">
               <template #header>
                 <span class="card-title">按用户类型分布</span>
               </template>
-              <div ref="summaryPieRef" class="summary-chart"></div>
+              <div :ref="summaryPieChart.chartRef" class="summary-chart"></div>
             </el-card>
           </div>
         </div>
@@ -317,7 +317,7 @@
           <template #header>
             <span class="card-title">模块使用率</span>
           </template>
-          <div ref="moduleChartRef" class="chart-container"></div>
+          <div :ref="moduleChart.chartRef" class="chart-container"></div>
         </el-card>
       </el-tab-pane>
     </el-tabs>
@@ -350,7 +350,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, reactive, computed, onMounted, nextTick } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getOperationLogs, exportOperationLogsNew, getLoginLogs, getOperationStatistics, getHotOperations, getUserActivity, getModuleUsage, batchDeleteLogs, cleanExpiredLogs, exportLoginLogs } from '@/api/admin/logs'
 import { getBackupHistory } from '@/api/admin/backup'
@@ -358,7 +358,7 @@ import { getBackupHistory } from '@/api/admin/backup'
 import { getOperationLogSummary } from '@/api/p5'
 import { useUserStore } from '@/stores/user'
 import { Refresh, Download, Search, Delete } from '@element-plus/icons-vue'
-import * as echarts from 'echarts'
+import { useChart } from '@/composables/useChart'
 
 // ==================== 操作类型字典 ====================
 const OPERATION_MODULES = [
@@ -570,17 +570,15 @@ const logStats = reactive({ totalCount: 0, successCount: 0, failCount: 0, dailyA
 const hotOperations = ref([])
 const hotOperationsTotal = ref(0)
 const userActivity = ref([])
-const moduleChartRef = ref(null)
-let moduleChart = null
 
 // ==================== 审计汇总（P5，仅 SUPER_ADMIN） ====================
 const userStore = useUserStore()
 const summaryLoading = ref(false)
 const summaryFilters = reactive({ dateRange: [] })
-const summaryBarRef = ref(null)
-const summaryPieRef = ref(null)
-let summaryBarChart = null
-let summaryPieChart = null
+// 三张图统一 useChart 托管容器/dispose/resize
+const summaryBarChart = useChart()
+const summaryPieChart = useChart()
+const moduleChart = useChart()
 
 // 汇总饼图的角色码翻译（本页表格里 getUserTypeName 的历史文案是 'super_admin'，汇总视图按清单用「超级管理员」）
 const SUMMARY_USER_TYPE_LABELS = { STUDENT: '学生', TEACHER: '教师', ADMIN: '管理员', SUPER_ADMIN: '超级管理员' }
@@ -611,10 +609,7 @@ function renderSummaryCharts(data) {
   const opItems = (data.operationTypes || []).slice(0, 10)
   const opNames = opItems.map((item) => getOperationName(item.key) || item.key)
   const opValues = opItems.map((item) => item.count || 0)
-  if (!summaryBarChart && summaryBarRef.value) {
-    summaryBarChart = echarts.init(summaryBarRef.value)
-  }
-  summaryBarChart?.setOption({
+  summaryBarChart.render(opItems.length ? {
     tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
     grid: { left: 8, right: 16, top: 16, bottom: 8, containLabel: true },
     xAxis: {
@@ -629,17 +624,14 @@ function renderSummaryCharts(data) {
       barMaxWidth: 32,
       itemStyle: { color: '#0066cc', borderRadius: [6, 6, 0, 0] }
     }]
-  }, true)
+  } : null)
 
   // 按用户类型饼图；角色码翻译，未知值显示原文
   const userItems = (data.userTypes || []).map((item) => ({
     name: SUMMARY_USER_TYPE_LABELS[item.key] || item.key,
     value: item.count || 0
   }))
-  if (!summaryPieChart && summaryPieRef.value) {
-    summaryPieChart = echarts.init(summaryPieRef.value)
-  }
-  summaryPieChart?.setOption({
+  summaryPieChart.render(userItems.length ? {
     tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
     legend: { orient: 'vertical', left: 'left', top: 'center' },
     series: [{
@@ -652,12 +644,7 @@ function renderSummaryCharts(data) {
       labelLine: { show: false },
       data: userItems
     }]
-  }, true)
-}
-
-const handleSummaryChartResize = () => {
-  summaryBarChart?.resize()
-  summaryPieChart?.resize()
+  } : null)
 }
 
 // 模块列表
@@ -703,10 +690,7 @@ async function refreshLogs(showMessage = true) {
 function onTabChange(tab) {
   if (tab === 'login') loadLoginLogs()
   else if (tab === 'backup') loadBackupRecords()
-  else if (tab === 'statistics') {
-    loadStatsData()
-    initModuleChart()
-  }
+  else if (tab === 'statistics') loadStatsData()
 }
 
 async function loadBackupRecords() {
@@ -877,12 +861,15 @@ const loadStatsData = async () => {
 }
 
 const renderModuleChart = (data) => {
-  if (!moduleChart || !data || data.length === 0) return
+  if (!data || data.length === 0) {
+    moduleChart.render(null)
+    return
+  }
   const chartData = data.map(item => ({
     name: item.moduleName || item.module || '未知',
     value: item.count || 0
   }))
-  moduleChart.setOption({
+  moduleChart.render({
     tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
     legend: { orient: 'vertical', left: 'left', top: 'center' },
     series: [{
@@ -896,17 +883,6 @@ const renderModuleChart = (data) => {
       labelLine: { show: false },
       data: chartData
     }]
-  })
-}
-
-const handleModuleChartResize = () => { moduleChart?.resize() }
-
-const initModuleChart = () => {
-  nextTick(() => {
-    if (moduleChartRef.value) {
-      moduleChart = echarts.init(moduleChartRef.value)
-      window.addEventListener('resize', handleModuleChartResize)
-    }
   })
 }
 
@@ -978,24 +954,6 @@ onMounted(() => {
   refreshLogs(false)
   // 审计汇总（仅超管渲染并加载，函数内对 ADMIN 直接 return）
   loadOperationSummary()
-  window.addEventListener('resize', handleSummaryChartResize)
-})
-
-onUnmounted(() => {
-  if (moduleChart) {
-    moduleChart.dispose()
-    moduleChart = null
-  }
-  if (summaryBarChart) {
-    summaryBarChart.dispose()
-    summaryBarChart = null
-  }
-  if (summaryPieChart) {
-    summaryPieChart.dispose()
-    summaryPieChart = null
-  }
-  window.removeEventListener('resize', handleModuleChartResize)
-  window.removeEventListener('resize', handleSummaryChartResize)
 })
 </script>
 

@@ -84,7 +84,28 @@ export function useChart() {
     }
   }
 
+  /**
+   * 原地更新：复用已有实例 setOption(notMerge)，不销毁重建。
+   * 适用于定时轮询刷新的图表（如监控页），避免每次刷新闪屏。
+   * 传 falsy 走空态；实例尚未创建时等价于 render(option)
+   */
+  const update = async (option) => {
+    if (!option) {
+      await render(null)
+      return
+    }
+    empty.value = false
+    await nextTick()
+    if (!chartRef.value) return
+    if (!instance) {
+      instance = echarts.init(chartRef.value)
+      ensureGlobalResizeListener()
+      resizers.add(resize)
+    }
+    instance.setOption(option, true)
+  }
+
   onUnmounted(dispose)
 
-  return { chartRef, empty, render, run, dispose, resize }
+  return { chartRef, empty, render, run, update, dispose, resize }
 }
