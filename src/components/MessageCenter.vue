@@ -262,9 +262,11 @@ const connectWebSocket = () => {
   if (!userId) return
 
   wsConnect(userId, (data) => {
-    if (data.type === 'notification') {
-      ElMessage.success(`收到新消息: ${data.data?.title || ''}`)
+    // 帧型与 MainLayout 全局分发一致：{ type: 'NOTIFICATION', content }（大写）。
+    // 全局已负责弹提示与刷新角标，这里只重载本页列表
+    if (String(data?.type || '').toUpperCase() === 'NOTIFICATION') {
       loadMessages()
+      messageStore.loadSystemUnread(userId)
     }
   })
 }
@@ -410,8 +412,8 @@ const handleConfirmAssignment = async () => {
       // currentAssignment.value.status = 'confirmed'
       // currentAssignment.value.isRead = true
 
-      // 更新未读数量
-      messageStore.setUnreadCount(messageStore.unreadCount - 1)
+      // 更新未读数量（回源服务端计数）
+      messageStore.loadSystemUnread(teacherId)
       // 重新加载消息列表
       loadMessages()
     } else {
@@ -454,8 +456,8 @@ const handleRejectAssignment = async () => {
 
       rejectDialogVisible.value = false
 
-      // 更新未读数量
-      messageStore.setUnreadCount(messageStore.unreadCount - 1)
+      // 更新未读数量（回源服务端计数）
+      messageStore.loadSystemUnread(teacherId)
       // 重新加载消息列表
       loadMessages()
     } else {
@@ -512,8 +514,8 @@ const loadMessages = async () => {
         status: msg.status
       }))
       total.value = messages.length
-      const unread = messages.filter(msg => !msg.isRead).length
-      messageStore.setUnreadCount(unread)
+      // 未读数唯一真相是服务端计数接口，不用本页列表条数覆盖（分页/筛选下失真）
+      messageStore.loadSystemUnread(userId)
       // 分页数据（当前页）
       const start = (currentPage.value - 1) * pageSize.value
       const end = start + pageSize.value
@@ -636,7 +638,7 @@ const markAsRead = async (notification) => {
     const response = await markAsReadApi(notification.id, userId)
     if (response.code === 200) {
       notification.isRead = true
-      messageStore.setUnreadCount(messageStore.unreadCount - 1)
+      messageStore.loadSystemUnread(userId)
       ElMessage.success('标记为已读')
     } else {
       ElMessage.error(response.message || '操作失败')
@@ -665,9 +667,9 @@ const deleteMessage = async (notification) => {
       const updatedNotifications = notifications.value.filter(item => item.id !== notification.id)
       messageStore.setNotifications(updatedNotifications)
 
-      // 更新未读数量
+      // 更新未读数量（回源服务端计数）
       if (!notification.isRead) {
-        messageStore.setUnreadCount(messageStore.unreadCount - 1)
+        messageStore.loadSystemUnread(userId)
       }
 
       ElMessage.success('删除成功')
@@ -701,7 +703,7 @@ const markAllAsRead = async () => {
         notifications.value.forEach(item => {
           item.isRead = true
         })
-        messageStore.setUnreadCount(0)
+        messageStore.loadSystemUnread(userId)
         ElMessage.success('全部标记为已读')
       } else {
         ElMessage.error(response.message || '操作失败')
@@ -784,8 +786,7 @@ const batchMarkAsRead = async () => {
         }
       })
 
-      const newUnreadCount = notifications.value.filter(item => !item.isRead).length
-      messageStore.setUnreadCount(newUnreadCount)
+      messageStore.loadSystemUnread(getCurrentUserId())
 
       ElMessage.success(`已标记 ${selectedIds.length} 条消息为已读`)
     } else {
@@ -812,13 +813,9 @@ const batchDelete = async () => {
     })
 
     // 这里可以调用批量删除API
-    // 暂时直接从前端移除
+    // 暂时直接从前端移除（服务端未删，未读计数不变，不动 store）
     const updatedNotifications = notifications.value.filter(item => !item.selected)
     messageStore.setNotifications(updatedNotifications)
-
-    // 更新未读数量
-    const newUnreadCount = updatedNotifications.filter(item => !item.isRead).length
-    messageStore.setUnreadCount(newUnreadCount)
 
     ElMessage.success(`已删除 ${selectedIds.length} 条消息`)
   } catch (error) {

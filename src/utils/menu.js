@@ -15,6 +15,8 @@
 //          父路由 meta.roles
 //   hidden true 表示该路由刻意不进菜单（详情页、容器路由等），仅作文档标注
 //   spacer 在这一项之前渲染一段留白（各角色菜单尾部设置项前）
+//   badge  角标数据源标识；目前支持 'chat'（聊天未读，由 messageStore.chatUnread
+//          供给），MainLayout 据此渲染 el-badge，菜单数据本身不含计数
 //
 // 同一路由出现在多个角色菜单的不同位置时（如「查重配置」：ADMIN 归
 // 「系统管理」组、超管归「系统运维」组），用角色名作 key 写覆盖块：
@@ -56,6 +58,7 @@ function collect(records, inheritedRoles, basePath, role, out) {
         group: menu.group || null,
         order: typeof menu.order === 'number' ? menu.order : Number.MAX_SAFE_INTEGER,
         spacer: Boolean(menu.spacer),
+        badge: menu.badge || null,
       })
     }
     if (record.children?.length) {

@@ -340,6 +340,7 @@ import { ref, reactive, computed, onMounted, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
 import Cookies from 'js-cookie'
 import { useUserStore } from '@/stores/user'
+import { useMessageStore } from '@/stores/message'
 
 // API 导入
 import { 
@@ -366,6 +367,7 @@ import { useMessageWebSocket } from '@/composables/useMessageWebSocket'
 
 // 响应式数据
 const userStore = useUserStore()
+const messageStore = useMessageStore()
 const advisorInfo = ref(null)
 const messageSessions = ref([])
 const activeSessionId = ref(null)
@@ -434,6 +436,13 @@ const getSessionAvatar = (session) => {
 }
 
 // 方法
+// 聊天未读合计回写全站 SSOT（messageStore），供侧边栏角标/铃铛合计使用
+const syncChatUnread = () => {
+  messageStore.setChatUnread(
+    messageSessions.value.reduce((sum, s) => sum + (s.unreadCount || 0), 0)
+  );
+};
+
 const loadAdvisorData = async () => {
   try {
     // 获取导师信息
@@ -466,6 +475,8 @@ const loadAdvisorData = async () => {
     const sessionsRes = await getMessageSessions();
     if (sessionsRes.code === 200) {
       messageSessions.value = sessionsRes.data;
+      // 聊天未读合计回写全站 SSOT（messageStore），供侧边栏角标/铃铛合计使用
+      syncChatUnread();
       // 收集会话成员到userMap
       sessionsRes.data.forEach(session => {
         if (session.members) {
@@ -569,6 +580,7 @@ const loadMessages = async (sessionId, isPrepend = false) => {
             const sessionIndex = messageSessions.value.findIndex(s => s.id === sessionId);
             if (sessionIndex !== -1) {
               messageSessions.value[sessionIndex].unreadCount = 0;
+              syncChatUnread();
               // 更新该会话的最后时间和预览信息，使用最新一条消息的时间和内容
               const latestMsg = currentMessages.value.length ? currentMessages.value[currentMessages.value.length - 1] : null;
               messageSessions.value[sessionIndex].lastTime = latestMsg?.time || messageSessions.value[sessionIndex].lastTime;
@@ -637,6 +649,7 @@ const switchSession = (sessionId) => {
   const sessionIndex = messageSessions.value.findIndex(s => s.id === sessionId);
   if (sessionIndex !== -1) {
     messageSessions.value[sessionIndex].unreadCount = 0;
+    syncChatUnread();
   }
 }
 

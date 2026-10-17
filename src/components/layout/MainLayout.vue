@@ -25,7 +25,7 @@
       <div class="global-nav-right">
         <!-- Notifications -->
         <el-dropdown trigger="click" placement="bottom-end" @visible-change="handleNotificationDropdownChange">
-          <el-badge :value="unreadCount" :max="99" :hidden="unreadCount === 0" class="nav-badge">
+          <el-badge :value="totalUnread" :max="99" :hidden="totalUnread === 0" class="nav-badge">
             <button class="nav-icon-btn" aria-label="通知">
               <el-icon><Bell /></el-icon>
             </button>
@@ -118,6 +118,7 @@
               <router-link :to="item.path" :class="['sidebar-item', { active: activeMenu === item.path }]">
                 <el-icon v-if="item.icon"><component :is="item.icon" /></el-icon>
                 <span>{{ item.label }}</span>
+                <el-badge v-if="item.badge === 'chat' && chatUnread > 0" :value="chatUnread" :max="99" class="sidebar-item-badge" />
               </router-link>
             </template>
           </div>
@@ -177,7 +178,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { useMaintenanceStore } from '@/stores/maintenance'
 import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
-import { getUnreadCount, getMessageList } from '@/api/user.js'
+import { getMessageList } from '@/api/user.js'
 import { useMessageStore } from '@/stores/message'
 import { useMessageWebSocket } from '@/composables/useMessageWebSocket'
 import { subscribeTopic } from '@/utils/stompClient'
@@ -202,12 +203,18 @@ const connectNotificationWebSocket = () => {
   const userId = userStore.userInfo?.userId
   if (!userId) return
   wsConnect(userId, (payload) => {
-    // 后端推的帧：{ type: 'NOTIFICATION', content: {...SystemMessage} }
-    if (String(payload?.type || '').toUpperCase() !== 'NOTIFICATION') return
-    // 角标以服务端为准重新取一次，比本地 +1 可靠（多端登录/漏推都不会错）
-    loadUnreadCount()
-    const title = payload.content?.title
-    ElMessage({ message: title ? `新通知：${title}` : '收到一条新通知', type: 'info', duration: 3000 })
+    // 全站消息 WS 统一分发点：按帧类型回源对应通道的未读计数（SSOT 在 messageStore）
+    const type = String(payload?.type || '').toUpperCase()
+    if (type === 'NOTIFICATION') {
+      // 站内消息帧 { type: 'NOTIFICATION', content: {...SystemMessage} }
+      // 角标以服务端为准重新取一次，比本地 +1 可靠（多端登录/漏推都不会错）
+      messageStore.loadSystemUnread(userId)
+      const title = payload.content?.title
+      ElMessage({ message: title ? `新通知：${title}` : '收到一条新通知', type: 'info', duration: 3000 })
+      return
+    }
+    // 其余帧（聊天 NEW_MESSAGE 等）：刷新聊天未读合计，点亮菜单/铃铛角标
+    messageStore.loadChatUnread(userStore.role)
   })
 }
 
@@ -232,7 +239,7 @@ const handleAnnouncementFrame = (payload) => {
   }
   // 公告兜底广播：按人推送的 NOTIFICATION 已在上方弹过提示，topic 直接广播的公告在这里补齐
   if (type === 'NOTIFICATION' || type === 'ANNOUNCEMENT' || !type) {
-    loadUnreadCount()
+    messageStore.loadSystemUnread(currentUserId.value)
     const title = payload?.title || payload?.content?.title
     const noticeType = payload?.noticeType || payload?.content?.noticeType
     ElNotification({
@@ -249,7 +256,8 @@ const previewNotifications = ref([])
 const isMobile = ref(window.innerWidth <= 833)
 const sidebarVisible = ref(false)
 
-const unreadCount = computed(() => messageStore.unreadCount)
+const totalUnread = computed(() => messageStore.totalUnread)
+const chatUnread = computed(() => messageStore.chatUnread)
 const notifications = computed(() => previewNotifications.value)
 const loading = computed(() => messageStore.loading)
 
@@ -425,16 +433,7 @@ const handleLogout = async () => {
 }
 
 const handleNotificationDropdownChange = (visible) => {
-  if (visible) { loadNotifications(); loadUnreadCount() }
-}
-
-const loadUnreadCount = async () => {
-  try {
-    const userId = currentUserId.value
-    if (!userId) { messageStore.setUnreadCount(0); return }
-    const response = await getUnreadCount(userId)
-    if (response.code === 200) messageStore.setUnreadCount(response.data)
-  } catch { messageStore.setUnreadCount(0) }
+  if (visible) { loadNotifications(); messageStore.loadSystemUnread(currentUserId.value) }
 }
 
 const loadNotifications = async () => {
@@ -487,7 +486,8 @@ const handleResize = () => {
 // （useMessageWebSocket 内部也做了幂等，这里只是不去制造无谓的调用）。
 watch(() => userStore.userInfo?.userId, (newUserId) => {
   if (newUserId) {
-    loadUnreadCount()
+    messageStore.loadSystemUnread(newUserId)
+    messageStore.loadChatUnread(userStore.role)
     connectNotificationWebSocket()
   }
 }, { immediate: true })
@@ -766,6 +766,12 @@ onUnmounted(() => {
 
   .el-icon { font-size: 18px; flex-shrink: 0; }
   span { white-space: nowrap; }
+
+  // 聊天未读角标：右对齐，无边框（与 nav-badge 同一约定）
+  .sidebar-item-badge {
+    margin-left: auto;
+    :deep(.el-badge__content) { border: none; position: static; transform: none; }
+  }
 }
 
 .sidebar-spacer { height: 16px; }

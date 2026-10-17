@@ -128,6 +128,7 @@
 <script setup>
 import { ref, computed, onMounted, watch, nextTick, onUnmounted } from 'vue'
 import { useUserStore } from '@/stores/user'
+import { useMessageStore } from '@/stores/message'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Refresh, Document, Setting } from '@element-plus/icons-vue'
 import {
@@ -137,6 +138,7 @@ import {
 import { useMessageWebSocket } from '@/composables/useMessageWebSocket'
 
 const userStore = useUserStore()
+const messageStore = useMessageStore()
 const defaultAvatar = 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
 
 // WebSocket
@@ -168,6 +170,13 @@ const filteredSessions = computed(() => {
 })
 
 // 方法
+// 聊天未读合计回写全站 SSOT（messageStore），供侧边栏角标/铃铛合计使用
+const syncChatUnread = () => {
+  messageStore.setChatUnread(
+    sessions.value.reduce((sum, s) => sum + (s.unreadCount || 0), 0)
+  )
+}
+
 const loadSessions = async () => {
   loadingSessions.value = true
   try {
@@ -179,6 +188,7 @@ const loadSessions = async () => {
     const response = await getMessageSessions()
     if (response.code === 200) {
       sessions.value = response.data
+      syncChatUnread()
     } else {
       ElMessage.error(response.message || '加载会话失败')
     }
@@ -204,6 +214,10 @@ const loadMessages = async (sessionId) => {
       messages.value = response.data.records || []
       // 标记消息为已读
       await markMessagesRead(sessionId)
+      // 该会话未读已清零，同步本地会话与全站未读合计
+      const session = sessions.value.find(s => s.id === sessionId)
+      if (session) session.unreadCount = 0
+      syncChatUnread()
       // 滚动到底部
       nextTick(() => {
         scrollToBottom()
