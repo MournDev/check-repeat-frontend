@@ -153,6 +153,7 @@ import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { User, Lock, Message, View, Hide, Key } from '@element-plus/icons-vue'
 import { forgetPassword, sendPasswordResetCode } from '@/api/login'
+import { tokenManager } from '@/utils/tokenManager'
 import AuthLayout from '@/components/layout/AuthLayout.vue'
 const router = useRouter()
 const resetFormRef = ref(null)
@@ -261,6 +262,10 @@ const handleReset = async () => {
     
     // 调用忘记密码接口
     const res = await forgetPassword(payload)
+
+    // 后端已使该用户全部旧 token 失效：清掉本地可能残留的 cookie。否则
+    // Login 页 onMounted 检测到未过期 token 会自动跳回应用，拿着作废令牌 401 循环
+    tokenManager.remove()
 
     ElMessage.success('密码重置成功，请使用新密码登录')
     
