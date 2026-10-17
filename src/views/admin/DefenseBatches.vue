@@ -164,6 +164,7 @@
 import { computed, reactive, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { Plus, Search } from '@element-plus/icons-vue'
 import { createDefenseBatch, updateDefenseBatch, getDefenseBatchList, deleteDefenseBatch } from '@/api/defense'
 import { getColleges } from '@/api/admin/common'
 import { getReviewWorkflowTeachers } from '@/api/admin/config'

@@ -8,8 +8,6 @@ import './style.css' // Apple base overrides
 //导入Element Plus
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css' // Element Plus样式
-// // 导入 Element Plus 图标
-import * as ElementPlusIcons from '@element-plus/icons-vue'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 // 导入权限指令
 import { registerPermissionDirective } from '@/directives/permission'
@@ -22,10 +20,9 @@ app.config.errorHandler = (err, instance, info) => {
   // 可以在此上报错误到监控平台
 }
 
-// 全局注册所有 Element Plus 图标
-for (const [key, component] of Object.entries(ElementPlusIcons)) {
-  app.component(key, component)
-}
+// 图标不再全量全局注册（294 个组件全进 bundle 且无法 tree-shake）：
+// 各页面局部 import 所需图标；侧边栏菜单的字符串图标名由 src/utils/menu.js
+// 的显式图标登记表解析。新增菜单项若用新图标，记得在 menu.js 登记表里补。
 // 注册权限指令
 registerPermissionDirective(app)
 app.use(createPinia())

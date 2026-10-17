@@ -4,7 +4,7 @@
     <header class="global-nav">
       <div class="global-nav-left">
         <button class="nav-menu-toggle" @click="toggleSidebar" v-if="isMobile">
-          <el-icon><component :is="sidebarVisible ? 'Close' : 'Menu'" /></el-icon>
+          <el-icon><component :is="sidebarVisible ? Close : Menu" /></el-icon>
         </button>
         <div class="brand">
           <svg class="brand-mark" width="20" height="20" viewBox="0 0 28 28" fill="none">
@@ -188,7 +188,8 @@ import { asyncRoutes, ROLE_HOME } from '@/router'
 
 import {
   User, Setting, SwitchButton, ArrowDown,
-  Bell, Menu, Close, Tools
+  Bell, Menu, Close, Tools,
+  CircleCheckFilled, InfoFilled, WarningFilled, CircleCloseFilled, Document, ChatDotRound
 } from '@element-plus/icons-vue'
 
 const router = useRouter()
@@ -414,15 +415,16 @@ const loadNotifications = async () => {
 const getNotificationIcon = (messageType) => {
   // 后端 messageType 存在两族取值：严重级（SUCCESS/INFO/WARNING/ERROR）与
   // 业务型（PAPER_REVIEW/ADVISOR_MESSAGE/SYSTEM_NOTICE）。两族都给图标，
-  // 未识别的返回空由模板 v-if 隐藏，避免业务消息永远拿不到图标
+  // 未识别的返回空由模板 v-if 隐藏，避免业务消息永远拿不到图标。
+  // 值为组件对象（非字符串名）：全局图标注册已移除，字符串无法解析。
   const iconMap = {
-    SUCCESS: 'CircleCheckFilled',
-    INFO: 'InfoFilled',
-    WARNING: 'WarningFilled',
-    ERROR: 'CircleCloseFilled',
-    PAPER_REVIEW: 'Document',
-    ADVISOR_MESSAGE: 'ChatDotRound',
-    SYSTEM_NOTICE: 'Bell'
+    SUCCESS: CircleCheckFilled,
+    INFO: InfoFilled,
+    WARNING: WarningFilled,
+    ERROR: CircleCloseFilled,
+    PAPER_REVIEW: Document,
+    ADVISOR_MESSAGE: ChatDotRound,
+    SYSTEM_NOTICE: Bell
   }
   return iconMap[messageType]
 }

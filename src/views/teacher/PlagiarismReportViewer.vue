@@ -405,7 +405,7 @@ import { ref, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { 
   Download, Share, Printer, PieChart, DataAnalysis, 
-  Lightning, Document, Tools, Clock
+  Lightning, Document, Tools, Clock, Check
 } from '@element-plus/icons-vue'
 import { getPaperReport, getSimpleCheckReport, exportCheckReport, compareReport, approveReport, requestRevision as requestRevisionAPI, contactStudentReport, getSourceDetail, getHistoryReportList } from '@/api/teacher'
 import { getSimilarityColor } from '@/utils/dataType.js'
@@ -856,7 +856,7 @@ const loadHistoryRecords = (reports) => {
         type: type,
         similarityType: similarityType,
         description: `进行了查重，相似度为 ${report.checkRate}%`,
-        icon: 'Check'
+        icon: Check
       };
     });
   }

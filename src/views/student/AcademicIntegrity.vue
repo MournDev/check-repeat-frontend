@@ -432,7 +432,7 @@ import {
   Warning, DataLine, Document, SuccessFilled, CircleClose,
   Lightning, User, Check, Star, InfoFilled, Collection,
   DocumentChecked, DocumentDelete, QuestionFilled, Service,
-  ChatLineSquare, Phone, Message
+  ChatLineSquare, Phone, Message, Reading, Link, VideoPlay, School
 } from '@element-plus/icons-vue'
 import PageHeader from '@/components/common/PageHeader.vue'
 
@@ -565,14 +565,15 @@ const getResourceColor = (type) => {
 }
 
 const getResourceIcon = (type) => {
+  // 值为组件对象（非字符串名）：全局图标注册已移除，字符串无法解析
   const icons = {
-    book: 'Reading',
-    online: 'Link',
-    video: 'VideoPlay',
-    document: 'Document',
-    course: 'School'
+    book: Reading,
+    online: Link,
+    video: VideoPlay,
+    document: Document,
+    course: School
   }
-  return icons[type] || 'Document'
+  return icons[type] || Document
 }
 
 const getResourceTypeName = (type) => {

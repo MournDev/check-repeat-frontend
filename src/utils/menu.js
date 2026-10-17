@@ -29,7 +29,23 @@
 // 「系统管理」组、超管归「系统运维」组），用角色名作 key 写覆盖块：
 //   menu: { icon: 'Operation', ADMIN: { group: '系统管理', order: 8 }, SUPER_ADMIN: { group: '系统运维', order: 8 } }
 
-import * as ElIcons from '@element-plus/icons-vue'
+// 菜单图标登记表：全局图标注册已移除（main.js 不再全量 app.component），
+// 菜单的字符串图标名在这里显式解析。只登记菜单实际用到的图标，打包器
+// 可以 tree-shake 掉 @element-plus/icons-vue 的其余 260+ 个组件。
+// 新增菜单项若用了登记表外的图标，在这里补一行即可。
+import {
+  DataAnalysis, DataBoard, UploadFilled, FolderOpened, Trophy, Star,
+  ChatDotRound, Folder, Setting, Service, Histogram, Document, Notebook,
+  UserFilled, Clock, TrendCharts, Microphone, Odometer, Connection, Tools,
+  Monitor, Calendar, Files, Collection, Operation, Bell, SetUp, Message
+} from '@element-plus/icons-vue'
+
+const ElIcons = {
+  DataAnalysis, DataBoard, UploadFilled, FolderOpened, Trophy, Star,
+  ChatDotRound, Folder, Setting, Service, Histogram, Document, Notebook,
+  UserFilled, Clock, TrendCharts, Microphone, Odometer, Connection, Tools,
+  Monitor, Calendar, Files, Collection, Operation, Bell, SetUp, Message
+}
 
 // 侧边栏顶部大标题按角色固定。导出供面包屑复用：角色分区父路由的父级标题
 // 与这里的分区名保持一致（如超管访问 /admin/* 时父级显示「系统管理」）。

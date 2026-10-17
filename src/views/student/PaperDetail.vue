@@ -205,9 +205,9 @@
                                 :description="getReviewStepDesc(paperDetails)" />
                             <el-step title="审核完成"
                                 :description="paperDetails.paperStatus === 'completed' ? formatDate(paperDetails.reviewTime) : '--'" />
-                            <el-step :title="dictStatusText('mid_defense', '中期答辩')" icon="Calendar" :description="getDefenseStepDesc('mid_defense')" />
-                            <el-step :title="dictStatusText('final_defense', '终期答辩')" icon="Trophy" :description="getDefenseStepDesc('final_defense')" />
-                            <el-step :title="dictStatusText('defense_passed', '答辩通过')" icon="CircleCheckFilled" :description="getDefenseStepDesc('defense_passed')" />
+                            <el-step :title="dictStatusText('mid_defense', '中期答辩')" :icon="Calendar" :description="getDefenseStepDesc('mid_defense')" />
+                            <el-step :title="dictStatusText('final_defense', '终期答辩')" :icon="Trophy" :description="getDefenseStepDesc('final_defense')" />
+                            <el-step :title="dictStatusText('defense_passed', '答辩通过')" :icon="CircleCheckFilled" :description="getDefenseStepDesc('defense_passed')" />
                         </el-steps>
                     </el-card>
                 </el-col>
@@ -381,7 +381,8 @@ import { loadDefenseDict, getDefenseDictText, DICT_PAPER_STATUS } from '@/utils/
 import {
     ArrowLeft, Download, Document, TrendCharts, Timer,
     ChatLineRound, ChatDotRound, Paperclip, Upload, View, Refresh,
-    DocumentChecked, DocumentAdd, Picture, VideoPlay, EditPen, FullScreen, Star
+    DocumentChecked, DocumentAdd, Picture, VideoPlay, EditPen, FullScreen, Star,
+    Calendar, Trophy, CircleCheckFilled, CircleCheck, Loading, CircleClose, Clock, QuestionFilled
 } from '@element-plus/icons-vue'
 import { getFileInfo } from "@/api/student.js"
 import { getSubjectFieldTree } from '@/api/user.js'
@@ -1413,14 +1414,15 @@ const getCheckStatusText = (status) => {
 }
 
 const getCheckStatusIcon = (status) => {
+    // 值为组件对象（非字符串名）：全局图标注册已移除，字符串无法解析
     const iconMap = {
-        'completed': 'CircleCheck',
-        'checking': 'Loading',
-        'processing': 'Loading',
-        'failure': 'CircleClose',
-        'pending': 'Clock'
+        'completed': CircleCheck,
+        'checking': Loading,
+        'processing': Loading,
+        'failure': CircleClose,
+        'pending': Clock
     }
-    return iconMap[status] || 'QuestionFilled'
+    return iconMap[status] || QuestionFilled
 }
 
 onMounted(() => {

@@ -170,7 +170,8 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { 
   Refresh, DataLine, Tickets, Delete, InfoFilled, SuccessFilled,
-  Check, Loading, Clock, Document, Files, Connection, DocumentChecked, ArrowLeft
+  Check, Loading, Clock, Document, Files, Connection, DocumentChecked, ArrowLeft,
+  CircleClose, Warning
 } from '@element-plus/icons-vue'
 // 注意：后端没有 /api/student/check-tasks/status 这个接口，
 // 任务状态要用 taskDetail（按 paperId 查），它同时带回推送订阅需要的 taskId
@@ -370,14 +371,15 @@ const getStatusColor = (status) => {
 }
 
 const getStatusIcon = (status) => {
+  // 值为组件对象（非字符串名）：全局图标注册已移除，字符串无法解析
   const icons = {
-    'pending': 'Clock',
-    'processing': 'Loading',
-    'completed': 'SuccessFilled',
-    'failed': 'CircleClose',
-    'cancelled': 'Warning'
+    'pending': Clock,
+    'processing': Loading,
+    'completed': SuccessFilled,
+    'failed': CircleClose,
+    'cancelled': Warning
   }
-  return icons[status] || 'Info'
+  return icons[status] || InfoFilled
 }
 
 const getProgressTagType = (progress) => {

@@ -452,7 +452,7 @@ import {
   Message, ChatDotRound, Bell, Lightning, CircleCheck,
   OfficeBuilding, ChatLineRound, TrendCharts, PieChart as PieChartIcon, Calendar, QuestionFilled,
   Delete, Setting, Files, Warning, Trophy, ScaleToOriginal, Star, Timer,
-  Collection, Plus, DataAnalysis, User
+  Collection, Plus, DataAnalysis, User, Histogram, Microphone
 } from '@element-plus/icons-vue'
 import { getAvatarUrl } from '@/utils/avatar'
 import { handleSimilarity, getSimilarityColor, getSimilarityStatus, getPaperStatusText, getPaperStatusType, formatDateTime } from '@/utils/dataType'
