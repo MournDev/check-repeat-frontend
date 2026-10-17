@@ -20,7 +20,7 @@
     </div>
 
     <!-- 论文信息 -->
-    <div class="paper-info-card">
+    <div class="paper-info-card" v-loading="historyLoading">
       <div class="paper-header">
         <h2 class="paper-title">{{ paperInfo.title }}</h2>
         <div class="paper-stats">
@@ -112,8 +112,10 @@
           <span>查重指标趋势</span>
         </div>
       </div>
-      <div v-if="p5TrendList.length === 0" class="trend-empty">暂无查重记录</div>
-      <div v-show="p5TrendList.length > 0" ref="p5TrendChart" class="p5-trend-chart"></div>
+      <div v-loading="p5TrendLoading">
+        <div v-if="!p5TrendLoading && p5TrendList.length === 0" class="trend-empty">暂无查重记录</div>
+        <div v-show="p5TrendList.length > 0" ref="p5TrendChart" class="p5-trend-chart"></div>
+      </div>
     </div>
 
     <!-- 版本历史时间轴 -->
@@ -128,8 +130,9 @@
         </button>
       </div>
       
-      <div class="timeline-container">
-        <div class="timeline">
+      <div class="timeline-container" v-loading="historyLoading">
+        <el-empty v-if="!historyLoading && historyRecords.length === 0" description="暂无查重历史" :image-size="100" />
+        <div class="timeline" v-else>
           <div 
             v-for="(record, index) in historyRecords" 
             :key="record.version"
@@ -367,9 +370,11 @@ const chartInstance = ref(null)
 // P5 查重指标趋势（总相似比/单篇最大/引用率）
 const p5TrendChart = ref(null)
 const p5TrendList = ref([])
+const p5TrendLoading = ref(false)
 let p5ChartInstance = null
 
 const historyRecords = ref([])
+const historyLoading = ref(false)
 
 const trendAnalysis = ref({
   direction: 'stable',
@@ -413,7 +418,8 @@ const refreshHistory = async () => {
     ElMessage.error('缺少论文ID参数')
     return
   }
-  
+
+  historyLoading.value = true
   try {
     const res = await getCheckHistory(paperId)
     if (res.code === 200) {
@@ -475,6 +481,8 @@ const refreshHistory = async () => {
   } catch (error) {
     console.error('刷新历史记录失败:', error)
     ElMessage.error('刷新失败: ' + (error.message || '网络错误'))
+  } finally {
+    historyLoading.value = false
   }
 }
 
@@ -615,6 +623,7 @@ const loadP5Trend = async () => {
     return
   }
 
+  p5TrendLoading.value = true
   try {
     const res = await getPaperSimilarityTrend(paperId)
     if (res.code === 200) {
@@ -623,6 +632,8 @@ const loadP5Trend = async () => {
     }
   } catch (error) {
     console.error('加载查重指标趋势失败:', error)
+  } finally {
+    p5TrendLoading.value = false
   }
 }
 

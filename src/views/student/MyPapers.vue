@@ -116,7 +116,7 @@
         </div>
       </div>
 
-      <div class="papers-list">
+      <div class="papers-list" v-loading="papersLoading">
         <div
           v-for="paper in papers"
           :key="paper.id"
@@ -307,8 +307,8 @@
         </div>
       </div>
 
-      <!-- 空状态 -->
-      <div v-if="papers.length === 0" class="empty-state">
+      <!-- 空状态（加载完成后才显示） -->
+      <div v-if="!papersLoading && papers.length === 0" class="empty-state">
         <div class="empty-content">
           <el-icon class="empty-icon"><Document /></el-icon>
           <h3>暂无论文提交记录</h3>
@@ -574,6 +574,7 @@ const pagination = reactive({
 })
 const total = ref(0);
 const papers = ref([]);
+const papersLoading = ref(false);
 const activePaperId = ref(null);
 const detailDialogVisible = ref(false);
 const currentPaper = ref(null);
@@ -618,6 +619,7 @@ watch(
 
 // 方法
 const fetchPapers = async () => {
+  papersLoading.value = true;
   try {
     const queryParams = {
       studentId: userStore.userInfo?.userId,
@@ -651,6 +653,8 @@ const fetchPapers = async () => {
     console.error("论文查询失败：", error);
     papers.value = [];
     total.value = 0;
+  } finally {
+    papersLoading.value = false;
   }
 };
 

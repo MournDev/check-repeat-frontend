@@ -17,7 +17,7 @@
     </div>
 
     <!-- 系统统计卡片 -->
-    <div class="stats-grid">
+    <div class="stats-grid" v-loading="overviewLoading">
       <div class="stat-card">
         <div class="stat-icon user-icon">
           <el-icon><User /></el-icon>
@@ -74,7 +74,7 @@
             </div>
           </div>
           
-          <div class="monitor-content">
+          <div class="monitor-content" v-loading="overviewLoading">
             <div class="metrics-grid">
               <div class="metric-item">
                 <div class="metric-value">{{ systemMonitorData.cpuUsage }}%</div>
@@ -135,7 +135,7 @@
             </div>
           </div>
           
-          <div class="users-distribution">
+          <div class="users-distribution" v-loading="overviewLoading">
             <div class="distribution-item">
               <div class="dist-info">
                 <div class="dist-value">{{ userDistribution.students }}</div>
@@ -181,7 +181,7 @@
           刷新
         </el-button>
       </div>
-      <div class="business-metrics">
+      <div class="business-metrics" v-loading="bizLoading">
         <div class="metric-item">
           <div class="metric-value">{{ bizMetrics.loginSuccess || 0 }}</div>
           <div class="metric-label">登录成功</div>
@@ -228,7 +228,7 @@
           </el-button-group>
         </div>
       </div>
-      <div ref="responseTimeChartRef" class="chart-container"></div>
+      <div ref="responseTimeChartRef" class="chart-container" v-loading="rtLoading"></div>
     </div>
   </div>
 </template>
@@ -280,6 +280,11 @@ const bizMetrics = ref({
   queueDepth: null
 })
 
+// 加载状态
+const overviewLoading = ref(false)
+const bizLoading = ref(false)
+const rtLoading = ref(false)
+
 // 安全计算百分比，避免除以 0 或产生 NaN
 const safePercent = (count, total) => {
   const t = Number(total) || 0
@@ -300,6 +305,7 @@ const refreshData = async () => {
 }
 
 const loadDashboardData = async () => {
+  overviewLoading.value = true
   try {
     // 并行加载多个API数据
     const [
@@ -349,10 +355,13 @@ const loadDashboardData = async () => {
   } catch (error) {
     console.error('加载统计数据失败:', error)
     ElMessage.error('加载数据失败，请稍后重试')
+  } finally {
+    overviewLoading.value = false
   }
 }
 
 const loadBusinessMetrics = async () => {
+  bizLoading.value = true
   try {
     const res = await getBusinessMetrics()
     if (res.code === 200 && res.data) {
@@ -370,11 +379,14 @@ const loadBusinessMetrics = async () => {
     }
   } catch (error) {
     console.error('加载业务指标失败:', error)
+  } finally {
+    bizLoading.value = false
   }
 }
 
 const loadResponseTimeTrend = async (minutes) => {
   rtTrendPeriod.value = minutes
+  rtLoading.value = true
   try {
     const res = await getResponseTimeTrend(minutes)
     if (res.code === 200 && res.data) {
@@ -415,6 +427,8 @@ const loadResponseTimeTrend = async (minutes) => {
     }
   } catch (error) {
     console.error('加载响应时间趋势失败:', error)
+  } finally {
+    rtLoading.value = false
   }
 }
 

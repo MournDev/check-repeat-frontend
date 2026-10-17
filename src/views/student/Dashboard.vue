@@ -18,7 +18,7 @@
           </button>
         </div>
       </div>
-      <div class="stats-grid">
+      <div class="stats-grid" v-loading="loading.stats">
         <div class="stat-card">
           <div class="stat-icon paper-icon">
             <el-icon><Document /></el-icon>
@@ -70,7 +70,7 @@
           添加到日历
         </button>
       </div>
-      <div class="deadlines-grid">
+      <div class="deadlines-grid" v-loading="loading.deadlines">
         <!-- 提交截止 -->
         <div class="deadline-card submission">
           <div class="deadline-icon">
@@ -152,7 +152,7 @@
               </button>
             </div>
           </div>
-          <div class="progress-content">
+          <div class="progress-content" v-loading="loading.progress">
             <div class="progress-header">
               <h3>论文处理进度</h3>
               <span class="progress-status" :class="getProgressStatusClass(currentProgress)">
@@ -276,7 +276,7 @@
               </button>
             </div>
           </div>
-          <div v-else class="no-paper">
+          <div v-else-if="!loading.paper" class="no-paper">
             <div class="no-paper-content">
               <el-icon class="empty-icon"><Document /></el-icon>
               <h4>暂无论文提交记录</h4>
@@ -299,10 +299,11 @@
               </div>
             </div>
             <div v-if="hasRadarData" ref="radarChartRef" class="chart-container"></div>
-            <div v-else class="chart-empty">
+            <div v-else-if="!loading.radar" class="chart-empty">
               <el-icon class="empty-icon"><DataAnalysis /></el-icon>
               <p>暂无评估数据</p>
             </div>
+            <div v-else class="chart-empty" v-loading="true"></div>
           </div>
           <!-- 相似度趋势图 -->
           <div class="card chart-card">
@@ -313,10 +314,11 @@
               </div>
             </div>
             <div v-if="hasTrendData" ref="trendChartRef" class="chart-container"></div>
-            <div v-else class="chart-empty">
+            <div v-else-if="!loading.trend" class="chart-empty">
               <el-icon class="empty-icon"><TrendCharts /></el-icon>
               <p>暂无检测数据</p>
             </div>
+            <div v-else class="chart-empty" v-loading="true"></div>
           </div>
         </div>
         <!-- 专业对比图 -->
@@ -328,10 +330,11 @@
             </div>
           </div>
           <div v-if="hasComparisonData" ref="comparisonChartRef" class="chart-container-large"></div>
-          <div v-else class="chart-empty">
+          <div v-else-if="!loading.comparison" class="chart-empty">
             <el-icon class="empty-icon"><Histogram /></el-icon>
             <p>暂无专业对比数据</p>
           </div>
+          <div v-else class="chart-empty" v-loading="true"></div>
         </div>
       </div>
       <!-- 右侧：指导老师 -->
@@ -396,7 +399,7 @@
               </div>
             </div>
           </div>
-          <div v-else class="no-advisor">
+          <div v-else-if="!loading.advisor" class="no-advisor">
             <div class="no-advisor-content">
               <el-icon class="empty-icon"><UserFilled /></el-icon>
               <h4>暂未分配指导老师</h4>
@@ -423,10 +426,11 @@
               <div class="notification-time">{{ formatDateTime(item.createTime || item.createdAt) }}</div>
             </div>
           </div>
-          <div v-else class="notification-empty">
+          <div v-else-if="!loading.notifications" class="notification-empty">
             <el-icon class="empty-icon"><Bell /></el-icon>
             <p>暂无通知消息</p>
           </div>
+          <div v-else class="notification-empty" v-loading="true"></div>
         </div>
       </div>
     </div>
