@@ -240,7 +240,7 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .paper-preview-dialog {
   border-radius: 12px;
   overflow: hidden;
