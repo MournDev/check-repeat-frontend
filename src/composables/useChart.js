@@ -107,5 +107,13 @@ export function useChart() {
 
   onUnmounted(dispose)
 
-  return { chartRef, empty, render, run, update, dispose, resize }
+  return {
+    chartRef,
+    // empty 必须以 getter 暴露：返回的是普通对象，模板里 chart.empty 不会对
+    // 嵌套 ref 自动解包（ref 对象恒 truthy，el-empty 会常驻）。getter 让模板读到
+    // 布尔值，且渲染副作用内访问 empty.value 仍会被依赖追踪。
+    // chartRef 不能同理处理——:ref 绑定需要拿到 ref 对象本身。
+    get empty() { return empty.value },
+    render, run, update, dispose, resize
+  }
 }
