@@ -13,9 +13,9 @@
     </div>
 
     <!-- 核心指标概览 -->
-    <el-row :gutter="16" class="overview-cards">
+    <el-row :gutter="16" class="overview-cards" v-loading="overviewLoading">
       <el-col :xs="12" :sm="6">
-        <el-card class="overview-card" shadow="hover">
+        <el-card class="overview-card" shadow="never">
           <div class="card-content">
             <div class="card-icon bg-primary">
               <el-icon><User /></el-icon>
@@ -23,17 +23,13 @@
             <div class="card-info">
               <div class="card-value">{{ overviewStats.totalUsers }}</div>
               <div class="card-label">总用户数</div>
-              <div class="card-trend positive">
-                <el-icon><Top /></el-icon>
-                <span>+{{ overviewStats.userGrowth }}%</span>
-              </div>
             </div>
           </div>
         </el-card>
       </el-col>
       
       <el-col :xs="12" :sm="6">
-        <el-card class="overview-card" shadow="hover">
+        <el-card class="overview-card" shadow="never">
           <div class="card-content">
             <div class="card-icon bg-success">
               <el-icon><Document /></el-icon>
@@ -41,17 +37,13 @@
             <div class="card-info">
               <div class="card-value">{{ overviewStats.totalPapers }}</div>
               <div class="card-label">论文总数</div>
-              <div class="card-trend positive">
-                <el-icon><Top /></el-icon>
-                <span>+{{ overviewStats.paperGrowth }}%</span>
-              </div>
             </div>
           </div>
         </el-card>
       </el-col>
       
       <el-col :xs="12" :sm="6">
-        <el-card class="overview-card" shadow="hover">
+        <el-card class="overview-card" shadow="never">
           <div class="card-content">
             <div class="card-icon bg-warning">
               <el-icon><Warning /></el-icon>
@@ -59,28 +51,20 @@
             <div class="card-info">
               <div class="card-value">{{ overviewStats.highSimilarity }}</div>
               <div class="card-label">高重复率</div>
-              <div class="card-trend negative">
-                <el-icon><Bottom /></el-icon>
-                <span>{{ overviewStats.similarityRate }}%</span>
-              </div>
             </div>
           </div>
         </el-card>
       </el-col>
-      
+
       <el-col :xs="12" :sm="6">
-        <el-card class="overview-card" shadow="hover">
+        <el-card class="overview-card" shadow="never">
           <div class="card-content">
             <div class="card-icon bg-info">
               <el-icon><Monitor /></el-icon>
             </div>
             <div class="card-info">
-              <div class="card-value">{{ overviewStats.systemHealth }}%</div>
-              <div class="card-label">系统健康度</div>
-              <div class="card-trend positive">
-                <el-icon><Top /></el-icon>
-                <span>稳定</span>
-              </div>
+              <div class="card-value">{{ realtimeStats.systemLoad }}%</div>
+              <div class="card-label">系统负载</div>
             </div>
           </div>
         </el-card>
@@ -88,7 +72,7 @@
     </el-row>
 
     <!-- 图表区域 -->
-    <el-row :gutter="16" class="charts-section">
+    <el-row :gutter="16" class="charts-section" v-loading="chartsLoading" element-loading-text="图表加载中">
       <!-- 左侧双图表 -->
       <el-col :xs="24" :lg="16">
         <el-row :gutter="16">
@@ -102,7 +86,9 @@
                   </span>
                 </div>
               </template>
-              <div ref="collegeChartRef" class="chart-container"></div>
+              <!-- 图表数据为空/加载失败时显式空态，禁止 mock 兜底 -->
+              <el-empty v-if="collegeChartEmpty" description="暂无学院分布数据" :image-size="60" class="chart-empty" />
+              <div v-else ref="collegeChartRef" class="chart-container"></div>
             </el-card>
           </el-col>
           
@@ -116,7 +102,8 @@
                   </span>
                 </div>
               </template>
-              <div ref="trendChartRef" class="chart-container"></div>
+              <el-empty v-if="trendChartEmpty" description="暂无月度趋势数据" :image-size="60" class="chart-empty" />
+              <div v-else ref="trendChartRef" class="chart-container"></div>
             </el-card>
           </el-col>
         </el-row>
@@ -130,7 +117,8 @@
               </span>
             </div>
           </template>
-          <div ref="similarityChartRef" class="chart-container large"></div>
+          <el-empty v-if="similarityChartEmpty" description="暂无查重结果分布数据" :image-size="60" class="chart-empty large" />
+          <div v-else ref="similarityChartRef" class="chart-container large"></div>
         </el-card>
       </el-col>
       
@@ -145,7 +133,8 @@
               </span>
             </div>
           </template>
-          <div ref="roleChartRef" class="chart-container"></div>
+          <el-empty v-if="roleChartEmpty" description="暂无人员分布数据" :image-size="60" class="chart-empty" />
+          <div v-else ref="roleChartRef" class="chart-container"></div>
         </el-card>
 
         <el-card class="info-card" shadow="never">
@@ -158,7 +147,7 @@
             </div>
           </template>
 
-          <div class="realtime-stats">
+          <div class="realtime-stats" v-loading="overviewLoading">
             <div class="stat-item">
               <div class="stat-label">今日新增用户</div>
               <div class="stat-value">{{ realtimeStats.todayNewUsers }}</div>
@@ -201,26 +190,36 @@ import {
   getMonthlyTrend,
   getSimilarityDistribution,
   getRealtimeStats,
-  getNotices,
   exportSchoolReport
 } from '@/api/admin/school'
 import * as echarts from 'echarts'
 
-// 图标导入
+// 图标导入（模板中其余图标依赖 main.js 的全局注册，无需在此导入）
 import {
   Refresh, Download, User, Document, Warning, Monitor,
-  Top, Bottom, PieChart as PieChartIcon, DataAnalysis, Histogram, Notification,
-  TrendCharts, InfoFilled, WarningFilled, SuccessFilled
+  DataAnalysis, Histogram, TrendCharts
 } from '@element-plus/icons-vue'
 
 // 响应式数据
 const overviewStats = ref({})
+// 加载状态
+const overviewLoading = ref(false)
+const chartsLoading = ref(false)
+// 初始值一律 0：请求返回前显示 0 而不是编造的假数据
 const realtimeStats = ref({
-  todayPapers: 23,
-  weekReviews: 156,
-  onlineUsers: 142,
-  systemLoad: 65
+  todayPapers: 0,
+  weekReviews: 0,
+  onlineUsers: 0,
+  systemLoad: 0,
+  todayNewUsers: 0,
+  activeTasks: 0
 })
+
+// 各图表空态标记：接口失败或返回空数据时显式展示 el-empty，不做 mock 兜底
+const collegeChartEmpty = ref(false)
+const trendChartEmpty = ref(false)
+const similarityChartEmpty = ref(false)
+const roleChartEmpty = ref(false)
 
 // 人员统计优先使用概览接口返回值（students/teachers/admins）
 const roleCounts = ref({ students: 0, teachers: 0, admins: 0 })
@@ -238,22 +237,23 @@ let similarityChartInstance = null
 let roleChartInstance = null
 
 // 方法
-const refreshAllData = async () => {
+// 全量刷新 = 概览数据 + 全部四张图表；silent 用于首屏加载不弹「数据已刷新」。
+// 接口错误由 axios 拦截器统一提示，这里不再重复弹错。
+const refreshAllData = async (silent = false) => {
   try {
-    await Promise.all([
-      loadOverviewData(),
-    ])
-    // 数据加载完成后重新初始化图表
+    await loadOverviewData()
+    // 空态开关复位后再挂 ref 容器，nextTick 保证 el-empty → 容器切换完成
+    collegeChartEmpty.value = false
+    trendChartEmpty.value = false
+    similarityChartEmpty.value = false
+    roleChartEmpty.value = false
     await nextTick()
-    setTimeout(async () => {
-      await initRoleChart()
-    }, 100)
-    ElMessage.success('数据已刷新')
+    await initAllCharts()
+    if (!silent) ElMessage.success('数据已刷新')
   } catch (error) {
-    ElMessage.error('刷新数据失败')
+    console.error('加载全校概览数据失败:', error)
   }
 }
-
 
 const exportReport = async () => {
   try {
@@ -261,7 +261,7 @@ const exportReport = async () => {
       startTime: new Date(new Date().setDate(new Date().getDate() - 30)).toISOString(),
       endTime: new Date().toISOString()
     })
-    
+
     // 创建下载链接
     const blob = response.data instanceof Blob ? response.data : new Blob([response.data], { type: 'application/pdf' })
     const url = window.URL.createObjectURL(blob)
@@ -272,43 +272,15 @@ const exportReport = async () => {
     link.click()
     document.body.removeChild(link)
     window.URL.revokeObjectURL(url)
-    
+
     ElMessage.success('报告导出成功')
   } catch (error) {
     console.error('导出报告失败:', error)
     ElMessage.error('报告导出失败')
   }
 }
-
-const getNoticeIcon = (type) => {
-  const iconMap = {
-    info: InfoFilled,
-    warning: WarningFilled,
-    success: SuccessFilled
-  }
-  return iconMap[type] || InfoFilled
-}
-
-const formatTime = (dateString) => {
-  if (!dateString) return ''
-  const date = new Date(dateString)
-  const now = new Date()
-  const diff = now - date
-  
-  if (diff < 3600000) { // 1小时内
-    return `${Math.floor(diff / 60000)}分钟前`
-  } else if (diff < 86400000) { // 1天内
-    return `${Math.floor(diff / 3600000)}小时前`
-  } else {
-    return `${Math.floor(diff / 86400000)}天前`
-  }
-}
-
-// 生命周期
-onMounted(async () => {
-  await refreshAllData()
-})
 const loadOverviewData = async () => {
+  overviewLoading.value = true
   try {
     // 并行加载多个API数据
     const [overviewResponse, realtimeResponse] = await Promise.all([
@@ -317,16 +289,11 @@ const loadOverviewData = async () => {
     ])
     
     
-    // 处理学校概览数据
+    // 处理学校概览数据：后端未提供增长率/健康度字段，不再编造，卡片只展示真实值
     overviewStats.value = {
       totalUsers: overviewResponse.data.totalUsers || 0,
-      userGrowth: 0, // 后端未提供，设为0
       totalPapers: overviewResponse.data.totalPapers || 0,
-      paperGrowth: 0, // 后端未提供，设为0
-      highSimilarity: overviewResponse.data.highSimilarityPapers || 0,
-      similarityRate: overviewResponse.data.highSimilarityPapers && overviewResponse.data.totalPapers ? 
-                     ((overviewResponse.data.highSimilarityPapers / overviewResponse.data.totalPapers) * 100).toFixed(1) : 0,
-      systemHealth: 95 // 固定值或根据其他指标计算
+      highSimilarity: overviewResponse.data.highSimilarityPapers || 0
     }
 
     // 从概览接口优先获取人员分布统计（避免单独的实时接口不包含汇总）
@@ -346,16 +313,20 @@ const loadOverviewData = async () => {
       activeTasks: realtimeResponse.data.activeTasks || 0
     }
   } finally {
-    // 强制触发响应式更新
-    overviewStats.value = { ...overviewStats.value }
-    realtimeStats.value = { ...realtimeStats.value }
+    overviewLoading.value = false
   }
+}
+
+// 释放图表实例的统一入口，返回 null 便于 `instance = disposeChart(instance)` 写法
+const disposeChart = (chart) => {
+  if (chart) chart.dispose()
+  return null
 }
 
 // 初始化学院分布图表
 const initCollegeChart = async () => {
   if (!collegeChartRef.value) return
-  
+
   try {
     const response = await getCollegeDistribution()
     let items = []
@@ -363,22 +334,23 @@ const initCollegeChart = async () => {
       if (Array.isArray(response.data)) items = response.data
       else if (response.data && Array.isArray(response.data.collegeStats?.distribution)) items = response.data.collegeStats.distribution
       else if (response.data && Array.isArray(response.data.distribution)) items = response.data.distribution
-      else if (Array.isArray(response.records)) items = response.records
-      else if (Array.isArray(response.list)) items = response.list
-      else if (response.data && Array.isArray(response.data.records)) items = response.data.records
     }
 
     const chartData = (items || []).map(item => ({
       value: Number(item.paperCount ?? item.count ?? item.value ?? 0),
       name: item.collegeName || item.name || '未知'
     }))
-    
-    if (collegeChartInstance) {
-      collegeChartInstance.dispose()
+
+    // 空数据：显式空态，不渲染空图表
+    if (!chartData.length) {
+      collegeChartInstance = disposeChart(collegeChartInstance)
+      collegeChartEmpty.value = true
+      return
     }
-    
+
+    collegeChartInstance = disposeChart(collegeChartInstance)
     collegeChartInstance = echarts.init(collegeChartRef.value)
-    const option = {
+    collegeChartInstance.setOption({
       tooltip: {
         trigger: 'item',
         formatter: '{a} <br/>{b}: {c} ({d}%)'
@@ -416,96 +388,52 @@ const initCollegeChart = async () => {
           data: chartData
         }
       ]
-    }
-    
-    collegeChartInstance.setOption(option)
+    })
   } catch (error) {
+    // 接口失败：显式空态。绝不回退 mock 数据——管理驾驶舱宁缺毋假
     console.error('加载学院分布数据失败:', error)
-    
-    if (collegeChartInstance) {
-      collegeChartInstance.dispose()
-    }
-    
-    collegeChartInstance = echarts.init(collegeChartRef.value)
-    const option = {
-      tooltip: {
-        trigger: 'item'
-      },
-      legend: {
-        bottom: '0',
-        left: 'center'
-      },
-      series: [
-        {
-          name: '学院分布',
-          type: 'pie',
-          radius: ['40%', '70%'],
-          center: ['50%', '45%'],
-          avoidLabelOverlap: false,
-          itemStyle: {
-            borderRadius: 10,
-            borderColor: '#ffffff',
-            borderWidth: 2
-          },
-          label: {
-            show: false,
-            position: 'center'
-          },
-          emphasis: {
-            label: {
-              show: true,
-              fontSize: 14,
-              fontWeight: 'bold'
-            }
-          },
-          labelLine: {
-            show: false
-          },
-          data: mockData
-        }
-      ]
-    }
-    
-    collegeChartInstance.setOption(option)
+    collegeChartInstance = disposeChart(collegeChartInstance)
+    collegeChartEmpty.value = true
   }
 }
 
 // 初始化趋势图表
 const initTrendChart = async () => {
   if (!trendChartRef.value) return
-  
+
   try {
     const response = await getMonthlyTrend()
-    console.debug('monthly trend raw response:', response)
-    let months = ['1月', '2月', '3月', '4月', '5月', '6月']
-    let paperCounts = [120, 200, 150, 80, 70, 110]
+    // 默认空数组：拿不到数据就走空态，绝不用假月份假数量兜底
+    let months = []
+    let paperCounts = []
     if (response) {
-      if (response.data) {
-        if (Array.isArray(response.data)) {
-          const arr = response.data
-          months = arr.map(it => it.month || it.label || '')
-          paperCounts = arr.map(it => Number(it.submissionCount ?? it.paperCount ?? it.checkCount ?? 0))
-        } else if (Array.isArray(response.data.list)) {
-          const arr = response.data.list
-          months = arr.map(it => it.month || it.label || '')
-          paperCounts = arr.map(it => Number(it.submissionCount ?? it.paperCount ?? it.checkCount ?? 0))
-        } else {
-          months = response.data.months || months
-          paperCounts = response.data.paperCounts || paperCounts
-        }
+      if (Array.isArray(response.data)) {
+        const arr = response.data
+        months = arr.map(it => it.month || it.label || '')
+        paperCounts = arr.map(it => Number(it.submissionCount ?? it.paperCount ?? it.checkCount ?? 0))
+      } else if (Array.isArray(response.data?.list)) {
+        const arr = response.data.list
+        months = arr.map(it => it.month || it.label || '')
+        paperCounts = arr.map(it => Number(it.submissionCount ?? it.paperCount ?? it.checkCount ?? 0))
       } else if (Array.isArray(response)) {
         const arr = response
         months = arr.map(it => it.month || it.label || '')
         paperCounts = arr.map(it => Number(it.submissionCount ?? it.paperCount ?? it.checkCount ?? 0))
+      } else {
+        months = response.data?.months || []
+        paperCounts = response.data?.paperCounts || []
       }
     }
-    
-    if (trendChartInstance) {
-      trendChartInstance.dispose()
+
+    if (!months.length) {
+      trendChartInstance = disposeChart(trendChartInstance)
+      trendChartEmpty.value = true
+      return
     }
-    
+
+    trendChartInstance = disposeChart(trendChartInstance)
     trendChartInstance = echarts.init(trendChartRef.value)
-    const option = {
+    trendChartInstance.setOption({
       tooltip: {
         trigger: 'axis'
       },
@@ -532,50 +460,11 @@ const initTrendChart = async () => {
           }
         }
       ]
-    }
-    
-    trendChartInstance.setOption(option)
+    })
   } catch (error) {
     console.error('加载月度趋势数据失败:', error)
-    // 使用模拟数据
-    const mockMonths = ['1月', '2月', '3月', '4月', '5月', '6月']
-    const mockCounts = [120, 200, 150, 80, 70, 110]
-    
-    if (trendChartInstance) {
-      trendChartInstance.dispose()
-    }
-    
-    trendChartInstance = echarts.init(trendChartRef.value)
-    const option = {
-      tooltip: {
-        trigger: 'axis'
-      },
-      xAxis: {
-        type: 'category',
-        data: mockMonths
-      },
-      yAxis: {
-        type: 'value'
-      },
-      series: [
-        {
-          data: mockCounts,
-          type: 'line',
-          smooth: true,
-          itemStyle: {
-            color: '#0066cc'
-          },
-          areaStyle: {
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              { offset: 0, color: 'rgba(0, 102, 204, 0.15)' },
-              { offset: 1, color: 'rgba(0, 102, 204, 0.04)' }
-            ])
-          }
-        }
-      ]
-    }
-    
-    trendChartInstance.setOption(option)
+    trendChartInstance = disposeChart(trendChartInstance)
+    trendChartEmpty.value = true
   }
 }
 
@@ -620,13 +509,16 @@ const initSimilarityChart = async () => {
       name: (item.range || item.name || '').toString().includes('+') ? (item.range || item.name || '').toString().replace('+', '以上') : (item.range || item.name || '').toString(),
       value: Number(item.count ?? item.value ?? 0)
     }))
-    
-    if (similarityChartInstance) {
-      similarityChartInstance.dispose()
+
+    if (!chartData.length) {
+      similarityChartInstance = disposeChart(similarityChartInstance)
+      similarityChartEmpty.value = true
+      return
     }
-    
+
+    similarityChartInstance = disposeChart(similarityChartInstance)
     similarityChartInstance = echarts.init(similarityChartRef.value)
-    const option = {
+    similarityChartInstance.setOption({
       tooltip: {
         trigger: 'axis',
         axisPointer: {
@@ -668,71 +560,11 @@ const initSimilarityChart = async () => {
           }
         }
       ]
-    }
-    
-    similarityChartInstance.setOption(option)
+    })
   } catch (error) {
     console.error('加载相似度分布数据失败:', error)
-    // 使用模拟数据
-    const mockData = [
-      { name: '0-10%', value: 320 },
-      { name: '10-20%', value: 258 },
-      { name: '20-30%', value: 147 },
-      { name: '30-40%', value: 89 },
-      { name: '40-50%', value: 42 },
-      { name: '50%以上', value: 18 }
-    ]
-    
-    if (similarityChartInstance) {
-      similarityChartInstance.dispose()
-    }
-    
-    similarityChartInstance = echarts.init(similarityChartRef.value)
-    const option = {
-      tooltip: {
-        trigger: 'axis',
-        axisPointer: {
-          type: 'shadow'
-        }
-      },
-      grid: {
-        left: '3%',
-        right: '4%',
-        bottom: '3%',
-        containLabel: true
-      },
-      xAxis: [
-        {
-          type: 'category',
-          data: mockData.map(item => item.name),
-          axisTick: {
-            alignWithLabel: true
-          }
-        }
-      ],
-      yAxis: [
-        {
-          type: 'value'
-        }
-      ],
-      series: [
-        {
-          name: '论文数量',
-          type: 'bar',
-          barWidth: '60%',
-          data: mockData.map(item => item.value),
-          itemStyle: {
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              { offset: 0, color: '#5ac8fa' },
-              { offset: 0.5, color: '#0066cc' },
-              { offset: 1, color: '#0066cc' }
-            ])
-          }
-        }
-      ]
-    }
-    
-    similarityChartInstance.setOption(option)
+    similarityChartInstance = disposeChart(similarityChartInstance)
+    similarityChartEmpty.value = true
   }
 }
 
@@ -762,12 +594,16 @@ const initRoleChart = async () => {
       { value: teachers, name: '教师' },
       { value: admins, name: '管理员' }
     ]
-    
-    if (roleChartInstance) {
-      roleChartInstance.dispose()
+
+    if (!userData.some(d => d.value > 0)) {
+      roleChartInstance = disposeChart(roleChartInstance)
+      roleChartEmpty.value = true
+      return
     }
+
+    roleChartInstance = disposeChart(roleChartInstance)
     roleChartInstance = echarts.init(roleChartRef.value)
-    const option = {
+    roleChartInstance.setOption({
       tooltip: {
         trigger: 'item',
         formatter: '{a} <br/>{b}: {c}人 ({d}%)'
@@ -805,76 +641,28 @@ const initRoleChart = async () => {
           data: userData
         }
       ]
-    }
-    
-    roleChartInstance.setOption(option)
+    })
   } catch (error) {
     console.error('加载人员分布数据失败:', error)
-    // 使用模拟数据
-    const mockData = [
-      { value: 120, name: '学生' },
-      { value: 25, name: '教师' },
-      { value: 5, name: '管理员' }
-    ]
-    
-    if (roleChartInstance) {
-      roleChartInstance.dispose()
-    }
-    
-    roleChartInstance = echarts.init(roleChartRef.value)
-    const option = {
-      tooltip: {
-        trigger: 'item',
-        formatter: '{a} <br/>{b}: {c}人 ({d}%)'
-      },
-      legend: {
-        bottom: '0',
-        left: 'center'
-      },
-      series: [
-        {
-          name: '人员分布',
-          type: 'pie',
-          radius: ['40%', '70%'],
-          center: ['50%', '45%'],
-          avoidLabelOverlap: false,
-          itemStyle: {
-            borderRadius: 10,
-            borderColor: '#ffffff',
-            borderWidth: 2
-          },
-          label: {
-            show: false,
-            position: 'center'
-          },
-          emphasis: {
-            label: {
-              show: true,
-              fontSize: 14,
-              fontWeight: 'bold'
-            }
-          },
-          labelLine: {
-            show: false
-          },
-          data: mockData
-        }
-      ]
-    }
-    
-    roleChartInstance.setOption(option)
+    roleChartInstance = disposeChart(roleChartInstance)
+    roleChartEmpty.value = true
   }
 }
 
 // 初始化所有图表
 const initAllCharts = async () => {
-  await nextTick() // 确保DOM完全渲染
-  await Promise.all([
-    initCollegeChart(),
-    initTrendChart(),
-    initSimilarityChart(),
-    initRoleChart()
-  ])
+  chartsLoading.value = true
+  try {
+    await nextTick() // 确保DOM完全渲染
+    await Promise.all([
+      initCollegeChart(),
+      initTrendChart(),
+      initSimilarityChart(),
+      initRoleChart()
+    ])
+  } finally {
+    chartsLoading.value = false
+  }
 }
 
 // 窗口大小改变时重新渲染图表
@@ -885,14 +673,10 @@ const handleResize = () => {
   if (roleChartInstance) roleChartInstance.resize()
 }
 
-// 生命周期钩子
+// 生命周期钩子：唯一入口。此前两个 onMounted 并存导致概览接口被调两次、
+// 100ms/300ms 两个 setTimeout 竞争重初始化图表，已合并为 refreshAllData 一条链路
 onMounted(async () => {
-  await loadOverviewData()
-  // 增加延迟确保数据完全加载
-  setTimeout(async () => {
-    await initAllCharts()
-  }, 300)
-  
+  await refreshAllData(true)
   window.addEventListener('resize', handleResize)
 })
 
@@ -994,24 +778,6 @@ onUnmounted(() => {
           color: var(--apple-ink-secondary);
           margin: 0.25rem 0;
         }
-        
-        .card-trend {
-          display: flex;
-          align-items: center;
-          font-size: 0.75rem;
-          
-          &.positive {
-            color: var(--apple-success);
-          }
-          
-          &.negative {
-            color: var(--apple-danger);
-          }
-          
-          .el-icon {
-            margin-right: 0.25rem;
-          }
-        }
       }
     }
   }
@@ -1047,7 +813,19 @@ onUnmounted(() => {
     
     .chart-container {
       height: 280px;
-      
+
+      &.large {
+        height: 320px;
+      }
+    }
+
+    // 图表空态容器：与 chart-container 同高，保证卡片高度稳定
+    .chart-empty {
+      height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
       &.large {
         height: 320px;
       }
@@ -1082,71 +860,6 @@ onUnmounted(() => {
           margin-right: 0.5rem;
           color: var(--apple-primary);
         }
-      }
-    }
-  }
-}
-
-.notification-list {
-  .notice-item {
-    display: flex;
-    padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 0.75rem;
-    transition: all 0.3s ease;
-    
-    &:hover {
-      filter: brightness(0.95);
-    }
-
-    &:active {
-      transform: scale(0.95);
-      transition: transform 0.15s ease;
-    }
-    
-    &.info {
-      background: var(--apple-canvas-parchment);
-      border-left: 4px solid var(--apple-primary);
-    }
-    
-    &.warning {
-      background: var(--apple-canvas-parchment);
-      border-left: 4px solid var(--apple-warning);
-    }
-    
-    &.success {
-      background: var(--apple-canvas-parchment);
-      border-left: 4px solid var(--apple-success);
-    }
-    
-    .notice-icon {
-      margin-right: 0.75rem;
-      
-      .el-icon {
-        font-size: 1.25rem;
-      }
-    }
-    
-    .notice-content {
-      flex: 1;
-      
-      .notice-title {
-        margin: 0 0 0.25rem 0;
-        font-size: 0.95rem;
-        font-weight: 600;
-        color: var(--apple-ink);
-      }
-      
-      .notice-desc {
-        margin: 0 0 0.5rem 0;
-        font-size: 0.875rem;
-        color: var(--apple-ink-secondary);
-        line-height: 1.4;
-      }
-      
-      .notice-time {
-        font-size: 0.75rem;
-        color: var(--apple-ink-secondary);
       }
     }
   }
