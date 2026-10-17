@@ -158,9 +158,9 @@ export const handleSimilarity = (similarity) => {
  */
 export const getSimilarityColor = (similarity) => {
   const sim = handleSimilarity(similarity);
-  if (sim < 15) return '#67c23a';  // 绿色 - 优秀
-  if (sim < 30) return '#e6a23c';  // 黄色 - 良好
-  return '#f56c6c';  // 红色 - 需关注
+  if (sim < 15) return '#34c759';  // 绿色 - 优秀
+  if (sim < 30) return '#ff9500';  // 黄色 - 良好
+  return '#ff3b30';  // 红色 - 需关注
 };
 
 /**

@@ -796,23 +796,11 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss" scoped>
-// Apple 配色方案
-$primary-color: var(--apple-primary);
-$primary-dark: var(--apple-primary-active);
-$secondary-color: var(--apple-primary);
-$success-color: var(--apple-success);
-$warning-color: var(--apple-warning);
-$danger-color: var(--apple-danger);
-$info-color: var(--apple-ink-secondary);
-$light-bg: var(--apple-canvas-parchment);
-$card-bg: var(--apple-surface);
-$text-primary: var(--apple-ink);
-$text-secondary: var(--apple-ink-secondary);
-$border-color: var(--apple-slate-border);
+// 颜色一律 var() 引用 design-tokens.scss（唯一真源），原 SCSS 别名层已废
 
 .plagiarism-report-page {
   padding: 20px;
-  background-color: $light-bg;
+  background-color: var(--apple-canvas-parchment);
   min-height: 100vh;
   animation: fadeIn 0.5s ease-in-out;
 
@@ -833,7 +821,7 @@ $border-color: var(--apple-slate-border);
     .page-title {
       font-size: 24px;
       font-weight: 600;
-      color: $text-primary;
+      color: var(--apple-ink);
       margin-bottom: 8px;
     }
     
@@ -873,7 +861,7 @@ $border-color: var(--apple-slate-border);
       
       .info-icon {
         padding: 20px;
-        background: $primary-color;
+        background: var(--apple-primary);
         border-radius: 18px;
         color: white;
         /* box-shadow and pulse animation removed */
@@ -886,7 +874,7 @@ $border-color: var(--apple-slate-border);
           margin: 0 0 16px 0;
           font-size: 24px;
           font-weight: 600;
-          color: $text-primary;
+          color: var(--apple-ink);
           line-height: 1.4;
           animation: slideInLeft 0.6s ease-out;
           
@@ -923,11 +911,11 @@ $border-color: var(--apple-slate-border);
             display: flex;
             align-items: center;
             gap: 8px;
-            color: $text-secondary;
+            color: var(--apple-ink-secondary);
             font-size: 17px;
             
             .el-icon {
-              color: $primary-color;
+              color: var(--apple-primary);
             }
           }
         }
@@ -947,11 +935,11 @@ $border-color: var(--apple-slate-border);
     :deep(.el-tabs__header) {
       margin-bottom: 0;
       padding: 0 24px;
-      background-color: $card-bg;
-      border-bottom: 1px solid $border-color;
+      background-color: var(--apple-surface);
+      border-bottom: 1px solid var(--apple-slate-border);
       
       .el-tabs__item {
-        color: $text-secondary;
+        color: var(--apple-ink-secondary);
         font-size: 16px;
         font-weight: 600;
         padding: 16px 24px;
@@ -959,17 +947,17 @@ $border-color: var(--apple-slate-border);
         transition: all 0.3s ease;
         
         &:hover {
-          color: $primary-color;
+          color: var(--apple-primary);
         }
         
         &.is-active {
-          color: $primary-color;
+          color: var(--apple-primary);
           font-weight: 600;
         }
       }
       
       .el-tabs__active-bar {
-        background-color: $primary-color;
+        background-color: var(--apple-primary);
         height: 3px;
         border-radius: 2px;
       }
@@ -1006,18 +994,18 @@ $border-color: var(--apple-slate-border);
             .percentage {
               font-size: 32px;
               font-weight: 600;
-              color: $text-primary;
+              color: var(--apple-ink);
             }
             
             .metric-caption {
               font-size: 13px;
-              color: $text-secondary;
+              color: var(--apple-ink-secondary);
               margin-top: 2px;
             }
 
             .rating {
               font-size: 16px;
-              color: $text-secondary;
+              color: var(--apple-ink-secondary);
               margin-top: 4px;
             }
           }
@@ -1026,13 +1014,13 @@ $border-color: var(--apple-slate-border);
       
       .distribution-chart {
         padding: 28px;
-        background: $card-bg;
+        background: var(--apple-surface);
         border-radius: 18px;
         /* box-shadow removed */
         
         h3 {
           margin: 0 0 20px 0;
-          color: $text-primary;
+          color: var(--apple-ink);
           font-size: 18px;
           font-weight: 600;
         }
@@ -1043,7 +1031,7 @@ $border-color: var(--apple-slate-border);
             
             .bar-label {
               font-size: 17px;
-              color: $text-secondary;
+              color: var(--apple-ink-secondary);
               margin-bottom: 8px;
             }
             
@@ -1063,7 +1051,7 @@ $border-color: var(--apple-slate-border);
                 min-width: 50px;
                 font-size: 17px;
                 font-weight: 600;
-                color: $text-primary;
+                color: var(--apple-ink);
               }
             }
           }
@@ -1075,22 +1063,22 @@ $border-color: var(--apple-slate-border);
       .stat-item {
         text-align: center;
         padding: 24px;
-        background: $card-bg;
+        background: var(--apple-surface);
         border-radius: 18px;
         /* box-shadow removed */
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        border: 1px solid $border-color;
+        border: 1px solid var(--apple-slate-border);
         
         &:hover {
           /* box-shadow removed */
           /* translateY removed */
-          border-color: $primary-color;
+          border-color: var(--apple-primary);
         }
         
         .stat-value {
           font-size: 32px;
           font-weight: 600;
-          color: $primary-color;
+          color: var(--apple-primary);
           margin-bottom: 8px;
           animation: countUp 1s ease-out;
           
@@ -1108,7 +1096,7 @@ $border-color: var(--apple-slate-border);
         
         .stat-label {
           font-size: 17px;
-          color: $text-secondary;
+          color: var(--apple-ink-secondary);
           font-weight: 600;
         }
       }
@@ -1128,10 +1116,10 @@ $border-color: var(--apple-slate-border);
         align-items: center;
         gap: 12px;
         font-weight: 600;
-        color: $text-primary;
+        color: var(--apple-ink);
         padding: 20px 24px;
-        background: $light-bg;
-        border-bottom: 1px solid $border-color;
+        background: var(--apple-canvas-parchment);
+        border-bottom: 1px solid var(--apple-slate-border);
         font-size: 16px;
       }
       
@@ -1144,14 +1132,14 @@ $border-color: var(--apple-slate-border);
           justify-content: space-between;
           padding: 20px;
           margin-bottom: 16px;
-          background: $light-bg;
+          background: var(--apple-canvas-parchment);
           border-radius: 18px;
           transition: all 0.3s ease;
-          border: 1px solid $border-color;
+          border: 1px solid var(--apple-slate-border);
           
           &:hover {
             /* box-shadow removed */
-            border-color: $primary-color;
+            border-color: var(--apple-primary);
           }
           
           &:last-child {
@@ -1163,7 +1151,7 @@ $border-color: var(--apple-slate-border);
             
             .section-name {
               font-weight: 600;
-              color: $text-primary;
+              color: var(--apple-ink);
               margin-bottom: 8px;
               font-size: 16px;
             }
@@ -1172,7 +1160,7 @@ $border-color: var(--apple-slate-border);
               display: flex;
               gap: 24px;
               font-size: 17px;
-              color: $text-secondary;
+              color: var(--apple-ink-secondary);
             }
           }
           
@@ -1185,7 +1173,7 @@ $border-color: var(--apple-slate-border);
             .progress-text {
               min-width: 50px;
               font-weight: 600;
-              color: $text-primary;
+              color: var(--apple-ink);
               font-size: 17px;
             }
           }
@@ -1203,10 +1191,10 @@ $border-color: var(--apple-slate-border);
         align-items: center;
         gap: 12px;
         font-weight: 600;
-        color: $text-primary;
+        color: var(--apple-ink);
         padding: 20px 24px;
-        background: $light-bg;
-        border-bottom: 1px solid $border-color;
+        background: var(--apple-canvas-parchment);
+        border-bottom: 1px solid var(--apple-slate-border);
         font-size: 16px;
       }
       
@@ -1220,15 +1208,15 @@ $border-color: var(--apple-slate-border);
             display: inline-block;
             padding: 8px 16px;
             margin: 8px;
-            background: $light-bg;
-            color: $primary-color;
+            background: var(--apple-canvas-parchment);
+            color: var(--apple-primary);
             border-radius: 18px;
             font-size: 17px;
             transition: all 0.3s ease;
-            border: 1px solid $border-color;
+            border: 1px solid var(--apple-slate-border);
             
             &:hover {
-              background: $primary-color;
+              background: var(--apple-primary);
               color: white;
               /* translateY removed */
               /* box-shadow removed */
@@ -1244,24 +1232,24 @@ $border-color: var(--apple-slate-border);
           
           .risk-label {
             font-weight: 600;
-            color: $danger-color;
+            color: var(--apple-danger);
             white-space: nowrap;
             margin-top: 8px;
             font-size: 17px;
           }
           
           .keyword-tag.risk {
-            background: $light-bg;
-            color: $danger-color;
+            background: var(--apple-canvas-parchment);
+            color: var(--apple-danger);
             padding: 8px 16px;
             margin: 8px;
             border-radius: 18px;
             font-size: 17px;
             transition: all 0.3s ease;
-            border: 1px solid $border-color;
+            border: 1px solid var(--apple-slate-border);
             
             &:hover {
-              background: $danger-color;
+              background: var(--apple-danger);
               color: white;
               /* translateY removed */
               /* box-shadow removed */
@@ -1280,12 +1268,12 @@ $border-color: var(--apple-slate-border);
       /* box-shadow removed */
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       overflow: hidden;
-      border: 1px solid $border-color;
+      border: 1px solid var(--apple-slate-border);
       
       &:hover {
         /* box-shadow removed */
         /* translateY removed */
-        border-color: $primary-color;
+        border-color: var(--apple-primary);
       }
       
       .source-header {
@@ -1299,7 +1287,7 @@ $border-color: var(--apple-slate-border);
           margin: 0;
           font-size: 18px;
           font-weight: 600;
-          color: $text-primary;
+          color: var(--apple-ink);
           flex: 1;
           margin-right: 20px;
           line-height: 1.4;
@@ -1310,13 +1298,13 @@ $border-color: var(--apple-slate-border);
         display: flex;
         gap: 24px;
         margin-bottom: 20px;
-        color: $text-secondary;
+        color: var(--apple-ink-secondary);
         font-size: 17px;
         padding: 0 24px;
         
         .el-icon {
           margin-right: 6px;
-          color: $primary-color;
+          color: var(--apple-primary);
         }
       }
       
@@ -1325,17 +1313,17 @@ $border-color: var(--apple-slate-border);
         
         h4 {
           margin: 0 0 16px 0;
-          color: $text-primary;
+          color: var(--apple-ink);
           font-size: 16px;
           font-weight: 600;
         }
         
         .paragraph-item {
-          background: $light-bg;
+          background: var(--apple-canvas-parchment);
           border-radius: 18px;
           padding: 20px;
           margin-bottom: 16px;
-          border-left: 4px solid $primary-color;
+          border-left: 4px solid var(--apple-primary);
           transition: all 0.3s ease;
           
           &:hover {
@@ -1348,7 +1336,7 @@ $border-color: var(--apple-slate-border);
             line-height: 1.6;
             
             strong {
-              color: $text-secondary;
+              color: var(--apple-ink-secondary);
               font-weight: 600;
             }
           }
@@ -1356,7 +1344,7 @@ $border-color: var(--apple-slate-border);
           .match-similarity {
             text-align: right;
             font-size: 17px;
-            color: $danger-color;
+            color: var(--apple-danger);
             font-weight: 600;
           }
         }
@@ -1377,10 +1365,10 @@ $border-color: var(--apple-slate-border);
         align-items: center;
         gap: 12px;
         font-weight: 600;
-        color: $text-primary;
+        color: var(--apple-ink);
         padding: 20px 24px;
-        background: $light-bg;
-        border-bottom: 1px solid $border-color;
+        background: var(--apple-canvas-parchment);
+        border-bottom: 1px solid var(--apple-slate-border);
         font-size: 16px;
       }
       
@@ -1396,7 +1384,7 @@ $border-color: var(--apple-slate-border);
           background: var(--apple-canvas-parchment);
           border-radius: 18px;
           transition: all 0.3s ease;
-          border: 1px solid $border-color;
+          border: 1px solid var(--apple-slate-border);
           
           &:hover {
             /* box-shadow removed */
@@ -1409,13 +1397,13 @@ $border-color: var(--apple-slate-border);
           
           .el-icon {
             margin-top: 4px;
-            color: $primary-color;
+            color: var(--apple-primary);
             font-size: 18px;
           }
           
           span {
             flex: 1;
-            color: $text-primary;
+            color: var(--apple-ink);
             line-height: 1.6;
             font-size: 17px;
           }
@@ -1430,17 +1418,17 @@ $border-color: var(--apple-slate-border);
     
     .history-item {
       padding: 20px;
-      background: $card-bg;
+      background: var(--apple-surface);
       border-radius: 18px;
       margin-bottom: 20px;
       transition: all 0.3s ease;
-      border: 1px solid $border-color;
+      border: 1px solid var(--apple-slate-border);
       /* box-shadow removed */
       
       &:hover {
         /* box-shadow removed */
         /* translateY removed */
-        border-color: $primary-color;
+        border-color: var(--apple-primary);
       }
       
       .version-info {
@@ -1451,13 +1439,13 @@ $border-color: var(--apple-slate-border);
         
         .similarity-score {
           font-weight: 600;
-          color: $text-primary;
+          color: var(--apple-ink);
           font-size: 16px;
         }
       }
       
       .change-description {
-        color: $text-secondary;
+        color: var(--apple-ink-secondary);
         margin-bottom: 16px;
         line-height: 1.6;
         font-size: 17px;
@@ -1466,11 +1454,11 @@ $border-color: var(--apple-slate-border);
       .history-actions {
         .el-button {
           padding: 0;
-          color: $primary-color;
+          color: var(--apple-primary);
           font-weight: 600;
           
           &:hover {
-            color: $primary-dark;
+            color: var(--apple-primary-active);
             text-decoration: underline;
           }
         }
@@ -1490,7 +1478,7 @@ $border-color: var(--apple-slate-border);
     text-align: center;
     
     :deep(.el-empty__description) {
-      color: $text-secondary;
+      color: var(--apple-ink-secondary);
       font-size: 17px;
     }
   }
@@ -1663,17 +1651,17 @@ $border-color: var(--apple-slate-border);
 }
 
 ::-webkit-scrollbar-track {
-  background: $light-bg;
+  background: var(--apple-canvas-parchment);
   border-radius: 8px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: $border-color;
+  background: var(--apple-slate-border);
   border-radius: 8px;
   transition: all 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: $primary-color;
+  background: var(--apple-primary);
 }
 </style>

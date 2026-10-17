@@ -1045,7 +1045,7 @@ onUnmounted(() => {
 
 .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 16px; }
 .stat-card { text-align: center; padding: 8px 0; }
-.stat-value { font-size: 28px; font-weight: 700; color: #303133; }
+.stat-value { font-size: 28px; font-weight: 700; color: var(--apple-ink); }
 .stat-value.success { color: var(--apple-success); }
 .stat-value.danger { color: var(--apple-danger); }
 .stat-value.primary { color: var(--apple-primary); }

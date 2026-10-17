@@ -1090,11 +1090,11 @@ onMounted(() => {
     font-weight: 400;
 
     &.positive {
-      color: var(--success-green);
+      color: var(--apple-success);
     }
 
     &.negative {
-      color: var(--danger-red);
+      color: var(--apple-danger);
     }
 
     .el-icon {
@@ -1199,17 +1199,17 @@ onMounted(() => {
 
         &.high {
           background: var(--apple-danger-bg);
-          color: var(--danger-red);
+          color: var(--apple-danger);
         }
 
         &.medium {
           background: var(--apple-warning-bg);
-          color: var(--warning-yellow);
+          color: var(--apple-warning);
         }
 
         &.low {
           background: var(--apple-success-bg);
-          color: var(--success-green);
+          color: var(--apple-success);
         }
       }
 
@@ -1275,7 +1275,7 @@ onMounted(() => {
 
         &.danger {
           background: var(--apple-danger-bg);
-          color: var(--danger-red);
+          color: var(--apple-danger);
         }
       }
     }
