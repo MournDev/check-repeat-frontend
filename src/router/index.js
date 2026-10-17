@@ -100,7 +100,11 @@ export const asyncRoutes = [
       {
         path: "",
         component: () => import("@/components/MessageCenter.vue"),
-        meta: { title: "消息中心" },
+        // 路由本身不限角色（四个角色都能收站内消息），菜单 roles 必须显式写全，
+        // 否则 buildMenus 继承链上找不到任何 roles 而一项都不显示。
+        // order 统一插在各角色菜单尾部的设置/帮助区：学生 9.5（个人设置与帮助之间）、
+        // 教师/管理员 10.5/12.5（设置之后）、超管 13（最末，spacer 分区）。
+        meta: { title: "消息中心", menu: { icon: "Message", roles: ["STUDENT", "TEACHER", "ADMIN", "SUPER_ADMIN"], STUDENT: { order: 9.5 }, TEACHER: { order: 10.5 }, ADMIN: { order: 12.5 }, SUPER_ADMIN: { order: 13, spacer: true } } },
       },
     ],
   },

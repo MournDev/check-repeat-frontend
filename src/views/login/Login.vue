@@ -138,6 +138,13 @@
             前往注册
           </el-button>
         </div>
+
+        <div class="signup-row" style="margin-top: 8px">
+          需要验证查重报告真伪？
+          <el-button link @click="router.push('/report-verify')" class="signup-link">
+            报告验真
+          </el-button>
+        </div>
       </div>
     </div>
   </div>
