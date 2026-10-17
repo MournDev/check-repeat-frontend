@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { login as userLogin, register, logout as apiLogout } from "@/api/login";
+import { markSessionEnding, clearSessionEnding } from "@/api/request";
 import { tokenManager } from "@/utils/tokenManager";
 
 // localStorage中只保留非敏感的展示字段（敏感信息如email/phone从后端实时获取）
@@ -50,6 +51,8 @@ export const useUserStore = defineStore("user", {
       tokenManager.set(this.token);
       localStorage.setItem("userInfo", JSON.stringify(filterSafeInfo(this.userInfo)));
       this.lastActivityTime = Date.now();
+      // 登录成功，复位退出标志（否则本次会话内所有 401 都会被静默吞掉）
+      clearSessionEnding();
       return res;
     },
     async register(registerForm) {
@@ -57,6 +60,8 @@ export const useUserStore = defineStore("user", {
       return res;
     },
     async logout() {
+      // 先置退出标志：此后在飞请求的 401 视为预期结果，拦截器静默 reject 不弹 toast
+      markSessionEnding();
       try {
         await apiLogout();
       } catch {

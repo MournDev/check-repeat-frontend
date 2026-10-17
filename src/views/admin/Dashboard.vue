@@ -355,8 +355,8 @@ const loadDashboardData = async () => {
         : '暂无'
     }
   } catch (error) {
+    // 错误提示由 request 拦截器统一弹出（401/500 等），页面不重复弹
     console.error('加载统计数据失败:', error)
-    ElMessage.error('加载数据失败，请稍后重试')
   } finally {
     overviewLoading.value = false
   }

@@ -6,6 +6,13 @@ import { tokenManager } from '@/utils/tokenManager'
 let isRefreshing = false
 let refreshSubscribers = []
 
+// 主动退出登录标志：logout 期间在飞请求收到 401 是预期结果，
+// 不逐条弹「令牌失效」toast（退出瞬间多个并发请求会刷出一屏红条）。
+// 登录成功后必须复位，否则后续真实的 401 也会被静默吞掉。
+let sessionEnding = false
+export function markSessionEnding() { sessionEnding = true }
+export function clearSessionEnding() { sessionEnding = false }
+
 function onTokenRefreshed(newToken) {
   refreshSubscribers.forEach(cb => cb(newToken))
   refreshSubscribers = []
@@ -17,12 +24,18 @@ function addRefreshSubscriber(cb) {
 
 // 结束会话：清令牌并回到登录页。
 // 只在「确认令牌已过期且刷新不回来」时调用，别把它当成所有 401 的默认动作。
+// 多个并发请求同时 401 时只会各调一次 endSession，toast 去抖避免刷屏
+let lastEndSessionToastAt = 0
 function endSession(errorData) {
   tokenManager.remove()
   if (router.currentRoute.value.path !== '/login') {
     router.push('/login')
   }
-  ElMessage.error(errorData?.message || '登录已过期，请重新登录')
+  const now = Date.now()
+  if (now - lastEndSessionToastAt > 3000) {
+    lastEndSessionToastAt = now
+    ElMessage.error(errorData?.message || '登录已过期，请重新登录')
+  }
 }
 
 // 通用请求方法
@@ -162,7 +175,7 @@ service.interceptors.response.use(
         reader.readAsText(errorData)
       })
       if (status === 401) {
-        ElMessage.error(message || '登录已过期，请重新登录')
+        if (!sessionEnding) ElMessage.error(message || '登录已过期，请重新登录')
       } else {
         ElMessage.error(message || '请求失败，请重试')
       }
@@ -170,6 +183,10 @@ service.interceptors.response.use(
     }
 
     if (status === 401) {
+      // 主动退出登录期间的在飞请求：401 是预期结果，静默 reject
+      if (sessionEnding) {
+        return Promise.reject(error)
+      }
       if (error.config?._skipLoginRedirect) {
         return Promise.reject(error)
       }
