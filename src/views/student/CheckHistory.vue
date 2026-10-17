@@ -73,7 +73,8 @@
       
       <div class="trend-chart-container">
         <div class="chart-wrapper">
-          <canvas ref="trendChart" width="800" height="400"></canvas>
+          <el-empty v-if="trendChart.empty" description="暂无趋势数据" :image-size="60" />
+          <div v-else :ref="trendChart.chartRef" style="width: 100%; height: 400px;"></div>
         </div>
         <div class="trend-summary">
           <div class="summary-item">
@@ -114,7 +115,7 @@
       </div>
       <div v-loading="p5TrendLoading">
         <div v-if="!p5TrendLoading && p5TrendList.length === 0" class="trend-empty">暂无查重记录</div>
-        <div v-show="p5TrendList.length > 0" ref="p5TrendChart" class="p5-trend-chart"></div>
+        <div v-show="p5TrendList.length > 0" :ref="p5TrendChart.chartRef" class="p5-trend-chart"></div>
       </div>
     </div>
 
@@ -334,7 +335,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onUnmounted, onBeforeUnmount, computed, nextTick } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { 
@@ -345,7 +346,7 @@ import {
 import { getCheckHistory, getSimilarityTrend, compareVersionHistory } from '@/api/student'
 import { getPaperSimilarityTrend } from '@/api/p5'
 import { getSimilarityColor } from '@/utils/dataType.js'
-import * as echarts from 'echarts'
+import { useChart } from '@/composables/useChart'
 
 const route = useRoute()
 const router = useRouter()
@@ -364,14 +365,14 @@ const paperInfo = ref({
 const trendPeriod = ref('30')
 const compactView = ref(false)
 const showCompareDrawer = ref(false)
-const trendChart = ref(null)
-const chartInstance = ref(null)
+
+// 相似度趋势图 + P5 查重指标趋势图（useChart 托管容器/dispose/resize/空态）
+const trendChart = useChart()
 
 // P5 查重指标趋势（总相似比/单篇最大/引用率）
-const p5TrendChart = ref(null)
+const p5TrendChart = useChart()
 const p5TrendList = ref([])
 const p5TrendLoading = ref(false)
-let p5ChartInstance = null
 
 const historyRecords = ref([])
 const historyLoading = ref(false)
@@ -486,127 +487,97 @@ const refreshHistory = async () => {
   }
 }
 
-const loadTrendData = async () => {
+const loadTrendData = () => {
   const paperId = route.params.paperId
-  
-  // 参数验证
-  if (!paperId || paperId === 'undefined') {
-    return
-  }
-  
-  try {
-    const res = await getSimilarityTrend(paperId, trendPeriod.value)
-    if (res.code === 200) {
-      renderTrendChart(res.data)
-    } else {
-      ElMessage.error(res.message || '获取趋势数据失败')
-    }
-  } catch (error) {
-    console.error('加载趋势数据失败:', error)
-    ElMessage.error('加载趋势数据失败: ' + (error.message || '网络错误'))
-  }
+  if (!paperId || paperId === 'undefined') return
+
+  // run() 统一兜底：接口失败显空态（axios 拦截器已提示，不再重复弹错）
+  return trendChart.run(
+    () => getSimilarityTrend(paperId, trendPeriod.value),
+    (data) => (data?.dates?.length ? buildTrendOption(data) : null)
+  )
 }
 
-const renderTrendChart = (data) => {
-  nextTick(() => {
-    if (chartInstance.value) {
-      chartInstance.value.dispose()
+const buildTrendOption = (data) => ({
+  tooltip: {
+    trigger: 'axis',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    textStyle: {
+      color: '#ffffff',
+      fontSize: 13
+    },
+    formatter: function(params) {
+      const param = params[0]
+      return `${param.name}<br/>相似度: ${param.value}%`
     }
-    
-    if (!trendChart.value) return
-    
-    // 初始化 ECharts 实例
-    chartInstance.value = echarts.init(trendChart.value)
-    
-    // 配置选项
-    const option = {
-      tooltip: {
-        trigger: 'axis',
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        textStyle: {
-          color: '#ffffff',
-          fontSize: 13
-        },
-        formatter: function(params) {
-          const param = params[0]
-          return `${param.name}<br/>相似度: ${param.value}%`
-        }
-      },
-      grid: {
-        left: '10%',
-        right: '10%',
-        top: '15%',
-        bottom: '15%',
-        containLabel: true
-      },
-      xAxis: {
-        type: 'category',
-        data: data.dates,
-        axisLine: {
-          lineStyle: {
-            color: '#e0e0e0'
-          }
-        },
-        axisLabel: {
-          color: '#86868b'
-        },
-        splitLine: {
-          show: false
-        }
-      },
-      yAxis: {
-        type: 'value',
-        min: 0,
-        max: 100,
-        axisLine: {
-          show: false
-        },
-        axisLabel: {
-          color: '#86868b',
-          formatter: '{value}%'
-        },
-        splitLine: {
-          lineStyle: {
-            color: 'rgba(0, 0, 0, 0.05)'
-          }
-        }
-      },
-      series: [{
-        name: '相似度',
-        type: 'line',
-        data: data.similarities,
-        smooth: true,
-        symbol: 'circle',
-        symbolSize: 8,
-        lineStyle: {
-          width: 3,
-          color: '#0066cc'
-        },
-        itemStyle: {
-          color: '#0066cc',
-          borderColor: '#ffffff',
-          borderWidth: 2
-        },
-        areaStyle: {
-          color: {
-            type: 'linear',
-            x: 0, y: 0, x2: 0, y2: 1,
-            colorStops: [
-              { offset: 0, color: 'rgba(0, 102, 204, 0.3)' },
-              { offset: 1, color: 'rgba(0, 102, 204, 0.05)' }
-            ]
-          }
-        }
-      }]
+  },
+  grid: {
+    left: '10%',
+    right: '10%',
+    top: '15%',
+    bottom: '15%',
+    containLabel: true
+  },
+  xAxis: {
+    type: 'category',
+    data: data.dates,
+    axisLine: {
+      lineStyle: {
+        color: '#e0e0e0'
+      }
+    },
+    axisLabel: {
+      color: '#86868b'
+    },
+    splitLine: {
+      show: false
     }
-    
-    // 设置配置项
-    chartInstance.value.setOption(option)
-    
-    // 响应式调整
-    window.addEventListener('resize', handleResize)
-  })
-}
+  },
+  yAxis: {
+    type: 'value',
+    min: 0,
+    max: 100,
+    axisLine: {
+      show: false
+    },
+    axisLabel: {
+      color: '#86868b',
+      formatter: '{value}%'
+    },
+    splitLine: {
+      lineStyle: {
+        color: 'rgba(0, 0, 0, 0.05)'
+      }
+    }
+  },
+  series: [{
+    name: '相似度',
+    type: 'line',
+    data: data.similarities,
+    smooth: true,
+    symbol: 'circle',
+    symbolSize: 8,
+    lineStyle: {
+      width: 3,
+      color: '#0066cc'
+    },
+    itemStyle: {
+      color: '#0066cc',
+      borderColor: '#ffffff',
+      borderWidth: 2
+    },
+    areaStyle: {
+      color: {
+        type: 'linear',
+        x: 0, y: 0, x2: 0, y2: 1,
+        colorStops: [
+          { offset: 0, color: 'rgba(0, 102, 204, 0.3)' },
+          { offset: 1, color: 'rgba(0, 102, 204, 0.05)' }
+        ]
+      }
+    }
+  }]
+})
 
 const toggleCompactView = () => {
   compactView.value = !compactView.value
@@ -638,20 +609,17 @@ const loadP5Trend = async () => {
 }
 
 const renderP5TrendChart = () => {
-  nextTick(() => {
-    if (!p5TrendChart.value || p5TrendList.value.length === 0) return
+  const list = p5TrendList.value
+  if (list.length === 0) {
+    p5TrendChart.render(null)
+    return
+  }
 
-    if (p5ChartInstance) {
-      p5ChartInstance.dispose()
-    }
-    p5ChartInstance = echarts.init(p5TrendChart.value)
+  const xData = list.map(item => item.checkTime)
+  // null 点映射为 '-'，connectNulls:false 使线条在缺口处断开
+  const toPoints = (key) => list.map(item => (item[key] == null ? '-' : item[key]))
 
-    const list = p5TrendList.value
-    const xData = list.map(item => item.checkTime)
-    // null 点映射为 '-'，connectNulls:false 使线条在缺口处断开
-    const toPoints = (key) => list.map(item => (item[key] == null ? '-' : item[key]))
-
-    p5ChartInstance.setOption({
+  p5TrendChart.render({
       tooltip: {
         trigger: 'axis',
         backgroundColor: 'rgba(0, 0, 0, 0.8)',
@@ -720,7 +688,6 @@ const renderP5TrendChart = () => {
           itemStyle: { color: '#34c759', borderColor: '#ffffff', borderWidth: 2 }
         }
       ]
-    })
   })
 }
 
@@ -934,26 +901,6 @@ onMounted(async () => {
   await loadTrendData()
   await loadStatistics()
   loadP5Trend()
-})
-
-const handleResize = () => {
-  chartInstance.value?.resize()
-  p5ChartInstance?.resize()
-}
-
-onBeforeUnmount(() => {
-  if (p5ChartInstance) {
-    p5ChartInstance.dispose()
-    p5ChartInstance = null
-  }
-})
-
-onUnmounted(() => {
-  if (chartInstance.value) {
-    chartInstance.value.dispose()
-    chartInstance.value = null
-  }
-  window.removeEventListener('resize', handleResize)
 })
 </script>
 

@@ -298,7 +298,7 @@
                 <span>个人能力评估</span>
               </div>
             </div>
-            <div v-if="hasRadarData" ref="radarChartRef" class="chart-container"></div>
+            <div v-if="hasRadarData" :ref="radarChart.chartRef" class="chart-container"></div>
             <div v-else-if="!loading.radar" class="chart-empty">
               <el-icon class="empty-icon"><DataAnalysis /></el-icon>
               <p>暂无评估数据</p>
@@ -313,7 +313,7 @@
                 <span>总相似比变化趋势</span>
               </div>
             </div>
-            <div v-if="hasTrendData" ref="trendChartRef" class="chart-container"></div>
+            <div v-if="hasTrendData" :ref="trendChart.chartRef" class="chart-container"></div>
             <div v-else-if="!loading.trend" class="chart-empty">
               <el-icon class="empty-icon"><TrendCharts /></el-icon>
               <p>暂无检测数据</p>
@@ -329,7 +329,7 @@
               <span>与专业平均水平对比</span>
             </div>
           </div>
-          <div v-if="hasComparisonData" ref="comparisonChartRef" class="chart-container-large"></div>
+          <div v-if="hasComparisonData" :ref="comparisonChart.chartRef" class="chart-container-large"></div>
           <div v-else-if="!loading.comparison" class="chart-empty">
             <el-icon class="empty-icon"><Histogram /></el-icon>
             <p>暂无专业对比数据</p>
@@ -437,13 +437,13 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted, computed, nextTick, reactive, watch } from 'vue'
+import { ref, onMounted, computed, reactive, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 import { getLatestPaper, getAdvisorInfo, getStudentDashboardStats, getDashboardDeadlines, getAbilityRadarData, getSimilarityTrendChart, getMajorComparisonData, getNotifications, getProgressTracking, exportDashboardStats } from "@/api/student.js"
-import * as echarts from 'echarts'
+import { useChart } from '@/composables/useChart'
 
 // 图标导入
 import {
@@ -522,20 +522,15 @@ const progressTrackingData = reactive({
 
 // 监听图表数据变化，自动更新图表
 watch([abilityRadarData, similarityTrendData, majorComparisonData], () => {
-  nextTick(() => {
-    initRadarChart()
-    initTrendChart()
-    initComparisonChart()
-  })
+  renderRadarChart()
+  renderTrendChart()
+  renderComparisonChart()
 }, { deep: true })
 
-// 图表相关引用和数据
-const radarChartRef = ref(null)
-const trendChartRef = ref(null)
-const comparisonChartRef = ref(null)
-let radarChartInstance = null
-let trendChartInstance = null
-let comparisonChartInstance = null
+// 图表相关引用（useChart 托管容器/dispose/resize；空态由模板 hasXxxData 分支承载）
+const radarChart = useChart()
+const trendChart = useChart()
+const comparisonChart = useChart()
 
 // 计算属性
 const currentProgress = computed(() => {
@@ -798,11 +793,9 @@ const loadDashboardData = async () => {
     })
   } finally {
     // 数据加载完成后初始化图表
-    nextTick(() => {
-      initRadarChart()
-      initTrendChart()
-      initComparisonChart()
-    })
+    renderRadarChart()
+    renderTrendChart()
+    renderComparisonChart()
   }
 }
 
@@ -1136,13 +1129,14 @@ const addAllToCalendar = () => {
   ElMessage.success('日历文件已下载')
 };
 
-// 图表初始化方法
-const initRadarChart = () => {
-  if (!radarChartRef.value || !hasRadarData.value) return;
-  
-  radarChartInstance = echarts.init(radarChartRef.value);
-  
-  const option = {
+// 图表渲染方法
+const renderRadarChart = () => {
+  if (!hasRadarData.value) {
+    radarChart.render(null);
+    return;
+  }
+
+  radarChart.render({
     tooltip: {},
     radar: {
       indicator: [
@@ -1182,17 +1176,16 @@ const initRadarChart = () => {
         }
       ]
     }]
-  };
-  
-  radarChartInstance.setOption(option);
+  });
 };
 
-const initTrendChart = () => {
-  if (!trendChartRef.value || !hasTrendData.value) return;
-  
-  trendChartInstance = echarts.init(trendChartRef.value);
-  
-  const option = {
+const renderTrendChart = () => {
+  if (!hasTrendData.value) {
+    trendChart.render(null);
+    return;
+  }
+
+  trendChart.render({
     tooltip: {
       trigger: 'axis'
     },
@@ -1219,10 +1212,14 @@ const initTrendChart = () => {
       smooth: true,
       data: similarityTrendData.similarities,
       areaStyle: {
-        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-          { offset: 0, color: 'rgba(245, 87, 108, 0.3)' },
-          { offset: 1, color: 'rgba(245, 87, 108, 0.05)' }
-        ])
+        color: {
+          type: 'linear',
+          x: 0, y: 0, x2: 0, y2: 1,
+          colorStops: [
+            { offset: 0, color: 'rgba(245, 87, 108, 0.3)' },
+            { offset: 1, color: 'rgba(245, 87, 108, 0.05)' }
+          ]
+        }
       },
       lineStyle: {
         width: 3,
@@ -1232,17 +1229,16 @@ const initTrendChart = () => {
         color: '#f5576c'
       }
     }]
-  };
-  
-  trendChartInstance.setOption(option);
+  });
 };
 
-const initComparisonChart = () => {
-  if (!comparisonChartRef.value || !hasComparisonData.value) return;
-  
-  comparisonChartInstance = echarts.init(comparisonChartRef.value);
-  
-  const option = {
+const renderComparisonChart = () => {
+  if (!hasComparisonData.value) {
+    comparisonChart.render(null);
+    return;
+  }
+
+  comparisonChart.render({
     tooltip: {
       trigger: 'axis',
       axisPointer: {
@@ -1273,10 +1269,14 @@ const initComparisonChart = () => {
         type: 'bar',
         data: majorComparisonData.myLevel,
         itemStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: '#0066cc' },
-            { offset: 1, color: '#0055aa' }
-          ])
+          color: {
+            type: 'linear',
+            x: 0, y: 0, x2: 0, y2: 1,
+            colorStops: [
+              { offset: 0, color: '#0066cc' },
+              { offset: 1, color: '#0055aa' }
+            ]
+          }
         }
       },
       {
@@ -1288,9 +1288,7 @@ const initComparisonChart = () => {
         }
       }
     ]
-  };
-  
-  comparisonChartInstance.setOption(option);
+  });
 };
 </script>
 
