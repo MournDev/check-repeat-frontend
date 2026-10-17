@@ -1,16 +1,15 @@
 <template>
   <div class="school-overview">
-    <!-- 页面头部 -->
-    <div class="page-header">
-      <div class="header-content">
-        <h1 class="page-title">全校数据概览</h1>
-        <p class="page-desc">实时展示全校论文查重系统运行状况和关键指标</p>
-      </div>
-      <div class="header-actions">
-        <el-button :icon="Refresh" @click="refreshAllData">刷新数据</el-button>
+    <!-- 页面头部（全站统一 PageHeader 组件） -->
+    <PageHeader
+      title="全校数据概览"
+      description="实时展示全校论文查重系统运行状况和关键指标"
+    >
+      <template #actions>
+        <el-button :icon="Refresh" @click="refreshAllData(false)">刷新数据</el-button>
         <el-button type="primary" :icon="Download" @click="exportReport">导出报告</el-button>
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
     <!-- 核心指标概览 -->
     <el-row :gutter="16" class="overview-cards" v-loading="overviewLoading">
@@ -87,8 +86,8 @@
                 </div>
               </template>
               <!-- 图表数据为空/加载失败时显式空态，禁止 mock 兜底 -->
-              <el-empty v-if="collegeChartEmpty" description="暂无学院分布数据" :image-size="60" class="chart-empty" />
-              <div v-else ref="collegeChartRef" class="chart-container"></div>
+              <el-empty v-if="collegeChart.empty" description="暂无学院分布数据" :image-size="60" class="chart-empty" />
+              <div v-else :ref="collegeChart.chartRef" class="chart-container"></div>
             </el-card>
           </el-col>
           
@@ -102,8 +101,8 @@
                   </span>
                 </div>
               </template>
-              <el-empty v-if="trendChartEmpty" description="暂无月度趋势数据" :image-size="60" class="chart-empty" />
-              <div v-else ref="trendChartRef" class="chart-container"></div>
+              <el-empty v-if="trendChart.empty" description="暂无月度趋势数据" :image-size="60" class="chart-empty" />
+              <div v-else :ref="trendChart.chartRef" class="chart-container"></div>
             </el-card>
           </el-col>
         </el-row>
@@ -117,8 +116,8 @@
               </span>
             </div>
           </template>
-          <el-empty v-if="similarityChartEmpty" description="暂无查重结果分布数据" :image-size="60" class="chart-empty large" />
-          <div v-else ref="similarityChartRef" class="chart-container large"></div>
+          <el-empty v-if="similarityChart.empty" description="暂无查重结果分布数据" :image-size="60" class="chart-empty large" />
+          <div v-else :ref="similarityChart.chartRef" class="chart-container large"></div>
         </el-card>
       </el-col>
       
@@ -133,8 +132,8 @@
               </span>
             </div>
           </template>
-          <el-empty v-if="roleChartEmpty" description="暂无人员分布数据" :image-size="60" class="chart-empty" />
-          <div v-else ref="roleChartRef" class="chart-container"></div>
+          <el-empty v-if="roleChart.empty" description="暂无人员分布数据" :image-size="60" class="chart-empty" />
+          <div v-else :ref="roleChart.chartRef" class="chart-container"></div>
         </el-card>
 
         <el-card class="info-card" shadow="never">
@@ -180,7 +179,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
 
 // 导入管理员 API
@@ -192,7 +191,8 @@ import {
   getRealtimeStats,
   exportSchoolReport
 } from '@/api/admin/school'
-import * as echarts from 'echarts'
+import { useChart } from '@/composables/useChart'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 // 图标导入（模板中其余图标依赖 main.js 的全局注册，无需在此导入）
 import {
@@ -215,26 +215,14 @@ const realtimeStats = ref({
   activeTasks: 0
 })
 
-// 各图表空态标记：接口失败或返回空数据时显式展示 el-empty，不做 mock 兜底
-const collegeChartEmpty = ref(false)
-const trendChartEmpty = ref(false)
-const similarityChartEmpty = ref(false)
-const roleChartEmpty = ref(false)
-
 // 人员统计优先使用概览接口返回值（students/teachers/admins）
 const roleCounts = ref({ students: 0, teachers: 0, admins: 0 })
 
-// 图表引用
-const collegeChartRef = ref()
-const trendChartRef = ref()
-const similarityChartRef = ref()
-const roleChartRef = ref()
-
-// 图表实例
-let collegeChartInstance = null
-let trendChartInstance = null
-let similarityChartInstance = null
-let roleChartInstance = null
+// 四张图表统一走 useChart：容器 ref、dispose、resize、空态均由 composable 托管
+const collegeChart = useChart()
+const trendChart = useChart()
+const similarityChart = useChart()
+const roleChart = useChart()
 
 // 方法
 // 全量刷新 = 概览数据 + 全部四张图表；silent 用于首屏加载不弹「数据已刷新」。
@@ -242,12 +230,6 @@ let roleChartInstance = null
 const refreshAllData = async (silent = false) => {
   try {
     await loadOverviewData()
-    // 空态开关复位后再挂 ref 容器，nextTick 保证 el-empty → 容器切换完成
-    collegeChartEmpty.value = false
-    trendChartEmpty.value = false
-    similarityChartEmpty.value = false
-    roleChartEmpty.value = false
-    await nextTick()
     await initAllCharts()
     if (!silent) ElMessage.success('数据已刷新')
   } catch (error) {
@@ -317,18 +299,11 @@ const loadOverviewData = async () => {
   }
 }
 
-// 释放图表实例的统一入口，返回 null 便于 `instance = disposeChart(instance)` 写法
-const disposeChart = (chart) => {
-  if (chart) chart.dispose()
-  return null
-}
-
 // 初始化学院分布图表
-const initCollegeChart = async () => {
-  if (!collegeChartRef.value) return
-
-  try {
-    const response = await getCollegeDistribution()
+const initCollegeChart = () => collegeChart.run(
+  () => getCollegeDistribution(),
+  (response) => {
+    // 兼容多种返回结构：数组 / collegeStats.distribution / distribution
     let items = []
     if (response) {
       if (Array.isArray(response.data)) items = response.data
@@ -342,15 +317,9 @@ const initCollegeChart = async () => {
     }))
 
     // 空数据：显式空态，不渲染空图表
-    if (!chartData.length) {
-      collegeChartInstance = disposeChart(collegeChartInstance)
-      collegeChartEmpty.value = true
-      return
-    }
+    if (!chartData.length) return null
 
-    collegeChartInstance = disposeChart(collegeChartInstance)
-    collegeChartInstance = echarts.init(collegeChartRef.value)
-    collegeChartInstance.setOption({
+    return {
       tooltip: {
         trigger: 'item',
         formatter: '{a} <br/>{b}: {c} ({d}%)'
@@ -388,21 +357,14 @@ const initCollegeChart = async () => {
           data: chartData
         }
       ]
-    })
-  } catch (error) {
-    // 接口失败：显式空态。绝不回退 mock 数据——管理驾驶舱宁缺毋假
-    console.error('加载学院分布数据失败:', error)
-    collegeChartInstance = disposeChart(collegeChartInstance)
-    collegeChartEmpty.value = true
+    }
   }
-}
+)
 
 // 初始化趋势图表
-const initTrendChart = async () => {
-  if (!trendChartRef.value) return
-
-  try {
-    const response = await getMonthlyTrend()
+const initTrendChart = () => trendChart.run(
+  () => getMonthlyTrend(),
+  (response) => {
     // 默认空数组：拿不到数据就走空态，绝不用假月份假数量兜底
     let months = []
     let paperCounts = []
@@ -425,15 +387,9 @@ const initTrendChart = async () => {
       }
     }
 
-    if (!months.length) {
-      trendChartInstance = disposeChart(trendChartInstance)
-      trendChartEmpty.value = true
-      return
-    }
+    if (!months.length) return null
 
-    trendChartInstance = disposeChart(trendChartInstance)
-    trendChartInstance = echarts.init(trendChartRef.value)
-    trendChartInstance.setOption({
+    return {
       tooltip: {
         trigger: 'axis'
       },
@@ -453,27 +409,25 @@ const initTrendChart = async () => {
             color: '#0066cc'
           },
           areaStyle: {
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              { offset: 0, color: 'rgba(0, 102, 204, 0.15)' },
-              { offset: 1, color: 'rgba(0, 102, 204, 0.04)' }
-            ])
+            color: {
+              type: 'linear',
+              x: 0, y: 0, x2: 0, y2: 1,
+              colorStops: [
+                { offset: 0, color: 'rgba(0, 102, 204, 0.15)' },
+                { offset: 1, color: 'rgba(0, 102, 204, 0.04)' }
+              ]
+            }
           }
         }
       ]
-    })
-  } catch (error) {
-    console.error('加载月度趋势数据失败:', error)
-    trendChartInstance = disposeChart(trendChartInstance)
-    trendChartEmpty.value = true
+    }
   }
-}
+)
 
 // 初始化相似度分布图表
-const initSimilarityChart = async () => {
-  if (!similarityChartRef.value) return
-  
-  try {
-    const response = await getSimilarityDistribution()
+const initSimilarityChart = () => similarityChart.run(
+  () => getSimilarityDistribution(),
+  (response) => {
     // 兼容后端多种返回结构：data 可能是数组，也可能为 { records: [] } / { list: [] }
     let items = []
     if (response) {
@@ -503,22 +457,14 @@ const initSimilarityChart = async () => {
       }
     }
 
-    console.debug('similarity items after normalize:', items)
-
     const chartData = (items || []).map(item => ({
       name: (item.range || item.name || '').toString().includes('+') ? (item.range || item.name || '').toString().replace('+', '以上') : (item.range || item.name || '').toString(),
       value: Number(item.count ?? item.value ?? 0)
     }))
 
-    if (!chartData.length) {
-      similarityChartInstance = disposeChart(similarityChartInstance)
-      similarityChartEmpty.value = true
-      return
-    }
+    if (!chartData.length) return null
 
-    similarityChartInstance = disposeChart(similarityChartInstance)
-    similarityChartInstance = echarts.init(similarityChartRef.value)
-    similarityChartInstance.setOption({
+    return {
       tooltip: {
         trigger: 'axis',
         axisPointer: {
@@ -552,58 +498,45 @@ const initSimilarityChart = async () => {
           barWidth: '60%',
           data: chartData.map(item => item.value),
           itemStyle: {
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              { offset: 0, color: '#5ac8fa' },
-              { offset: 0.5, color: '#0066cc' },
-              { offset: 1, color: '#0066cc' }
-            ])
+            color: {
+              type: 'linear',
+              x: 0, y: 0, x2: 0, y2: 1,
+              colorStops: [
+                { offset: 0, color: '#5ac8fa' },
+                { offset: 0.5, color: '#0066cc' },
+                { offset: 1, color: '#0066cc' }
+              ]
+            }
           }
         }
       ]
-    })
-  } catch (error) {
-    console.error('加载相似度分布数据失败:', error)
-    similarityChartInstance = disposeChart(similarityChartInstance)
-    similarityChartEmpty.value = true
+    }
   }
-}
+)
 
 // 初始化人员分布图表
-const initRoleChart = async () => {
-  if (!roleChartRef.value) {
-    return
-  }
-  try {
-    // 优先使用从概览接口获取的统计数据
-    let students = roleCounts.value.students
-    let teachers = roleCounts.value.teachers
-    let admins = roleCounts.value.admins
+const initRoleChart = () => roleChart.run(
+  // 数据装配放 fetcher：优先用概览接口已取回的 roleCounts，全 0 时回退实时统计接口
+  async () => {
+    let { students, teachers, admins } = roleCounts.value
 
-    // 若概览接口未提供，则回退到实时统计接口
-    if ((students === 0 && teachers === 0 && admins === 0) || (students == null && teachers == null && admins == null)) {
+    if (!students && !teachers && !admins) {
       const response = await getRealtimeStats()
       students = Number(response.data.students ?? 0) || 0
       teachers = Number(response.data.teachers ?? 0) || 0
       admins = Number(response.data.admins ?? 0) || 0
-    } else {
-      // use roleCounts
     }
 
-    const userData = [
+    return [
       { value: students, name: '学生' },
       { value: teachers, name: '教师' },
       { value: admins, name: '管理员' }
     ]
+  },
+  (userData) => {
+    if (!userData.some(d => d.value > 0)) return null
 
-    if (!userData.some(d => d.value > 0)) {
-      roleChartInstance = disposeChart(roleChartInstance)
-      roleChartEmpty.value = true
-      return
-    }
-
-    roleChartInstance = disposeChart(roleChartInstance)
-    roleChartInstance = echarts.init(roleChartRef.value)
-    roleChartInstance.setOption({
+    return {
       tooltip: {
         trigger: 'item',
         formatter: '{a} <br/>{b}: {c}人 ({d}%)'
@@ -641,13 +574,9 @@ const initRoleChart = async () => {
           data: userData
         }
       ]
-    })
-  } catch (error) {
-    console.error('加载人员分布数据失败:', error)
-    roleChartInstance = disposeChart(roleChartInstance)
-    roleChartEmpty.value = true
+    }
   }
-}
+)
 
 // 初始化所有图表
 const initAllCharts = async () => {
@@ -665,60 +594,17 @@ const initAllCharts = async () => {
   }
 }
 
-// 窗口大小改变时重新渲染图表
-const handleResize = () => {
-  if (collegeChartInstance) collegeChartInstance.resize()
-  if (trendChartInstance) trendChartInstance.resize()
-  if (similarityChartInstance) similarityChartInstance.resize()
-  if (roleChartInstance) roleChartInstance.resize()
-}
-
 // 生命周期钩子：唯一入口。此前两个 onMounted 并存导致概览接口被调两次、
-// 100ms/300ms 两个 setTimeout 竞争重初始化图表，已合并为 refreshAllData 一条链路
+// 100ms/300ms 两个 setTimeout 竞争重初始化图表，已合并为 refreshAllData 一条链路。
+// 图表 dispose/resize 由 useChart 内部托管（含 window resize 共享监听与卸载清理）
 onMounted(async () => {
   await refreshAllData(true)
-  window.addEventListener('resize', handleResize)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('resize', handleResize)
-  if (collegeChartInstance) collegeChartInstance.dispose()
-  if (trendChartInstance) trendChartInstance.dispose()
-  if (similarityChartInstance) similarityChartInstance.dispose()
-  if (roleChartInstance) roleChartInstance.dispose()
 })
 </script>
 
 <style lang="scss" scoped>
 .school-overview {
   padding: 0;
-}
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1.5rem;
-  
-  .header-content {
-    .page-title {
-      margin: 0 0 0.5rem 0;
-      font-size: 1.75rem;
-      font-weight: 600;
-      color: var(--apple-ink);
-    }
-    
-    .page-desc {
-      margin: 0;
-      color: var(--apple-ink-secondary);
-      font-size: 0.95rem;
-    }
-  }
-  
-  .header-actions {
-    display: flex;
-    gap: 0.75rem;
-  }
 }
 
 .overview-cards {
