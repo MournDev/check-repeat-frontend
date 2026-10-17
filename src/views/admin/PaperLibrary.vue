@@ -1185,6 +1185,15 @@ const submitAudit = async () => {
     if (res.code === 200) {
       ElMessage.success(res.message || '审核成功')
       auditDialogVisible.value = false
+      // 批量审核：后端返回 {total, success, skipped, skipReasons[]}，
+      // 有跳过时逐条展示原因（如论文已被教师先审完）
+      if (isBatchAudit.value && res.data && res.data.skipped > 0) {
+        ElMessageBox.alert(
+          res.data.skipReasons.map(s => '• ' + s).join('<br/>'),
+          `成功 ${res.data.success} 篇，跳过 ${res.data.skipped} 篇`,
+          { dangerouslyUseHTMLString: true, confirmButtonText: '知道了' }
+        ).catch(() => {})
+      }
       await loadPaperList()
     }
   } catch (err) {
