@@ -139,7 +139,7 @@
             </div>
             <div class="detail-item">
               <span class="detail-label">论文附件</span>
-              <span class="detail-value">{{ fileList.length > 0 ? fileList[0].name : '未上传' }}</span>
+              <span class="detail-value">{{ paperForm.file ? (uploadedFileName || '已上传') : '未上传' }}</span>
             </div>
           </div>
         </div>
@@ -191,6 +191,9 @@ const basicFormRef = ref(null)
 const uploadFormRef = ref(null)
 const submitLoading = ref(false)
 const fileList = ref([])
+// 上传成功的原始文件名——确认页展示用。fileList 经 :file-list 单向绑定不回写，
+// 不能作为「是否已上传」的判据（上传成功后仍为空数组，确认页会误显「未上传」）
+const uploadedFileName = ref('')
 const paperId = ref('') // 上传成功后的文件 ID
 const fileMd5 = ref('') // 文件 MD5 值
 const loginUserId = ref('') // Long 类型，后端已改为 Long
@@ -471,8 +474,8 @@ const beforeUpload = async (file) => {
   return true
 }
 
-// 上传成功回调
-const onUploadSuccess = (response, file, fileList) => {
+// 上传成功回调（第三参数 uploadFiles 为 el-upload 内部列表，不能遮蔽外部 fileList ref）
+const onUploadSuccess = (response, file, uploadFiles) => {
   if (response.code === 200) {
     const fileId = response.data.fileId
     if (!fileId) {
@@ -481,6 +484,7 @@ const onUploadSuccess = (response, file, fileList) => {
     }
     paperId.value = fileId
     paperForm.value.file = fileId
+    uploadedFileName.value = file.name
     // 关键：手动触发 file 字段的校验，更新表单状态
     if (uploadFormRef.value) {
       uploadFormRef.value.validateField('file');
@@ -490,6 +494,7 @@ const onUploadSuccess = (response, file, fileList) => {
     ElMessage.error('文件上传失败：' + response.message)
     paperForm.value.file = ''; // 上传失败清空文件列表
     paperId.value = ''; // 清空 fileId
+    uploadedFileName.value = '';
     fileList.value = [];
   }
 }
@@ -499,6 +504,7 @@ const handleFileRemove = () => {
   paperForm.value.file = ''
   paperId.value = ''
   fileMd5.value = ''
+  uploadedFileName.value = ''
   fileList.value = []
   uploadProgress.value = 0
   uploadStatus.value = ''
@@ -710,6 +716,7 @@ const resetForm = () => {
   paperId.value = ''
   fileMd5.value = ''
   paperForm.value.file = ''
+  uploadedFileName.value = ''
   uploadProgress.value = 0
   uploadStatus.value = ''
   activeStep.value = 0
