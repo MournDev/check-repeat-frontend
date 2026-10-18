@@ -259,7 +259,7 @@
                         <input
                           type="checkbox"
                           v-model="selectedVersionIds"
-                          :value="version.submitVersion"
+                          :value="version.id"
                           @change="handleVersionSelection"
                           class="checkbox-input"
                         />
@@ -919,15 +919,17 @@ const openVersionCompare = async () => {
     }
     
     // 获取当前论文的 ID（从选中的版本中获取）
+    // 注意：selectedVersionIds 存的是 paper_submit 主键 id（后端详情/对比接口均按主键查询），
+    // 不是 submitVersion 版本号——此前按版本号传给 selectById 必然查不到，报「版本不存在」
     const paperId = papers.value.find(p =>
-      p.versions?.some(v => selectedVersionIds.value.includes(v.submitVersion))
+      p.versions?.some(v => selectedVersionIds.value.includes(v.id))
     )?.id;
-    
+
     if (!paperId) {
       ElMessage.error('无法获取论文信息');
       return;
     }
-    
+
     // 调用版本对比接口
     const res = await comparePaperVersions(paperId, selectedVersionIds.value);
     
@@ -974,8 +976,8 @@ const downloadCompareReport = async () => {
     ElMessage.info('对比报告生成中...');
     
     // 获取论文 ID
-    const paperId = papers.value.find(p => 
-      p.versions?.some(v => selectedVersionIds.value.includes(v.submitVersion))
+    const paperId = papers.value.find(p =>
+      p.versions?.some(v => selectedVersionIds.value.includes(v.id))
     )?.id;
     
     if (!paperId) {
@@ -1005,9 +1007,9 @@ const downloadCompareReport = async () => {
 // 查看版本详情
 const viewVersionDetail = async (version) => {
   try {
-    // 获取论文 ID
+    // 获取论文 ID（按主键 id 匹配，与列表返回的 version.id 一致）
     const paperId = papers.value.find(p =>
-      p.versions?.some(v => v.submitVersion === version.submitVersion)
+      p.versions?.some(v => v.id === version.id)
     )?.id;
 
     if (!paperId) {
@@ -1015,8 +1017,8 @@ const viewVersionDetail = async (version) => {
       return;
     }
 
-    // 调用获取版本详情接口（后端按submit_version查询）
-    const res = await getVersionDetail(paperId, version.submitVersion);
+    // 调用获取版本详情接口（versionId 为 paper_submit 主键，非版本号）
+    const res = await getVersionDetail(paperId, version.id);
     
     if (res.code === 200) {
       ElMessageBox.alert(
