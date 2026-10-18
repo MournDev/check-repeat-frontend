@@ -435,6 +435,11 @@ defineExpose({ save: saveSettings })
 }
 .role-ADMIN .profile-section .avatar-upload { width: 220px; }
 .role-TEACHER .profile-section .avatar-upload { display: flex; justify-content: center; margin-bottom: 24px; width: 100%; }
+// 教师端意图是「头像居上、表单居下」纵向布局，但 .profile-section 是 display:flex 默认横向
+// 不换行——avatar-upload width:100% 后表单被挤成窄条。补齐 column 方向使纵向布局真正生效
+.role-TEACHER .profile-section { flex-direction: column; align-items: center;
+  .settings-form { width: 100%; }
+}
 
 // Security section
 .security-section .security-item {
