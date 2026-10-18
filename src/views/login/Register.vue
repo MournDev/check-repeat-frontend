@@ -191,7 +191,7 @@ const registerForm = ref({
   password: '',
   confirmPassword: '',
   realName: '',
-  roleId: '',
+  roleId: '1001', // 仅学生可自助注册，默认选中
   email: '',
   phone: ''
 })
@@ -203,10 +203,10 @@ watch(() => registerForm.value.password, (newVal) => {
   passwordLength.value = newVal ? newVal.length : 0
 })
 
+// 后端仅支持学生自助注册（RegisterReq 校验或 AuthService 限制），教师/管理员账号
+// 由管理员在用户管理页创建，注册页不应给出这两个选项（选择后提交会被后端拒绝）
 const roleOptions = ref([
-  { label: '学生', value: '1001', code: 'STUDENT' },    // value 是角色ID
-  { label: '指导老师', value: '2001', code: 'TEACHER' }, // value 是角色ID  
-  { label: '管理员', value: '3001', code: 'ADMIN' }      // value 是角色ID
+  { label: '学生', value: '1001', code: 'STUDENT' } // value 是角色ID
 ])
 
 // 表单校验规则
