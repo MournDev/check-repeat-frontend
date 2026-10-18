@@ -634,14 +634,13 @@ const fetchPapers = async () => {
       if (res.data.size) {
         pagination.size = Number(res.data.size);
       }
-      ElMessage.success(`查询成功${total.value}篇论文`);
+      // 列表加载属常规刷新，不弹「查询成功」提示（提交论文跳回列表必弹，属噪音）
     } else {
       papers.value = [];
       total.value = 0;
-      ElMessage.info("暂无论文数据");
     }
   } catch (error) {
-    ElMessage.error("查询论文失败，请重试");
+    // 错误提示由 request 拦截器统一弹出，页面不重复弹
     console.error("论文查询失败：", error);
     papers.value = [];
     total.value = 0;
