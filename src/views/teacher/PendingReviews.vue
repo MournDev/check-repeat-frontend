@@ -121,8 +121,9 @@
     <!-- 论文预览对话框（内部自理加载/降级/重试） -->
     <PaperPreviewDialog ref="previewDialogRef" />
 
-    <!-- 查重报告签核对话框（P5）：本列表均为查重完成（auditing）论文，签核成功后刷新 -->
-    <CheckSignoffDialog ref="signoffDialogRef" @success="refreshList" />
+    <!-- 查重报告签核对话框（P5）：本列表均为查重完成（auditing）论文，签核成功后刷新；
+         view-report 复用本页报告弹窗，签核前可直接查看完整查重报告 -->
+    <CheckSignoffDialog ref="signoffDialogRef" @success="refreshList" @view-report="onSignoffViewReport" />
   </div>
 </template>
 
@@ -301,6 +302,12 @@ const onSignoff = (paper) => {
     paperTitle: paper.paperTitle,
     studentName: paper.studentName
   })
+}
+
+// 签核弹窗内「查看完整报告」：复用本页报告弹窗（签核弹窗保持打开，报告弹窗叠在上层）
+const onSignoffViewReport = (paperId) => {
+  currentPaperId.value = paperId ?? null
+  reportDialogVisible.value = true
 }
 
 const toggleReportFullscreen = () => {
