@@ -116,8 +116,8 @@
             </div>
           </div>
           <div class="message-actions">
-            <!-- 教师端论文分配消息的操作按钮 -->
-            <template v-if="userStore.role === 'TEACHER' && notification.relatedId && !notification.isRead">
+            <!-- 教师端论文分配消息的操作按钮：仅在分配仍待确认时可操作（已读/未读不影响） -->
+            <template v-if="userStore.role === 'TEACHER' && notification.relatedType === 'paper' && notification.relatedId && notification.status === 'pending'">
               <el-button size="small" type="success" @click.stop="showAssignmentDialog(notification, 'confirm')">
                 确认接收
               </el-button>
