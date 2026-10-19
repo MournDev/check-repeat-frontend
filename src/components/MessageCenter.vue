@@ -238,7 +238,7 @@ import {
 } from '@element-plus/icons-vue'
 import {
   getMessageList, markAsRead as markAsReadApi, batchMarkAsRead as batchMarkAsReadApi, deleteMessage as deleteMessageApi, deleteAllMessages,
-  confirmPaper, rejectPaper as rejectAssignment, getPendingPapers, getPaperDetail
+  confirmPaper, rejectPaper as rejectAssignment, getPaperDetail
 } from '@/api/user.js'
 import { useMessageWebSocket } from '@/composables/useMessageWebSocket'
 
@@ -758,7 +758,6 @@ const clearAllRead = async () => {
 // 生命周期钩子
 onMounted(async () => {
   await loadMessages()
-  await loadPendingPapers()
   // 连接WebSocket接收实时通知
   connectWebSocket()
 })
