@@ -275,6 +275,7 @@ import {
 } from '@/api/teacher'
 import { useUserStore } from '@/stores/user'
 import { getSimilarityColor } from '@/utils/reviewStatus.js'
+import { getSmartPreviewBlobUrl, downloadFileBlob, revokeBlobUrl } from '@/utils/filePreview'
 import StudentStats from './components/StudentStats.vue'
 import StudentFilterBar from './components/StudentFilterBar.vue'
 import StudentTable from './components/StudentTable.vue'
@@ -567,11 +568,19 @@ const viewPaper = async (student) => {
       currentPaper.value = res.data
 
       if (res.data.fileId) {
-        const previewApiUrl = `/check/api/file/smartPreview?fileId=${res.data.fileId}`
-        previewUrl.value = previewApiUrl
+        // /api/file/** 需要登录态，iframe 直连接口地址会 401；改为带 JWT 拉取 blob 再给 iframe
         previewVisible.value = true
         previewLoading.value = true
         previewError.value = false
+        try {
+          revokeBlobUrl(previewUrl.value)
+          previewUrl.value = await getSmartPreviewBlobUrl(res.data.fileId)
+        } catch (error) {
+          previewError.value = true
+          errorMessage.value = error.message || '论文预览加载失败'
+        } finally {
+          previewLoading.value = false
+        }
       } else {
         ElMessage.info('该学生暂无论文文件')
       }
@@ -615,15 +624,22 @@ const viewAllPapers = async (student) => {
   }
 }
 
-const viewPaperFromList = (paper) => {
+const viewPaperFromList = async (paper) => {
   currentPaper.value = paper
 
   if (paper.fileId) {
-    const previewApiUrl = `/check/api/file/smartPreview?fileId=${paper.fileId}`
-    previewUrl.value = previewApiUrl
     previewVisible.value = true
     previewLoading.value = true
     previewError.value = false
+    try {
+      revokeBlobUrl(previewUrl.value)
+      previewUrl.value = await getSmartPreviewBlobUrl(paper.fileId)
+    } catch (error) {
+      previewError.value = true
+      errorMessage.value = error.message || '论文预览加载失败'
+    } finally {
+      previewLoading.value = false
+    }
   }
 }
 
@@ -723,27 +739,39 @@ const onPreviewError = () => {
 
 const closePreview = () => {
   previewVisible.value = false
+  revokeBlobUrl(previewUrl.value)
   previewUrl.value = ''
   currentPaper.value = null
   previewError.value = false
   errorMessage.value = ''
 }
 
-const retryPreview = () => {
+const retryPreview = async () => {
   if (currentPaper.value?.fileId) {
     previewLoading.value = true
     previewError.value = false
-    const previewApiUrl = `/check/api/file/smartPreview?fileId=${currentPaper.value.fileId}`
-    previewUrl.value = previewApiUrl
+    try {
+      revokeBlobUrl(previewUrl.value)
+      previewUrl.value = await getSmartPreviewBlobUrl(currentPaper.value.fileId)
+    } catch (error) {
+      previewError.value = true
+      errorMessage.value = error.message || '论文预览加载失败'
+    } finally {
+      previewLoading.value = false
+    }
   }
 }
 
-const downloadPaper = () => {
+const downloadPaper = async () => {
   if (currentPaper.value?.fileId) {
-    const link = document.createElement('a')
-    link.href = `/api/file/download/${currentPaper.value.fileId}`
-    link.download = currentPaper.value.fileName || '论文文件'
-    link.click()
+    try {
+      await downloadFileBlob(
+        `/api/file/download/${currentPaper.value.fileId}/${encodeURIComponent(currentPaper.value.fileName || '论文文件')}`,
+        currentPaper.value.fileName || '论文文件'
+      )
+    } catch (error) {
+      ElMessage.error(error.message || '下载失败，请重试')
+    }
     closePreview()
   }
 }

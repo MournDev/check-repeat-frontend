@@ -376,6 +376,7 @@ import { getAvatarUrl } from '@/utils/avatar'
 import { getSimilarityColor, getSimilarityTagType as baseGetSimilarityTagType } from '@/utils/reviewStatus.js'
 import { loadPaperTypes, getPaperTypeText } from '@/utils/paperType.js'
 import { loadDefenseDict, getDefenseDictText, DICT_PAPER_STATUS } from '@/utils/defenseDict.js'
+import { getSmartPreviewBlobUrl, getSmartPreviewReportBlobUrl, downloadFileBlob, revokeBlobUrl } from '@/utils/filePreview'
 
 // 图标引入
 import {
@@ -458,20 +459,20 @@ const previewFile = async (file) => {
     currentFileSize.value = file.fileSizeDesc || ''
     currentFileType.value = getFileExtension(file.originalFilename)
 
-    // 2. 构建后端智能预览接口路径（和Controller完全匹配，无额外前缀）
-    const previewApiUrl = `/check/api/file/smartPreview?fileId=${file.id}`
-
-    // 3. 显示预览弹框，开始加载
+    // 2. 显示预览弹框，开始加载
+    // /api/file/** 需要登录态，iframe 直连接口地址会 401；改为带 JWT 拉取 blob 再给 iframe
     previewVisible.value = true
     previewLoading.value = true
     previewError.value = false
     previewUrl.value = ''
 
     try {
-        const previewApiUrl = `/check/api/file/smartPreview?fileId=${file.id}`
-        previewUrl.value = previewApiUrl
+        revokeBlobUrl(previewUrl.value)
+        previewUrl.value = await getSmartPreviewBlobUrl(file.id)
     } catch (error) {
         handlePreviewError(error)
+    } finally {
+        previewLoading.value = false
     }
 }
 
@@ -505,31 +506,45 @@ const resetPreview = () => {
 }
 
 // 重新加载
-const retryPreview = () => {
+const retryPreview = async () => {
     if (currentFileId.value) {
         previewLoading.value = true
         previewError.value = false
-        // 直接调用 /smartPreview
-        const previewApiUrl = `/check/api/file/smartPreview?fileId=${currentFileId.value}`
-        previewUrl.value = previewApiUrl // 重新赋值触发iframe刷新
+        try {
+            revokeBlobUrl(previewUrl.value)
+            previewUrl.value = await getSmartPreviewBlobUrl(currentFileId.value) // 重新赋值触发iframe刷新
+        } catch (error) {
+            handlePreviewError(error)
+        } finally {
+            previewLoading.value = false
+        }
     }
 }
 
 // 新窗口打开
-const openInNewWindow = () => {
+const openInNewWindow = async () => {
     if (currentFileId.value) {
-        const previewApiUrl = `/check/api/file/smartPreview?fileId=${currentFileId.value}`
-        window.open(previewApiUrl, '_blank', 'width=1200,height=800');
-        closePreview()
+        try {
+            const blobUrl = await getSmartPreviewBlobUrl(currentFileId.value)
+            window.open(blobUrl, '_blank', 'width=1200,height=800')
+            closePreview()
+        } catch (error) {
+            ElMessage.error(error.message || '打开失败，请重试')
+        }
     }
 }
 
 // 下载代替预览
-const downloadInstead = () => {
+const downloadInstead = async () => {
     if (currentFileId.value) {
-        const encodedFileName = encodeURIComponent(currentFileName.value || 'document')
-        const downloadUrl = `/check/api/file/download/${currentFileId.value}/${encodedFileName}`
-        window.open(downloadUrl, '_blank')
+        try {
+            await downloadFileBlob(
+                `/api/file/download/${currentFileId.value}/${encodeURIComponent(currentFileName.value || 'document')}`,
+                currentFileName.value || 'document'
+            )
+        } catch (error) {
+            ElMessage.error(error.message || '下载失败，请重试')
+        }
     }
     closePreview()
 }
@@ -980,7 +995,8 @@ const viewSimilarityReport = async () => {
             similarityPreviewError.value = false
             similarityErrorMessage.value = ''
             try {
-                similarityPreviewUrl.value = `/check/api/file/smartPreviewReport?paperId=${idToUse}`
+                revokeBlobUrl(similarityPreviewUrl.value)
+                similarityPreviewUrl.value = await getSmartPreviewReportBlobUrl(idToUse)
             } catch (error) {
                 console.error('打开相似度报告失败:', error)
                 similarityPreviewError.value = true
@@ -1010,7 +1026,8 @@ const viewSimilarityReport = async () => {
         similarityPreviewError.value = false
         similarityErrorMessage.value = ''
         try {
-            similarityPreviewUrl.value = `/check/api/file/smartPreviewReport?paperId=${idToUse}`
+            revokeBlobUrl(similarityPreviewUrl.value)
+            similarityPreviewUrl.value = await getSmartPreviewReportBlobUrl(idToUse)
         } catch (error) {
             console.error('打开相似度报告失败:', error)
             similarityPreviewError.value = true
