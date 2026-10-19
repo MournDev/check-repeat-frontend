@@ -555,8 +555,9 @@ const assignAdvisor = async (student) => {
 }
 
 const viewPaper = async (student) => {
+  let loadingRef = null
   try {
-    const loadingRef = ElLoading.service({
+    loadingRef = ElLoading.service({
       lock: true,
       text: '正在加载论文信息...',
       background: 'rgba(0,0,0,0.4)'
@@ -598,8 +599,9 @@ const viewPaper = async (student) => {
 }
 
 const viewAllPapers = async (student) => {
+  let loadingRef2 = null
   try {
-    const loadingRef2 = ElLoading.service({
+    loadingRef2 = ElLoading.service({
       lock: true,
       text: '正在加载论文列表...',
       background: 'rgba(0,0,0,0.4)'
@@ -796,8 +798,9 @@ const submitStudentForm = async (formRef) => {
 
   await formRef.validate(async (valid) => {
     if (valid) {
+      let loading = null
       try {
-        const loading = ElLoading.service({
+        loading = ElLoading.service({
           lock: true,
           text: '正在添加...',
           background: 'rgba(0,0,0,0.4)'
@@ -862,8 +865,9 @@ const importStudents = async () => {
 }
 
 const exportData = async () => {
+  let loading = null
   try {
-    const loading = ElLoading.service({
+    loading = ElLoading.service({
       lock: true,
       text: '正在导出...',
       background: 'rgba(0,0,0,0.4)'
@@ -996,8 +1000,9 @@ const batchExport = async () => {
     return
   }
 
+  let loading = null
   try {
-    const loading = ElLoading.service({
+    loading = ElLoading.service({
       lock: true,
       text: '正在导出...',
       background: 'rgba(0,0,0,0.4)'
