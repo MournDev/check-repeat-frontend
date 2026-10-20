@@ -63,4 +63,9 @@ const props = defineProps({
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.loading-spinner { gap: var(--apple-spacing-md); }
+
+.loading-text { font-size: var(--apple-fs-body-strong); }
 </style>

@@ -1178,4 +1178,31 @@ watch(
     }
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.message-center {
+  padding: var(--apple-spacing-lg);
+  font-family: var(--apple-font-text);
+
+  .batch-actions {
+    background: var(--apple-surface);
+    padding: var(--apple-spacing-md);
+    gap: var(--apple-spacing-md);
+    margin-top: var(--apple-spacing-lg);
+  }
+
+  .pagination { margin-top: var(--apple-spacing-lg); }
+
+  .empty-message { padding: var(--apple-spacing-xxl) 0; }
+}
+
+@media (max-width: 768px) {
+  .message-center {
+    padding: var(--apple-spacing-sm);
+
+    .header { gap: var(--apple-spacing-sm); }
+
+    .stats-info .el-col { margin-bottom: var(--apple-spacing-sm); }
+  }
+}
 </style>

@@ -137,4 +137,21 @@ onUnmounted(() => {
     border-bottom: none;
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.virtual-scroll {
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-xs);
+  background-color: var(--apple-surface);
+}
+
+.virtual-scroll-item {
+  padding: var(--apple-spacing-sm);
+  border-bottom: 1px solid var(--apple-divider-soft);
+  transition: background-color var(--apple-transition-slow);
+
+  &:hover {
+    background-color: var(--apple-canvas-parchment);
+  }
+}
 </style>

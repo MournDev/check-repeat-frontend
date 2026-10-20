@@ -540,4 +540,12 @@ onMounted(() => {
   padding-top: var(--apple-spacing-sm);
   border-top: 1px solid var(--apple-hairline);
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.fm-file-name { font-size: var(--apple-fs-caption); }
+
+.fm-file-meta,
+.fm-file-time { font-size: var(--apple-fs-fine-print); }
+
+.fm-file-actions { gap: var(--apple-spacing-xxs); }
 </style>

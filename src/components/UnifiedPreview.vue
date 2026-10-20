@@ -424,4 +424,19 @@ onMounted(() => {
     border-radius: 8px;
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.dialog-footer {
+  gap: var(--apple-spacing-sm);
+  padding: var(--apple-spacing-md) var(--apple-spacing-lg);
+  border-top: 1px solid var(--apple-hairline);
+
+  :deep(.el-button) {
+    border-radius: var(--apple-rounded-sm);
+  }
+}
+
+.video-player {
+  border-radius: var(--apple-rounded-sm);
+}
 </style>
