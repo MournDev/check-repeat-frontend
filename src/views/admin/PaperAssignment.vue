@@ -394,4 +394,66 @@ onMounted(() => {
     justify-content: center;
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.paper-assignment {
+  font-family: var(--apple-font-text);
+}
+
+.stats-card {
+  margin-bottom: var(--apple-spacing-lg);
+  border-radius: var(--apple-rounded-lg);
+
+  :deep(.el-card__body) {
+    padding: var(--apple-spacing-lg);
+  }
+}
+
+.assignment-stats {
+  :deep(.el-statistic) {
+    .el-statistic__head {
+      margin-bottom: var(--apple-spacing-xs);
+      font-size: var(--apple-fs-fine-print);
+    }
+
+    .el-statistic__content {
+      font-size: var(--apple-fs-lead);
+    }
+  }
+}
+
+.students-card {
+  border-radius: var(--apple-rounded-lg);
+
+  :deep(.el-card__header) {
+    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+    border-bottom: 1px solid var(--apple-hairline);
+
+    .card-header .card-title {
+      font-size: var(--apple-fs-body-strong);
+      font-family: var(--apple-font-display);
+
+      .el-icon {
+        margin-right: var(--apple-spacing-xs);
+      }
+    }
+  }
+}
+
+.pagination-container {
+  padding: var(--apple-spacing-sm);
+  border-top: 1px solid var(--apple-hairline);
+}
+
+@media (max-width: 768px) {
+  .assignment-stats {
+    :deep(.el-row) .el-col {
+      margin-bottom: var(--apple-spacing-sm);
+    }
+  }
+
+  .pagination-container {
+    justify-content: center;
+  }
+}
 </style>

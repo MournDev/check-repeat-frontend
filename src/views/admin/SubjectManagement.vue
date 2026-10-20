@@ -383,4 +383,41 @@ onMounted(() => {
   line-height: 1.5;
   margin-top: 4px;
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.subject-management {
+  font-family: var(--apple-font-text);
+}
+
+.table-card {
+  margin-bottom: var(--apple-spacing-md);
+}
+
+.card-title {
+  font-size: var(--apple-fs-caption);
+  font-family: var(--apple-font-display);
+}
+
+.header-actions {
+  gap: var(--apple-spacing-sm);
+}
+
+.ref-zero {
+  color: var(--apple-ink-muted-48);
+}
+
+.form-tip {
+  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
+}
+
+@media (max-width: 768px) {
+  .card-header {
+    gap: var(--apple-spacing-sm);
+  }
+
+  .header-actions {
+    gap: var(--apple-spacing-xs);
+  }
+}
 </style>

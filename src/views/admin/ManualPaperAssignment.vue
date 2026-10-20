@@ -1099,4 +1099,175 @@ onMounted(() => {
     align-items: flex-start;
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.manual-assignment {
+  font-family: var(--apple-font-text);
+}
+
+.stats-cards {
+  margin-bottom: var(--apple-spacing-lg);
+
+  .stat-card {
+    border-radius: var(--apple-rounded-lg);
+
+    .stat-content .stat-icon {
+      margin-right: var(--apple-spacing-md);
+      border-radius: var(--apple-rounded-lg);
+    }
+
+    .stat-info {
+      .stat-value {
+        font-size: var(--apple-fs-lead);
+      }
+
+      .stat-label {
+        margin-top: var(--apple-spacing-xxs);
+        font-size: var(--apple-fs-fine-print);
+      }
+    }
+  }
+}
+
+.assignment-area {
+  margin-bottom: var(--apple-spacing-lg);
+
+  .student-card,
+  .teacher-card {
+    border-radius: var(--apple-rounded-lg);
+
+    :deep(.el-card__header) {
+      padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+      border-bottom: 1px solid var(--apple-hairline);
+
+      .card-header .card-title {
+        font-size: var(--apple-fs-body-strong);
+        font-family: var(--apple-font-display);
+
+        .el-icon {
+          margin-right: var(--apple-spacing-xs);
+        }
+
+        .el-tag {
+          margin-left: var(--apple-spacing-xs);
+        }
+      }
+    }
+  }
+}
+
+.student-list,
+.teacher-list {
+  .student-item,
+  .teacher-item {
+    padding: var(--apple-spacing-md);
+    border-bottom: 1px solid var(--apple-divider-soft);
+
+    .student-info,
+    .teacher-info {
+      .student-basic,
+      .teacher-basic {
+        margin-bottom: var(--apple-spacing-xs);
+
+        .student-name,
+        .teacher-name {
+          font-size: var(--apple-fs-body-strong);
+        }
+
+        .student-id,
+        .teacher-title {
+          font-size: var(--apple-fs-fine-print);
+        }
+      }
+
+      .student-major,
+      .teacher-department {
+        margin-bottom: var(--apple-spacing-xs);
+        font-size: var(--apple-fs-fine-print);
+
+        .grade {
+          margin-left: var(--apple-spacing-xs);
+        }
+      }
+
+      .student-interests,
+      .teacher-expertise {
+        .el-tag {
+          margin-right: var(--apple-spacing-xxs);
+          margin-bottom: var(--apple-spacing-xxs);
+        }
+      }
+
+      .student-load,
+      .teacher-load {
+        font-size: var(--apple-fs-fine-print);
+      }
+    }
+
+    .student-actions,
+    .teacher-actions {
+      margin-top: var(--apple-spacing-xs);
+    }
+  }
+
+  .empty-students,
+  .empty-teachers {
+    padding: var(--apple-spacing-xl) 0;
+  }
+}
+
+.batch-actions-card {
+  margin-bottom: var(--apple-spacing-lg);
+  border-radius: var(--apple-rounded-lg);
+
+  :deep(.el-card__body) {
+    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+  }
+
+  .batch-actions {
+    .selected-info {
+      font-size: var(--apple-fs-caption);
+    }
+
+    .batch-buttons {
+      gap: var(--apple-spacing-sm);
+    }
+  }
+}
+
+.student-preview {
+  padding: var(--apple-spacing-sm);
+  border-radius: var(--apple-rounded-sm);
+
+  div {
+    margin-bottom: var(--apple-spacing-xxs);
+  }
+}
+
+.selected-students-preview .student-tag {
+  margin-right: var(--apple-spacing-xs);
+  margin-bottom: var(--apple-spacing-xs);
+}
+
+.teacher-option {
+  .teacher-name {
+    margin-right: var(--apple-spacing-xs);
+  }
+
+  .teacher-detail {
+    margin-top: var(--apple-spacing-xxs);
+    font-size: var(--apple-fs-fine-print);
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-cards .el-col {
+    margin-bottom: var(--apple-spacing-sm);
+  }
+
+  .assignment-area .student-card,
+  .assignment-area .teacher-card {
+    margin-bottom: var(--apple-spacing-sm);
+  }
+}
 </style>

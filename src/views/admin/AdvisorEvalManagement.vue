@@ -738,4 +738,113 @@ onMounted(() => {
     margin-bottom: 16px;
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.advisor-eval-management {
+  gap: var(--apple-spacing-md);
+}
+
+.head-row {
+  gap: var(--apple-spacing-md);
+}
+
+.head-title {
+  margin-bottom: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-tagline);
+  font-family: var(--apple-font-display);
+}
+
+.head-desc {
+  font-size: var(--apple-fs-fine-print);
+}
+
+.period-tip {
+  gap: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.stat-card {
+  gap: var(--apple-spacing-xs);
+  padding: var(--apple-spacing-md);
+
+  .stat-label,
+  .stat-sub {
+    font-size: var(--apple-fs-fine-print);
+  }
+
+  .rate-text {
+    font-size: var(--apple-fs-caption);
+  }
+
+  .stat-value {
+    font-size: var(--apple-fs-display-md);
+  }
+}
+
+.card-header {
+  gap: var(--apple-spacing-sm);
+
+  .card-title {
+    font-size: var(--apple-fs-body-strong);
+    font-family: var(--apple-font-display);
+
+    .el-icon {
+      margin-right: var(--apple-spacing-xs);
+    }
+  }
+
+  .header-tip {
+    font-size: var(--apple-fs-fine-print);
+  }
+}
+
+.filter-bar {
+  gap: var(--apple-spacing-sm);
+  margin-bottom: var(--apple-spacing-md);
+}
+
+.cell-main,
+.comment-preview,
+.comment-full {
+  font-size: var(--apple-fs-fine-print);
+}
+
+.cell-sub {
+  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.score-dims {
+  gap: var(--apple-spacing-xxs) var(--apple-spacing-xs);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.tag-item {
+  margin: var(--apple-spacing-xxs) var(--apple-spacing-xxs) var(--apple-spacing-xxs) 0;
+}
+
+.warn-icon {
+  margin-left: var(--apple-spacing-xxs);
+}
+
+.table-footer {
+  margin-top: var(--apple-spacing-md);
+}
+
+@media (max-width: 768px) {
+  .head-row {
+    flex-direction: column;
+  }
+
+  .filter-bar {
+    .filter-item,
+    .filter-date {
+      width: 100%;
+    }
+  }
+
+  .table-footer {
+    justify-content: center;
+  }
+}
 </style>

@@ -1022,4 +1022,27 @@ onMounted(() => {
     .el-date-editor, .el-button { width: 100% !important; }
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.log-center { font-family: var(--apple-font-text); }
+.log-tabs .tab-header .header-filters { gap: var(--apple-spacing-sm); }
+.pagination-wrapper { margin-top: var(--apple-spacing-md); padding-top: var(--apple-spacing-xs); }
+.stats-row { gap: var(--apple-spacing-md); margin-bottom: var(--apple-spacing-md); }
+.stat-card { padding: var(--apple-spacing-xs) 0; }
+.stat-value { font-size: var(--apple-fs-lead); }
+.stat-label { margin-top: var(--apple-spacing-xxs); font-size: var(--apple-fs-fine-print); }
+.charts-row, .summary-charts-row { gap: var(--apple-spacing-md); margin-bottom: var(--apple-spacing-md); }
+.card-title { font-size: var(--apple-fs-caption); font-family: var(--apple-font-display); }
+.percent-text { margin-left: var(--apple-spacing-xs); font-size: var(--apple-fs-fine-print); }
+.module-card, .summary-section, .summary-filter-card { margin-bottom: var(--apple-spacing-md); }
+.summary-filter-row { gap: var(--apple-spacing-sm); }
+.summary-tip { font-size: var(--apple-fs-fine-print); }
+.table-footer { gap: var(--apple-spacing-sm); padding: var(--apple-spacing-sm) 0; margin-top: var(--apple-spacing-sm); border-top-color: var(--apple-hairline); }
+.selected-count { font-size: var(--apple-fs-fine-print); }
+
+@media (max-width: 768px) {
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .charts-row { grid-template-columns: 1fr; }
+  .log-tabs .tab-header .header-filters { gap: var(--apple-spacing-xs); }
+}
 </style>

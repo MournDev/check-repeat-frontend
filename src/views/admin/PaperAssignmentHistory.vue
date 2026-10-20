@@ -960,5 +960,112 @@ onMounted(() => {
     }
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.assignment-history {
+  font-family: var(--apple-font-text);
+}
+
+.filter-card {
+  margin-bottom: var(--apple-spacing-lg);
+  border-radius: var(--apple-rounded-lg);
+
+  :deep(.el-card__body) {
+    padding: var(--apple-spacing-md);
+  }
+}
+
+.stats-cards {
+  margin-bottom: var(--apple-spacing-lg);
+
+  .stat-card {
+    border-radius: var(--apple-rounded-lg);
+
+    .stat-content .stat-icon {
+      margin-right: var(--apple-spacing-md);
+      border-radius: var(--apple-rounded-lg);
+    }
+
+    .stat-info {
+      .stat-value {
+        font-size: var(--apple-fs-lead);
+      }
+
+      .stat-label {
+        margin-top: var(--apple-spacing-xxs);
+        font-size: var(--apple-fs-fine-print);
+      }
+    }
+  }
+}
+
+.table-card {
+  border-radius: var(--apple-rounded-lg);
+
+  :deep(.el-card__header) {
+    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+    border-bottom: 1px solid var(--apple-hairline);
+
+    .card-header .card-title {
+      font-size: var(--apple-fs-body-strong);
+      font-family: var(--apple-font-display);
+
+      .el-icon {
+        margin-right: var(--apple-spacing-xs);
+      }
+    }
+  }
+}
+
+.pagination-container {
+  padding: var(--apple-spacing-sm);
+  border-top: 1px solid var(--apple-hairline);
+}
+
+.record-detail .detail-section {
+  margin: var(--apple-spacing-lg) 0;
+
+  h3 {
+    margin-bottom: var(--apple-spacing-sm);
+    font-size: var(--apple-fs-tagline);
+    font-family: var(--apple-font-display);
+  }
+
+  .reason,
+  .notes {
+    padding: var(--apple-spacing-sm);
+    border-radius: var(--apple-rounded-sm);
+  }
+}
+
+.original-info {
+  padding: var(--apple-spacing-sm);
+  border-radius: var(--apple-rounded-sm);
+
+  div {
+    margin-bottom: var(--apple-spacing-xxs);
+  }
+}
+
+.teacher-option {
+  .teacher-name {
+    margin-right: var(--apple-spacing-xs);
+  }
+
+  .teacher-detail {
+    margin-top: var(--apple-spacing-xxs);
+    font-size: var(--apple-fs-fine-print);
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-cards .el-col {
+    margin-bottom: var(--apple-spacing-sm);
+  }
+
+  .pagination-container {
+    margin-top: var(--apple-spacing-md);
+  }
+}
 </style>
 

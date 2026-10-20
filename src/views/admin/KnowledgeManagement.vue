@@ -277,4 +277,23 @@ function formatDate(d) {
 .preview-pane :deep(pre) { background: var(--apple-ink); color: var(--apple-slate-border); padding: 10px; border-radius: 6px; overflow-x: auto; }
 .preview-pane :deep(pre code) { background: none; padding: 0; }
 .preview-pane :deep(blockquote) { border-left: 3px solid var(--apple-primary-on-dark); padding: 4px 12px; margin: 8px 0; background: var(--apple-info-bg); }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.knowledge-admin { font-family: var(--apple-font-text); }
+.page-toolbar { margin-bottom: var(--apple-spacing-md); gap: var(--apple-spacing-sm); }
+.toolbar-left { gap: var(--apple-spacing-sm); }
+.kb-pagination { margin-top: var(--apple-spacing-md); }
+.editor-layout { gap: var(--apple-spacing-md); }
+.editor-pane :deep(.el-textarea__inner) { font-size: var(--apple-fs-caption); }
+.preview-pane { padding: var(--apple-spacing-sm); border-color: var(--apple-hairline); border-radius: var(--apple-rounded-md); font-size: var(--apple-fs-caption); }
+.preview-pane :deep(h2) { margin: var(--apple-spacing-md) 0 var(--apple-spacing-xs); font-size: var(--apple-fs-body-strong); }
+.preview-pane :deep(h3) { font-size: var(--apple-fs-caption); }
+.preview-pane :deep(th), .preview-pane :deep(td) { padding: var(--apple-spacing-xxs) var(--apple-spacing-xs); font-size: var(--apple-fs-fine-print); }
+.preview-pane :deep(code) { border-radius: var(--apple-rounded-xs); font-size: var(--apple-fs-fine-print); }
+.preview-pane :deep(pre) { border-radius: var(--apple-rounded-sm); }
+.preview-pane :deep(blockquote) { padding: var(--apple-spacing-xxs) var(--apple-spacing-sm); margin: var(--apple-spacing-xs) 0; }
+
+@media (max-width: 768px) {
+  .editor-layout { flex-direction: column; }
+}
 </style>

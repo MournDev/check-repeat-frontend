@@ -1065,4 +1065,91 @@ const rowKey = (row) => {
     }
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.user-management {
+  padding: var(--apple-spacing-lg);
+  font-family: var(--apple-font-text);
+}
+
+.filter-card {
+  margin-bottom: var(--apple-spacing-lg);
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-lg);
+
+  :deep(.el-card__body) {
+    padding: var(--apple-spacing-md);
+  }
+
+  :deep(.el-input__wrapper),
+  :deep(.el-select__wrapper) {
+    border: 1px solid var(--apple-hairline);
+    border-radius: var(--apple-rounded-md);
+  }
+}
+
+.table-card {
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-lg);
+
+  :deep(.el-card__header) {
+    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+    border-bottom: 1px solid var(--apple-hairline);
+
+    .card-header {
+      .card-title {
+        font-size: var(--apple-fs-body-strong);
+        font-family: var(--apple-font-display);
+
+        .el-icon {
+          margin-right: var(--apple-spacing-xs);
+        }
+      }
+
+      .table-actions {
+        gap: var(--apple-spacing-sm);
+      }
+    }
+  }
+
+  :deep(.el-table) {
+    border-radius: 0;
+
+    .el-table__header-wrapper th {
+      padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+      border-bottom: 1px solid var(--apple-hairline);
+      font-size: var(--apple-fs-fine-print);
+    }
+
+    .el-table__cell {
+      padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+    }
+  }
+}
+
+.pagination-container {
+  padding: var(--apple-spacing-sm);
+  border-top: 1px solid var(--apple-hairline);
+
+  :deep(.el-pagination) .el-pagination__item {
+    border: 1px solid var(--apple-hairline);
+  }
+}
+
+.self-edit-tip {
+  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
+}
+
+@media (max-width: 768px) {
+  .user-management {
+    padding: var(--apple-spacing-sm);
+  }
+
+  .filter-card {
+    :deep(.el-form) .el-form-item {
+      margin-bottom: var(--apple-spacing-sm);
+    }
+  }
+}
 </style>

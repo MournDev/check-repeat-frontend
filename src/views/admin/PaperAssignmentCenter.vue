@@ -71,4 +71,36 @@ const handleTabChange = (tab) => {
     }
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+:deep(.el-tabs) {
+  margin-bottom: var(--apple-spacing-lg);
+
+  .el-tabs__header {
+    margin-bottom: var(--apple-spacing-lg);
+
+    .el-tabs__nav {
+      border-bottom-color: var(--apple-hairline);
+
+      .el-tabs__item {
+        padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+        margin-right: var(--apple-spacing-lg);
+        font-size: var(--apple-fs-caption);
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  :deep(.el-tabs) {
+    .el-tabs__header {
+      margin-bottom: var(--apple-spacing-md);
+
+      .el-tabs__nav .el-tabs__item {
+        margin-right: var(--apple-spacing-md);
+        padding: var(--apple-spacing-sm) var(--apple-spacing-xs);
+      }
+    }
+  }
+}
 </style>

@@ -756,4 +756,135 @@ onMounted(() => {
     gap: 8px;
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.admin-report-management {
+  padding: var(--apple-spacing-lg);
+  font-family: var(--apple-font-text);
+}
+
+.filter-card,
+.report-list-card {
+  margin-bottom: var(--apple-spacing-md);
+  border-radius: var(--apple-rounded-lg);
+}
+
+.search-form {
+  gap: var(--apple-spacing-md);
+}
+
+.stat-card {
+  border-radius: var(--apple-rounded-lg);
+}
+
+.stat-item {
+  padding: var(--apple-spacing-md);
+}
+
+.stat-value {
+  margin-bottom: var(--apple-spacing-xs);
+  font-size: var(--apple-fs-display-md);
+}
+
+.stat-label {
+  font-size: var(--apple-fs-caption);
+}
+
+.card-header {
+  gap: var(--apple-spacing-sm);
+  font-size: var(--apple-fs-body-strong);
+  font-family: var(--apple-font-display);
+}
+
+.pagination-container {
+  margin-top: var(--apple-spacing-md);
+}
+
+.report-detail,
+.similarity-overview,
+.similar-sources {
+  padding: var(--apple-spacing-md);
+}
+
+.similarity-value {
+  margin-bottom: var(--apple-spacing-md);
+}
+
+.percentage {
+  font-size: var(--apple-fs-lead-airy);
+}
+
+.rating {
+  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-caption);
+}
+
+.similarity-stats {
+  margin-top: var(--apple-spacing-md);
+}
+
+.source-item {
+  padding: var(--apple-spacing-md);
+  margin-bottom: var(--apple-spacing-md);
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-lg);
+}
+
+.source-header {
+  margin-bottom: var(--apple-spacing-md);
+}
+
+.source-header h4 {
+  margin-right: var(--apple-spacing-md);
+  font-size: var(--apple-fs-body-strong);
+  font-family: var(--apple-font-display);
+}
+
+.source-meta {
+  margin-bottom: var(--apple-spacing-md);
+  font-size: var(--apple-fs-caption);
+}
+
+.matched-paragraphs {
+  margin-top: var(--apple-spacing-md);
+}
+
+.matched-paragraphs h5 {
+  margin-bottom: var(--apple-spacing-sm);
+  font-size: var(--apple-fs-caption);
+}
+
+.paragraph-item {
+  padding: var(--apple-spacing-md);
+  margin-bottom: var(--apple-spacing-sm);
+  border-radius: var(--apple-rounded-md);
+}
+
+.source-text,
+.paper-text {
+  margin-bottom: var(--apple-spacing-xs);
+  font-size: var(--apple-fs-caption);
+}
+
+.match-similarity {
+  font-size: var(--apple-fs-caption);
+}
+
+.empty-sources {
+  padding: var(--apple-spacing-xl) var(--apple-spacing-md);
+}
+
+@media (max-width: 768px) {
+  .admin-report-management {
+    padding: var(--apple-spacing-sm);
+  }
+
+  .stat-card {
+    margin-bottom: var(--apple-spacing-sm);
+  }
+
+  .source-header {
+    gap: var(--apple-spacing-xs);
+  }
+}
 </style>
