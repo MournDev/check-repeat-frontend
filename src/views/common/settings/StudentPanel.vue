@@ -515,8 +515,8 @@ defineExpose({ save: saveProfile })
 
 <style lang="scss" scoped>
 .profile-content {
-  .el-card { border-radius: 18px; border: 1px solid var(--apple-slate-border); margin-bottom: 1.5rem;
-    :deep(.el-card__header) { padding: 1rem 1.25rem; border-bottom: 1px solid var(--apple-slate-border); }
+  .el-card { border-radius: var(--apple-rounded-lg); border: 1px solid var(--apple-hairline); margin-bottom: var(--apple-spacing-lg);
+    :deep(.el-card__header) { padding: var(--apple-spacing-sm) var(--apple-spacing-md); border-bottom: 1px solid var(--apple-divider-soft); }
     :deep(.el-card__body) { padding: 1.25rem; }
   }
   .card-header { display: flex; justify-content: space-between; align-items: center;
@@ -535,7 +535,7 @@ defineExpose({ save: saveProfile })
   }
 }
 .security-items .security-item {
-  display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid var(--apple-canvas-parchment);
+  display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid var(--apple-divider-soft);
   &:last-child { border-bottom: none; }
   .security-info { display: flex; align-items: center;
     .el-icon { margin-right: 0.75rem; color: var(--apple-primary); font-size: 1.25rem; }
