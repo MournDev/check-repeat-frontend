@@ -1232,4 +1232,94 @@ onMounted(async () => {
     padding: 40px 0;
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.student-management {
+  padding: var(--apple-spacing-xl);
+  color: var(--apple-ink);
+  font-family: var(--apple-font-text);
+
+  :deep(.el-dialog) {
+    border-radius: var(--apple-rounded-lg);
+  }
+}
+
+.paper-preview-dialog {
+  .paper-info-bar {
+    gap: var(--apple-spacing-md);
+    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+    margin-bottom: var(--apple-spacing-md);
+    border-radius: var(--apple-rounded-lg);
+
+    .info-item {
+      font-size: var(--apple-fs-caption);
+
+      .label {
+        margin-right: var(--apple-spacing-xxs);
+      }
+    }
+  }
+
+  .preview-wrapper {
+    .preview-iframe {
+      border-radius: var(--apple-rounded-lg);
+    }
+
+    .preview-error .error-detail {
+      margin: var(--apple-spacing-sm) 0;
+      font-size: var(--apple-fs-caption);
+    }
+  }
+
+  .preview-footer {
+    gap: var(--apple-spacing-sm);
+    padding-top: var(--apple-spacing-md);
+  }
+}
+
+.papers-container {
+  .papers-table {
+    :deep(.el-table__header-wrapper) th {
+      padding: var(--apple-spacing-xs) var(--apple-spacing-sm);
+    }
+
+    :deep(.el-table__cell) {
+      padding: var(--apple-spacing-xs);
+      font-size: var(--apple-fs-caption);
+    }
+  }
+
+  .paper-title {
+    padding: var(--apple-spacing-xxs) var(--apple-spacing-xs);
+    border-radius: var(--apple-rounded-sm);
+  }
+
+  .submit-time {
+    padding: var(--apple-spacing-xxs) var(--apple-spacing-xs);
+    border-radius: var(--apple-rounded-sm);
+    font-size: var(--apple-fs-fine-print);
+  }
+
+  .similarity-value {
+    font-size: var(--apple-fs-fine-print);
+  }
+
+  .action-buttons {
+    gap: var(--apple-spacing-xs);
+  }
+
+  .empty-papers {
+    padding: var(--apple-spacing-xl) 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .student-management {
+    padding: var(--apple-spacing-md) var(--apple-spacing-sm);
+  }
+
+  .paper-preview-dialog .preview-container {
+    height: 60vh;
+  }
+}
 </style>

@@ -114,4 +114,32 @@ defineEmits(['update:keyword', 'update:status', 'update:college', 'reset'])
     width: 100%;
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.filter-card {
+  margin-bottom: var(--apple-spacing-md);
+
+  :deep(.el-card__body) {
+    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+  }
+}
+
+.filter-content {
+  gap: var(--apple-spacing-sm);
+}
+
+.filter-search,
+.filter-select {
+  :deep(.el-input__wrapper),
+  :deep(.el-select__wrapper) {
+    border-radius: var(--apple-rounded-md);
+    font-size: var(--apple-fs-caption);
+  }
+}
+
+@media (max-width: 768px) {
+  .filter-card {
+    margin-bottom: var(--apple-spacing-sm);
+  }
+}
 </style>

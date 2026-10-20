@@ -459,4 +459,77 @@ const formatDate = (date) => {
     justify-content: center;
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.list-card {
+  border-radius: var(--apple-rounded-lg);
+}
+
+.list-header {
+  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+
+  .header-title {
+    gap: var(--apple-spacing-xs);
+    font-size: var(--apple-fs-body-strong);
+
+    .total-count {
+      margin-left: var(--apple-spacing-xs);
+      font-size: var(--apple-fs-fine-print);
+    }
+  }
+}
+
+:deep(.student-table) {
+  .el-table__header th {
+    padding: var(--apple-spacing-xs) var(--apple-spacing-sm);
+    font-size: var(--apple-fs-caption);
+  }
+
+  .el-table__row td.el-table__cell {
+    padding: var(--apple-spacing-xs) var(--apple-spacing-sm);
+    font-size: var(--apple-fs-caption);
+  }
+
+  .no-advisor,
+  .submit-time {
+    font-size: var(--apple-fs-fine-print);
+  }
+
+  .similarity-value {
+    font-size: var(--apple-fs-fine-print);
+  }
+
+  .action-buttons {
+    gap: var(--apple-spacing-xs);
+  }
+}
+
+.table-footer {
+  gap: var(--apple-spacing-sm);
+  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+}
+
+.batch-bar .batch-summary {
+  margin-right: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.table-empty {
+  gap: var(--apple-spacing-xs);
+  padding: var(--apple-spacing-xxl) 0;
+
+  p {
+    font-size: var(--apple-fs-caption);
+  }
+}
+
+@media (max-width: 768px) {
+  .list-header {
+    padding: var(--apple-spacing-sm);
+  }
+
+  .table-footer {
+    padding: var(--apple-spacing-sm);
+  }
+}
 </style>
