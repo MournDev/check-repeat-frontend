@@ -731,4 +731,151 @@ onMounted(() => {
     }
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.system-config {
+  padding: var(--apple-spacing-lg);
+  font-family: var(--apple-font-text);
+}
+
+.config-alert {
+  margin-bottom: var(--apple-spacing-md);
+}
+
+.nav-card,
+.config-card,
+.backup-card {
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-lg);
+}
+
+.nav-card {
+  margin-bottom: var(--apple-spacing-lg);
+}
+
+.config-card {
+  :deep(.el-card__body) {
+    padding: var(--apple-spacing-lg);
+  }
+
+  .config-tab {
+    .tab-title {
+      margin-bottom: var(--apple-spacing-lg);
+      padding-bottom: var(--apple-spacing-sm);
+      border-bottom: 1px solid var(--apple-hairline);
+      font-size: var(--apple-fs-tagline);
+      font-family: var(--apple-font-display);
+    }
+
+    .config-form {
+      :deep(.el-form-item) {
+        margin-bottom: var(--apple-spacing-md);
+      }
+
+      :deep(.el-input__wrapper),
+      :deep(.el-select__wrapper) {
+        border: 1px solid var(--apple-hairline);
+        border-radius: var(--apple-rounded-md);
+      }
+
+      .form-tip {
+        margin-top: var(--apple-spacing-xxs);
+        font-size: var(--apple-fs-fine-print);
+      }
+
+      .unit {
+        margin-left: var(--apple-spacing-xs);
+        font-size: var(--apple-fs-fine-print);
+      }
+    }
+  }
+}
+
+.help-card {
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-lg);
+  background: var(--apple-surface-pearl);
+
+  :deep(.el-card__header) {
+    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+    border-bottom: 1px solid var(--apple-hairline);
+
+    .card-header .card-title {
+      font-size: var(--apple-fs-caption);
+
+      .el-icon {
+        margin-right: var(--apple-spacing-xxs);
+      }
+    }
+  }
+
+  :deep(.el-card__body) {
+    padding: var(--apple-spacing-md);
+  }
+}
+
+.backup-card {
+  :deep(.el-card__header) {
+    padding: var(--apple-spacing-md) var(--apple-spacing-md) var(--apple-spacing-sm);
+
+    .card-header .card-title {
+      font-size: var(--apple-fs-body-strong);
+
+      .el-icon {
+        margin-right: var(--apple-spacing-xs);
+      }
+    }
+  }
+
+  :deep(.el-card__body) {
+    padding: 0 var(--apple-spacing-md) var(--apple-spacing-md);
+  }
+}
+
+.config-help .help-content {
+  h4 {
+    margin-bottom: var(--apple-spacing-xs);
+    font-size: var(--apple-fs-caption);
+  }
+
+  ul li {
+    margin-bottom: var(--apple-spacing-xxs);
+    font-size: var(--apple-fs-fine-print);
+  }
+}
+
+.backup-settings {
+  margin-bottom: var(--apple-spacing-xs);
+
+  .setting-hint {
+    font-size: var(--apple-fs-fine-print);
+  }
+}
+
+.backup-actions {
+  gap: var(--apple-spacing-sm);
+}
+
+.backup-info p {
+  margin: var(--apple-spacing-xxs) 0;
+  font-size: var(--apple-fs-caption);
+}
+
+.config-tab-container {
+  margin-top: var(--apple-spacing-lg);
+}
+
+@media (max-width: 768px) {
+  .system-config {
+    padding: var(--apple-spacing-sm);
+  }
+
+  :deep(.el-row) .el-col {
+    margin-bottom: var(--apple-spacing-sm);
+  }
+
+  .config-card :deep(.el-card__body) {
+    padding: var(--apple-spacing-sm);
+  }
+}
 </style>

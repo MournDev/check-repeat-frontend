@@ -354,4 +354,48 @@ onMounted(() => {
     margin-bottom: 16px;
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.stat-report {
+  gap: var(--apple-spacing-md);
+}
+
+.head-row {
+  gap: var(--apple-spacing-md);
+}
+
+.head-title {
+  margin-bottom: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-tagline);
+  font-family: var(--apple-font-display);
+}
+
+.head-desc {
+  font-size: var(--apple-fs-fine-print);
+}
+
+.chart-card {
+  :deep(.el-card__header) {
+    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+  }
+
+  .card-header .card-title {
+    font-size: var(--apple-fs-body-strong);
+    font-family: var(--apple-font-display);
+
+    .el-icon {
+      margin-right: var(--apple-spacing-xs);
+    }
+  }
+}
+
+.chart-body {
+  min-height: 200px;
+}
+
+@media (max-width: 768px) {
+  .head-row {
+    flex-direction: column;
+  }
+}
 </style>

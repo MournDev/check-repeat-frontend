@@ -527,4 +527,50 @@ onMounted(() => {
 .quota-filter {
   margin-bottom: 8px;
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.check-rule-management {
+  font-family: var(--apple-font-text);
+}
+
+.filter-card,
+.table-card {
+  margin-bottom: var(--apple-spacing-md);
+}
+
+.card-title {
+  font-size: var(--apple-fs-caption);
+  font-family: var(--apple-font-display);
+}
+
+.pagination-wrapper {
+  margin-top: var(--apple-spacing-md);
+}
+
+.lib-tag {
+  margin: var(--apple-spacing-xxs) var(--apple-spacing-xxs) var(--apple-spacing-xxs) 0;
+}
+
+.empty-text {
+  color: var(--apple-ink-muted-48);
+}
+
+.form-tip {
+  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.quota-filter {
+  margin-bottom: var(--apple-spacing-xs);
+}
+
+@media (max-width: 768px) {
+  .card-header {
+    gap: var(--apple-spacing-sm);
+  }
+
+  .pagination-wrapper {
+    justify-content: center;
+  }
+}
 </style>

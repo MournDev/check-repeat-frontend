@@ -598,4 +598,27 @@ onMounted(() => {
 .maintenance-card { max-width: 760px; }
 .maintenance-status { margin-bottom: 16px; }
 .form-hint { font-size: 12px; color: var(--apple-info); margin-left: 12px; }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.notice-management { font-family: var(--apple-font-text); }
+.notice-tabs { margin-bottom: var(--apple-spacing-md); }
+.notice-tabs :deep(.el-tabs__header) { margin-bottom: var(--apple-spacing-md); }
+.stats-row { gap: var(--apple-spacing-md); margin-bottom: var(--apple-spacing-md); }
+.stat-card { padding: var(--apple-spacing-xs) 0; }
+.stat-value { font-size: var(--apple-fs-lead); }
+.stat-label { margin-top: var(--apple-spacing-xxs); font-size: var(--apple-fs-fine-print); }
+.filter-card, .table-card { margin-bottom: var(--apple-spacing-md); }
+.card-title { font-size: var(--apple-fs-caption); font-family: var(--apple-font-display); }
+.card-actions { gap: var(--apple-spacing-xs); }
+.table-footer { gap: var(--apple-spacing-sm); padding: var(--apple-spacing-sm) 0; margin-top: var(--apple-spacing-sm); border-top-color: var(--apple-hairline); }
+.selected-count { font-size: var(--apple-fs-fine-print); }
+.pagination-wrapper { margin-top: var(--apple-spacing-md); }
+.publish-tip, .maintenance-status { margin-bottom: var(--apple-spacing-md); }
+.form-hint { margin-left: var(--apple-spacing-sm); font-size: var(--apple-fs-fine-print); }
+
+@media (max-width: 768px) {
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .card-header { gap: var(--apple-spacing-sm); }
+  .pagination-wrapper { justify-content: center; }
+}
 </style>

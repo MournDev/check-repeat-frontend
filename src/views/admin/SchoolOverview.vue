@@ -802,4 +802,85 @@ onMounted(async () => {
     }
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.school-overview {
+  font-family: var(--apple-font-text);
+}
+
+.overview-cards {
+  margin-bottom: var(--apple-spacing-md);
+
+  .overview-card {
+    border-radius: var(--apple-rounded-lg);
+
+    .card-content {
+      .card-icon {
+        width: 48px;
+        height: 48px;
+        margin-right: var(--apple-spacing-md);
+        border-radius: var(--apple-rounded-lg);
+      }
+
+      .card-info {
+        .card-value {
+          font-size: var(--apple-fs-lead);
+        }
+
+        .card-label {
+          margin: var(--apple-spacing-xxs) 0;
+          font-size: var(--apple-fs-fine-print);
+        }
+      }
+    }
+  }
+}
+
+.charts-section .chart-card,
+.info-card {
+  margin-bottom: var(--apple-spacing-sm);
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-lg);
+
+  :deep(.el-card__header) {
+    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+    border-bottom: 1px solid var(--apple-hairline);
+  }
+}
+
+.charts-section .chart-card .card-header,
+.info-card .card-header {
+  .card-title {
+    font-size: var(--apple-fs-body-strong);
+    font-family: var(--apple-font-display);
+
+    .el-icon {
+      margin-right: var(--apple-spacing-xs);
+    }
+  }
+}
+
+.realtime-stats .stat-item {
+  padding: var(--apple-spacing-sm) 0;
+  border-bottom: 1px solid var(--apple-divider-soft);
+
+  .stat-label {
+    font-size: var(--apple-fs-fine-print);
+  }
+
+  .stat-value {
+    font-size: var(--apple-fs-tagline);
+  }
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    gap: var(--apple-spacing-sm);
+  }
+
+  .overview-cards .el-col,
+  .charts-section .el-col {
+    margin-bottom: var(--apple-spacing-sm);
+  }
+}
 </style>

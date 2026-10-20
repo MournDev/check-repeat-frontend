@@ -305,4 +305,16 @@ onMounted(() => {
 .preview-result { padding: 12px; background: #f5f7fa; border-radius: 8px; }
 .preview-title { margin-bottom: 12px; }
 .preview-content .content-box { margin-top: 8px; padding: 12px; background: #fff; border: 1px solid var(--apple-hairline); border-radius: 4px; white-space: pre-wrap; line-height: 1.6; }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.template-management { font-family: var(--apple-font-text); }
+.filter-card, .table-card { margin-bottom: var(--apple-spacing-md); }
+.pagination-wrapper { margin-top: var(--apple-spacing-md); }
+.preview-result { padding: var(--apple-spacing-sm); background: var(--apple-canvas-parchment); border-radius: var(--apple-rounded-md); }
+.preview-title { margin-bottom: var(--apple-spacing-sm); }
+.preview-content .content-box { margin-top: var(--apple-spacing-xs); padding: var(--apple-spacing-sm); background: var(--apple-surface); border-radius: var(--apple-rounded-xs); }
+
+@media (max-width: 768px) {
+  .pagination-wrapper { justify-content: center; }
+}
 </style>
