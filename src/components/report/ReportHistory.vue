@@ -122,4 +122,44 @@ const exportHistoryReport = (record) => {
     gap: 8px;
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.report-history { padding: var(--apple-spacing-lg); }
+
+.history-item {
+  padding: var(--apple-spacing-lg);
+  margin-bottom: var(--apple-spacing-lg);
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-lg);
+  background: var(--apple-surface-pearl);
+  transition: border-color var(--apple-transition-normal);
+}
+
+.history-item:hover { border-color: var(--apple-primary); }
+
+.version-info {
+  gap: var(--apple-spacing-md);
+  margin-bottom: var(--apple-spacing-sm);
+}
+
+.version-label {
+  font-size: var(--apple-fs-caption);
+  color: var(--apple-ink);
+}
+
+.change-description {
+  margin-bottom: var(--apple-spacing-md);
+  font-size: var(--apple-fs-caption);
+  color: var(--apple-ink-muted-48);
+}
+
+.history-actions { gap: var(--apple-spacing-sm); }
+
+.empty-history { padding: var(--apple-spacing-xl) var(--apple-spacing-lg); }
+
+@media (max-width: 768px) {
+  .history-item { padding: var(--apple-spacing-md); }
+  .version-info { gap: var(--apple-spacing-xs); }
+  .history-actions { gap: var(--apple-spacing-xs); }
+}
 </style>

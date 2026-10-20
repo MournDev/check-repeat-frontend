@@ -179,4 +179,79 @@ const viewComparison = (source) => {
     padding: 16px;
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.report-similar-sources { padding: var(--apple-spacing-lg); }
+
+.source-item {
+  padding: var(--apple-spacing-lg);
+  margin-bottom: var(--apple-spacing-lg);
+  background: var(--apple-surface-pearl);
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-lg);
+  transition: border-color var(--apple-transition-normal);
+}
+
+.source-item:hover { border-color: var(--apple-primary); }
+
+.source-header {
+  gap: var(--apple-spacing-sm);
+  margin-bottom: var(--apple-spacing-md);
+}
+
+.source-title {
+  margin-right: var(--apple-spacing-lg);
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-body-strong);
+  color: var(--apple-ink);
+}
+
+.source-meta {
+  gap: var(--apple-spacing-lg);
+  margin-bottom: var(--apple-spacing-md);
+  font-size: var(--apple-fs-caption);
+  color: var(--apple-ink-muted-48);
+
+  .el-icon {
+    margin-right: var(--apple-spacing-xxs);
+    color: var(--apple-primary);
+  }
+}
+
+.matched-paragraphs { margin-top: var(--apple-spacing-md); }
+
+.matched-paragraphs h5 {
+  margin: 0 0 var(--apple-spacing-md);
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-body-strong);
+  color: var(--apple-ink);
+}
+
+.paragraph-item {
+  padding: var(--apple-spacing-md);
+  margin-bottom: var(--apple-spacing-md);
+  border: 0;
+  border-left: 3px solid var(--apple-primary);
+  border-radius: var(--apple-rounded-md);
+  background: var(--apple-surface);
+
+  &:hover { background-color: var(--apple-canvas-parchment); }
+}
+
+.source-text,
+.paper-text {
+  margin-bottom: var(--apple-spacing-sm);
+  font-size: var(--apple-fs-caption);
+  line-height: var(--apple-lh-body);
+}
+
+.match-similarity { font-size: var(--apple-fs-caption); }
+
+.empty-sources { padding: var(--apple-spacing-xl) var(--apple-spacing-lg); }
+
+@media (max-width: 768px) {
+  .source-header { gap: var(--apple-spacing-xs); }
+  .source-meta { gap: var(--apple-spacing-xs); }
+  .paragraph-item { padding: var(--apple-spacing-md); }
+}
 </style>

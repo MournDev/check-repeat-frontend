@@ -317,4 +317,51 @@ watch(() => props.paperIds, (newVal) => {
     }
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.batch-check-progress {
+  font-family: var(--apple-font-text);
+
+  .overall-card {
+    border-radius: var(--apple-rounded-lg);
+  }
+
+  .tasks-card {
+    border-radius: var(--apple-rounded-lg);
+
+    .card-header {
+      gap: var(--apple-spacing-xs);
+    }
+
+    .task-list .task-item {
+      padding: var(--apple-spacing-md);
+      margin-bottom: var(--apple-spacing-md);
+      border-radius: var(--apple-rounded-md);
+
+      .task-header {
+        margin-bottom: var(--apple-spacing-sm);
+
+        .task-info {
+          gap: var(--apple-spacing-sm);
+
+          .task-title { font-size: var(--apple-fs-caption); }
+        }
+
+        .task-progress { font-size: var(--apple-fs-caption); }
+      }
+
+      .task-message {
+        gap: var(--apple-spacing-xs);
+        margin-top: var(--apple-spacing-sm);
+        font-size: var(--apple-fs-fine-print);
+      }
+
+      .task-estimate {
+        gap: var(--apple-spacing-xs);
+        margin-top: var(--apple-spacing-xs);
+        font-size: var(--apple-fs-fine-print);
+      }
+    }
+  }
+}
 </style>

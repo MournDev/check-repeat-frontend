@@ -147,4 +147,57 @@ const getSimilarityRating = (similarity) => {
     margin: 0;
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.report-similarity-overview { padding: var(--apple-spacing-lg); }
+
+.similarity-card {
+  padding: var(--apple-spacing-xl);
+  background: var(--apple-canvas-parchment);
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-lg);
+}
+
+.similarity-card:hover { border-color: var(--apple-hairline); }
+
+.similarity-value { margin-bottom: var(--apple-spacing-md); }
+
+.percentage {
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-display-md);
+  color: var(--apple-ink);
+}
+
+.rating {
+  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-body-strong);
+  color: var(--apple-ink-muted-48);
+}
+
+.similarity-stats { margin-top: var(--apple-spacing-xl); }
+
+.stat-item {
+  margin: 0 var(--apple-spacing-xs);
+  padding: var(--apple-spacing-md);
+  background: var(--apple-surface-pearl);
+  border: 1px solid var(--apple-divider-soft);
+  border-radius: var(--apple-rounded-md);
+}
+
+.stat-value {
+  margin-bottom: var(--apple-spacing-xs);
+  font-size: var(--apple-fs-lead);
+  color: var(--apple-primary);
+}
+
+.stat-label {
+  font-size: var(--apple-fs-caption);
+  color: var(--apple-ink-muted-48);
+}
+
+@media (max-width: 768px) {
+  .similarity-card { padding: var(--apple-spacing-lg); }
+  .similarity-stats { gap: var(--apple-spacing-sm); }
+  .stat-item { margin: 0; }
+}
 </style>
