@@ -458,4 +458,126 @@ onMounted(() => {
 :deep(.el-rate) {
   height: 24px;
 }
+
+// ── 视觉统一（design-tokens 覆盖层） ────────────────────────
+.advisor-evaluation {
+  gap: var(--apple-spacing-md);
+  color: var(--apple-ink);
+  font-family: var(--apple-font-text);
+
+  .head-row {
+    gap: var(--apple-spacing-md);
+  }
+
+  .head-title {
+    margin: 0 0 var(--apple-spacing-xs);
+    font-family: var(--apple-font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--apple-ink);
+  }
+
+  .head-desc {
+    font-size: var(--apple-fs-caption);
+    color: var(--apple-ink-muted-48);
+  }
+
+  .state-block {
+    gap: var(--apple-spacing-sm);
+    padding: var(--apple-spacing-xxl) var(--apple-spacing-lg);
+  }
+
+  .state-icon {
+    color: var(--apple-ink-muted-48);
+  }
+
+  .state-title {
+    font-size: var(--apple-fs-body-strong);
+    font-weight: 600;
+  }
+
+  .state-reason {
+    font-size: var(--apple-fs-caption);
+    color: var(--apple-ink-muted-48);
+  }
+
+  .card-header {
+    gap: var(--apple-spacing-sm);
+
+    .card-title {
+      font-family: var(--apple-font-display);
+      font-size: var(--apple-fs-body-strong);
+      font-weight: 600;
+
+      .el-icon {
+        margin-right: var(--apple-spacing-xs);
+      }
+    }
+
+    .submit-time {
+      font-size: var(--apple-fs-fine-print);
+      color: var(--apple-ink-muted-48);
+    }
+  }
+
+  .readonly-body,
+  .form-body {
+    padding: var(--apple-spacing-xs) 0;
+  }
+
+  .paper-info {
+    gap: var(--apple-spacing-xs);
+  }
+
+  .info-item {
+    gap: var(--apple-spacing-xs);
+    font-size: var(--apple-fs-caption);
+
+    .label {
+      color: var(--apple-ink-muted-48);
+    }
+
+    .value {
+      color: var(--apple-ink);
+    }
+  }
+
+  .score-grid {
+    gap: var(--apple-spacing-md);
+    margin: var(--apple-spacing-md) 0;
+  }
+
+  .score-item .score-label,
+  .block-label {
+    margin-bottom: var(--apple-spacing-xs);
+    font-size: var(--apple-fs-fine-print);
+    color: var(--apple-ink-muted-48);
+  }
+
+  .tags-block,
+  .comment-block {
+    margin: var(--apple-spacing-md) 0;
+  }
+
+  .comment-text {
+    font-size: var(--apple-fs-caption);
+    line-height: 1.6;
+    color: var(--apple-ink);
+  }
+
+  .readonly-tip {
+    margin-top: var(--apple-spacing-md);
+  }
+
+  .form-tip {
+    margin-left: var(--apple-spacing-sm);
+    font-size: var(--apple-fs-fine-print);
+    color: var(--apple-ink-muted-48);
+  }
+
+  :deep(.el-rate) {
+    height: 22px;
+  }
+}
 </style>

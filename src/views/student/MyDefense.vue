@@ -204,4 +204,51 @@ onMounted(() => {
 .muted {
   color: var(--apple-ink-muted-48);
 }
+
+// ── 视觉统一（design-tokens 覆盖层） ────────────────────────
+.my-defense {
+  gap: var(--apple-spacing-md);
+  color: var(--apple-ink);
+  font-family: var(--apple-font-text);
+
+  .head-row {
+    gap: var(--apple-spacing-sm);
+  }
+
+  .head-title {
+    margin: 0 0 var(--apple-spacing-xxs);
+    font-family: var(--apple-font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--apple-ink);
+  }
+
+  .head-desc {
+    font-size: var(--apple-fs-caption);
+    color: var(--apple-ink-muted-48);
+  }
+
+  .sep {
+    margin: 0 var(--apple-spacing-xxs);
+    color: var(--apple-hairline);
+  }
+
+  .order-badge {
+    padding: 0 6px;
+    background: var(--apple-canvas-parchment);
+    border-radius: var(--apple-rounded-pill);
+    color: var(--apple-ink);
+  }
+
+  .grade-text {
+    font-size: var(--apple-fs-fine-print);
+    color: var(--apple-ink-muted-48);
+  }
+
+  .muted {
+    font-size: var(--apple-fs-caption);
+    color: var(--apple-ink-muted-48);
+  }
+}
 </style>

@@ -1514,4 +1514,361 @@ onMounted(() => {
   }
 }
 
+// ── 视觉统一（design-tokens 覆盖层） ────────────────────────
+.advisor-interaction-page {
+  color: var(--apple-ink);
+  font-family: var(--apple-font-text);
+
+  .interaction-content {
+    .el-card {
+      margin-bottom: var(--apple-spacing-md);
+      background: var(--apple-surface);
+      border-color: var(--apple-hairline);
+      border-radius: var(--apple-rounded-lg);
+
+      :deep(.el-card__header) {
+        padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+        border-bottom: 1px solid var(--apple-divider-soft);
+
+        .card-header {
+          gap: var(--apple-spacing-xs);
+
+          .card-title {
+            gap: var(--apple-spacing-xs);
+            font-family: var(--apple-font-display);
+            font-size: var(--apple-fs-body-strong);
+            font-weight: 600;
+
+            .el-icon {
+              margin-right: 0;
+              color: var(--apple-primary);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .sessions-list {
+    .session-item {
+      padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+      border-bottom: 1px solid var(--apple-divider-soft);
+
+      &:hover {
+        background-color: var(--apple-canvas-parchment);
+      }
+
+      &.session-active {
+        background-color: var(--apple-info-bg);
+      }
+
+      .session-avatar {
+        margin-right: var(--apple-spacing-sm);
+
+        .el-avatar {
+          border-radius: var(--apple-rounded-md);
+        }
+
+        .session-status {
+          border-color: var(--apple-surface);
+        }
+      }
+
+      .session-content {
+        .session-header {
+          margin-bottom: var(--apple-spacing-xxs);
+
+          .session-name {
+            font-size: var(--apple-fs-caption);
+            color: var(--apple-ink);
+          }
+
+          .session-time {
+            margin-left: var(--apple-spacing-xs);
+            font-size: var(--apple-fs-fine-print);
+            color: var(--apple-ink-muted-48);
+          }
+        }
+
+        .session-preview {
+          font-size: var(--apple-fs-fine-print);
+          color: var(--apple-ink-muted-48);
+        }
+
+        .session-meta {
+          top: var(--apple-spacing-sm);
+          right: var(--apple-spacing-md);
+
+          .el-tag {
+            background: var(--apple-danger);
+            color: var(--apple-on-primary);
+            font-size: 10px;
+          }
+        }
+      }
+    }
+  }
+
+  .chat-container {
+    padding: var(--apple-spacing-md);
+    background: var(--apple-canvas-parchment);
+    border-radius: var(--apple-rounded-lg);
+
+    .loading-more {
+      padding: var(--apple-spacing-sm);
+      font-size: var(--apple-fs-fine-print);
+      color: var(--apple-ink-muted-48);
+    }
+
+    .quick-replies {
+      gap: var(--apple-spacing-xs);
+      margin-bottom: var(--apple-spacing-sm);
+      padding: var(--apple-spacing-sm);
+      background: var(--apple-surface);
+      border: 1px solid var(--apple-hairline);
+      border-radius: var(--apple-rounded-lg);
+    }
+
+    .messages-area {
+      .time-separator {
+        margin: var(--apple-spacing-xs) auto;
+        padding: 4px 10px;
+        background: var(--apple-surface);
+        color: var(--apple-ink-muted-48);
+        font-size: var(--apple-fs-fine-print);
+        border-radius: var(--apple-rounded-pill);
+      }
+
+      .message-item {
+        gap: var(--apple-spacing-xs);
+        margin-bottom: var(--apple-spacing-sm);
+
+        .message-avatar {
+          border-color: var(--apple-hairline);
+        }
+
+        .message-content {
+          .message-info {
+            gap: var(--apple-spacing-xs);
+            margin-bottom: var(--apple-spacing-xxs);
+            font-size: var(--apple-fs-fine-print);
+            color: var(--apple-ink-muted-48);
+
+            .message-sender,
+            .message-time {
+              font-size: var(--apple-fs-fine-print);
+              color: var(--apple-ink-muted-48);
+            }
+          }
+        }
+
+        .message-bubble {
+          padding: 9px 13px;
+          border-radius: var(--apple-rounded-md);
+
+          .message-text {
+            font-size: var(--apple-fs-caption);
+            line-height: 1.5;
+          }
+        }
+
+        &.message-sent {
+          .message-bubble {
+            background: var(--apple-primary);
+            color: var(--apple-on-primary);
+
+            .message-text {
+              color: var(--apple-on-primary);
+            }
+
+            .message-time {
+              color: rgba(255, 255, 255, 0.7);
+            }
+
+            &::after {
+              border-left-color: var(--apple-primary);
+            }
+          }
+        }
+
+        &.message-received {
+          .message-bubble {
+            background: var(--apple-surface);
+            border: 1px solid var(--apple-hairline);
+
+            .message-text {
+              color: var(--apple-ink);
+            }
+
+            &::after {
+              border-right-color: var(--apple-surface);
+            }
+          }
+        }
+
+        .message-attachments {
+          .attachment-item {
+            gap: var(--apple-spacing-xs);
+            padding: var(--apple-spacing-xs);
+            background: var(--apple-canvas-parchment);
+            border-radius: var(--apple-rounded-sm);
+
+            span {
+              font-size: var(--apple-fs-fine-print);
+              color: var(--apple-ink);
+            }
+          }
+        }
+      }
+    }
+
+    .loading-mask {
+      border-radius: var(--apple-rounded-lg);
+    }
+  }
+
+  .message-input {
+    margin-top: var(--apple-spacing-sm);
+
+    .input-toolbar {
+      gap: var(--apple-spacing-sm);
+      margin-bottom: var(--apple-spacing-xs);
+
+      .el-button {
+        font-size: var(--apple-fs-caption);
+      }
+
+      .toolbar-tip {
+        margin-left: auto;
+        font-size: var(--apple-fs-fine-print);
+        color: var(--apple-ink-muted-48);
+      }
+    }
+
+    .emoji-picker {
+      padding: var(--apple-spacing-sm);
+      margin-bottom: var(--apple-spacing-xs);
+      background: var(--apple-canvas-parchment);
+      border-radius: var(--apple-rounded-md);
+
+      .emoji-grid {
+        gap: var(--apple-spacing-xs);
+
+        .emoji-item {
+          padding: var(--apple-spacing-xxs);
+          border-radius: var(--apple-rounded-sm);
+        }
+      }
+    }
+
+    :deep(.el-textarea__wrapper) {
+      border-color: var(--apple-hairline);
+      border-radius: var(--apple-rounded-md);
+    }
+
+    .input-actions {
+      margin-top: var(--apple-spacing-xs);
+
+      .input-info {
+        .attachment-count {
+          gap: var(--apple-spacing-xxs);
+          font-size: var(--apple-fs-fine-print);
+          color: var(--apple-primary);
+        }
+      }
+
+      .send-button {
+        background: var(--apple-primary);
+        border-color: var(--apple-primary);
+        border-radius: var(--apple-rounded-pill);
+      }
+    }
+  }
+}
+
+// 导师信息对话框（弹窗内样式）
+.advisor-dialog-content {
+  .advisor-dialog-header {
+    gap: var(--apple-spacing-md);
+    margin-bottom: var(--apple-spacing-md);
+    padding-bottom: var(--apple-spacing-md);
+    border-bottom: 1px solid var(--apple-divider-soft);
+
+    .advisor-dialog-title {
+      h3 {
+        margin: 0 0 var(--apple-spacing-xxs);
+        font-family: var(--apple-font-display);
+        font-size: var(--apple-fs-tagline);
+        font-weight: 600;
+        color: var(--apple-ink);
+      }
+
+      p {
+        margin: 0 0 var(--apple-spacing-xxs);
+        font-size: var(--apple-fs-caption);
+        font-weight: 600;
+        color: var(--apple-primary);
+      }
+
+      .advisor-dialog-field {
+        gap: var(--apple-spacing-xs);
+        font-size: var(--apple-fs-fine-print);
+        color: var(--apple-ink-muted-48);
+
+        .el-icon {
+          font-size: var(--apple-fs-caption);
+          color: var(--apple-primary);
+        }
+      }
+    }
+  }
+
+  .advisor-dialog-grid {
+    gap: var(--apple-spacing-sm);
+    margin-bottom: var(--apple-spacing-md);
+  }
+
+  .advisor-dialog-bio {
+    padding: var(--apple-spacing-md);
+    background: var(--apple-canvas-parchment);
+    border-radius: var(--apple-rounded-md);
+
+    h4 {
+      margin: 0 0 var(--apple-spacing-xs);
+      font-size: var(--apple-fs-caption);
+      font-weight: 600;
+      color: var(--apple-ink);
+    }
+
+    p {
+      font-size: var(--apple-fs-caption);
+      line-height: 1.5;
+      color: var(--apple-ink-muted-48);
+    }
+  }
+}
+
+.detail-item {
+  gap: var(--apple-spacing-sm);
+  padding: var(--apple-spacing-sm);
+  background: var(--apple-canvas-parchment);
+  border-radius: var(--apple-rounded-md);
+
+  .detail-icon {
+    font-size: var(--apple-fs-caption);
+  }
+
+  .detail-content {
+    .detail-label {
+      margin-bottom: var(--apple-spacing-xxs);
+      font-size: var(--apple-fs-fine-print);
+      color: var(--apple-ink-muted-48);
+    }
+
+    .detail-value {
+      font-size: var(--apple-fs-caption);
+      color: var(--apple-ink);
+    }
+  }
+}
 </style>
