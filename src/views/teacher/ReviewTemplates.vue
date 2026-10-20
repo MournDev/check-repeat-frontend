@@ -637,4 +637,125 @@ onMounted(async () => {
     margin-top: 4px;
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.review-templates {
+  .category-nav {
+    :deep(.el-tabs__content) {
+      padding: var(--apple-spacing-md) 0;
+    }
+
+    .templates-grid {
+      gap: var(--apple-spacing-md);
+
+      .template-card {
+        padding: var(--apple-spacing-md);
+        border-radius: var(--apple-rounded-lg);
+        transition: border-color var(--apple-transition-normal);
+
+        .template-header {
+          margin-bottom: var(--apple-spacing-sm);
+
+          .template-title {
+            margin-right: var(--apple-spacing-sm);
+            font-family: var(--apple-font-display);
+            font-size: var(--apple-fs-body-strong);
+            font-weight: 600;
+          }
+
+          .template-actions {
+            gap: var(--apple-spacing-xs);
+          }
+        }
+
+        .template-content {
+          margin-bottom: var(--apple-spacing-md);
+          font-size: var(--apple-fs-caption);
+          line-height: 1.6;
+        }
+
+        .template-footer {
+          .template-meta {
+            gap: var(--apple-spacing-xs);
+          }
+
+          .usage-count,
+          .template-time {
+            font-size: var(--apple-fs-fine-print);
+            color: var(--apple-ink-muted-48);
+          }
+        }
+      }
+
+      .empty-templates {
+        padding: var(--apple-spacing-xxl) 0;
+      }
+    }
+  }
+
+  .template-preview {
+    .preview-title {
+      margin-bottom: var(--apple-spacing-sm);
+      font-family: var(--apple-font-display);
+      font-size: var(--apple-fs-body-strong);
+      font-weight: 600;
+    }
+
+    .preview-category {
+      margin-bottom: var(--apple-spacing-md);
+    }
+
+    .preview-content {
+      font-size: var(--apple-fs-caption);
+      line-height: 1.6;
+    }
+  }
+
+  .quick-use-content {
+    .search-box {
+      margin-bottom: var(--apple-spacing-md);
+
+      :deep(.el-input__wrapper) {
+        border-radius: var(--apple-rounded-md);
+        font-size: var(--apple-fs-caption);
+      }
+    }
+
+    .section-title {
+      margin: var(--apple-spacing-md) 0 var(--apple-spacing-sm);
+      padding-bottom: var(--apple-spacing-xs);
+      font-family: var(--apple-font-display);
+      font-size: var(--apple-fs-body-strong);
+      font-weight: 600;
+    }
+
+    .template-item {
+      padding: var(--apple-spacing-sm);
+      margin-bottom: var(--apple-spacing-xs);
+      border-radius: var(--apple-rounded-sm);
+      transition: border-color var(--apple-transition-normal);
+
+      .template-info {
+        margin-right: var(--apple-spacing-sm);
+
+        .template-name {
+          margin-bottom: var(--apple-spacing-xxs);
+          font-weight: 500;
+        }
+
+        .template-preview-text {
+          margin-bottom: var(--apple-spacing-xxs);
+          font-size: var(--apple-fs-fine-print);
+          color: var(--apple-ink-muted-48);
+        }
+      }
+    }
+  }
+
+  .help-text {
+    margin-top: var(--apple-spacing-xxs);
+    font-size: var(--apple-fs-fine-print);
+    color: var(--apple-ink-muted-48);
+  }
+}
 </style>

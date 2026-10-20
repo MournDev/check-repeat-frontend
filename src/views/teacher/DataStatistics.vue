@@ -577,4 +577,79 @@ onMounted(async () => {
     }
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.teacher-dashboard {
+  .stats-row {
+    margin-bottom: var(--apple-spacing-md);
+
+    .stat-card .stat-content {
+      .stat-icon-wrapper {
+        margin-right: var(--apple-spacing-md);
+        border-radius: var(--apple-rounded-lg);
+      }
+
+      .stat-info {
+        .stat-number {
+          font-family: var(--apple-font-display);
+          font-size: var(--apple-fs-lead);
+          font-weight: 700;
+          line-height: 1;
+        }
+
+        .stat-label {
+          margin: var(--apple-spacing-xs) 0 var(--apple-spacing-xxs);
+          font-size: var(--apple-fs-caption);
+          color: var(--apple-ink-muted-48);
+        }
+
+        .stat-trend {
+          font-size: var(--apple-fs-fine-print);
+
+          .trend-icon {
+            margin-right: var(--apple-spacing-xxs);
+          }
+        }
+      }
+    }
+  }
+
+  .charts-row {
+    margin-bottom: var(--apple-spacing-md);
+
+    .chart-card {
+      .card-header {
+        gap: var(--apple-spacing-xs);
+        font-family: var(--apple-font-display);
+        font-size: var(--apple-fs-body-strong);
+        font-weight: 600;
+
+        .el-icon {
+          margin-right: 0;
+        }
+      }
+
+      .chart-container {
+        padding: var(--apple-spacing-md) 0;
+      }
+    }
+  }
+
+  .data-table-card {
+    .card-header .header-left {
+      gap: var(--apple-spacing-xs);
+      font-family: var(--apple-font-display);
+      font-size: var(--apple-fs-body-strong);
+      font-weight: 600;
+
+      .el-icon {
+        margin-right: 0;
+      }
+    }
+
+    .detail-table {
+      margin-top: var(--apple-spacing-md);
+    }
+  }
+}
 </style>

@@ -280,4 +280,65 @@ onMounted(() => {
     width: 100%;
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.guidance-progress {
+  gap: var(--apple-spacing-md);
+}
+
+.stats-row {
+  gap: var(--apple-spacing-md);
+}
+
+.total-card :deep(.el-card__body) {
+  gap: var(--apple-spacing-xs);
+}
+
+.total-value {
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-display-lg);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.total-label {
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
+}
+
+.section-head {
+  margin-bottom: var(--apple-spacing-sm);
+}
+
+.section-title {
+  margin-bottom: var(--apple-spacing-xs);
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-body-strong);
+  font-weight: 600;
+}
+
+.section-head .section-title {
+  margin-bottom: 0;
+}
+
+.muted {
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
+}
+
+@media (max-width: 768px) {
+  .stats-row {
+    flex-direction: column;
+  }
+
+  .chart-card {
+    min-width: 0;
+  }
+
+  .section-head {
+    gap: var(--apple-spacing-xs);
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
 </style>

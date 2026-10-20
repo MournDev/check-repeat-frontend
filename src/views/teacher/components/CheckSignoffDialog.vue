@@ -263,4 +263,47 @@ defineExpose({ open })
   font-size: 0.75rem;
   color: var(--apple-ink-muted-48);
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.signoff-paper-info {
+  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+  margin-bottom: var(--apple-spacing-md);
+}
+
+.signoff-paper-student {
+  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.signoff-report-summary {
+  margin-bottom: var(--apple-spacing-md);
+}
+
+.summary-line {
+  gap: var(--apple-spacing-sm);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.summary-line + .summary-line {
+  margin-top: var(--apple-spacing-xxs);
+}
+
+.form-tip-inline {
+  margin-left: var(--apple-spacing-sm);
+  font-size: var(--apple-fs-fine-print);
+}
+
+:deep(.el-form-item) {
+  margin-bottom: var(--apple-spacing-md);
+}
+
+:deep(.el-form-item__label) {
+  font-size: var(--apple-fs-fine-print);
+}
+
+:deep(.el-textarea__inner),
+:deep(.el-input__wrapper) {
+  border-radius: var(--apple-rounded-md);
+  font-size: var(--apple-fs-caption);
+}
 </style>

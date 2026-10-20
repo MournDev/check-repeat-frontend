@@ -648,4 +648,90 @@ onMounted(() => {
     width: 100%;
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.teacher-review {
+  font-family: var(--apple-font-text);
+}
+
+.filter-card {
+  margin-bottom: var(--apple-spacing-md);
+}
+
+.filter-card :deep(.el-input__wrapper),
+.filter-card :deep(.el-select__wrapper),
+.filter-card :deep(.el-range-editor.el-input__wrapper) {
+  border-radius: var(--apple-rounded-md);
+  font-size: var(--apple-fs-caption);
+}
+
+.filter-card :deep(.el-form-item__label) {
+  font-size: var(--apple-fs-fine-print);
+  font-weight: 600;
+}
+
+.filter-actions {
+  gap: var(--apple-spacing-sm);
+  padding-top: var(--apple-spacing-xxs);
+}
+
+.data-card {
+  margin-bottom: var(--apple-spacing-md);
+}
+
+.card-header .header-left {
+  gap: var(--apple-spacing-xs);
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-body-strong);
+  font-weight: 600;
+}
+
+.student-info,
+.paper-info {
+  gap: var(--apple-spacing-xxs);
+}
+
+.student-meta {
+  gap: var(--apple-spacing-xs);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.paper-meta {
+  gap: var(--apple-spacing-sm);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.version {
+  padding: 2px var(--apple-spacing-xxs);
+}
+
+.similarity-cell {
+  gap: var(--apple-spacing-xs);
+}
+
+.similarity-value {
+  font-size: var(--apple-fs-body-strong);
+}
+
+.action-buttons {
+  gap: var(--apple-spacing-xs);
+}
+
+.pagination-wrapper {
+  padding-top: var(--apple-spacing-md);
+}
+
+@media (max-width: 768px) {
+  .filter-actions {
+    gap: var(--apple-spacing-xs);
+  }
+
+  .card-header {
+    gap: var(--apple-spacing-sm);
+  }
+
+  .action-buttons {
+    gap: var(--apple-spacing-xxs);
+  }
+}
 </style>

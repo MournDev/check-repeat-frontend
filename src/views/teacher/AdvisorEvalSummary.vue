@@ -333,4 +333,107 @@ onMounted(() => {
     margin-bottom: 16px;
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.advisor-eval-summary {
+  gap: var(--apple-spacing-md);
+}
+
+.head-row {
+  gap: var(--apple-spacing-md);
+}
+
+.head-title {
+  margin: 0 0 var(--apple-spacing-xxs);
+  font-family: var(--apple-font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.head-desc {
+  font-size: 0.8125rem;
+  color: var(--apple-ink-muted-48);
+}
+
+.masked-block {
+  gap: var(--apple-spacing-sm);
+  padding: var(--apple-spacing-xxl) var(--apple-spacing-lg);
+}
+
+.masked-title {
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-body-strong);
+  font-weight: 600;
+}
+
+.masked-desc {
+  font-size: var(--apple-fs-caption);
+  line-height: 1.6;
+  color: var(--apple-ink-muted-48);
+}
+
+.score-hero-card {
+  .hero-content {
+    gap: var(--apple-spacing-xs);
+    padding: var(--apple-spacing-xl) var(--apple-spacing-lg);
+  }
+
+  .hero-label {
+    font-size: var(--apple-fs-caption);
+    letter-spacing: 1px;
+    color: var(--apple-ink-muted-48);
+  }
+
+  .hero-value {
+    font-family: var(--apple-font-display);
+    font-size: var(--apple-fs-display-lg);
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .hero-sub {
+    font-size: var(--apple-fs-caption);
+    color: var(--apple-ink-muted-48);
+  }
+}
+
+.card-header .card-title {
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-body-strong);
+  font-weight: 600;
+
+  .el-icon {
+    margin-right: var(--apple-spacing-xs);
+  }
+}
+
+.tag-stats-body {
+  gap: var(--apple-spacing-sm);
+  padding: var(--apple-spacing-xs) 0;
+}
+
+.tag-stat-row {
+  gap: var(--apple-spacing-xxs);
+
+  .tag-count {
+    font-size: var(--apple-fs-fine-print);
+    color: var(--apple-ink-muted-48);
+  }
+}
+
+@media (max-width: 992px) {
+  .el-col {
+    margin-bottom: var(--apple-spacing-md);
+  }
+
+  .head-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .masked-block {
+    padding: var(--apple-spacing-xl) var(--apple-spacing-md);
+  }
+}
 </style>

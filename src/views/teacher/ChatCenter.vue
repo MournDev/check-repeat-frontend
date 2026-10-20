@@ -833,4 +833,179 @@ watch(
     }
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.chat-center {
+  padding: var(--apple-spacing-lg);
+  font-family: var(--apple-font-text);
+  border-radius: var(--apple-rounded-lg);
+
+  .header {
+    gap: var(--apple-spacing-md);
+    margin-bottom: var(--apple-spacing-lg);
+    padding-bottom: var(--apple-spacing-md);
+
+    h1 {
+      font-family: var(--apple-font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--apple-ink);
+    }
+  }
+
+  .chat-container {
+    border-radius: var(--apple-rounded-lg);
+
+    .session-list {
+      .session-search {
+        padding: var(--apple-spacing-md);
+
+        :deep(.el-input__wrapper) {
+          border-radius: var(--apple-rounded-md);
+          font-size: var(--apple-fs-caption);
+        }
+      }
+
+      .session-items {
+        .session-item {
+          padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+          transition: background-color var(--apple-transition-normal);
+
+          &.active {
+            background-color: var(--apple-info-bg);
+          }
+
+          .session-avatar {
+            margin-right: var(--apple-spacing-sm);
+          }
+
+          .session-info {
+            .session-name {
+              margin-bottom: var(--apple-spacing-xxs);
+              font-size: var(--apple-fs-body-strong);
+            }
+
+            .session-last-message {
+              font-size: var(--apple-fs-fine-print);
+              color: var(--apple-ink-muted-48);
+
+              .last-message {
+                margin-right: var(--apple-spacing-xs);
+              }
+            }
+          }
+        }
+
+        .empty-sessions {
+          padding: var(--apple-spacing-xl) 0;
+        }
+      }
+    }
+
+    .chat-window {
+      .chat-header {
+        padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+
+        .chat-header-info {
+          .chat-header-details {
+            margin-left: var(--apple-spacing-sm);
+
+            .chat-header-name {
+              font-family: var(--apple-font-display);
+              font-size: var(--apple-fs-body-strong);
+            }
+
+            .chat-header-members {
+              font-size: var(--apple-fs-fine-print);
+            }
+          }
+        }
+
+        .chat-header-actions {
+          gap: var(--apple-spacing-xs);
+        }
+      }
+
+      .chat-messages {
+        padding: var(--apple-spacing-lg);
+
+        .message-item {
+          margin-bottom: var(--apple-spacing-md);
+
+          .message-avatar {
+            margin: 0 var(--apple-spacing-sm);
+          }
+
+          .message-content {
+            .message-sender {
+              margin-bottom: var(--apple-spacing-xxs);
+              font-size: var(--apple-fs-fine-print);
+            }
+
+            .message-text {
+              padding: var(--apple-spacing-sm);
+              font-size: var(--apple-fs-caption);
+              background-color: var(--apple-canvas);
+              border-radius: var(--apple-rounded-lg) var(--apple-rounded-md)
+                var(--apple-rounded-md) 0;
+            }
+
+            .message-time {
+              margin-top: var(--apple-spacing-xxs);
+              font-size: var(--apple-fs-fine-print);
+            }
+          }
+
+          &.own-message {
+            .message-content .message-text {
+              color: var(--apple-on-primary);
+              border-radius: var(--apple-rounded-lg) var(--apple-rounded-md) 0
+                var(--apple-rounded-md);
+            }
+          }
+        }
+
+        .empty-messages {
+          padding: var(--apple-spacing-xl) 0;
+        }
+      }
+
+      .chat-input {
+        gap: var(--apple-spacing-sm);
+        padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+
+        :deep(.el-textarea__inner) {
+          border-radius: var(--apple-rounded-md);
+          font-size: var(--apple-fs-caption);
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .chat-center {
+    padding: var(--apple-spacing-sm);
+
+    .header {
+      gap: var(--apple-spacing-sm);
+      margin-bottom: var(--apple-spacing-md);
+
+      .header-actions {
+        gap: var(--apple-spacing-sm);
+      }
+    }
+
+    .chat-container .session-list .session-items .session-item {
+      .session-avatar {
+        margin-bottom: var(--apple-spacing-xs);
+      }
+    }
+
+    .chat-container .chat-window .chat-input .el-input {
+      margin: var(--apple-spacing-xs) 0;
+    }
+  }
+}
 </style>

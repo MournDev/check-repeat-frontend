@@ -677,4 +677,108 @@ onMounted(() => {
   white-space: nowrap;
   font-size: 0.8125rem;
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.defense-workbench {
+  gap: var(--apple-spacing-md);
+}
+
+.head-title {
+  gap: var(--apple-spacing-xs);
+  margin: 0 0 var(--apple-spacing-xxs);
+  font-family: var(--apple-font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.head-row {
+  gap: var(--apple-spacing-md);
+}
+
+.progress-text {
+  margin-bottom: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.meeting-desc {
+  margin-top: var(--apple-spacing-md);
+}
+
+.members-line {
+  gap: var(--apple-spacing-xs);
+  margin-top: var(--apple-spacing-sm);
+}
+
+.members-label {
+  font-size: var(--apple-fs-fine-print);
+}
+
+.section-title {
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-body-strong);
+}
+
+.result-filter {
+  :deep(.el-select__wrapper) {
+    border-radius: var(--apple-rounded-md);
+    font-size: var(--apple-fs-caption);
+  }
+}
+
+.leader-tip {
+  margin-bottom: var(--apple-spacing-md);
+}
+
+.sep {
+  margin: 0 var(--apple-spacing-xxs);
+}
+
+.mode-tag {
+  margin-left: var(--apple-spacing-xs);
+}
+
+.score-paper-info {
+  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+  margin-bottom: var(--apple-spacing-md);
+}
+
+.score-paper-student {
+  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.form-tip-inline {
+  margin-left: var(--apple-spacing-sm);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.form-tip {
+  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
+  line-height: 1.5;
+}
+
+.upload-area {
+  gap: var(--apple-spacing-xs);
+}
+
+.upload-name {
+  font-size: var(--apple-fs-fine-print);
+}
+
+@media (max-width: 768px) {
+  .head-row {
+    flex-direction: column;
+  }
+
+  .conclusion-progress {
+    width: 100%;
+    text-align: left;
+  }
+
+  .members-line {
+    gap: var(--apple-spacing-xxs);
+  }
+}
 </style>

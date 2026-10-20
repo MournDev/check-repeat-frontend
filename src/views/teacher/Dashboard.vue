@@ -989,8 +989,8 @@ onMounted(() => {
     }
     
     &.rate-icon {
-      background: #ede9fe;
-      color: #8b5cf6;
+      background: var(--apple-info-bg);
+      color: var(--apple-primary);
     }
   }
   
@@ -1087,7 +1087,7 @@ onMounted(() => {
 
     &.low {
       background: var(--apple-success-bg);
-      border-color: #bbf7d0;
+      border-color: var(--apple-success-border);
     }
     
     .todo-icon {
@@ -1244,7 +1244,7 @@ onMounted(() => {
 
     &.normal {
       background: var(--apple-success-bg);
-      border-color: #bbf7d0;
+      border-color: var(--apple-success-border);
     }
     
     .paper-info {
@@ -1636,11 +1636,11 @@ onMounted(() => {
     
     &.primary {
       background: var(--apple-primary);
-      color: white;
+      color: var(--apple-on-primary);
       border: none;
       
       &:hover {
-        background: #1e3a8a;
+        background: var(--apple-primary-active);
       }
     }
     
@@ -1867,6 +1867,67 @@ onMounted(() => {
   
   .card {
     padding: 20px;
+  }
+}
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.teacher-dashboard {
+  .welcome-section {
+    margin-bottom: var(--apple-spacing-xl);
+
+    .welcome-content {
+      margin-bottom: var(--apple-spacing-lg);
+    }
+
+    .welcome-actions {
+      gap: var(--apple-spacing-sm);
+    }
+  }
+
+  .stats-grid {
+    gap: var(--apple-spacing-md);
+    margin-bottom: var(--apple-spacing-xl);
+  }
+
+  .section {
+    margin-bottom: var(--apple-spacing-xl);
+
+    .section-header {
+      margin-bottom: var(--apple-spacing-md);
+
+      .section-title {
+        gap: var(--apple-spacing-xs);
+        font-family: var(--apple-font-display);
+        font-size: var(--apple-fs-body-strong);
+      }
+    }
+  }
+
+  .main-content {
+    gap: var(--apple-spacing-lg);
+  }
+
+  .todo-item .priority-badge {
+    padding: var(--apple-spacing-xxs) var(--apple-spacing-sm);
+  }
+}
+
+@media (max-width: 768px) {
+  .teacher-dashboard {
+    padding: var(--apple-spacing-md);
+
+    .welcome-title {
+      font-size: var(--apple-fs-lead-airy);
+    }
+
+    .welcome-content {
+      flex-direction: column;
+      gap: var(--apple-spacing-sm);
+    }
+
+    .section-title {
+      font-size: var(--apple-fs-caption-strong);
+    }
   }
 }
 </style>

@@ -531,4 +531,100 @@ onMounted(() => {
     }
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.student-groups {
+  .groups-list {
+    gap: var(--apple-spacing-md);
+
+    .group-card {
+      .group-header {
+        margin-bottom: var(--apple-spacing-md);
+
+        .group-info {
+          .group-name {
+            margin: 0 0 var(--apple-spacing-xs);
+            font-family: var(--apple-font-display);
+            font-size: var(--apple-fs-body-strong);
+            font-weight: 600;
+          }
+
+          .group-meta {
+            gap: var(--apple-spacing-md);
+            font-size: var(--apple-fs-fine-print);
+            color: var(--apple-ink-muted-48);
+          }
+        }
+
+        .group-actions {
+          gap: var(--apple-spacing-xs);
+        }
+      }
+
+      .group-students {
+        margin-bottom: var(--apple-spacing-md);
+
+        .students-list {
+          gap: var(--apple-spacing-xs);
+
+          .student-tag {
+            margin-bottom: var(--apple-spacing-xs);
+          }
+        }
+
+        .empty-students {
+          padding: var(--apple-spacing-md) 0;
+        }
+      }
+
+      .group-footer {
+        gap: var(--apple-spacing-xs);
+      }
+    }
+
+    .empty-groups {
+      padding: var(--apple-spacing-xxl) 0;
+    }
+  }
+
+  .add-students-content {
+    .search-box {
+      margin-bottom: var(--apple-spacing-md);
+
+      :deep(.el-input__wrapper) {
+        border-radius: var(--apple-rounded-md);
+        font-size: var(--apple-fs-caption);
+      }
+    }
+
+    .students-selector {
+      margin-bottom: var(--apple-spacing-md);
+
+      .student-checkbox {
+        margin-bottom: var(--apple-spacing-sm);
+        padding: var(--apple-spacing-sm);
+        border-radius: var(--apple-rounded-sm);
+        transition: border-color var(--apple-transition-normal);
+
+        .student-info {
+          .student-name {
+            margin-bottom: var(--apple-spacing-xxs);
+            font-weight: 500;
+          }
+
+          .student-details {
+            font-size: var(--apple-fs-fine-print);
+            color: var(--apple-ink-muted-48);
+          }
+        }
+      }
+    }
+
+    .selected-count {
+      margin-bottom: var(--apple-spacing-md);
+      font-size: var(--apple-fs-caption);
+      color: var(--apple-ink-muted-80);
+    }
+  }
+}
 </style>
