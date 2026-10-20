@@ -156,13 +156,33 @@
 
           <!-- 历史记录 -->
           <el-tab-pane label="历史记录" name="history">
+            <div v-if="historyList.length" class="history-toolbar">
+              <span class="history-hint">勾选两份报告进行对比（最多 2 份）</span>
+              <el-button
+                type="primary"
+                plain
+                :disabled="compareSelected.length !== 2"
+                @click="openCompare"
+              >
+                对比所选
+              </el-button>
+            </div>
             <div v-if="historyList.length" class="history-list">
               <article
                 v-for="(record, index) in historyList"
                 :key="record.id"
                 class="history-item"
-                :class="{ 'is-current': String(record.id) === String(currentReportId) }"
+                :class="{
+                  'is-current': String(record.id) === String(currentReportId),
+                  'is-selected': isCompareSelected(record.id)
+                }"
               >
+                <el-checkbox
+                  class="history-check"
+                  :model-value="isCompareSelected(record.id)"
+                  :disabled="compareSelected.length >= 2 && !isCompareSelected(record.id)"
+                  @change="toggleCompare(record)"
+                />
                 <div class="history-version">第 {{ historyList.length - index }} 次</div>
                 <div class="history-main">
                   <div class="history-title">{{ record.reportNo || '未编号报告' }}</div>
@@ -186,6 +206,83 @@
           </el-tab-pane>
         </el-tabs>
       </section>
+
+      <!-- 版本对比 -->
+      <el-dialog v-model="compareVisible" title="报告版本对比" width="760px">
+        <div class="compare-body" v-loading="compareLoading">
+          <template v-if="comparison">
+            <div class="compare-head">
+              <div class="compare-side">
+                <span class="compare-tag">基准</span>
+                <span class="compare-name">{{ comparison.base.reportNo }}</span>
+                <span class="compare-time">{{ formatDateTime(comparison.base.checkTime) }}</span>
+              </div>
+              <div class="compare-arrow">→</div>
+              <div class="compare-side">
+                <span class="compare-tag target">对比</span>
+                <span class="compare-name">{{ comparison.target.reportNo }}</span>
+                <span class="compare-time">{{ formatDateTime(comparison.target.checkTime) }}</span>
+              </div>
+            </div>
+
+            <div class="compare-metrics">
+              <div class="compare-metric compare-metric-head">
+                <span class="compare-metric-label"></span>
+                <span class="compare-metric-value">基准</span>
+                <span class="compare-metric-value">对比</span>
+                <span class="compare-delta">变化</span>
+              </div>
+              <div v-for="metric in compareMetrics" :key="metric.label" class="compare-metric">
+                <span class="compare-metric-label">{{ metric.label }}</span>
+                <span class="compare-metric-value">{{ metric.base }}</span>
+                <span class="compare-metric-value">{{ metric.target }}</span>
+                <span class="compare-delta" :class="metric.tone">{{ metric.delta }}</span>
+              </div>
+            </div>
+
+            <div class="compare-sources">
+              <div class="compare-block">
+                <h4>新增相似来源（{{ comparison.addedSources.length }}）</h4>
+                <ul v-if="comparison.addedSources.length">
+                  <li v-for="item in comparison.addedSources" :key="item.name">
+                    <span class="compare-source-name">{{ item.name }}</span>
+                    <span class="compare-source-rate">{{ formatRate(item.rate) }}</span>
+                  </li>
+                </ul>
+                <p v-else class="compare-empty">无新增来源</p>
+              </div>
+
+              <div class="compare-block">
+                <h4>相似度变化来源（{{ comparison.changedSources.length }}）</h4>
+                <ul v-if="comparison.changedSources.length">
+                  <li v-for="item in comparison.changedSources" :key="item.name">
+                    <span class="compare-source-name">{{ item.name }}</span>
+                    <span class="compare-source-rate">
+                      {{ formatRate(item.from) }} → {{ formatRate(item.to) }}
+                    </span>
+                  </li>
+                </ul>
+                <p v-else class="compare-empty">无相似度变化</p>
+              </div>
+
+              <div class="compare-block">
+                <h4>消失的相似来源（{{ comparison.removedSources.length }}）</h4>
+                <ul v-if="comparison.removedSources.length">
+                  <li v-for="item in comparison.removedSources" :key="item.name">
+                    <span class="compare-source-name">{{ item.name }}</span>
+                    <span class="compare-source-rate">{{ formatRate(item.rate) }}</span>
+                  </li>
+                </ul>
+                <p v-else class="compare-empty">无消失来源</p>
+              </div>
+            </div>
+          </template>
+          <el-empty v-else-if="!compareLoading" description="对比数据加载失败" />
+        </div>
+        <template #footer>
+          <el-button @click="compareVisible = false">关闭</el-button>
+        </template>
+      </el-dialog>
     </div>
 
     <el-empty v-else description="未找到该论文的查重报告">
@@ -225,6 +322,12 @@ const sentenceMetrics = ref({
   hitCount: null
 })
 const historyList = ref([])
+
+// 版本对比
+const compareSelected = ref([])
+const compareVisible = ref(false)
+const compareLoading = ref(false)
+const comparison = ref(null)
 
 let isUnmounted = false
 
@@ -271,6 +374,34 @@ const sortedSources = computed(() => {
   return [...similarSources.value].sort((a, b) => (Number(b.maxSimilarity) || 0) - (Number(a.maxSimilarity) || 0))
 })
 
+// 对比指标行：正负变化按「越大越差」着色
+const compareMetrics = computed(() => {
+  const data = comparison.value
+  if (!data) return []
+  const rows = [
+    { label: '总相似比', base: data.base.repeatRate, target: data.target.repeatRate, type: 'rate', worseWhenUp: true },
+    { label: '单篇最大', base: data.base.maxPerSource, target: data.target.maxPerSource, type: 'rate', worseWhenUp: true },
+    { label: '引用率', base: data.base.citationRate, target: data.target.citationRate, type: 'rate', worseWhenUp: false },
+    { label: '重复段落', base: data.base.repeatParagraphCount, target: data.target.repeatParagraphCount, type: 'count', worseWhenUp: true },
+    { label: '相似来源', base: data.base.sourceCount, target: data.target.sourceCount, type: 'count', worseWhenUp: true }
+  ]
+  return rows.map((row) => {
+    const hasValue = row.base != null && row.target != null
+    const delta = hasValue ? row.target - row.base : null
+    let tone = 'neutral'
+    if (delta != null && delta !== 0) {
+      tone = (delta > 0) === row.worseWhenUp ? 'up' : 'down'
+    }
+    return {
+      label: row.label,
+      base: row.type === 'rate' ? formatRate(row.base) : formatCount(row.base),
+      target: row.type === 'rate' ? formatRate(row.target) : formatCount(row.target),
+      delta: formatDelta(delta, row.type),
+      tone
+    }
+  })
+})
+
 // ── 工具 ────────────────────────────────────────────────────
 function firstNumber(...values) {
   for (const value of values) {
@@ -287,6 +418,19 @@ const formatRate = (value) => {
   const num = Number(value)
   if (Number.isNaN(num)) return '—'
   return `${num.toFixed(1)}%`
+}
+
+const formatCount = (value) => {
+  if (value === null || value === undefined || value === '') return '—'
+  return String(value)
+}
+
+const formatDelta = (delta, type) => {
+  if (delta === null) return '—'
+  if (delta === 0) return '持平'
+  const sign = delta > 0 ? '+' : '-'
+  const abs = Math.abs(delta)
+  return type === 'rate' ? `${sign}${abs.toFixed(1)}%` : `${sign}${abs}`
 }
 
 const formatDateTime = (date) => {
@@ -332,6 +476,8 @@ const loadReport = async () => {
 
   loading.value = true
   hasReport.value = false
+  compareSelected.value = []
+  comparison.value = null
 
   try {
     // 历史列表先发起；若 query 已带 reportId，则报告详情与其并行
@@ -447,6 +593,115 @@ const selectHistory = async (record) => {
     query: { ...route.query, reportId: String(record.id) }
   })
   loadReport()
+}
+
+// ── 版本对比 ────────────────────────────────────────────────
+const isCompareSelected = (id) => {
+  return compareSelected.value.some((item) => String(item.id) === String(id))
+}
+
+const toggleCompare = (record) => {
+  if (isCompareSelected(record.id)) {
+    compareSelected.value = compareSelected.value.filter((item) => String(item.id) !== String(record.id))
+    return
+  }
+  if (compareSelected.value.length >= 2) {
+    compareSelected.value = [compareSelected.value[1], record]
+    return
+  }
+  compareSelected.value = [...compareSelected.value, record]
+}
+
+const buildSnapshot = async (record) => {
+  const res = await getPaperReport(String(record.id))
+  const data = res?.data || {}
+  const base = data.baseInfo || {}
+  const rate = data.rateStat || {}
+  const sources = Array.isArray(data.similarSources) ? data.similarSources : []
+
+  let sentence = {}
+  if (base.taskId) {
+    try {
+      const sentenceRes = await getSentenceDetail(base.taskId)
+      sentence = sentenceRes?.data || {}
+    } catch (error) {
+      console.warn('对比时句级指标获取失败，使用报告汇总值', error)
+    }
+  }
+
+  const sourceMax = sources.length
+    ? Math.max(...sources.map((item) => Number(item.maxSimilarity) || 0))
+    : null
+
+  return {
+    reportNo: base.reportNo || record.reportNo || '未编号报告',
+    checkTime: base.checkTime || record.createTime,
+    repeatRate: firstNumber(sentence.checkRate, rate.repeatRate),
+    maxPerSource: firstNumber(sentence.maxPerSource, sourceMax),
+    citationRate: firstNumber(sentence.citationRate),
+    repeatParagraphCount: rate.repeatParagraphCount ?? null,
+    sourceCount: sources.length,
+    sources: sources.map((item) => ({
+      name: item.sourceName || `来源 ${item.sourceId ?? ''}`.trim(),
+      rate: Number(item.maxSimilarity) || 0
+    }))
+  }
+}
+
+const diffSources = (baseSources, targetSources) => {
+  const baseMap = new Map(baseSources.map((item) => [item.name, item]))
+  const addedSources = []
+  const changedSources = []
+
+  targetSources.forEach((item) => {
+    const baseItem = baseMap.get(item.name)
+    if (!baseItem) {
+      addedSources.push(item)
+      return
+    }
+    baseMap.delete(item.name)
+    if (Math.abs(item.rate - baseItem.rate) >= 0.05) {
+      changedSources.push({ name: item.name, from: baseItem.rate, to: item.rate })
+    }
+  })
+
+  return {
+    addedSources,
+    changedSources,
+    removedSources: Array.from(baseMap.values())
+  }
+}
+
+const openCompare = async () => {
+  if (compareSelected.value.length !== 2) return
+
+  compareVisible.value = true
+  compareLoading.value = true
+  comparison.value = null
+
+  const [older, newer] = [...compareSelected.value].sort(
+    (a, b) => new Date(a.createTime || 0) - new Date(b.createTime || 0)
+  )
+
+  try {
+    const [baseSnapshot, targetSnapshot] = await Promise.all([
+      buildSnapshot(older),
+      buildSnapshot(newer)
+    ])
+    if (isUnmounted) return
+    comparison.value = {
+      base: baseSnapshot,
+      target: targetSnapshot,
+      ...diffSources(baseSnapshot.sources, targetSnapshot.sources)
+    }
+  } catch (error) {
+    console.error('报告版本对比失败:', error)
+    ElMessage.error('对比数据加载失败')
+  } finally {
+    if (!isUnmounted) {
+      compareLoading.value = false
+    }
+  }
 }
 
 onMounted(() => {
@@ -721,6 +976,21 @@ onUnmounted(() => {
 }
 
 // ── 历史记录 ────────────────────────────────────────────────
+.history-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--apple-spacing-sm);
+  margin-bottom: var(--apple-spacing-sm);
+  padding-bottom: var(--apple-spacing-sm);
+  border-bottom: 1px solid var(--apple-divider-soft);
+}
+
+.history-hint {
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
+}
+
 .history-list {
   display: flex;
   flex-direction: column;
@@ -743,6 +1013,19 @@ onUnmounted(() => {
     padding-left: var(--apple-spacing-sm);
     padding-right: var(--apple-spacing-sm);
   }
+
+  &.is-selected {
+    background: var(--apple-canvas-parchment);
+    border-radius: var(--apple-rounded-md);
+    padding-left: var(--apple-spacing-sm);
+    padding-right: var(--apple-spacing-sm);
+  }
+}
+
+.history-check {
+  flex-shrink: 0;
+  height: 18px;
+  margin-top: 0;
 }
 
 .history-version {
@@ -780,6 +1063,159 @@ onUnmounted(() => {
   line-height: 1.6;
   color: var(--apple-ink-secondary);
   word-break: break-word;
+}
+
+// ── 版本对比 ────────────────────────────────────────────────
+.compare-body {
+  min-height: 120px;
+}
+
+.compare-head {
+  display: flex;
+  align-items: center;
+  gap: var(--apple-spacing-md);
+  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+  background: var(--apple-canvas-parchment);
+  border-radius: var(--apple-rounded-md);
+}
+
+.compare-side {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.compare-arrow {
+  color: var(--apple-ink-muted-48);
+}
+
+.compare-tag {
+  align-self: flex-start;
+  padding: 1px 8px;
+  border-radius: var(--apple-rounded-pill);
+  background: var(--apple-surface);
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
+
+  &.target {
+    color: var(--apple-primary);
+    background: var(--apple-info-bg);
+  }
+}
+
+.compare-name {
+  font-size: var(--apple-fs-caption);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  word-break: break-word;
+}
+
+.compare-time {
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
+}
+
+.compare-metrics {
+  margin-top: var(--apple-spacing-md);
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-md);
+  overflow: hidden;
+}
+
+.compare-metric {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: var(--apple-spacing-xs);
+  padding: 10px var(--apple-spacing-md);
+  border-bottom: 1px solid var(--apple-divider-soft);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.compare-metric-head {
+  background: var(--apple-canvas-parchment);
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
+}
+
+.compare-metric-label {
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-secondary);
+}
+
+.compare-metric-value {
+  font-size: var(--apple-fs-fine-print);
+  font-variant-numeric: tabular-nums;
+  color: var(--apple-ink);
+}
+
+.compare-delta {
+  font-size: var(--apple-fs-fine-print);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+
+  &.up { color: var(--apple-danger); }
+  &.down { color: var(--apple-success); }
+  &.neutral { color: var(--apple-ink-muted-48); }
+}
+
+.compare-sources {
+  display: flex;
+  flex-direction: column;
+  gap: var(--apple-spacing-md);
+  margin-top: var(--apple-spacing-md);
+}
+
+.compare-block {
+  h4 {
+    margin: 0 0 var(--apple-spacing-xs);
+    font-size: var(--apple-fs-fine-print);
+    font-weight: 600;
+    color: var(--apple-ink-secondary);
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--apple-spacing-sm);
+    padding: 6px 0;
+    border-bottom: 1px solid var(--apple-divider-soft);
+    font-size: var(--apple-fs-fine-print);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+.compare-source-name {
+  flex: 1;
+  min-width: 0;
+  color: var(--apple-ink);
+  word-break: break-word;
+}
+
+.compare-source-rate {
+  flex-shrink: 0;
+  color: var(--apple-ink-muted-48);
+  font-variant-numeric: tabular-nums;
+}
+
+.compare-empty {
+  margin: 0;
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
 }
 
 // ── 响应式 ──────────────────────────────────────────────────
