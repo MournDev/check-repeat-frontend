@@ -1,370 +1,352 @@
 <template>
-  <div class="student-dashboard">
-    <!-- 顶部欢迎区域 -->
-    <div class="welcome-section">
-      <div class="welcome-content">
-        <div class="welcome-left">
-          <h1 class="welcome-title">欢迎回来，{{ userStore.userInfo?.realName || '同学' }}！</h1>
-          <p class="welcome-subtitle">今天是 {{ currentDate }}</p>
-        </div>
-        <div class="welcome-actions">
-          <button class="primary-button" @click="goToPaperSubmit">
-            <el-icon><UploadFilled /></el-icon>
-            提交新论文
-          </button>
-          <button class="secondary-button" @click="exportDashboardData">
-            <el-icon><Download /></el-icon>
-            导出数据
-          </button>
-        </div>
+  <div class="dashboard-page">
+    <PageHeader
+      title="工作台"
+      :description="`欢迎回来，${userStore.userInfo?.realName || '同学'} · ${currentDate}`"
+    >
+      <template #actions>
+        <el-button type="primary" :icon="UploadFilled" @click="goToPaperSubmit">提交新论文</el-button>
+        <el-button :icon="Download" @click="exportDashboardData">导出数据</el-button>
+      </template>
+    </PageHeader>
+
+    <!-- 关键指标 -->
+    <div class="kpi-grid" v-loading="loading.stats">
+      <div class="kpi-card">
+        <span class="kpi-label">总提交数</span>
+        <span class="kpi-value">{{ stats.submittedCount || 0 }}</span>
       </div>
-      <div class="stats-grid" v-loading="loading.stats">
-        <div class="stat-card">
-          <div class="stat-icon paper-icon">
-            <el-icon><Document /></el-icon>
-          </div>
-          <div class="stat-content">
-            <div class="stat-value">{{ stats.submittedCount || 0 }}</div>
-            <div class="stat-label">总提交数</div>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon pending-icon">
-            <el-icon><Clock /></el-icon>
-          </div>
-          <div class="stat-content">
-            <div class="stat-value">{{ stats.pendingCount || 0 }}</div>
-            <div class="stat-label">待审核</div>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon approved-icon">
-            <el-icon><Check /></el-icon>
-          </div>
-          <div class="stat-content">
-            <div class="stat-value">{{ stats.approvedCount || 0 }}</div>
-            <div class="stat-label">已通过</div>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon revision-icon">
-            <el-icon><EditPen /></el-icon>
-          </div>
-          <div class="stat-content">
-            <div class="stat-value">{{ stats.revisionCount || 0 }}</div>
-            <div class="stat-label">需修改</div>
-          </div>
-        </div>
+      <div class="kpi-card">
+        <span class="kpi-label">待审核</span>
+        <span class="kpi-value">{{ stats.pendingCount || 0 }}</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">已通过</span>
+        <span class="kpi-value">{{ stats.approvedCount || 0 }}</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">需修改</span>
+        <span class="kpi-value">{{ stats.revisionCount || 0 }}</span>
       </div>
     </div>
 
-    <!-- 时间节点管理 -->
-    <div class="section time-section">
-      <div class="section-header">
-        <div class="section-title">
-          <el-icon><Calendar /></el-icon>
-          <span>重要时间节点</span>
-        </div>
-        <button class="text-button" @click="addAllToCalendar">
-          <el-icon><Download /></el-icon>
-          添加到日历
-        </button>
-      </div>
-      <div class="deadlines-grid" v-loading="loading.deadlines">
-        <!-- 提交截止 -->
-        <div class="deadline-card submission">
-          <div class="deadline-icon">
-            <el-icon><EditPen /></el-icon>
-          </div>
-          <div class="deadline-content">
-            <div class="deadline-label">论文提交截止</div>
-            <div class="deadline-date">{{ deadlines.submissionDeadline }}</div>
-            <div class="deadline-countdown">
-              <span class="countdown-badge" :class="getCountdownClass(deadlines.submissionDeadline)">
-                剩余 {{ getCountdownDays(deadlines.submissionDeadline) }} 天
-              </span>
+    <div class="dashboard-main">
+      <!-- 左列：任务主线 -->
+      <div class="dashboard-col">
+        <!-- 当前论文 -->
+        <section class="dash-card">
+          <header class="dash-card-head">
+            <div class="dash-card-title">
+              <el-icon><Document /></el-icon>
+              <span>当前论文</span>
             </div>
-          </div>
-        </div>
-        <!-- 审核截止 -->
-        <div class="deadline-card review">
-          <div class="deadline-icon">
-            <el-icon><Check /></el-icon>
-          </div>
-          <div class="deadline-content">
-            <div class="deadline-label">审核截止</div>
-            <div class="deadline-date">{{ deadlines.reviewDeadline }}</div>
-            <div class="deadline-countdown">
-              <span class="countdown-badge" :class="getCountdownClass(deadlines.reviewDeadline)">
-                剩余 {{ getCountdownDays(deadlines.reviewDeadline) }} 天
-              </span>
-            </div>
-          </div>
-        </div>
-        <!-- 答辩时间 -->
-        <div class="deadline-card defense">
-          <div class="deadline-icon">
-            <el-icon><Microphone /></el-icon>
-          </div>
-          <div class="deadline-content">
-            <div class="deadline-label">答辩时间</div>
-            <div class="deadline-date">{{ deadlines.defenseDate }}</div>
-            <div class="deadline-countdown">
-              <span class="countdown-badge" :class="getCountdownClass(deadlines.defenseDate)">
-                剩余 {{ getCountdownDays(deadlines.defenseDate) }} 天
-              </span>
-            </div>
-          </div>
-        </div>
-        <!-- 毕业时间 -->
-        <div class="deadline-card graduation">
-          <div class="deadline-icon">
-            <el-icon><Trophy /></el-icon>
-          </div>
-          <div class="deadline-content">
-            <div class="deadline-label">预计毕业</div>
-            <div class="deadline-date">{{ deadlines.graduationDate }}</div>
-            <div class="deadline-countdown">
-              <span class="countdown-badge goal">
-                目标
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+            <el-button v-if="latestPaper && latestPaper.id" text @click="goToPaperStatus">论文状态</el-button>
+          </header>
 
-    <!-- 主要内容区域 -->
-    <div class="main-content">
-      <!-- 左侧：论文进度和图表 -->
-      <div class="main-left">
-        <!-- 论文进度卡片 -->
-        <div class="card paper-progress-card">
-          <div class="card-header">
-            <div class="card-title">
-              <el-icon><DataLine /></el-icon>
-              <span>论文进度跟踪</span>
-            </div>
-            <div class="card-actions">
-              <button class="text-button" @click="goToPaperStatus">查看全部</button>
-              <button class="icon-button" @click="refreshData">
-                <el-icon><Refresh /></el-icon>
-              </button>
-            </div>
-          </div>
-          <div class="progress-content" v-loading="loading.progress">
-            <div class="progress-header">
-              <h3>论文处理进度</h3>
-              <span class="progress-status" :class="getProgressStatusClass(currentProgress)">
-                {{ getProgressStatusText(currentProgress) }}
+          <div v-if="latestPaper && latestPaper.id" class="paper-body">
+            <div class="paper-headline">
+              <h2 class="paper-title">{{ latestPaper.title }}</h2>
+              <span class="status-badge" :class="getStatusClass(latestPaper.status)">
+                {{ getStatusText(latestPaper.status) }}
               </span>
             </div>
-            <div class="progress-steps">
-              <div 
-                v-for="(step, index) in progressSteps" 
-                :key="index"
-                class="progress-step"
-                :class="{
-                  'step-active': index < currentProgress,
-                  'step-current': index === currentProgress,
-                  'step-pending': index > currentProgress
-                }"
-              >
-                <div class="step-number">{{ index + 1 }}</div>
-                <div class="step-content">
-                  <div class="step-title">{{ step.title }}</div>
-                  <div class="step-description">{{ step.description }}</div>
-                </div>
-              </div>
+
+            <div class="paper-meta">
+              <span class="meta-item">
+                <el-icon><Calendar /></el-icon>
+                {{ formatDateTime(latestPaper.submitTime) }}
+              </span>
+              <span class="meta-item">
+                <el-icon><EditPen /></el-icon>
+                {{ latestPaper.wordCount ? latestPaper.wordCount + ' 字' : '字数暂无' }}
+              </span>
+              <span v-if="latestPaper.version" class="meta-item">
+                <el-icon><Files /></el-icon>
+                V{{ latestPaper.version }}
+              </span>
+              <span v-if="latestPaper.advisorName" class="meta-item">
+                <el-icon><User /></el-icon>
+                {{ latestPaper.advisorName }}
+                <el-tag size="small" :type="getAllocationStatusTagType(latestPaper.allocationStatus)">
+                  {{ getAllocationStatusText(latestPaper.allocationStatus) }}
+                </el-tag>
+              </span>
             </div>
-            <div class="progress-summary">
-              <div class="summary-item">
-                <el-icon><Timer /></el-icon>
-                <span>预计完成时间：{{ estimatedCompletion }}</span>
-              </div>
-              <div class="summary-item">
-                <el-icon><Lightning /></el-icon>
-                <span>处理速度：{{ processingSpeed }}</span>
-              </div>
-            </div>
-          </div>
-          <!-- 当前论文详情 -->
-          <div v-if="latestPaper" class="paper-details">
-            <div class="paper-header">
-              <h4>当前论文详情</h4>
-              <div class="paper-status">
-                <span class="status-badge" :class="getStatusClass(latestPaper.status)">
-                  {{ getStatusText(latestPaper.status) }}
+
+            <div class="paper-similarity">
+              <div class="similarity-top">
+                <span class="similarity-label">总相似比</span>
+                <span class="similarity-value" :class="getSimilarityStatusClass(latestPaperSimilarity)">
+                  {{ hasSimilarityData ? latestPaperSimilarity + '%' : '未检测' }}
                 </span>
-                <span class="paper-id">ID: {{ latestPaper.id }}</span>
               </div>
+              <div v-if="hasSimilarityData" class="similarity-track">
+                <div
+                  class="similarity-fill"
+                  :class="getSimilarityClass(latestPaperSimilarity)"
+                  :style="{ width: Math.min(latestPaperSimilarity, 100) + '%' }"
+                ></div>
+              </div>
+              <p class="similarity-note">
+                {{ hasSimilarityData ? getSimilarityStatus(latestPaperSimilarity) : '该论文暂未生成查重结果' }}
+              </p>
             </div>
-            <div class="paper-info">
-              <div class="info-row">
-                <div class="info-item">
-                  <div class="info-label">论文标题</div>
-                  <div class="info-value title">
-                    <el-tooltip :content="latestPaper.title" placement="top">
-                      <span>{{ latestPaper.title }}</span>
-                    </el-tooltip>
-                  </div>
-                </div>
-                <div class="info-item">
-                  <div class="info-label">提交时间</div>
-                  <div class="info-value">
-                    <el-icon><Calendar /></el-icon>
-                    {{ formatDateTime(latestPaper.submitTime) }}
-                  </div>
-                </div>
-              </div>
-              <div class="info-row">
-                <div class="info-item" v-if="latestPaper.advisorName">
-                  <div class="info-label">指导老师</div>
-                  <div class="info-value">
-                    <el-icon><User /></el-icon>
-                    {{ latestPaper.advisorName }}
-                    <el-tag size="small" :type="getAllocationStatusTagType(latestPaper.allocationStatus)" style="margin-left: 8px">
-                      {{ getAllocationStatusText(latestPaper.allocationStatus) }}
-                    </el-tag>
-                  </div>
-                </div>
-                <div class="info-item">
-                  <div class="info-label">总相似比</div>
-                  <div class="info-value similarity">
-                    <div class="similarity-display">
-                      <div class="similarity-bar" :style="{ width: latestPaperSimilarity + '%' }" :class="getSimilarityClass(latestPaperSimilarity)"></div>
-                      <span class="similarity-text" :class="getSimilarityClass(latestPaperSimilarity)">
-                        {{ latestPaperSimilarity }}%
-                      </span>
-                    </div>
-                    <span class="similarity-status" :class="getSimilarityStatusClass(latestPaperSimilarity)">
-                      {{ hasSimilarityData ? getSimilarityStatus(latestPaperSimilarity) : '未检测' }}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div class="info-row">
-                <div class="info-item">
-                  <div class="info-label">字数统计</div>
-                  <div class="info-value">
-                    <el-icon><EditPen /></el-icon>
-                    <span class="word-count">{{ latestPaper.wordCount ? latestPaper.wordCount + ' 字' : '暂无' }}</span>
-                  </div>
-                </div>
-                <div class="info-item" v-if="latestPaper.version">
-                  <div class="info-label">版本信息</div>
-                  <div class="info-value">
-                    <el-icon><Files /></el-icon>
-                    <span class="version">V{{ latestPaper.version }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+
             <div v-if="latestPaper.feedback" class="paper-feedback">
-              <div class="feedback-header">
+              <div class="feedback-title">
                 <el-icon><ChatLineRound /></el-icon>
                 <span>导师反馈</span>
               </div>
-              <div class="feedback-content">
-                {{ latestPaper.feedback }}
-              </div>
+              <p class="feedback-text">{{ latestPaper.feedback }}</p>
             </div>
+
             <div class="paper-actions">
-              <button class="primary-button" @click="viewPaperDetails">
-                <el-icon><View /></el-icon>
-                查看详情
-              </button>
+              <el-button type="primary" :icon="View" @click="viewPaperDetails">查看详情</el-button>
             </div>
           </div>
-          <div v-else-if="!loading.paper" class="no-paper">
-            <div class="no-paper-content">
-              <el-icon class="empty-icon"><Document /></el-icon>
-              <h4>暂无论文提交记录</h4>
-              <p>开始您的第一篇论文提交之旅</p>
-              <button class="primary-button" @click="goToPaperSubmit">
-                <el-icon><UploadFilled /></el-icon>
-                提交第一篇论文
-              </button>
+
+          <div v-else-if="!loading.paper" class="card-empty">
+            <el-icon class="empty-icon"><Document /></el-icon>
+            <p>暂无论文提交记录</p>
+            <el-button type="primary" @click="goToPaperSubmit">提交第一篇论文</el-button>
+          </div>
+          <div v-else class="card-empty" v-loading="true"></div>
+        </section>
+
+        <!-- 待办事项 -->
+        <section class="dash-card">
+          <header class="dash-card-head">
+            <div class="dash-card-title">
+              <el-icon><List /></el-icon>
+              <span>待办事项</span>
+            </div>
+            <span class="dash-card-hint">按完成状态与截止时间排序</span>
+          </header>
+
+          <div class="todo-list" v-loading="todosLoading">
+            <div
+              v-for="item in sortedTodos"
+              :key="item.id"
+              class="todo-item"
+              :class="{ 'is-done': item.completed }"
+            >
+              <span class="todo-dot" :class="getPriorityClass(item.priority)"></span>
+              <div class="todo-main">
+                <div class="todo-title">{{ item.title }}</div>
+                <div v-if="item.description" class="todo-desc">{{ item.description }}</div>
+              </div>
+              <span v-if="item.dueDate" class="todo-due">{{ formatDateTime(item.dueDate) }}</span>
+            </div>
+
+            <div v-if="sortedTodos.length === 0 && !todosLoading" class="card-empty compact">
+              <el-icon class="empty-icon"><CircleCheck /></el-icon>
+              <p>暂无待办事项</p>
             </div>
           </div>
-        </div>
-        <!-- 数据统计可视化 -->
-        <div class="charts-grid">
-          <!-- 个人能力雷达图 -->
-          <div class="card chart-card">
-            <div class="card-header">
-              <div class="card-title">
+        </section>
+
+        <!-- 论文处理进度 -->
+        <section class="dash-card">
+          <header class="dash-card-head">
+            <div class="dash-card-title">
+              <el-icon><DataLine /></el-icon>
+              <span>论文处理进度</span>
+            </div>
+            <span class="status-badge" :class="getProgressStatusClass(currentProgress)">
+              {{ getProgressStatusText(currentProgress) }}
+            </span>
+          </header>
+
+          <div class="progress-body" v-loading="loading.progress">
+            <ol class="progress-steps">
+              <li
+                v-for="(step, index) in progressSteps"
+                :key="index"
+                class="progress-step"
+                :class="{
+                  'step-done': index < currentProgress,
+                  'step-current': index === currentProgress
+                }"
+              >
+                <span class="step-index">{{ index + 1 }}</span>
+                <div class="step-text">
+                  <div class="step-title">{{ step.title }}</div>
+                  <div class="step-desc">{{ step.description }}</div>
+                </div>
+              </li>
+            </ol>
+
+            <div class="progress-summary">
+              <span class="summary-item">
+                <el-icon><Timer /></el-icon>
+                预计完成：{{ estimatedCompletion }}
+              </span>
+              <span class="summary-item">
+                <el-icon><Lightning /></el-icon>
+                处理速度：{{ processingSpeed }}
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 数据分析 -->
+        <section class="dash-card charts-section">
+          <header class="dash-card-head">
+            <div class="dash-card-title">
+              <el-icon><DataAnalysis /></el-icon>
+              <span>数据分析</span>
+            </div>
+            <el-button text :icon="Refresh" @click="refreshData">刷新</el-button>
+          </header>
+
+          <div class="charts-grid">
+            <div class="chart-card">
+              <div class="chart-head">
                 <el-icon><DataAnalysis /></el-icon>
                 <span>个人能力评估</span>
               </div>
+              <div v-if="hasRadarData" :ref="radarChart.chartRef" class="chart-container"></div>
+              <div v-else-if="!loading.radar" class="chart-empty">
+                <el-icon class="empty-icon"><DataAnalysis /></el-icon>
+                <p>暂无评估数据</p>
+              </div>
+              <div v-else class="chart-empty" v-loading="true"></div>
             </div>
-            <div v-if="hasRadarData" :ref="radarChart.chartRef" class="chart-container"></div>
-            <div v-else-if="!loading.radar" class="chart-empty">
-              <el-icon class="empty-icon"><DataAnalysis /></el-icon>
-              <p>暂无评估数据</p>
-            </div>
-            <div v-else class="chart-empty" v-loading="true"></div>
-          </div>
-          <!-- 相似度趋势图 -->
-          <div class="card chart-card">
-            <div class="card-header">
-              <div class="card-title">
+
+            <div class="chart-card">
+              <div class="chart-head">
                 <el-icon><TrendCharts /></el-icon>
                 <span>总相似比变化趋势</span>
               </div>
+              <div v-if="hasTrendData" :ref="trendChart.chartRef" class="chart-container"></div>
+              <div v-else-if="!loading.trend" class="chart-empty">
+                <el-icon class="empty-icon"><TrendCharts /></el-icon>
+                <p>暂无检测数据</p>
+              </div>
+              <div v-else class="chart-empty" v-loading="true"></div>
             </div>
-            <div v-if="hasTrendData" :ref="trendChart.chartRef" class="chart-container"></div>
-            <div v-else-if="!loading.trend" class="chart-empty">
-              <el-icon class="empty-icon"><TrendCharts /></el-icon>
-              <p>暂无检测数据</p>
-            </div>
-            <div v-else class="chart-empty" v-loading="true"></div>
           </div>
-        </div>
-        <!-- 专业对比图 -->
-        <div class="card chart-card full-width">
-          <div class="card-header">
-            <div class="card-title">
+
+          <div class="chart-card full-width">
+            <div class="chart-head">
               <el-icon><Histogram /></el-icon>
               <span>与专业平均水平对比</span>
             </div>
+            <div v-if="hasComparisonData" :ref="comparisonChart.chartRef" class="chart-container-large"></div>
+            <div v-else-if="!loading.comparison" class="chart-empty">
+              <el-icon class="empty-icon"><Histogram /></el-icon>
+              <p>暂无专业对比数据</p>
+            </div>
+            <div v-else class="chart-empty" v-loading="true"></div>
           </div>
-          <div v-if="hasComparisonData" :ref="comparisonChart.chartRef" class="chart-container-large"></div>
-          <div v-else-if="!loading.comparison" class="chart-empty">
-            <el-icon class="empty-icon"><Histogram /></el-icon>
-            <p>暂无专业对比数据</p>
-          </div>
-          <div v-else class="chart-empty" v-loading="true"></div>
-        </div>
+        </section>
       </div>
-      <!-- 右侧：指导老师 -->
-      <div class="main-right">
-        <!-- 指导老师卡片 -->
-        <div class="card advisor-card">
-          <div class="card-header">
-            <div class="card-title">
+
+      <!-- 右列：节点 / 导师 / 通知 -->
+      <aside class="dashboard-aside">
+        <!-- 重要时间节点 -->
+        <section class="dash-card">
+          <header class="dash-card-head">
+            <div class="dash-card-title">
+              <el-icon><Calendar /></el-icon>
+              <span>重要时间节点</span>
+            </div>
+            <el-button text :icon="Download" @click="addAllToCalendar">加入日历</el-button>
+          </header>
+
+          <ul class="deadline-list" v-loading="loading.deadlines">
+            <li class="deadline-item">
+              <span class="deadline-icon">
+                <el-icon><EditPen /></el-icon>
+              </span>
+              <div class="deadline-text">
+                <span class="deadline-label">论文提交截止</span>
+                <span class="deadline-date">{{ deadlines.submissionDeadline || '待公布' }}</span>
+              </div>
+              <span
+                v-if="deadlines.submissionDeadline"
+                class="countdown-badge"
+                :class="getCountdownClass(deadlines.submissionDeadline)"
+              >
+                剩余 {{ getCountdownDays(deadlines.submissionDeadline) }} 天
+              </span>
+            </li>
+
+            <li class="deadline-item">
+              <span class="deadline-icon">
+                <el-icon><Check /></el-icon>
+              </span>
+              <div class="deadline-text">
+                <span class="deadline-label">审核截止</span>
+                <span class="deadline-date">{{ deadlines.reviewDeadline || '待公布' }}</span>
+              </div>
+              <span
+                v-if="deadlines.reviewDeadline"
+                class="countdown-badge"
+                :class="getCountdownClass(deadlines.reviewDeadline)"
+              >
+                剩余 {{ getCountdownDays(deadlines.reviewDeadline) }} 天
+              </span>
+            </li>
+
+            <li class="deadline-item">
+              <span class="deadline-icon">
+                <el-icon><Microphone /></el-icon>
+              </span>
+              <div class="deadline-text">
+                <span class="deadline-label">答辩时间</span>
+                <span class="deadline-date">{{ deadlines.defenseDate || '待公布' }}</span>
+              </div>
+              <span
+                v-if="deadlines.defenseDate"
+                class="countdown-badge"
+                :class="getCountdownClass(deadlines.defenseDate)"
+              >
+                剩余 {{ getCountdownDays(deadlines.defenseDate) }} 天
+              </span>
+            </li>
+
+            <li class="deadline-item">
+              <span class="deadline-icon">
+                <el-icon><Trophy /></el-icon>
+              </span>
+              <div class="deadline-text">
+                <span class="deadline-label">预计毕业</span>
+                <span class="deadline-date">{{ deadlines.graduationDate || '待公布' }}</span>
+              </div>
+              <span v-if="deadlines.graduationDate" class="countdown-badge goal">目标</span>
+            </li>
+          </ul>
+        </section>
+
+        <!-- 指导老师 -->
+        <section class="dash-card">
+          <header class="dash-card-head">
+            <div class="dash-card-title">
               <el-icon><UserFilled /></el-icon>
               <span>我的指导老师</span>
             </div>
-            <button class="text-button" @click="contactAdvisor">
-              <el-icon><ChatDotRound /></el-icon>
-              联系
-            </button>
-          </div>
-          <div v-if="advisorInfo" class="advisor-profile">
+            <el-button v-if="hasAdvisor" text @click="contactAdvisor">联系</el-button>
+          </header>
+
+          <div v-if="hasAdvisor" class="advisor-profile">
             <div class="advisor-avatar-section">
-              <div class="advisor-avatar" :style="{ backgroundImage: `url(${getAvatarUrl(advisorInfo.avatar)})` }">
+              <div
+                class="advisor-avatar"
+                :style="{ backgroundImage: `url(${getAvatarUrl(advisorInfo.avatar)})` }"
+              >
                 {{ advisorInfo.name?.charAt(0) }}
               </div>
               <div class="advisor-status">
-                <div class="status-indicator" :class="advisorOnlineStatus.className"></div>
+                <span class="status-indicator" :class="advisorOnlineStatus.className"></span>
                 <span>{{ advisorOnlineStatus.text }}</span>
               </div>
             </div>
+
             <div class="advisor-info">
               <h3 class="advisor-name">{{ advisorInfo.name }}</h3>
               <p class="advisor-title">{{ advisorInfo.title || '暂无' }}</p>
-              <div class="advisor-expertise">
+              <div v-if="advisorInfo.expertise && advisorInfo.expertise.length" class="advisor-expertise">
                 <span v-for="field in advisorInfo.expertise" :key="field" class="expertise-tag">
                   {{ field }}
                 </span>
@@ -372,11 +354,11 @@
               <div class="advisor-contact">
                 <div class="contact-item">
                   <el-icon><Phone /></el-icon>
-                  <span>{{ advisorInfo.phone }}</span>
+                  <span>{{ advisorInfo.phone || '暂无' }}</span>
                 </div>
                 <div class="contact-item">
                   <el-icon><Message /></el-icon>
-                  <span>{{ advisorInfo.email }}</span>
+                  <span>{{ advisorInfo.email || '暂无' }}</span>
                 </div>
                 <div class="contact-item">
                   <el-icon><OfficeBuilding /></el-icon>
@@ -384,66 +366,73 @@
                 </div>
               </div>
             </div>
+
             <div class="advisor-stats">
-              <div class="stat-item">
+              <div class="advisor-stat">
                 <div class="stat-number">{{ advisorInfo.guidedPapersCount ?? '暂无' }}</div>
                 <div class="stat-label">指导论文</div>
               </div>
-              <div class="stat-item">
-                <div class="stat-number">{{ advisorInfo.approvalRate != null ? advisorInfo.approvalRate + '%' : '暂无' }}</div>
+              <div class="advisor-stat">
+                <div class="stat-number">
+                  {{ advisorInfo.approvalRate != null ? advisorInfo.approvalRate + '%' : '暂无' }}
+                </div>
                 <div class="stat-label">通过率</div>
               </div>
-              <div class="stat-item">
+              <div class="advisor-stat">
                 <div class="stat-number">{{ advisorInfo.averageScore ?? '暂无' }}</div>
                 <div class="stat-label">评分</div>
               </div>
             </div>
           </div>
-          <div v-else-if="!loading.advisor" class="no-advisor">
-            <div class="no-advisor-content">
-              <el-icon class="empty-icon"><UserFilled /></el-icon>
-              <h4>暂未分配指导老师</h4>
-              <p>系统将在论文提交后自动为您分配指导老师</p>
-              <button class="primary-button" @click="goToPaperSubmit">
-                立即提交论文
-              </button>
-            </div>
+
+          <div v-else-if="!loading.advisor" class="card-empty">
+            <el-icon class="empty-icon"><UserFilled /></el-icon>
+            <p>暂未分配指导老师</p>
+            <span class="empty-hint">系统将在论文提交后自动为您分配指导老师</span>
+            <el-button type="primary" @click="goToPaperSubmit">立即提交论文</el-button>
           </div>
-        </div>
-        <!-- 通知消息卡片 -->
-        <div class="card notification-card">
-          <div class="card-header">
-            <div class="card-title">
+          <div v-else class="card-empty" v-loading="true"></div>
+        </section>
+
+        <!-- 通知消息 -->
+        <section class="dash-card">
+          <header class="dash-card-head">
+            <div class="dash-card-title">
               <el-icon><Bell /></el-icon>
               <span>通知消息</span>
             </div>
-            <button class="text-button" @click="viewAllNotifications">查看全部</button>
-          </div>
+            <el-button text @click="viewAllNotifications">查看全部</el-button>
+          </header>
+
           <div v-if="notifications.length > 0" class="notification-list">
             <div v-for="(item, index) in notifications" :key="item.id ?? index" class="notification-item">
               <div class="notification-title">{{ item.title || '系统通知' }}</div>
-              <div class="notification-content">{{ item.content || item.message || '' }}</div>
+              <div v-if="item.content || item.message" class="notification-content">
+                {{ item.content || item.message }}
+              </div>
               <div class="notification-time">{{ formatDateTime(item.createTime || item.createdAt) }}</div>
             </div>
           </div>
-          <div v-else-if="!loading.notifications" class="notification-empty">
+          <div v-else-if="!loading.notifications" class="card-empty compact">
             <el-icon class="empty-icon"><Bell /></el-icon>
             <p>暂无通知消息</p>
           </div>
-          <div v-else class="notification-empty" v-loading="true"></div>
-        </div>
-      </div>
+          <div v-else class="card-empty compact" v-loading="true"></div>
+        </section>
+      </aside>
     </div>
   </div>
 </template>
+
 <script setup>
 import { ref, onMounted, computed, reactive, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
-import { getLatestPaper, getAdvisorInfo, getStudentDashboardStats, getDashboardDeadlines, getAbilityRadarData, getSimilarityTrendChart, getMajorComparisonData, getNotifications, getProgressTracking, exportDashboardStats } from "@/api/student.js"
+import { getLatestPaper, getAdvisorInfo, getStudentDashboardStats, getDashboardDeadlines, getAbilityRadarData, getSimilarityTrendChart, getMajorComparisonData, getNotifications, getProgressTracking, exportDashboardStats, getTodoList } from "@/api/student.js"
 import { useChart } from '@/composables/useChart'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 // 图标导入
 import {
@@ -472,6 +461,8 @@ const stats = reactive({
 const latestPaper = ref(null)
 const advisorInfo = ref(null)
 const notifications = ref([])
+const todos = ref([])
+const todosLoading = ref(false)
 const loading = reactive({
   stats: false,
   paper: false,
@@ -616,6 +607,27 @@ const advisorOnlineStatus = computed(() => {
   return { className: 'offline', text: '离线' }
 })
 
+// 是否已分配导师（接口无导师时会回填「暂未分配」占位）
+const hasAdvisor = computed(() => {
+  const name = advisorInfo.value?.name
+  return !!name && name !== '暂未分配'
+})
+
+// 待办排序：未完成优先，截止时间升序（无截止时间排后），最多 5 条
+const sortedTodos = computed(() => {
+  return [...todos.value]
+    .sort((a, b) => {
+      const aDone = a.completed ? 1 : 0
+      const bDone = b.completed ? 1 : 0
+      if (aDone !== bDone) return aDone - bDone
+      const aTime = a.dueDate ? new Date(a.dueDate).getTime() : Number.MAX_SAFE_INTEGER
+      const bTime = b.dueDate ? new Date(b.dueDate).getTime() : Number.MAX_SAFE_INTEGER
+      if (aTime !== bTime) return aTime - bTime
+      return new Date(b.createTime || 0) - new Date(a.createTime || 0)
+    })
+    .slice(0, 5)
+})
+
 // 趋势图是否有数据
 const hasTrendData = computed(() => {
   return Array.isArray(similarityTrendData.similarities) && similarityTrendData.similarities.length > 0
@@ -662,6 +674,21 @@ const processingSpeed = computed(() => {
 })
 
 // 方法
+// 加载待办事项（失败静默，不阻塞其他区块）
+const loadTodos = async () => {
+  todosLoading.value = true
+  try {
+    const res = await getTodoList()
+    const data = res?.data
+    todos.value = Array.isArray(data) ? data : (Array.isArray(data?.records) ? data.records : [])
+  } catch (error) {
+    console.error('加载待办事项失败:', error)
+    todos.value = []
+  } finally {
+    todosLoading.value = false
+  }
+}
+
 // 加载仪表盘数据
 const loadDashboardData = async () => {
   // 设置所有加载状态为 true
@@ -801,7 +828,7 @@ const loadDashboardData = async () => {
 
 const refreshData = async () => {
   ElMessage.info('正在刷新数据...')
-  await loadDashboardData()
+  await Promise.all([loadDashboardData(), loadTodos()])
   ElMessage.success('数据已刷新')
 }
 
@@ -941,6 +968,16 @@ const getSimilarityTagType = (similarity) => {
   return baseGetSimilarityTagType(handleSimilarity(similarity))
 }
 
+// 待办优先级圆点
+const getPriorityClass = (priority) => {
+  const map = {
+    high: 'priority-high',
+    normal: 'priority-normal',
+    low: 'priority-low'
+  }
+  return map[priority] || 'priority-normal'
+}
+
 const getTimeTrendClass = (time) => {
   if (!time) return 'neutral'
   if (time <= 2) return 'positive'
@@ -1010,7 +1047,7 @@ const getReviewStatus = (paper) => {
     'revised': '已修改，重新提交审核'
   };
   return statusMap[paper.status] || '未知状态';
-};
+}
 
 // 使用工具函数中的 formatDateTime
 // const formatDateTime = (date) => {
@@ -1028,11 +1065,13 @@ onMounted(() => {
   // 确保 userStore.token 存在
   if (userStore.token) {
     loadDashboardData()
+    loadTodos()
   } else {
     // 等待一段时间后再尝试
     setTimeout(() => {
       if (userStore.token) {
         loadDashboardData()
+        loadTodos()
       } else {
         ElMessage.error('登录状态未初始化，请刷新页面')
       }
@@ -1293,1133 +1332,722 @@ const renderComparisonChart = () => {
 </script>
 
 <style lang="scss" scoped>
-// 全局样式
-.student-dashboard {
-  padding: 24px;
+// 颜色/圆角/间距一律引用 design-tokens.scss（唯一真源）
+
+.dashboard-page {
+  padding: var(--apple-spacing-lg);
+  background: var(--apple-canvas-parchment);
   min-height: 100vh;
-  background: var(--apple-canvas-parchment); // Slate-50
-  color: var(--apple-ink); // Slate-900
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--apple-font-text);
+  color: var(--apple-ink);
 }
 
-// 欢迎区域
-.welcome-section {
-  margin-bottom: 32px;
-  
-  .welcome-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 24px;
-    
-    .welcome-left {
-      
-      .welcome-title {
-        font-size: 2rem;
-        font-weight: 600;
-        color: var(--apple-ink);
-        margin: 0 0 8px 0;
-        line-height: 1.2;
-      }
-      
-      .welcome-subtitle {
-        font-size: 1rem;
-        color: var(--apple-ink-secondary);
-        margin: 0;
-      }
-    }
-    
-    .welcome-actions {
-      display: flex;
-      gap: 12px;
-    }
-  }
-  
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 16px;
-  }
+// ── KPI ─────────────────────────────────────────────────────
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--apple-spacing-sm);
+  margin-bottom: var(--apple-spacing-lg);
 }
 
-// 统计卡片
-.stat-card {
+.kpi-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--apple-spacing-xxs);
+  padding: var(--apple-spacing-md) var(--apple-spacing-lg);
   background: var(--apple-surface);
-  border: 1px solid var(--apple-slate-border);
-  border-radius: 18px;
-  padding: 20px;
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-lg);
+}
+
+.kpi-label {
+  font-size: var(--apple-fs-caption);
+  color: var(--apple-ink-muted-48);
+}
+
+.kpi-value {
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-display-md);
+  font-weight: 600;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+// ── 布局 ────────────────────────────────────────────────────
+.dashboard-main {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: var(--apple-spacing-lg);
+  align-items: start;
+}
+
+.dashboard-col,
+.dashboard-aside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--apple-spacing-lg);
+  min-width: 0;
+}
+
+// ── 卡片 ────────────────────────────────────────────────────
+.dash-card {
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-lg);
+  padding: var(--apple-spacing-lg);
+}
+
+.dash-card-head {
   display: flex;
   align-items: center;
-  gap: 16px;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    /* translateY removed */
-    /* box-shadow removed */
-    border-color: var(--apple-slate-border-strong);
+  justify-content: space-between;
+  gap: var(--apple-spacing-sm);
+  margin-bottom: var(--apple-spacing-md);
+}
+
+.dash-card-title {
+  display: flex;
+  align-items: center;
+  gap: var(--apple-spacing-xs);
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-body-strong);
+  font-weight: 600;
+  color: var(--apple-ink);
+}
+
+.dash-card-title .el-icon {
+  color: var(--apple-ink-muted-48);
+}
+
+.dash-card-hint {
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-secondary);
+}
+
+.card-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--apple-spacing-xs);
+  padding: var(--apple-spacing-xl) var(--apple-spacing-lg);
+  color: var(--apple-ink-muted-48);
+  text-align: center;
+
+  p {
+    margin: 0;
+    font-size: var(--apple-fs-caption);
   }
-  
-  .stat-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    flex-shrink: 0;
-    
-    &.paper-icon {
-      background: var(--apple-canvas-parchment);
-      color: var(--apple-primary);
-    }
-    
-    &.pending-icon {
-      background: var(--apple-canvas-parchment);
-      color: var(--apple-warning);
-    }
-    
-    &.approved-icon {
-      background: var(--apple-canvas-parchment);
-      color: var(--apple-success);
-    }
-    
-    &.revision-icon {
-      background: var(--apple-canvas-parchment);
-      color: var(--apple-danger);
-    }
-  }
-  
-  .stat-content {
-    flex: 1;
-    
-    .stat-value {
-      font-size: 1.75rem;
-      font-weight: 600;
-      color: var(--apple-ink);
-      line-height: 1.2;
-      margin-bottom: 4px;
-    }
-    
-    .stat-label {
-      font-size: 0.875rem;
-      color: var(--apple-ink-secondary);
-      font-weight: 600;
-    }
+
+  &.compact {
+    padding: var(--apple-spacing-lg) var(--apple-spacing-sm);
   }
 }
 
-// 通用区域样式
-.section {
-  margin-bottom: 32px;
-  
-  .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    
-    .section-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: var(--apple-ink);
-      
-      .el-icon {
-        color: var(--apple-ink-secondary);
-      }
-    }
-  }
+.card-empty .empty-icon {
+  font-size: 28px;
+  color: var(--apple-ink-secondary);
 }
 
-// 时间节点
-.time-section {
-  
-  .deadlines-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 16px;
-  }
+.empty-hint {
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-secondary);
 }
 
-.deadline-card {
-  background: var(--apple-surface);
-  border: 1px solid var(--apple-slate-border);
-  border-radius: 18px;
-  padding: 20px;
+// ── 当前论文 ────────────────────────────────────────────────
+.paper-headline {
   display: flex;
   align-items: flex-start;
-  gap: 16px;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    /* translateY removed */
-    /* box-shadow removed */
-    border-color: var(--apple-slate-border-strong);
+  justify-content: space-between;
+  gap: var(--apple-spacing-sm);
+  margin-bottom: var(--apple-spacing-sm);
+}
+
+.paper-title {
+  margin: 0;
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-lead-airy);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--apple-ink);
+  word-break: break-word;
+}
+
+.status-badge {
+  flex-shrink: 0;
+  padding: 3px 10px;
+  border-radius: var(--apple-rounded-pill);
+  font-size: var(--apple-fs-fine-print);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.status-primary {
+  color: var(--apple-primary);
+  background: var(--apple-info-bg);
+}
+
+.status-success {
+  color: var(--apple-success);
+  background: var(--apple-success-bg);
+}
+
+.status-warning {
+  color: var(--apple-warning);
+  background: var(--apple-warning-bg);
+}
+
+.status-danger {
+  color: var(--apple-danger);
+  background: var(--apple-danger-bg);
+}
+
+.status-info {
+  color: var(--apple-ink-muted-48);
+  background: var(--apple-canvas-parchment);
+}
+
+.paper-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--apple-spacing-xs) var(--apple-spacing-lg);
+  margin-bottom: var(--apple-spacing-md);
+}
+
+.meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--apple-fs-caption);
+  color: var(--apple-ink-muted-48);
+}
+
+.paper-similarity {
+  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+  background: var(--apple-canvas-parchment);
+  border-radius: var(--apple-rounded-md);
+}
+
+.similarity-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.similarity-label {
+  font-size: var(--apple-fs-caption);
+  color: var(--apple-ink-muted-48);
+}
+
+.similarity-value {
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-tagline);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+
+  &.status-success { color: var(--apple-success); }
+  &.status-warning { color: var(--apple-warning); }
+  &.status-danger { color: var(--apple-danger); }
+  &.status-info { color: var(--apple-ink-secondary); }
+}
+
+.similarity-track {
+  height: 6px;
+  border-radius: var(--apple-rounded-pill);
+  background: var(--apple-hairline);
+  overflow: hidden;
+}
+
+.similarity-fill {
+  height: 100%;
+  border-radius: var(--apple-rounded-pill);
+  transition: width var(--apple-transition-slow);
+
+  &.similarity-low { background: var(--apple-success); }
+  &.similarity-medium { background: var(--apple-warning); }
+  &.similarity-high { background: var(--apple-danger); }
+  &.similarity-neutral { background: var(--apple-hairline); }
+}
+
+.similarity-note {
+  margin: 6px 0 0;
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-secondary);
+}
+
+.paper-feedback {
+  margin-top: var(--apple-spacing-md);
+  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+  background: var(--apple-info-bg);
+  border-radius: var(--apple-rounded-md);
+}
+
+.feedback-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  font-size: var(--apple-fs-fine-print);
+  font-weight: 600;
+  color: var(--apple-primary);
+}
+
+.feedback-text {
+  margin: 0;
+  font-size: var(--apple-fs-caption);
+  line-height: var(--apple-lh-caption);
+  color: var(--apple-ink);
+}
+
+.paper-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--apple-spacing-md);
+}
+
+// ── 待办 ────────────────────────────────────────────────────
+.todo-list {
+  min-height: 40px;
+}
+
+.todo-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--apple-spacing-sm);
+  padding: var(--apple-spacing-sm) 0;
+  border-bottom: 1px solid var(--apple-divider-soft);
+
+  &:last-child {
+    border-bottom: none;
   }
-  
-  &.submission {
-    border-left: 4px solid var(--apple-success);
-  }
-  
-  &.review {
-    border-left: 4px solid var(--apple-primary);
-  }
-  
-  &.defense {
-    border-left: 4px solid var(--apple-warning);
-  }
-  
-  &.graduation {
-    border-left: 4px solid var(--apple-primary);
-  }
-  
-  .deadline-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 11px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    flex-shrink: 0;
-    background: var(--apple-canvas-parchment);
-    color: var(--apple-ink-secondary);
-  }
-  
-  .deadline-content {
-    flex: 1;
-    
-    .deadline-label {
-      font-size: 0.875rem;
-      color: var(--apple-ink-secondary);
-      margin-bottom: 6px;
-      font-weight: 600;
-    }
-    
-    .deadline-date {
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: var(--apple-ink);
-      margin-bottom: 8px;
-    }
-    
-    .deadline-countdown {
-      
-      .countdown-badge {
-        display: inline-block;
-        padding: 4px 12px;
-        border-radius: 18px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        
-        &.danger {
-          background: var(--apple-canvas-parchment);
-          color: var(--apple-danger);
-        }
-        
-        &.warning {
-          background: var(--apple-canvas-parchment);
-          color: var(--apple-warning);
-        }
-        
-        &.success {
-          background: var(--apple-canvas-parchment);
-          color: var(--apple-success);
-        }
-        
-        &.goal {
-          background: var(--apple-canvas-parchment);
-          color: var(--apple-primary);
-        }
-      }
-    }
+
+  &.is-done .todo-title {
+    text-decoration: line-through;
+    color: var(--apple-ink-muted-48);
   }
 }
 
-// 主要内容区域
-.main-content {
-  display: grid;
-  grid-template-columns: 1fr 320px;
-  gap: 24px;
-  
-  @media (max-width: 1200px) {
-    grid-template-columns: 1fr;
-  }
+.todo-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  margin-top: 7px;
+  border-radius: var(--apple-rounded-full);
+
+  &.priority-high { background: var(--apple-danger); }
+  &.priority-normal { background: var(--apple-warning); }
+  &.priority-low { background: var(--apple-info); }
 }
 
-// 通用卡片样式
-.card {
-  background: var(--apple-surface);
-  border: 1px solid var(--apple-slate-border);
-  border-radius: 18px;
-  padding: 24px;
-  margin-bottom: 24px;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    /* box-shadow removed */
-    border-color: var(--apple-slate-border-strong);
-  }
-  
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    
-    .card-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: var(--apple-ink);
-      
-      .el-icon {
-        color: var(--apple-ink-secondary);
-      }
-    }
-    
-    .card-actions {
-      display: flex;
-      gap: 8px;
-    }
-  }
+.todo-main {
+  flex: 1;
+  min-width: 0;
 }
 
-// 论文进度卡片
-.paper-progress-card {
-  
-  .progress-content {
-    
-    .progress-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--apple-slate-border);
-      
-      h3 {
-        margin: 0;
-        font-size: 1.125rem;
-        font-weight: 600;
-        color: var(--apple-ink);
-      }
-      
-      .progress-status {
-        padding: 4px 12px;
-        border-radius: 18px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        
-        &.status-info {
-          background: var(--apple-canvas-parchment);
-          color: var(--apple-primary);
-        }
-        
-        &.status-primary {
-          background: var(--apple-canvas-parchment);
-          color: var(--apple-primary);
-        }
-        
-        &.status-warning {
-          background: var(--apple-canvas-parchment);
-          color: var(--apple-warning);
-        }
-        
-        &.status-danger {
-          background: var(--apple-canvas-parchment);
-          color: var(--apple-danger);
-        }
-        
-        &.status-success {
-          background: var(--apple-canvas-parchment);
-          color: var(--apple-success);
-        }
-      }
-    }
-    
-    .progress-steps {
-      margin-bottom: 24px;
-      
-      .progress-step {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        margin-bottom: 16px;
-        
-        &:last-child {
-          margin-bottom: 0;
-        }
-        
-        .step-number {
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 14px;
-          font-weight: 600;
-          flex-shrink: 0;
-        }
-        
-        .step-content {
-          flex: 1;
-          
-          .step-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--apple-ink);
-            margin-bottom: 2px;
-          }
-          
-          .step-description {
-            font-size: 12px;
-            color: var(--apple-ink-secondary);
-          }
-        }
-        
-        &.step-active {
-          .step-number {
-            background: var(--apple-success);
-            color: white;
-          }
-        }
-        
-        &.step-current {
-          .step-number {
-            background: var(--apple-primary);
-            color: white;
-          }
-        }
-        
-        &.step-pending {
-          .step-number {
-            background: var(--apple-canvas-parchment);
-            color: var(--apple-ink-secondary);
-          }
-          
-          .step-title {
-            color: var(--apple-ink-secondary);
-          }
-        }
-      }
-    }
-    
-    .progress-summary {
-      display: flex;
-      gap: 24px;
-      padding: 16px;
-      background: var(--apple-canvas-parchment);
-      border-radius: 11px;
-      
-      .summary-item {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 0.875rem;
-        color: var(--apple-ink-secondary);
-        
-        .el-icon {
-          color: var(--apple-ink-secondary);
-        }
-      }
-    }
-  }
-  
-  .paper-details {
-    margin-top: 24px;
-    padding-top: 24px;
-    border-top: 1px solid var(--apple-slate-border);
-    
-    .paper-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      
-      h4 {
-        margin: 0;
-        font-size: 1rem;
-        font-weight: 600;
-        color: var(--apple-ink);
-      }
-      
-      .paper-status {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        
-        .status-badge {
-          padding: 4px 12px;
-          border-radius: 18px;
-          font-size: 0.75rem;
-          font-weight: 600;
-          
-          &.status-info {
-            background: var(--apple-canvas-parchment);
-            color: var(--apple-primary);
-          }
-          &.status-primary {
-            background: var(--apple-canvas-parchment);
-            color: var(--apple-primary);
-          }
-          &.status-warning {
-            background: var(--apple-canvas-parchment);
-            color: var(--apple-warning);
-          }
-          &.status-danger {
-            background: var(--apple-canvas-parchment);
-            color: var(--apple-danger);
-          }
-          &.status-success {
-            background: var(--apple-canvas-parchment);
-            color: var(--apple-success);
-          }
-        }
-        
-        .paper-id {
-          font-size: 0.875rem;
-          color: var(--apple-ink-secondary);
-        }
-      }
-    }
-    
-    .paper-info {
-      
-      .info-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-        margin-bottom: 20px;
-        
-        @media (max-width: 768px) {
-          grid-template-columns: 1fr;
-        }
-        
-        &:last-child {
-          margin-bottom: 0;
-        }
-      }
-      
-      .info-item {
-        
-        .info-label {
-          font-size: 0.75rem;
-          color: var(--apple-ink-secondary);
-          margin-bottom: 8px;
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-        }
-        
-        .info-value {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          font-size: 0.95rem;
-          color: var(--apple-ink);
-          font-weight: 600;
-          
-          &.title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--apple-primary);
-            
-            span {
-              display: block;
-              max-width: 100%;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-            }
-          }
-          
-          &.similarity {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 12px;
-            
-            .similarity-display {
-              display: flex;
-              align-items: center;
-              gap: 12px;
-              width: 100%;
-              
-              .similarity-bar {
-                flex: 1;
-                height: 6px;
-                border-radius: 3px;
-                
-                &.similarity-low {
-                  background: var(--apple-success);
-                }
-                &.similarity-medium {
-                  background: var(--apple-warning);
-                }
-                &.similarity-high {
-                  background: var(--apple-danger);
-                }
-                &.similarity-neutral {
-                  background: var(--apple-ink-secondary);
-                }
-              }
-              
-              .similarity-text {
-                font-weight: 600;
-                font-size: 0.95rem;
-                min-width: 48px;
-                
-                &.similarity-low {
-                  color: var(--apple-success);
-                }
-                &.similarity-medium {
-                  color: var(--apple-warning);
-                }
-                &.similarity-high {
-                  color: var(--apple-danger);
-                }
-                &.similarity-neutral {
-                  color: var(--apple-ink-secondary);
-                }
-              }
-            }
-            
-            .similarity-status {
-              padding: 2px 8px;
-              border-radius: 18px;
-              font-size: 0.75rem;
-              font-weight: 600;
-              
-              &.status-info {
-                background: var(--apple-canvas-parchment);
-                color: var(--apple-primary);
-              }
-              &.status-success {
-                background: var(--apple-canvas-parchment);
-                color: var(--apple-success);
-              }
-              &.status-warning {
-                background: var(--apple-canvas-parchment);
-                color: var(--apple-warning);
-              }
-              &.status-danger {
-                background: var(--apple-canvas-parchment);
-                color: var(--apple-danger);
-              }
-            }
-          }
-          
-          .word-count, .version {
-            padding: 2px 8px;
-            border-radius: 18px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            
-            &.word-count {
-              background: var(--apple-canvas-parchment);
-              color: var(--apple-success);
-            }
-            
-            &.version {
-              background: var(--apple-canvas-parchment);
-              color: var(--apple-primary);
-            }
-          }
-        }
-      }
-    }
-    
-    .paper-feedback {
-      margin: 20px 0;
-      padding: 16px;
-      background: var(--apple-canvas-parchment);
-      border-radius: 11px;
-      
-      .feedback-header {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 12px;
-        
-        .el-icon {
-          color: var(--apple-ink-secondary);
-        }
-        
-        span {
-          font-weight: 600;
-          color: var(--apple-ink);
-        }
-      }
-      
-      .feedback-content {
-        color: var(--apple-ink-secondary);
-        line-height: 1.5;
-        font-size: 0.875rem;
-      }
-    }
-    
-    .paper-actions {
-      margin-top: 20px;
-      display: flex;
-      justify-content: flex-end;
-    }
-  }
-  
-  .no-paper {
-    padding: 40px 0;
-    text-align: center;
-    
-    .no-paper-content {
-      
-      .empty-icon {
-        font-size: 48px;
-        color: var(--apple-ink-secondary);
-        margin-bottom: 16px;
-      }
-      
-      h4 {
-        margin: 0 0 8px 0;
-        font-size: 1.125rem;
-        font-weight: 600;
-        color: var(--apple-ink);
-      }
-      
-      p {
-        margin: 0 0 24px 0;
-        color: var(--apple-ink-secondary);
-        font-size: 0.875rem;
-      }
-    }
-  }
+.todo-title {
+  font-size: var(--apple-fs-caption);
+  font-weight: 500;
+  color: var(--apple-ink);
 }
 
-// 图表区域
+.todo-desc {
+  margin-top: 2px;
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-secondary);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.todo-due {
+  flex-shrink: 0;
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
+  font-variant-numeric: tabular-nums;
+}
+
+// ── 进度 ────────────────────────────────────────────────────
+.progress-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--apple-spacing-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.progress-step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--apple-spacing-sm);
+  opacity: 0.55;
+}
+
+.progress-step.step-done,
+.progress-step.step-current {
+  opacity: 1;
+}
+
+.step-index {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--apple-rounded-full);
+  background: var(--apple-canvas-parchment);
+  color: var(--apple-ink-muted-48);
+  font-size: var(--apple-fs-fine-print);
+  font-weight: 600;
+}
+
+.step-done .step-index {
+  background: var(--apple-success-bg);
+  color: var(--apple-success);
+}
+
+.step-current .step-index {
+  background: var(--apple-primary);
+  color: var(--apple-on-primary);
+}
+
+.step-title {
+  font-size: var(--apple-fs-caption);
+  font-weight: 500;
+}
+
+.step-desc {
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-secondary);
+}
+
+.progress-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--apple-spacing-sm) var(--apple-spacing-lg);
+  margin-top: var(--apple-spacing-md);
+  padding-top: var(--apple-spacing-sm);
+  border-top: 1px solid var(--apple-divider-soft);
+}
+
+.summary-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
+}
+
+// ── 图表 ────────────────────────────────────────────────────
 .charts-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin-bottom: 24px;
-  
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--apple-spacing-md);
 }
 
 .chart-card {
-  
-  .chart-container {
-    height: 300px;
-    width: 100%;
-  }
-  
-  .chart-container-large {
-    height: 400px;
-    width: 100%;
-  }
-  
-  .chart-empty {
-    height: 300px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    color: var(--apple-ink-secondary);
-    
-    .empty-icon {
-      font-size: 40px;
-    }
-    
-    p {
-      margin: 0;
-      font-size: 0.875rem;
-    }
-  }
-  
+  min-width: 0;
+
   &.full-width {
-    grid-column: 1 / -1;
+    margin-top: var(--apple-spacing-md);
   }
 }
 
-// 通知消息卡片
-.notification-card {
-  
-  .notification-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    
-    .notification-item {
-      padding: 12px;
-      border-radius: 11px;
-      background: var(--apple-canvas-parchment);
-      
-      .notification-title {
-        font-size: 0.875rem;
-        font-weight: 600;
-        color: var(--apple-ink);
-        margin-bottom: 4px;
-      }
-      
-      .notification-content {
-        font-size: 0.8rem;
-        color: var(--apple-ink-secondary);
-        line-height: 1.4;
-        margin-bottom: 4px;
-      }
-      
-      .notification-time {
-        font-size: 0.75rem;
-        color: var(--apple-ink-secondary);
-      }
-    }
-  }
-  
-  .notification-empty {
-    padding: 32px 0;
-    text-align: center;
-    color: var(--apple-ink-secondary);
-    
-    .empty-icon {
-      font-size: 40px;
-      margin-bottom: 8px;
-    }
-    
-    p {
-      margin: 0;
-      font-size: 0.875rem;
-    }
-  }
-}
-
-// 导师卡片
-.advisor-card {
-  
-  .advisor-profile {
-    
-    .advisor-avatar-section {
-      text-align: center;
-      margin-bottom: 20px;
-      
-      .advisor-avatar {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        background: var(--apple-canvas-parchment);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 24px;
-        font-weight: 600;
-        color: var(--apple-ink-secondary);
-        margin: 0 auto 12px;
-        background-size: cover;
-        background-position: center;
-      }
-      
-      .advisor-status {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        font-size: 0.75rem;
-        color: var(--apple-ink-secondary);
-        
-        .status-indicator {
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          
-          &.online {
-            background: var(--apple-success);
-          }
-          
-          &.offline {
-            background: var(--apple-ink-secondary);
-          }
-          
-          &.unknown {
-            background: var(--apple-surface-chip-translucent);
-          }
-        }
-      }
-    }
-    
-    .advisor-info {
-      text-align: center;
-      margin-bottom: 20px;
-      
-      .advisor-name {
-        margin: 0 0 4px 0;
-        font-size: 1.125rem;
-        font-weight: 600;
-        color: var(--apple-ink);
-      }
-      
-      .advisor-title {
-        margin: 0 0 16px 0;
-        font-size: 0.875rem;
-        color: var(--apple-ink-secondary);
-      }
-      
-      .advisor-expertise {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        justify-content: center;
-        margin-bottom: 16px;
-        
-        .expertise-tag {
-          padding: 4px 12px;
-          border-radius: 18px;
-          font-size: 0.75rem;
-          background: var(--apple-canvas-parchment);
-          color: var(--apple-ink-secondary);
-        }
-      }
-      
-      .advisor-contact {
-        
-        .contact-item {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          font-size: 0.875rem;
-          color: var(--apple-ink-secondary);
-          margin-bottom: 8px;
-          
-          &:last-child {
-            margin-bottom: 0;
-          }
-          
-          .el-icon {
-            color: var(--apple-ink-secondary);
-            flex-shrink: 0;
-          }
-        }
-      }
-    }
-    
-    .advisor-stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      padding-top: 16px;
-      border-top: 1px solid var(--apple-slate-border);
-      
-      .stat-item {
-        text-align: center;
-        
-        .stat-number {
-          font-size: 1.25rem;
-          font-weight: 600;
-          color: var(--apple-ink);
-          margin-bottom: 4px;
-        }
-        
-        .stat-label {
-          font-size: 0.75rem;
-          color: var(--apple-ink-secondary);
-          font-weight: 600;
-        }
-      }
-    }
-  }
-  
-  .no-advisor {
-    padding: 40px 0;
-    text-align: center;
-    
-    .no-advisor-content {
-      
-      .empty-icon {
-        font-size: 48px;
-        color: var(--apple-ink-secondary);
-        margin-bottom: 16px;
-      }
-      
-      h4 {
-        margin: 0 0 8px 0;
-        font-size: 1.125rem;
-        font-weight: 600;
-        color: var(--apple-ink);
-      }
-      
-      p {
-        margin: 0 0 24px 0;
-        color: var(--apple-ink-secondary);
-        font-size: 0.875rem;
-      }
-    }
-  }
-}
-
-// 按钮样式
-.primary-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  border-radius: 11px;
-  background: var(--apple-primary);
-  color: white;
-  font-size: 0.875rem;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    background: var(--apple-primary-active);
-    /* translateY and box-shadow removed */
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
-  
-  .el-icon {
-    font-size: 16px;
-  }
-}
-
-.secondary-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  border-radius: 11px;
-  background: var(--apple-canvas-parchment);
-  color: var(--apple-ink);
-  font-size: 0.875rem;
-  font-weight: 600;
-  border: 1px solid var(--apple-slate-border);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    background: var(--apple-slate-border);
-    border-color: var(--apple-slate-border-strong);
-    /* translateY removed */
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
-  
-  .el-icon {
-    font-size: 16px;
-  }
-}
-
-.text-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 6px 12px;
-  border-radius: 11px;
-  background: transparent;
-  color: var(--apple-ink-secondary);
-  font-size: 0.75rem;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    background: var(--apple-canvas-parchment);
-    color: var(--apple-ink);
-  }
-  
-  .el-icon {
-    font-size: 14px;
-  }
-}
-
-.icon-button {
+.chart-head {
   display: flex;
   align-items: center;
+  gap: 6px;
+  margin-bottom: var(--apple-spacing-xs);
+  font-size: var(--apple-fs-caption);
+  color: var(--apple-ink-muted-48);
+}
+
+.chart-container {
+  width: 100%;
+  height: 280px;
+}
+
+.chart-container-large {
+  width: 100%;
+  height: 300px;
+}
+
+.chart-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 11px;
-  background: transparent;
+  gap: var(--apple-spacing-xs);
+  height: 280px;
+  color: var(--apple-ink-muted-48);
+  font-size: var(--apple-fs-fine-print);
+  background: var(--apple-canvas-parchment);
+  border-radius: var(--apple-rounded-md);
+}
+
+.chart-empty .empty-icon {
+  font-size: 24px;
   color: var(--apple-ink-secondary);
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    background: var(--apple-canvas-parchment);
-    color: var(--apple-ink);
-  }
-  
-  .el-icon {
-    font-size: 16px;
+}
+
+// ── 时间节点 ────────────────────────────────────────────────
+.deadline-list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.deadline-item {
+  display: flex;
+  align-items: center;
+  gap: var(--apple-spacing-sm);
+  padding: var(--apple-spacing-sm) 0;
+  border-bottom: 1px solid var(--apple-divider-soft);
+
+  &:last-child {
+    border-bottom: none;
   }
 }
 
-// 响应式设计
+.deadline-icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--apple-rounded-sm);
+  background: var(--apple-canvas-parchment);
+  color: var(--apple-primary);
+}
+
+.deadline-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.deadline-label {
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
+}
+
+.deadline-date {
+  font-size: var(--apple-fs-caption);
+  font-weight: 500;
+  color: var(--apple-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown-badge {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border-radius: var(--apple-rounded-pill);
+  font-size: var(--apple-fs-fine-print);
+  white-space: nowrap;
+
+  &.success {
+    color: var(--apple-success);
+    background: var(--apple-success-bg);
+  }
+
+  &.warning {
+    color: var(--apple-warning);
+    background: var(--apple-warning-bg);
+  }
+
+  &.danger {
+    color: var(--apple-danger);
+    background: var(--apple-danger-bg);
+  }
+
+  &.goal {
+    color: var(--apple-primary);
+    background: var(--apple-info-bg);
+  }
+}
+
+// ── 导师 ────────────────────────────────────────────────────
+.advisor-profile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--apple-spacing-sm);
+}
+
+.advisor-avatar-section {
+  display: flex;
+  align-items: center;
+  gap: var(--apple-spacing-sm);
+}
+
+.advisor-avatar {
+  width: 48px;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--apple-rounded-full);
+  background-color: var(--apple-canvas-parchment);
+  background-size: cover;
+  background-position: center;
+  font-size: var(--apple-fs-body-strong);
+  font-weight: 600;
+  color: var(--apple-primary);
+}
+
+.advisor-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
+}
+
+.status-indicator {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--apple-rounded-full);
+  background: var(--apple-ink-secondary);
+
+  &.online { background: var(--apple-success); }
+  &.offline { background: var(--apple-ink-secondary); }
+  &.unknown { background: var(--apple-hairline); }
+}
+
+.advisor-name {
+  margin: 0;
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-body-strong);
+  font-weight: 600;
+}
+
+.advisor-title {
+  margin: 2px 0 0;
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
+}
+
+.advisor-expertise {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: var(--apple-spacing-xs);
+}
+
+.expertise-tag {
+  padding: 2px 8px;
+  border-radius: var(--apple-rounded-pill);
+  background: var(--apple-canvas-parchment);
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
+}
+
+.advisor-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: var(--apple-spacing-sm);
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: var(--apple-spacing-xs);
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
+  word-break: break-all;
+}
+
+.advisor-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--apple-spacing-xs);
+  padding-top: var(--apple-spacing-sm);
+  border-top: 1px solid var(--apple-divider-soft);
+}
+
+.advisor-stat {
+  text-align: center;
+}
+
+.advisor-stat .stat-number {
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-body-strong);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.advisor-stat .stat-label {
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
+}
+
+// ── 通知 ────────────────────────────────────────────────────
+.notification-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.notification-item {
+  padding: var(--apple-spacing-sm) 0;
+  border-bottom: 1px solid var(--apple-divider-soft);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.notification-title {
+  font-size: var(--apple-fs-caption);
+  font-weight: 500;
+  color: var(--apple-ink);
+}
+
+.notification-content {
+  margin-top: 2px;
+  font-size: var(--apple-fs-fine-print);
+  line-height: 1.5;
+  color: var(--apple-ink-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.notification-time {
+  margin-top: 4px;
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
+  font-variant-numeric: tabular-nums;
+}
+
+// ── 响应式 ──────────────────────────────────────────────────
+@media (max-width: 1200px) {
+  .dashboard-main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
-  .student-dashboard {
-    padding: 16px;
+  .dashboard-page {
+    padding: var(--apple-spacing-sm);
   }
-  
-  .welcome-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-  
-  .welcome-actions {
-    width: 100%;
-    
-    .primary-button,
-    .secondary-button {
-      flex: 1;
-      justify-content: center;
-    }
-  }
-  
-  .stats-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-  
-  .deadlines-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .info-row {
-    grid-template-columns: 1fr !important;
-  }
-  
-  .charts-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .chart-card.full-width {
-    grid-column: 1;
-  }
-}
 
-@media (max-width: 480px) {
-  .stats-grid {
-    grid-template-columns: 1fr;
+  .kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  
-  .welcome-title {
-    font-size: 1.5rem !important;
+
+  .charts-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
-  
-  .card {
-    padding: 20px;
+
+  .paper-headline {
+    flex-direction: column;
   }
 }
 </style>
