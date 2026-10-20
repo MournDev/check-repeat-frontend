@@ -367,4 +367,62 @@ onMounted(() => {
     }
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.review-workflow {
+  .workflow-card {
+    .workflow-steps {
+      .steps-container {
+        .step-item {
+          padding: var(--apple-spacing-md);
+          margin-bottom: var(--apple-spacing-md);
+          border-radius: var(--apple-rounded-md);
+
+          .step-header {
+            gap: var(--apple-spacing-sm);
+            margin-bottom: var(--apple-spacing-md);
+
+            .step-info {
+              gap: var(--apple-spacing-sm);
+
+              .step-number {
+                font-size: var(--apple-fs-body-strong);
+              }
+            }
+
+            .step-actions {
+              gap: var(--apple-spacing-xs);
+            }
+          }
+
+          .step-content {
+            .step-form-item {
+              margin-bottom: var(--apple-spacing-sm);
+            }
+
+            .unit {
+              margin-left: var(--apple-spacing-xs);
+            }
+          }
+        }
+
+        .empty-steps {
+          padding: var(--apple-spacing-xl) 0;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .review-workflow .workflow-card .workflow-steps .steps-container .step-item {
+    .step-header {
+      flex-wrap: wrap;
+    }
+
+    .step-content {
+      margin-left: 0;
+    }
+  }
+}
 </style>

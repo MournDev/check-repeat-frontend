@@ -399,4 +399,41 @@ const handleLogin = () => {
   text-decoration: underline;
   color: var(--apple-primary-active) !important;
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.auth-form {
+  :deep(.el-form-item) {
+    margin-bottom: var(--apple-spacing-md);
+  }
+
+  :deep(.el-input__wrapper) {
+    border: 1px solid var(--apple-hairline) !important;
+    border-radius: var(--apple-rounded-pill) !important;
+  }
+
+  :deep(.el-input__inner) {
+    font-size: var(--apple-fs-caption) !important;
+  }
+}
+
+.field-label {
+  margin-bottom: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.divider {
+  gap: var(--apple-spacing-sm);
+  margin-top: var(--apple-spacing-md);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.divider::before,
+.divider::after {
+  background: var(--apple-hairline);
+}
+
+.signup-row {
+  margin-top: var(--apple-spacing-lg);
+  font-size: var(--apple-fs-fine-print);
+}
 </style>

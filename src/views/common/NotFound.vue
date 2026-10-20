@@ -78,4 +78,45 @@
     }
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.not-found-container {
+  padding: var(--apple-spacing-lg);
+  font-family: var(--apple-font-text);
+}
+
+.not-found-content {
+  padding: var(--apple-spacing-xxl);
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-lg);
+
+  h2 {
+    margin: var(--apple-spacing-md) 0;
+    font-size: var(--apple-fs-lead-airy);
+    font-family: var(--apple-font-display);
+    color: var(--apple-ink);
+  }
+
+  p {
+    margin-bottom: var(--apple-spacing-xl);
+    font-size: var(--apple-fs-body-strong);
+    color: var(--apple-ink-muted-48);
+  }
+
+  .el-button {
+    padding: var(--apple-spacing-xs) var(--apple-spacing-lg);
+    border-radius: var(--apple-rounded-sm);
+    font-size: var(--apple-fs-caption);
+  }
+}
+
+@media (max-width: 768px) {
+  .not-found-content {
+    padding: var(--apple-spacing-lg);
+
+    h1 {
+      font-size: 80px;
+    }
+  }
+}
 </style>

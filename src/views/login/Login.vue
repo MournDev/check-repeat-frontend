@@ -548,4 +548,120 @@ const handleForgotPassword = () => {
     font-size: 22px;
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.login-page {
+  font-family: var(--apple-font-text);
+}
+
+.left-panel {
+  padding: var(--apple-spacing-xxl);
+  background: var(--apple-surface-tile-1);
+}
+
+.left-top {
+  gap: var(--apple-spacing-xs);
+  font-size: var(--apple-fs-tagline);
+}
+
+.brand-mark {
+  border-radius: var(--apple-rounded-md);
+}
+
+.brand-name {
+  font-size: var(--apple-fs-tagline);
+}
+
+.left-footer {
+  gap: var(--apple-spacing-lg);
+}
+
+.left-footer a {
+  font-size: var(--apple-fs-fine-print);
+}
+
+.right-panel {
+  padding: var(--apple-spacing-xl);
+}
+
+.mobile-logo {
+  gap: var(--apple-spacing-xs);
+  margin-bottom: var(--apple-spacing-xxl);
+  font-size: var(--apple-fs-tagline);
+  color: var(--apple-ink);
+}
+
+.mobile-logo-icon {
+  border-radius: var(--apple-rounded-sm);
+}
+
+.form-header {
+  margin-bottom: var(--apple-spacing-xl);
+}
+
+.form-title {
+  margin-bottom: var(--apple-spacing-xs);
+  font-size: var(--apple-fs-lead-airy);
+  font-family: var(--apple-font-display);
+  color: var(--apple-ink);
+}
+
+.form-subtitle {
+  font-size: var(--apple-fs-caption);
+}
+
+.login-form {
+  :deep(.el-form-item) {
+    margin-bottom: var(--apple-spacing-md);
+  }
+
+  :deep(.el-input__wrapper) {
+    border: 1px solid var(--apple-hairline) !important;
+    border-radius: var(--apple-rounded-pill) !important;
+  }
+
+  :deep(.el-input__inner) {
+    font-size: var(--apple-fs-caption) !important;
+  }
+}
+
+.field-label {
+  margin-bottom: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.divider {
+  gap: var(--apple-spacing-sm);
+  margin-top: var(--apple-spacing-md);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.divider::before,
+.divider::after {
+  background: var(--apple-hairline);
+}
+
+.signup-row {
+  margin-top: var(--apple-spacing-lg);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.password-forgot {
+  margin-top: var(--apple-spacing-sm);
+  margin-bottom: var(--apple-spacing-md);
+}
+
+.forgot-link {
+  font-size: var(--apple-fs-fine-print);
+}
+
+@media (max-width: 480px) {
+  .right-panel {
+    padding: var(--apple-spacing-md);
+  }
+
+  .form-title {
+    font-size: var(--apple-fs-tagline);
+  }
+}
 </style>

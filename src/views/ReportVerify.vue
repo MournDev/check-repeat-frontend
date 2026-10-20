@@ -326,4 +326,84 @@ const handleVerify = async () => {
     font-size: 22px;
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.verify-page {
+  padding: var(--apple-spacing-xl) var(--apple-spacing-lg);
+}
+
+.verify-card {
+  padding: var(--apple-spacing-xl);
+}
+
+.card-header {
+  margin-bottom: var(--apple-spacing-xl);
+}
+
+.card-title {
+  margin-bottom: var(--apple-spacing-xs);
+  font-size: var(--apple-fs-lead-airy);
+  font-family: var(--apple-font-display);
+}
+
+.card-subtitle {
+  font-size: var(--apple-fs-caption);
+}
+
+.tip-bar {
+  margin-top: var(--apple-spacing-md);
+}
+
+.result-card {
+  margin-top: var(--apple-spacing-lg);
+  padding: var(--apple-spacing-md);
+  border-radius: var(--apple-rounded-md);
+
+  &.result-success {
+    background: var(--apple-success-bg);
+    border-color: var(--apple-success-border);
+  }
+
+  &.result-error {
+    background: var(--apple-danger-bg);
+    border-color: var(--apple-danger-border);
+  }
+}
+
+.result-head {
+  gap: var(--apple-spacing-xs);
+  margin-bottom: var(--apple-spacing-sm);
+}
+
+.result-title {
+  font-size: var(--apple-fs-body-strong);
+  font-family: var(--apple-font-display);
+}
+
+.result-rows {
+  gap: var(--apple-spacing-xs);
+}
+
+.result-row {
+  gap: var(--apple-spacing-md);
+  font-size: var(--apple-fs-caption);
+}
+
+.row-value.rate {
+  font-size: var(--apple-fs-body-strong);
+}
+
+.result-message {
+  font-size: var(--apple-fs-caption);
+}
+
+@media (max-width: 480px) {
+  .verify-card {
+    padding: var(--apple-spacing-lg);
+  }
+
+  .card-title {
+    font-size: var(--apple-fs-tagline);
+  }
+}
 </style>

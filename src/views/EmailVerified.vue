@@ -159,7 +159,60 @@ onMounted(() => {
           transition: transform 0.15s ease;
         }
       }
+  }
+}
+}
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.verify-email-page {
+  padding: var(--apple-spacing-lg);
+  font-family: var(--apple-font-text);
+}
+
+.loading-container,
+.success-container,
+.error-container {
+  padding: var(--apple-spacing-xxl);
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-lg);
+
+  &:hover {
+    border-color: var(--apple-hairline);
+  }
+
+  :deep(.el-result) {
+    .el-result__title {
+      font-family: var(--apple-font-display);
+      color: var(--apple-ink);
     }
+
+    .el-result__subtitle {
+      font-size: var(--apple-fs-caption);
+      color: var(--apple-ink-muted-48);
+    }
+
+    .el-result__extra {
+      margin-top: var(--apple-spacing-xl);
+
+      .el-button {
+        margin: 0 var(--apple-spacing-xs);
+        padding: var(--apple-spacing-xs) var(--apple-spacing-lg);
+        border-radius: var(--apple-rounded-sm);
+        font-size: var(--apple-fs-caption);
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .verify-email-page {
+    padding: var(--apple-spacing-md);
+  }
+
+  .loading-container,
+  .success-container,
+  .error-container {
+    padding: var(--apple-spacing-lg);
   }
 }
 </style>

@@ -39,4 +39,16 @@ function saveSettings() { panelRef.value?.save() }
 
 // 学生版页面无整体卡片，去掉外层留白
 .role-student { padding: 0; }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.user-settings {
+  padding: var(--apple-spacing-lg);
+  font-family: var(--apple-font-text);
+}
+
+@media (max-width: 768px) {
+  .user-settings:not(.role-student) {
+    padding: var(--apple-spacing-sm);
+  }
+}
 </style>

@@ -700,4 +700,31 @@ watch(
     }
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.similarity-threshold {
+  .threshold-card {
+    .threshold-slider {
+      gap: var(--apple-spacing-md);
+    }
+
+    .help-text {
+      margin-top: var(--apple-spacing-xs);
+      font-size: var(--apple-fs-fine-print);
+      color: var(--apple-ink-muted-48);
+    }
+
+    .category-thresholds {
+      margin-top: var(--apple-spacing-md);
+
+      .empty-category-thresholds {
+        padding: var(--apple-spacing-xl) 0;
+      }
+
+      .all-types-label {
+        color: var(--apple-ink-muted-48);
+      }
+    }
+  }
+}
 </style>

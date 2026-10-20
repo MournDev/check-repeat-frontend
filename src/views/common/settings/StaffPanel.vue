@@ -475,4 +475,109 @@ defineExpose({ save: saveSettings })
   .security-item, .notification-item { flex-direction: column; align-items: flex-start !important; gap: 12px; }
   .profile-section { flex-direction: column; }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.main-content {
+  .section-card {
+    margin-bottom: var(--apple-spacing-md);
+    border: 1px solid var(--apple-hairline);
+    border-radius: var(--apple-rounded-lg);
+
+    :deep(.el-card__header) {
+      padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+      border-bottom: 1px solid var(--apple-hairline);
+    }
+
+    :deep(.el-card__body) {
+      padding: var(--apple-spacing-md);
+    }
+  }
+
+  .section-header {
+    gap: var(--apple-spacing-xs);
+    font-size: var(--apple-fs-body-strong);
+    font-family: var(--apple-font-display);
+  }
+}
+
+.role-TEACHER .section-card {
+  border-color: var(--apple-hairline);
+
+  :deep(.el-card__header) {
+    border-bottom-color: var(--apple-hairline);
+  }
+}
+
+.legacy-tip {
+  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
+
+  .legacy-tag {
+    margin-right: var(--apple-spacing-xxs);
+  }
+}
+
+.profile-section {
+  gap: var(--apple-spacing-lg);
+
+  .avatar-upload .avatar-preview .avatar-actions {
+    gap: var(--apple-spacing-xs);
+    margin-top: var(--apple-spacing-sm);
+  }
+}
+
+.role-TEACHER .profile-section {
+  margin-bottom: var(--apple-spacing-lg);
+}
+
+.security-section .security-item,
+.notification-section .notification-item {
+  padding: var(--apple-spacing-sm) 0;
+  border-bottom: 1px solid var(--apple-divider-soft);
+}
+
+.security-section .security-item .security-info {
+  .security-title {
+    margin-bottom: var(--apple-spacing-xxs);
+  }
+
+  .security-desc {
+    font-size: var(--apple-fs-fine-print);
+  }
+}
+
+.notification-section .notification-item .notification-info {
+  .notification-title {
+    margin-bottom: var(--apple-spacing-xxs);
+  }
+
+  .notification-desc {
+    font-size: var(--apple-fs-fine-print);
+  }
+}
+
+.preference-section .preference-item {
+  padding: var(--apple-spacing-sm) 0;
+  border-bottom: 1px solid var(--apple-divider-soft);
+
+  :deep(.el-slider),
+  :deep(.el-select) {
+    max-width: 260px;
+  }
+}
+
+.role-TEACHER .preference-section .preference-item {
+  padding: var(--apple-spacing-md) 0;
+
+  .preference-label {
+    margin-bottom: var(--apple-spacing-sm);
+  }
+}
+
+@media (max-width: 768px) {
+  .security-item,
+  .notification-item {
+    gap: var(--apple-spacing-sm);
+  }
+}
 </style>

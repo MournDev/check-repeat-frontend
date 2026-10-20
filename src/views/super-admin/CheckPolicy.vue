@@ -391,4 +391,42 @@ onMounted(() => {
   line-height: 1.5;
   color: var(--apple-ink-muted-48);
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.check-policy {
+  gap: var(--apple-spacing-md);
+}
+
+.head-row {
+  gap: var(--apple-spacing-md);
+}
+
+.head-title {
+  margin-bottom: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-tagline);
+  font-family: var(--apple-font-display);
+}
+
+.head-desc {
+  font-size: var(--apple-fs-fine-print);
+}
+
+.mechanism-alert {
+  margin-bottom: var(--apple-spacing-md);
+}
+
+.form-tip {
+  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
+}
+
+@media (max-width: 768px) {
+  .head-row {
+    flex-direction: column;
+  }
+
+  .num-input {
+    width: 100%;
+  }
+}
 </style>
