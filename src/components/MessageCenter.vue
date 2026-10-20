@@ -608,7 +608,7 @@ const handleMessageClick = async (notification) => {
   // 根据消息类型进行路由跳转
   switch (notification.messageType) {
     case 'PAPER_REVIEW':
-      router.push('/teacher/paper-review/pending')
+      router.push('/teacher/review-workbench')
       break
     case 'ADVISOR_MESSAGE':
       router.push('/student/advisor-interaction')

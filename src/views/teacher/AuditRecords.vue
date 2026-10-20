@@ -407,24 +407,32 @@ const handleMoreAction = async (row, command) => {
         ElMessage.error('无法获取论文信息')
         return
       }
-      try {
-        const { value: content } = await ElMessageBox.prompt('请输入要发送给学生的消息', '联系学生', {
-          inputType: 'textarea',
-          confirmButtonText: '发送',
-          cancelButtonText: '取消'
-        })
-        if (content) {
-          const res = await contactStudent({ paperId: String(paperId), content })
-          if (res.code === 200) {
-            ElMessage.success('消息已发送给学生')
-          } else {
-            ElMessage.error(res.message || '发送失败')
+      {
+        const studentId = row.studentId || row.studentBaseInfo?.studentId || row.paperBaseInfo?.studentId
+        try {
+          const { value: content } = await ElMessageBox.prompt('请输入要发送给学生的消息', '联系学生', {
+            inputType: 'textarea',
+            confirmButtonText: '发送',
+            cancelButtonText: '取消'
+          })
+          if (content) {
+            const res = await contactStudent({
+              paperId: String(paperId),
+              ...(studentId ? { studentId: String(studentId) } : {}),
+              message: content,
+              messageType: 'chat'
+            })
+            if (res.code === 200) {
+              ElMessage.success('消息已发送给学生')
+            } else {
+              ElMessage.error(res.message || '发送失败')
+            }
           }
-        }
-      } catch (error) {
-        if (error !== 'cancel') {
-          console.error('联系学生失败:', error)
-          ElMessage.error('发送消息失败，请稍后重试')
+        } catch (error) {
+          if (error !== 'cancel') {
+            console.error('联系学生失败:', error)
+            ElMessage.error('发送消息失败，请稍后重试')
+          }
         }
       }
       break

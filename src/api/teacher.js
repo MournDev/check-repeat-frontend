@@ -362,67 +362,32 @@ export const doReview = (data) => {
 // 获取待审核统计
 export const getPendingStats = () => {
   return request({
-    url: '/api/teacher/pending-reviews/stats',
+    url: '/api/teacher/reviews/pending-stats',
     method: 'get'
-  })
-}
-
-// 重新查重
-export const recheckPlagiarism = (paperId) => {
-  return request({
-    url: '/api/teacher/pending-reviews/recheck',
-    method: 'post',
-    data: { paperId: String(paperId) }
-  })
-}
-
-// 发送提醒
-export const sendReminder = (paperId) => {
-  return request({
-    url: '/api/teacher/pending-reviews/reminder',
-    method: 'post',
-    data: { paperId: String(paperId) }
   })
 }
 
 // 联系学生
 export const contactStudent = (data) => {
   return request({
-    url: '/api/teacher/pending-reviews/contact',
+    url: '/api/teacher/reviews/contact-student',
     method: 'post',
     data
-  })
-}
-
-// 获取查重报告
-export const getPlagiarismReport = (paperId) => {
-  return request({
-    url: `/api/teacher/pending-reviews/report/${paperId}`,
-    method: 'get'
   })
 }
 
 // 获取今日审核数量
 export const getTodayReviewedCount = () => {
   return request({
-    url: '/api/teacher/pending-reviews/today',
+    url: '/api/teacher/reviews/today-reviewed',
     method: 'get'
-  })
-}
-
-// 委托审核
-export const delegateReview = (data) => {
-  return request({
-    url: '/api/teacher/pending-reviews/delegate',
-    method: 'post',
-    data
   })
 }
 
 // 获取论文内容
 export const getPaperContent = (paperId) => {
   return request({
-    url: `/api/teacher/reviews/paper-content/${paperId}`,
+    url: `/api/teacher/papers/${paperId}/content`,
     method: 'get'
   })
 }
@@ -430,7 +395,7 @@ export const getPaperContent = (paperId) => {
 // 获取论文预览URL
 export const getPaperPreviewUrl = (paperId) => {
   return request({
-    url: `/api/teacher/reviews/paper-preview/${paperId}`,
+    url: `/api/teacher/papers/${paperId}/preview-url`,
     method: 'get'
   })
 }
@@ -438,7 +403,7 @@ export const getPaperPreviewUrl = (paperId) => {
 // 获取审核历史
 export const getReviewHistory = (paperId) => {
   return request({
-    url: `/api/teacher/pending-reviews/history/${paperId}`,
+    url: `/api/teacher/reviews/history/${paperId}`,
     method: 'get'
   })
 }

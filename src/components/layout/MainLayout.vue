@@ -461,7 +461,7 @@ const handleNotificationClick = async (notification) => {
   setTimeout(() => {
     switch (notification.messageType) {
       case 'PAPER_REVIEW':
-        router.push(userStore.role === 'TEACHER' ? '/teacher/paper-review/pending' : '/message-center')
+        router.push(userStore.role === 'TEACHER' ? '/teacher/review-workbench' : '/message-center')
         break
       case 'ADVISOR_MESSAGE':
         router.push(userStore.role === 'STUDENT' ? '/student/advisor-interaction' : '/message-center')

@@ -306,7 +306,7 @@ a {
   background: var(--apple-canvas-parchment);
 }
 
-// ── 教师控制台公共卡片语言（PendingReviews / AuditRecords 复用）──────────
+// ── 教师控制台公共卡片语言（ReviewWorkbench / AuditRecords 复用）──────────
 // 双类名（.el-card.console-card）保证压过 Element 主题的默认卡片边框
 .el-card.console-card {
   background: var(--apple-surface);

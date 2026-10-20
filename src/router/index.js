@@ -145,10 +145,8 @@ export const asyncRoutes = [
     children: [
       { path: "", name: "TeacherDashboard", component: () => import("@/views/teacher/Dashboard.vue"), meta: { title: "审核工作台", menu: { icon: "DataBoard", label: "审核工作台", group: "工作台", order: 1, top: { order: 1, label: "工作台", exact: true } } } },
       { path: "student-list", name: "StudentList", component: () => import("@/views/teacher/StudentList.vue"), meta: { title: "学生管理", menu: { icon: "UserFilled", group: "学生", order: 5, top: { order: 3, label: "学生管理", match: ["/teacher/student"] } } } },
-      // PaperReview 是承载子页面的容器，本身不是导航目标；菜单里挂的是它的两个子页
-      { path: "paper-review", name: "PaperReview", component: () => import("@/views/teacher/PaperReview.vue"), meta: { title: "论文审核", menu: { hidden: true } }, children: [
-        { path: '', name: 'PendingReviewsDefault', component: () => import('@/views/teacher/PendingReviews.vue'), meta: { title: '待审核论文' } },
-        { path: "pending", name: "PendingReviews", component: () => import("@/views/teacher/PendingReviews.vue"), meta: { title: "待审核论文", menu: { icon: "Clock", group: "论文", order: 3, activeMatch: ["/teacher/review-workbench"], top: { order: 2, label: "论文审核", match: ["/teacher/paper-review", "/teacher/review-workbench"] } } } },
+      // PaperReview 容器仅承载「审核记录」；待审核论文已统一到 review-workbench
+      { path: "paper-review", name: "PaperReview", component: () => import("@/views/teacher/PaperReview.vue"), redirect: "/teacher/review-workbench", meta: { title: "论文审核", menu: { hidden: true } }, children: [
         { path: "audit-records", name: "AuditRecords", component: () => import("@/views/teacher/AuditRecords.vue"), meta: { title: "审核记录", menu: { icon: "Histogram", group: "论文", order: 4 } } }
       ]},
       { path: "data-statistics", name: "DataStatistics", component: () => import("@/views/teacher/DataStatistics.vue"), meta: { title: "数据统计", menu: { icon: "TrendCharts", group: "工作台", order: 2 } } },
@@ -156,8 +154,8 @@ export const asyncRoutes = [
       { path: "defense-workbench", name: "DefenseWorkbench", component: () => import("@/views/teacher/DefenseWorkbench.vue"), meta: { title: "答辩工作台", menu: { icon: "Microphone", group: "答辩", order: 9 } } },
       // order 7 插在学生分组(6)与学生评价汇总(8)之间（P5 指导进度看板）
       { path: "guidance-progress", name: "TeacherGuidanceProgress", component: () => import("@/views/teacher/GuidanceProgress.vue"), meta: { title: "指导进度看板", menu: { icon: "Odometer", group: "学生", order: 7 } } },
-      // 隐藏路由：从待审核列表/指导看板进入，不占菜单
-      { path: "review-workbench", name: "TeacherReviewWorkbench", component: () => import("@/views/teacher/ReviewWorkbench.vue"), meta: { title: "论文审核", menu: { hidden: true } } },
+      // 待审核论文统一入口（原 paper-review/pending 已下线）
+      { path: "review-workbench", name: "TeacherReviewWorkbench", component: () => import("@/views/teacher/ReviewWorkbench.vue"), meta: { title: "待审核论文", menu: { icon: "Clock", label: "待审核论文", group: "论文", order: 3, top: { order: 2, label: "论文审核", match: ["/teacher/paper-review", "/teacher/review-workbench"] } } } },
       // order 8 排在与学生相关的最后一项（学生评价汇总）
       { path: "advisor-eval-summary", name: "AdvisorEvalSummary", component: () => import("@/views/teacher/AdvisorEvalSummary.vue"), meta: { title: "学生评价汇总", menu: { icon: "Star", group: "学生", order: 8 } } },
       { path: "profile", name: "TeacherProfile", component: () => import("@/views/teacher/Profile.vue"), meta: { title: "个人中心", menu: { icon: "Setting", label: "我的设置", group: "设置", order: 11, spacer: true } } },

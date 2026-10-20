@@ -646,7 +646,7 @@ const loadDashboardData = async () => {
 }
 
 const goToPaperReview = () => {
-  router.push('/teacher/paper-review')
+  router.push('/teacher/review-workbench')
 }
 
 const goToStudentManagement = () => {
@@ -664,7 +664,7 @@ const goToMessageCenter = () => {
 }
 
 const reviewPaper = (paperId) => {
-  router.push(`/teacher/paper-review?paperId=${paperId}`)
+  router.push(`/teacher/review-workbench?paperId=${paperId}`)
 }
 
 // 处理设置命令
