@@ -270,6 +270,7 @@ import {
   DICT_RESULT,
   DICT_PAPER_STATUS
 } from '@/utils/defenseDict'
+import { getStatusText, getStatusType } from '@/utils/reviewStatus'
 
 const route = useRoute()
 const router = useRouter()
@@ -509,29 +510,9 @@ const statusTagType = (v) => ({ 0: 'info', 1: 'primary', 2: 'success' }[v] || 'i
 const resultText = (v) => getDefenseDictText(DICT_RESULT, v, { pass: '通过', fail: '不通过', postpone: '缓辩' }[v] || v)
 const resultTagType = (v) => ({ pass: 'success', fail: 'danger', postpone: 'warning' }[v] || 'info')
 
-// paper_status 13 态本地兜底映射（与 /api/dict/data/type/paper_status 对齐），文案优先读字典
-const PAPER_STATUS_TEXT = {
-  pending: '待分配',
-  assigned: '已分配',
-  checking: '待查重',
-  auditing: '待审核',
-  completed: '初审通过',
-  rejected: '审核不通过',
-  withdrawn: '已取消',
-  reviewing: '评阅中',
-  mid_defense: '中期答辩',
-  final_defense: '终期答辩',
-  defense_passed: '答辩通过',
-  finalized: '已定稿',
-  archived: '已归档'
-}
-const paperStatusText = (v) => getDefenseDictText(DICT_PAPER_STATUS, v, PAPER_STATUS_TEXT[v] || v || '—')
-const paperStatusTagType = (v) => ({
-  reviewing: 'primary',
-  mid_defense: 'warning',
-  final_defense: 'warning',
-  defense_passed: 'success'
-}[v] || 'info')
+// 文案优先读数据库字典 paper_status，未加载时回落到前端统一字典
+const paperStatusText = (v) => getDefenseDictText(DICT_PAPER_STATUS, v, getStatusText(v, v || '—'))
+const paperStatusTagType = (v) => getStatusType(v)
 
 const formatDateTime = (val) => {
   if (!val) return '—'

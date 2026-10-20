@@ -1,4 +1,5 @@
 // 数据类型处理工具函数
+import { getStatusText, getStatusType } from './reviewStatus.js'
 
 /**
  * 确保值为字符串
@@ -182,16 +183,7 @@ export const getSimilarityStatus = (similarity) => {
  * @returns {string}
  */
 export const getPaperStatusText = (status) => {
-  const statusMap = {
-    'pending': '待分配',
-    'assigned': '已分配',
-    'checking': '待查重',
-    'auditing': '待审核',
-    'completed': '审核通过',
-    'rejected': '审核不通过',
-    'withdrawn': '已取消'
-  };
-  return statusMap[status] || '未知状态';
+  return getStatusText(status)
 };
 
 /**
@@ -200,14 +192,5 @@ export const getPaperStatusText = (status) => {
  * @returns {string}
  */
 export const getPaperStatusType = (status) => {
-  const typeMap = {
-    'pending': 'info',
-    'assigned': 'primary',
-    'checking': 'primary',
-    'auditing': 'warning',
-    'completed': 'success',
-    'rejected': 'danger',
-    'withdrawn': 'info'
-  };
-  return typeMap[status] || 'info';
+  return getStatusType(status)
 };

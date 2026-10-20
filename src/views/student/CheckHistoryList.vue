@@ -24,7 +24,7 @@
             <el-option label="待查重" value="checking"></el-option>
             <el-option label="待审核" value="auditing"></el-option>
             <el-option label="审核通过" value="completed"></el-option>
-            <el-option label="审核驳回" value="rejected"></el-option>
+            <el-option label="审核不通过" value="rejected"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="论文类型">
@@ -185,6 +185,7 @@ import {
   usePaperTypesLoaded
 } from '@/utils/paperType.js'
 import PageHeader from '@/components/common/PageHeader.vue'
+import { getStatusText, getStatusType } from '@/utils/reviewStatus.js'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -290,39 +291,9 @@ const viewCheckHistory = (paperId) => {
 // 来自 utils/paperType.js。原先这里的两份映射同时持有 THESIS/JOURNAL/CONFERENCE
 // （幽灵值）和 graduation/course/other（真值）两套值域，未命中时还回 "未知类型"。
 
-const getStatusTagType = (status) => {
-  const statusMap = {
-    'draft': 'info',
-    'pending': 'info',
-    'assigned': '',
-    'submitted': 'info',
-    'checking': 'primary',
-    'auditing': 'warning',
-    'reviewed': 'warning',
-    'completed': 'success',
-    'rejected': 'danger',
-    'revised': 'warning',
-    'withdrawn': 'info'
-  }
-  return statusMap[status] || 'info'
-}
-
-const getStatusText = (status) => {
-  const textMap = {
-    'draft': '草稿',
-    'pending': '待分配',
-    'assigned': '已分配',
-    'submitted': '已提交',
-    'checking': '待查重',
-    'auditing': '待审核',
-    'reviewed': '已审核',
-    'completed': '审核通过',
-    'rejected': '审核驳回',
-    'revised': '需修改',
-    'withdrawn': '已撤回'
-  }
-  return textMap[status] || '未知状态'
-}
+// 论文状态的文案与标签色统一走 utils/reviewStatus.js（与 DB 字典 paper_status 对齐），
+// 本页不再维护第二套映射（原「审核驳回 / 已撤回 / 需修改」等文案已废弃）。
+const getStatusTagType = (status) => getStatusType(status)
 
 const getSimilarityClass = (rate) => {
   if (rate < 15) return 'similarity-excellent'

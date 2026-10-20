@@ -115,10 +115,9 @@
 
         <!-- 查重报告 -->
         <el-tab-pane label="查重报告" name="plagiarism">
-          <PlagiarismReportViewer 
-            v-if="plagiarismReport" 
-            :report-data="plagiarismReport"
-            @update-report="updatePlagiarismReport"
+          <PlagiarismReportViewer
+            v-if="paperId"
+            :paper-id="paperId"
           />
         </el-tab-pane>
 
@@ -163,9 +162,7 @@
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item command="approve">审核通过</el-dropdown-item>
-                <el-dropdown-item command="reject">审核不通过</el-dropdown-item>
-                <el-dropdown-item command="modify">需要修改</el-dropdown-item>
-                <el-dropdown-item command="defer">暂缓审核</el-dropdown-item>
+                <el-dropdown-item command="reject">退回修改</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -330,7 +327,7 @@ import { ref, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox, ElLoading } from 'element-plus'
 import PlagiarismReportViewer from './PlagiarismReportViewer.vue'
 import { doReview, sendSystemMessage, getReviewTemplates, useReviewTemplate, getPaperContent } from '@/api/teacher.js'
-import { convertToBackendStatus, getSimilarityTagType } from '@/utils/reviewStatus.js'
+import { convertToBackendStatus, getSimilarityTagType, getReviewResultText, getReviewResultTagType } from '@/utils/reviewStatus.js'
 import { sanitizeHtml } from '@/utils/markdown'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
@@ -367,7 +364,6 @@ const dialogVisible = computed({
 const activeTab = ref('content')
 const fontSize = ref(14)
 const paperContent = ref('')
-const plagiarismReport = ref(null)
 const reviewHistory = ref([])
 const opinionDialogVisible = ref(false)
 const opinionDialogTitle = ref('')
@@ -490,23 +486,9 @@ const goToTemplatesPage = () => {
 }
 
 const handleReviewAction = (command) => {
-  // "暂缓审核" 映射为 "需要修改"，两者共用 revision_needed 状态
-  const mappedCommand = command === 'defer' ? 'modify' : command
-  reviewForm.value.status = mappedCommand
-  switch (command) {
-    case 'approve':
-      opinionDialogTitle.value = '审核通过'
-      break
-    case 'reject':
-      opinionDialogTitle.value = '审核不通过'
-      break
-    case 'modify':
-      opinionDialogTitle.value = '需要修改'
-      break
-    case 'defer':
-      opinionDialogTitle.value = '暂缓审核'
-      break
-  }
+  // 后端 do-review 只接受 3（通过）/ 4（退回），UI 操作项保持两项
+  reviewForm.value.status = command
+  opinionDialogTitle.value = command === 'approve' ? '审核通过' : '退回修改'
   
   // 初始化批量审核表单
   if (props.isBatch && props.papers.length > 0) {
@@ -659,7 +641,7 @@ const submitReview = async () => {
 // 发送审核结果通知
 const sendReviewNotification = async (data) => {
   try {
-    const statusText = getStatusText(data.status)
+    const statusText = getReviewResultText(convertToBackendStatus(data.status))
     const messageContent = `您的论文《${data.paperTitle}》已完成审核，结果：${statusText}。\n\n审核意见：${data.opinion}`
     
     // 走的是后端已有的站内信端点 /api/teacher/students/messages/send，
@@ -687,10 +669,6 @@ const handleUploadError = (error, file) => {
   ElMessage.error('附件上传失败')
 }
 
-const updatePlagiarismReport = (report) => {
-  plagiarismReport.value = report
-}
-
 const formatDate = (date) => {
   if (!date) return ''
   return new Date(date).toLocaleDateString('zh-CN')
@@ -701,35 +679,11 @@ const formatDateTime = (date) => {
   return new Date(date).toLocaleString('zh-CN')
 }
 
-const getStatusTagType = (status) => {
-  const statusMap = {
-    'approve': 'success',
-    'reject': 'danger',
-    'modify': 'warning',
-    'defer': 'info'
-  }
-  return statusMap[status] || 'info'
-}
+const getStatusTagType = (status) => getReviewResultTagType(status)
 
-const getStatusText = (status) => {
-  const statusMap = {
-    'approve': '审核通过',
-    'reject': '审核不通过',
-    'modify': '需要修改',
-    'defer': '暂缓审核'
-  }
-  return statusMap[status] || '未知状态'
-}
+const getStatusText = (status) => getReviewResultText(status)
 
-const getTimelineType = (status) => {
-  const typeMap = {
-    'approve': 'success',
-    'reject': 'danger',
-    'modify': 'warning',
-    'defer': 'info'
-  }
-  return typeMap[status] || 'info'
-}
+const getTimelineType = (status) => getReviewResultTagType(status)
 
 // 生命周期
 onMounted(async () => {

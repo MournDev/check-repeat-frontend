@@ -36,9 +36,8 @@
               <el-form-item label="审核状态">
                 <el-select v-model="filterForm.status" placeholder="全部状态" clearable>
                   <el-option label="全部" value="" />
-                  <el-option label="审核通过" value="completed" />
-                  <el-option label="需要修改" value="revision_needed" />
-                  <el-option label="未通过" value="rejected" />
+                  <el-option label="审核通过" :value="REVIEW_RESULT.PASS" />
+                  <el-option label="退回修改" :value="REVIEW_RESULT.REJECT" />
                 </el-select>
               </el-form-item>
             </el-col>
@@ -150,8 +149,8 @@
 
         <el-table-column prop="status" label="审核状态" width="100" sortable>
           <template #default="{ row }">
-            <el-tag :type="getStatusType(row.reviewStatus || row.reviewOperateInfo?.reviewStatus || row.reviewOpinion?.reviewStatus || row.status || 0)" size="small">
-              {{ getStatusText(row.reviewStatus || row.reviewOperateInfo?.reviewStatus || row.reviewOpinion?.reviewStatus || row.status || '未知') }}
+            <el-tag :type="getReviewResultTagType(rowReviewStatus(row))" size="small">
+              {{ getReviewResultText(rowReviewStatus(row), '未知') }}
             </el-tag>
           </template>
         </el-table-column>
@@ -237,7 +236,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import PageHeader from '@/components/common/PageHeader.vue'
 import PaperDetail from '@/views/student/PaperDetail.vue'
 import { getReviewedList, downloadPaper, contactStudent, exportReviewRecords } from '@/api/teacher.js'
-import { getStatusText, getStatusType, getSimilarityColor, getSimilarityClass } from '@/utils/reviewStatus.js'
+import { getReviewResultText, getReviewResultTagType, getSimilarityColor, getSimilarityClass, REVIEW_RESULT } from '@/utils/reviewStatus.js'
 import { formatDateTime } from '@/utils/dataType.js'
 import {
   Refresh,
@@ -270,6 +269,10 @@ const loading = ref(false)
 // 对话框
 const detailDialogVisible = ref(false)
 const currentPaperId = ref(null)
+
+// 审核结果字段在不同接口层级出现过，统一取第一个非空值
+const rowReviewStatus = (row) =>
+  row.reviewStatus ?? row.reviewOperateInfo?.reviewStatus ?? row.reviewOpinion?.reviewStatus ?? row.status
 
 // 事件处理
 const handleSearch = () => {
@@ -325,11 +328,11 @@ const fetchReviewData = async () => {
   try {
     // 构造查询参数
     const queryParams = {
-      current: currentPage.value,
+      currentPage: currentPage.value,
       pageSize: pageSize.value,
       studentName: filterForm.studentName,
       paperTitle: filterForm.paperTitle,
-      status: filterForm.status,
+      reviewStatus: filterForm.status,
       startTime: filterForm.dateRange && filterForm.dateRange.length > 0 ? filterForm.dateRange[0] : undefined,
       endTime: filterForm.dateRange && filterForm.dateRange.length > 1 ? filterForm.dateRange[1] : undefined,
       similarityRange: filterForm.similarityRange

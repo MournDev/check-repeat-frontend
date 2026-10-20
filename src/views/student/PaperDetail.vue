@@ -373,7 +373,7 @@ import { useUserStore } from '@/stores/user'
 import { ElMessage, ElMessageBox, ElLoading } from 'element-plus'
 import { getPaperDetails, deleteFile as deleteFileAPI, createCheckTask, getCheckTaskDetail } from "@/api/student.js"
 import { getAvatarUrl } from '@/utils/avatar'
-import { getSimilarityColor, getSimilarityTagType as baseGetSimilarityTagType } from '@/utils/reviewStatus.js'
+import { getSimilarityColor, getSimilarityTagType as baseGetSimilarityTagType, getStatusText, getStatusType } from '@/utils/reviewStatus.js'
 import { loadPaperTypes, getPaperTypeText } from '@/utils/paperType.js'
 import { loadDefenseDict, getDefenseDictText, DICT_PAPER_STATUS } from '@/utils/defenseDict.js'
 import { getPreviewUrl, getSmartPreviewReportBlobUrl, downloadFileBlob, revokeBlobUrl } from '@/utils/filePreview'
@@ -1107,28 +1107,7 @@ const replyToFeedback = async () => {
     }
 };
 
-//状态处理
-const getStatusText = (status) => {
-    const textMap = {
-        'pending': '待分配',
-        'assigned': '已分配',
-        'auditing': '审核中',
-        'completed': '已通过',
-        'rejected': '需修改'
-    }
-    return textMap[status] || '未知状态'
-}
-
-const getStatusType = (status) => {
-    const typeMap = {
-        'pending': 'info',
-        'assigned': 'warning',
-        'auditing': 'warning',
-        'completed': 'success',
-        'rejected': 'danger'
-    }
-    return typeMap[status] || 'info'
-}
+//状态处理：论文状态文案与标签色统一走 utils/reviewStatus.js
 
 const formatDateTime = (date) => {
     if (!date) return '-'

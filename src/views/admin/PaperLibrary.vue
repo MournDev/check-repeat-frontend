@@ -552,6 +552,7 @@ import {
   TrendCharts, Files, Download, MagicStick, UploadFilled, Stamp
 } from '@element-plus/icons-vue'
 import PageHeader from '@/components/common/PageHeader.vue'
+import { getStatusText, getStatusType } from '@/utils/reviewStatus.js'
 
 // 响应式数据
 const loading = ref(false)
@@ -796,26 +797,8 @@ const getSimilarityTagType = (score) => {
   return 'success'
 }
 
-const getStatusLabelType = (status) => {
-  const statusMap = {
-    'pending': 'info',
-    'auditing': 'warning',
-    'completed': 'success',
-    'rejected': 'danger'
-  }
-  return statusMap[status] || 'info'
-}
-
-const getStatusText = (status) => {
-  const statusMap = {
-    'pending': '待分配',
-    'checking': '待查重',
-    'auditing': '待审核',
-    'completed': '已通过',
-    'rejected': '未通过'
-  }
-  return statusMap[status] || status
-}
+// 论文状态文案与标签色统一走 utils/reviewStatus.js（与 DB 字典 paper_status 对齐）
+const getStatusLabelType = (status) => getStatusType(status)
 
 const getAllocationStatusType = (status) => {
   const statusMap = {

@@ -507,6 +507,7 @@ import { ElMessage, ElMessageBox, ElSelect, ElOption, ElInput } from "element-pl
 import { getDictDataByType } from "@/api/user.js";
 // 论文类型统一走共享模块（真相源是后端 PaperTypeEnum），本页不再自持一份映射
 import { loadPaperTypes, getPaperTypeText } from "@/utils/paperType.js";
+import { getStatusText, getStatusType } from '@/utils/reviewStatus.js';
 import PageHeader from '@/components/common/PageHeader.vue';
 import { 
   getStudentPaperPage, 
@@ -752,40 +753,7 @@ const toggleVersions = async (paperId) => {
   paper.showVersions = !paper.showVersions;
 };
 
-// 状态映射（与后端 PaperStatusEnum 一致）
-const getStatusType = (status) => {
-  const typeMap = {
-    draft: "info",
-    submitted: "info",
-    pending: "info",
-    checking: "warning",
-    auditing: "primary",
-    reviewed: "primary",
-    completed: "success",
-    rejected: "danger",
-    revision_needed: "warning",
-    revised: "warning",
-    withdrawn: "warning",
-  };
-  return typeMap[status] || "info";
-};
-
-const getStatusText = (status) => {
-  const textMap = {
-    draft: "草稿",
-    submitted: "已提交",
-    pending: "待处理",
-    checking: "待查重",
-    auditing: "审核中",
-    reviewed: "已评审",
-    completed: "已完成",
-    rejected: "审核不通过",
-    revision_needed: "需要修改",
-    revised: "修改中",
-    withdrawn: "已撤回",
-  };
-  return textMap[status] || "未知状态";
-};
+// 论文状态文案与标签色统一走 utils/reviewStatus.js（与 DB 字典 paper_status 对齐）
 
 // 论文类型文案改由 utils/paperType.js 提供（见顶部 import）。
 // 原先这里有一份硬编码映射，且未命中时返回 "其他" —— 会把未知/脏值

@@ -72,15 +72,17 @@
     </el-card>
 
     <!-- 查重报告签核（P5 3.1），签核成功后刷新看板 -->
-    <CheckSignoffDialog ref="signoffDialogRef" @success="fetchData" />
+    <CheckSignoffDialog ref="signoffDialogRef" @success="fetchData" @view-report="onViewReport" />
   </div>
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { Refresh } from '@element-plus/icons-vue'
 import { getGuidanceProgress } from '@/api/p5.js'
 import { loadDefenseDict, getDefenseDictText, DICT_PAPER_STATUS } from '@/utils/defenseDict.js'
+import { getStatusText, getStatusType } from '@/utils/reviewStatus.js'
 import { useChart } from '@/composables/useChart'
 import PageHeader from '@/components/common/PageHeader.vue'
 import CheckSignoffDialog from '@/views/teacher/components/CheckSignoffDialog.vue'
@@ -90,35 +92,20 @@ const total = ref(0)
 const statusSummary = ref([])
 const papers = ref([])
 const signoffDialogRef = ref(null)
+const router = useRouter()
 
-// paper_status 13 态本地兜底映射（与 /api/dict/data/type/paper_status 对齐）：文案优先读字典，
-// 字典已加载但未命中的历史脏数据原样显示状态码原文
-const PAPER_STATUS_TEXT = {
-  pending: '待分配',
-  assigned: '已分配',
-  checking: '待查重',
-  auditing: '待审核',
-  completed: '初审通过',
-  rejected: '审核不通过',
-  withdrawn: '已取消',
-  reviewing: '评阅中',
-  mid_defense: '中期答辩',
-  final_defense: '终期答辩',
-  defense_passed: '答辩通过',
-  finalized: '已定稿',
-  archived: '已归档'
+// 签核弹窗内「查看完整报告」→ 审核工作台对应论文
+const onViewReport = (paperId) => {
+  if (!paperId) return
+  router.push({
+    name: 'TeacherReviewWorkbench',
+    query: { paperId: String(paperId) }
+  })
 }
-const statusText = (v) => getDefenseDictText(DICT_PAPER_STATUS, v, PAPER_STATUS_TEXT[v] || v || '—')
-const statusTagType = (v) => ({
-  checking: 'warning',
-  auditing: 'warning',
-  reviewing: 'primary',
-  mid_defense: 'warning',
-  final_defense: 'warning',
-  completed: 'success',
-  defense_passed: 'success',
-  rejected: 'danger'
-}[v] || 'info')
+
+// 文案优先读数据库字典 paper_status，未加载时回落到前端统一字典
+const statusText = (v) => getDefenseDictText(DICT_PAPER_STATUS, v, getStatusText(v, v || '—'))
+const statusTagType = (v) => getStatusType(v)
 
 const rateClass = (rate) => {
   if (rate === null || rate === undefined) return ''
