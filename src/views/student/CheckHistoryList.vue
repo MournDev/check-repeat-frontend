@@ -410,4 +410,99 @@ onMounted(() => {
     }
   }
 }
+
+// ── 视觉统一（design-tokens 覆盖层） ────────────────────────
+.check-history-list-page {
+  padding: var(--apple-spacing-lg);
+  background-color: var(--apple-canvas-parchment);
+  color: var(--apple-ink);
+  font-family: var(--apple-font-text);
+
+  .filter-card {
+    margin-bottom: var(--apple-spacing-md);
+    background: var(--apple-surface);
+    border: 1px solid var(--apple-hairline);
+    border-radius: var(--apple-rounded-lg);
+
+    :deep(.el-card__body) {
+      padding: var(--apple-spacing-md);
+    }
+
+    :deep(.el-form-item) {
+      margin-bottom: var(--apple-spacing-xs);
+    }
+
+    :deep(.el-form-item__label) {
+      font-size: var(--apple-fs-fine-print);
+      font-weight: 600;
+      color: var(--apple-ink-muted-48);
+    }
+
+    :deep(.el-select__wrapper),
+    :deep(.el-input__wrapper) {
+      border-radius: var(--apple-rounded-md);
+      font-size: var(--apple-fs-caption);
+    }
+  }
+
+  .papers-card {
+    background: var(--apple-surface);
+    border: 1px solid var(--apple-hairline);
+    border-radius: var(--apple-rounded-lg);
+    overflow: hidden;
+
+    :deep(.el-card__header) {
+      padding: var(--apple-spacing-md) var(--apple-spacing-lg);
+      border-bottom: 1px solid var(--apple-divider-soft);
+    }
+
+    :deep(.el-card__body) {
+      padding: 0;
+    }
+
+    .card-header {
+      gap: var(--apple-spacing-xs);
+      font-family: var(--apple-font-display);
+      font-size: var(--apple-fs-body-strong);
+      font-weight: 600;
+
+      .header-right {
+        .total-count {
+          font-size: var(--apple-fs-fine-print);
+          color: var(--apple-ink-muted-48);
+        }
+      }
+    }
+  }
+
+  .paper-title-cell {
+    gap: var(--apple-spacing-xs);
+
+    .paper-title {
+      font-size: var(--apple-fs-caption);
+      color: var(--apple-ink);
+    }
+  }
+
+  .pagination-container {
+    padding: var(--apple-spacing-md) var(--apple-spacing-lg);
+    border-top: 1px solid var(--apple-divider-soft);
+  }
+}
+
+@media (max-width: 768px) {
+  .check-history-list-page {
+    padding: var(--apple-spacing-sm);
+
+    .papers-card {
+      .card-header {
+        gap: var(--apple-spacing-sm);
+      }
+    }
+
+    .pagination-container {
+      padding: var(--apple-spacing-sm);
+    }
+  }
+}
 </style>

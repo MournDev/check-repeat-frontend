@@ -909,4 +909,219 @@ onUnmounted(() => {
     }
   }
 }
+
+// ── 视觉统一（design-tokens 覆盖层） ────────────────────────
+.check-monitor-page {
+  padding: var(--apple-spacing-lg);
+  background-color: var(--apple-canvas-parchment);
+  color: var(--apple-ink);
+  font-family: var(--apple-font-text);
+
+  .status-card,
+  .progress-card,
+  .log-card,
+  .estimate-card {
+    margin-bottom: var(--apple-spacing-md);
+    background: var(--apple-surface);
+    border: 1px solid var(--apple-hairline);
+    border-radius: var(--apple-rounded-lg);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .status-card {
+    .current-status {
+      gap: var(--apple-spacing-md);
+
+      .status-icon {
+        padding: var(--apple-spacing-md);
+        border-radius: var(--apple-rounded-lg);
+        color: var(--apple-on-primary);
+      }
+
+      .status-content {
+        .status-message {
+          margin: 0 0 var(--apple-spacing-xs);
+          font-family: var(--apple-font-display);
+          font-size: var(--apple-fs-tagline);
+          font-weight: 600;
+          color: var(--apple-ink);
+        }
+
+        .status-details {
+          gap: var(--apple-spacing-lg);
+          font-size: var(--apple-fs-caption);
+          color: var(--apple-ink-muted-48);
+        }
+      }
+    }
+  }
+
+  .progress-card,
+  .log-card,
+  .estimate-card {
+    .card-header {
+      gap: var(--apple-spacing-xs);
+      font-family: var(--apple-font-display);
+      font-size: var(--apple-fs-body-strong);
+      font-weight: 600;
+
+      .el-button {
+        color: var(--apple-ink-muted-48);
+      }
+    }
+  }
+
+  .overall-progress {
+    .progress-stages {
+      margin-top: var(--apple-spacing-xl);
+
+      &::before {
+        background: var(--apple-divider-soft);
+      }
+
+      .stage-item {
+        .stage-icon {
+          width: 40px;
+          height: 40px;
+          margin-bottom: var(--apple-spacing-xs);
+          border-radius: var(--apple-rounded-full);
+          transition: all var(--apple-transition-slow);
+        }
+
+        &.completed {
+          .stage-icon {
+            color: var(--apple-on-primary);
+          }
+        }
+
+        &.current {
+          .stage-icon {
+            color: var(--apple-on-primary);
+          }
+        }
+
+        &.pending {
+          .stage-icon {
+            color: var(--apple-ink-muted-48);
+          }
+        }
+
+        .stage-info {
+          .stage-name {
+            margin-bottom: var(--apple-spacing-xxs);
+            font-size: var(--apple-fs-fine-print);
+            color: var(--apple-ink-muted-48);
+          }
+
+          .stage-progress,
+          .stage-duration {
+            font-size: var(--apple-fs-fine-print);
+            font-weight: 600;
+            color: var(--apple-primary);
+          }
+        }
+      }
+    }
+  }
+
+  .log-card {
+    .log-container {
+      max-height: 300px;
+      padding: var(--apple-spacing-md);
+      border-radius: var(--apple-rounded-md);
+
+      .log-item {
+        gap: var(--apple-spacing-sm);
+        padding: var(--apple-spacing-xs) 0;
+        border-bottom: 1px solid var(--apple-divider-soft);
+
+        .log-time {
+          font-size: var(--apple-fs-fine-print);
+        }
+
+        .log-content {
+          font-size: var(--apple-fs-caption);
+        }
+      }
+
+      .no-logs {
+        padding: var(--apple-spacing-xl) 0;
+        color: var(--apple-ink-muted-48);
+
+        .el-icon {
+          margin-bottom: var(--apple-spacing-xs);
+          font-size: var(--apple-fs-tagline);
+        }
+      }
+    }
+  }
+
+  .estimate-card {
+    .estimate-content {
+      .estimate-item {
+        .estimate-label {
+          margin-bottom: var(--apple-spacing-xs);
+          font-size: var(--apple-fs-caption);
+          color: var(--apple-ink-muted-48);
+        }
+
+        .estimate-value {
+          font-family: var(--apple-font-display);
+          font-size: var(--apple-fs-body-strong);
+          color: var(--apple-primary);
+        }
+      }
+    }
+  }
+
+  .completion-content {
+    padding: var(--apple-spacing-md) 0;
+
+    .completion-icon {
+      margin-bottom: var(--apple-spacing-md);
+    }
+
+    p {
+      margin: var(--apple-spacing-xs) 0;
+      color: var(--apple-ink-muted-48);
+
+      strong {
+        font-size: var(--apple-fs-body-strong);
+        color: var(--apple-ink);
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .check-monitor-page {
+    padding: var(--apple-spacing-sm);
+
+    .current-status {
+      gap: var(--apple-spacing-md);
+
+      .status-content {
+        .status-details {
+          gap: var(--apple-spacing-xs);
+        }
+      }
+    }
+
+    .progress-stages {
+      gap: var(--apple-spacing-md);
+      margin-top: var(--apple-spacing-lg);
+
+      .stage-item {
+        gap: var(--apple-spacing-sm);
+      }
+    }
+
+    .estimate-content {
+      gap: var(--apple-spacing-md);
+    }
+  }
+}
 </style>

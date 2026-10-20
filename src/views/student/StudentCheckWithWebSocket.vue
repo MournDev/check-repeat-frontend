@@ -1016,4 +1016,173 @@ onUnmounted(() => {
     color: var(--apple-ink-secondary);
   }
 }
+
+// ── 视觉统一（design-tokens 覆盖层） ────────────────────────
+.check-container {
+  min-height: 100vh;
+  padding: var(--apple-spacing-lg);
+  background: var(--apple-canvas-parchment);
+  color: var(--apple-ink);
+  font-family: var(--apple-font-text);
+
+  .page-title {
+    margin: 0 0 var(--apple-spacing-lg);
+    font-family: var(--apple-font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--apple-ink);
+  }
+
+  .action-bar {
+    gap: var(--apple-spacing-xs);
+    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+    margin-bottom: var(--apple-spacing-lg);
+    background: var(--apple-surface);
+    border: 1px solid var(--apple-hairline);
+    border-radius: var(--apple-rounded-lg);
+  }
+
+  .task-stats {
+    gap: var(--apple-spacing-md);
+    margin-bottom: var(--apple-spacing-lg);
+  }
+
+  .stat-card {
+    background: var(--apple-surface);
+    border: 1px solid var(--apple-hairline);
+    border-radius: var(--apple-rounded-lg);
+  }
+
+  .stat-item {
+    padding: var(--apple-spacing-md);
+  }
+
+  .stat-label {
+    margin-bottom: var(--apple-spacing-xxs);
+    font-size: var(--apple-fs-fine-print);
+    color: var(--apple-ink-muted-48);
+  }
+
+  .stat-value {
+    font-family: var(--apple-font-display);
+    font-size: var(--apple-fs-display-md);
+    line-height: var(--apple-lh-display-md);
+    letter-spacing: var(--apple-ls-display-md);
+    color: var(--apple-ink);
+  }
+
+  .rule-info-card,
+  .table-card {
+    margin-bottom: var(--apple-spacing-lg);
+    background: var(--apple-surface);
+    border: 1px solid var(--apple-hairline);
+    border-radius: var(--apple-rounded-lg);
+  }
+
+  .table-header {
+    font-family: var(--apple-font-display);
+    font-size: var(--apple-fs-body-strong);
+    font-weight: 600;
+    color: var(--apple-ink);
+  }
+
+  .paper-type-name {
+    font-size: var(--apple-fs-caption);
+    color: var(--apple-ink);
+  }
+
+  .pagination-container {
+    margin-top: var(--apple-spacing-md);
+  }
+
+  .fail-text {
+    font-size: var(--apple-fs-fine-print);
+    color: var(--apple-danger);
+  }
+
+  .report-content {
+    h3 {
+      margin-bottom: var(--apple-spacing-sm);
+      font-family: var(--apple-font-display);
+      font-size: var(--apple-fs-body-strong);
+      color: var(--apple-ink);
+    }
+
+    h4 {
+      margin: var(--apple-spacing-sm) 0 var(--apple-spacing-xs);
+      font-size: var(--apple-fs-caption);
+      color: var(--apple-ink);
+    }
+
+    h5 {
+      margin: var(--apple-spacing-xs) 0;
+      font-size: var(--apple-fs-fine-print);
+      color: var(--apple-ink-muted-48);
+    }
+
+    p {
+      margin: var(--apple-spacing-xs) 0;
+      font-size: var(--apple-fs-caption);
+      color: var(--apple-ink-muted-80);
+    }
+
+    .report-sections,
+    .report-recommendations {
+      padding: var(--apple-spacing-md);
+      margin: var(--apple-spacing-sm) 0;
+      background: var(--apple-canvas-parchment);
+      border-radius: var(--apple-rounded-md);
+    }
+
+    .repeated-fragments {
+      padding: var(--apple-spacing-xs);
+      background: var(--apple-danger-bg);
+      border-radius: var(--apple-rounded-md);
+    }
+  }
+
+  .author-info {
+    font-size: var(--apple-fs-fine-print);
+    color: var(--apple-ink-muted-48);
+  }
+
+  .fragment-item {
+    padding: var(--apple-spacing-xs);
+    background: var(--apple-surface);
+    border-left: 3px solid var(--apple-danger);
+    border-radius: var(--apple-rounded-xs);
+  }
+
+  .recommendation-item {
+    padding: var(--apple-spacing-xs);
+    background: var(--apple-success-bg);
+    border-left: 3px solid var(--apple-success);
+    border-radius: var(--apple-rounded-xs);
+  }
+
+  .loading {
+    height: 320px;
+  }
+
+  .loading-text {
+    font-size: var(--apple-fs-caption);
+    color: var(--apple-ink-muted-48);
+  }
+}
+
+@media (max-width: 768px) {
+  .check-container {
+    padding: var(--apple-spacing-sm);
+
+    .action-bar {
+      flex-wrap: wrap;
+    }
+
+    .task-stats {
+      flex-wrap: wrap;
+      gap: var(--apple-spacing-sm);
+    }
+  }
+}
 </style>

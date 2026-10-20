@@ -435,4 +435,162 @@ onMounted(() => {
     }
   }
 }
+
+// ── 视觉统一（design-tokens 覆盖层） ────────────────────────
+.sentence-detail-page {
+  padding: var(--apple-spacing-lg);
+  background: var(--apple-canvas-parchment);
+  color: var(--apple-ink);
+  font-family: var(--apple-font-text);
+
+  .error-result {
+    border-color: var(--apple-hairline);
+    border-radius: var(--apple-rounded-lg);
+    background: var(--apple-surface);
+  }
+
+  .metrics-card {
+    margin-bottom: var(--apple-spacing-lg);
+    border-radius: var(--apple-rounded-lg);
+
+    .metrics-grid {
+      gap: var(--apple-spacing-lg);
+
+      .metric-block {
+        .metric-label {
+          margin-bottom: var(--apple-spacing-xs);
+          font-size: var(--apple-fs-fine-print);
+          font-weight: 600;
+          letter-spacing: 0;
+          text-transform: none;
+          color: var(--apple-ink-muted-48);
+        }
+
+        .metric-value {
+          font-family: var(--apple-font-display);
+          font-size: var(--apple-fs-tagline);
+          font-weight: 600;
+          color: var(--apple-ink);
+
+          &.primary {
+            font-size: var(--apple-fs-display-md);
+            line-height: var(--apple-lh-display-md);
+            letter-spacing: var(--apple-ls-display-md);
+            color: var(--apple-primary);
+          }
+        }
+      }
+    }
+  }
+
+  .sources-card {
+    margin-bottom: var(--apple-spacing-lg);
+
+    .card-header {
+      font-family: var(--apple-font-display);
+      font-size: var(--apple-fs-body-strong);
+      font-weight: 600;
+      color: var(--apple-ink);
+    }
+
+    .source-item {
+      gap: var(--apple-spacing-md);
+      padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+      margin-bottom: var(--apple-spacing-sm);
+      border-color: var(--apple-hairline);
+      border-radius: var(--apple-rounded-md);
+
+      .source-info {
+        .source-title {
+          font-size: var(--apple-fs-caption);
+          color: var(--apple-ink);
+        }
+
+        .source-meta {
+          margin-top: var(--apple-spacing-xxs);
+          font-size: var(--apple-fs-fine-print);
+          color: var(--apple-ink-muted-48);
+        }
+      }
+
+      .source-share {
+        gap: var(--apple-spacing-sm);
+
+        .share-text {
+          font-size: var(--apple-fs-caption);
+          color: var(--apple-ink);
+        }
+      }
+    }
+  }
+
+  .items-card {
+    .card-header {
+      font-family: var(--apple-font-display);
+      font-size: var(--apple-fs-body-strong);
+      font-weight: 600;
+
+      .item-count {
+        font-size: var(--apple-fs-fine-print);
+        font-weight: 400;
+        color: var(--apple-ink-muted-48);
+      }
+    }
+
+    .sentence-list {
+      .sentence-item {
+        padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+        margin-bottom: var(--apple-spacing-sm);
+        border-color: var(--apple-hairline);
+        border-radius: var(--apple-rounded-md);
+
+        .sentence-head {
+          gap: var(--apple-spacing-xs);
+          margin-bottom: var(--apple-spacing-xs);
+
+          .sentence-index {
+            font-size: var(--apple-fs-fine-print);
+            color: var(--apple-ink-muted-48);
+          }
+
+          :deep(.sim-tag-high) {
+            background: var(--apple-danger);
+            border-color: var(--apple-danger);
+            color: var(--apple-on-primary);
+          }
+        }
+
+        .sentence-text {
+          font-size: var(--apple-fs-caption);
+          line-height: 1.6;
+          color: var(--apple-ink);
+        }
+
+        .sentence-source {
+          margin-top: var(--apple-spacing-xs);
+          font-size: var(--apple-fs-fine-print);
+          color: var(--apple-ink-muted-48);
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .sentence-detail-page {
+    padding: var(--apple-spacing-sm);
+
+    .sources-card {
+      .source-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--apple-spacing-sm);
+
+        .source-share {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
 </style>
