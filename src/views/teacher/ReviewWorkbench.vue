@@ -758,4 +758,130 @@ onBeforeUnmount(() => {
     min-height: 640px;
   }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.review-workbench {
+  font-family: var(--apple-font-text);
+  border-radius: var(--apple-rounded-lg);
+}
+
+.paper-head {
+  padding: var(--apple-spacing-sm) var(--apple-spacing-md) var(--apple-spacing-xs);
+}
+
+.student-line {
+  gap: var(--apple-spacing-xs);
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  font-size: var(--apple-fs-fine-print);
+}
+
+.student-meta strong {
+  font-size: var(--apple-fs-caption);
+}
+
+.student-meta span {
+  margin-top: 1px;
+  font-size: var(--apple-fs-fine-print);
+}
+
+.status-flag {
+  padding: 0 var(--apple-spacing-xs);
+  font-size: var(--apple-fs-fine-print);
+  line-height: 18px;
+  border-radius: var(--apple-rounded-xs);
+}
+
+.paper-title {
+  margin: var(--apple-spacing-xs) 0 0;
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-body-strong);
+  line-height: 1.4;
+}
+
+.paper-meta {
+  gap: var(--apple-spacing-xxs) var(--apple-spacing-xs);
+  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.steps {
+  gap: var(--apple-spacing-xxs);
+  margin-top: var(--apple-spacing-sm);
+}
+
+.step {
+  gap: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.step-dot {
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+}
+
+.wb-tabs {
+  padding: 0 var(--apple-spacing-md);
+}
+
+.wb-tabs :deep(.el-tabs__content) {
+  padding-right: var(--apple-spacing-xxs);
+}
+
+.wb-actions {
+  gap: var(--apple-spacing-sm);
+  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+}
+
+.action-note {
+  font-size: var(--apple-fs-fine-print);
+  line-height: 1.4;
+}
+
+.action-buttons {
+  gap: var(--apple-spacing-xs);
+}
+
+.reject-dialog {
+  gap: var(--apple-spacing-xs);
+}
+
+.reject-tip,
+.template-tip {
+  font-size: var(--apple-fs-fine-print);
+}
+
+.template-chips {
+  gap: var(--apple-spacing-xxs);
+}
+
+.template-chip {
+  padding: 3px var(--apple-spacing-xs);
+  font-size: var(--apple-fs-fine-print);
+  transition: var(--apple-transition-fast);
+}
+
+@media (max-width: 768px) {
+  .paper-head {
+    padding: var(--apple-spacing-sm);
+  }
+
+  .wb-tabs {
+    padding: 0 var(--apple-spacing-sm);
+  }
+
+  .wb-actions {
+    flex-direction: column;
+    align-items: stretch;
+    padding: var(--apple-spacing-sm);
+  }
+
+  .action-buttons {
+    justify-content: flex-end;
+  }
+}
 </style>

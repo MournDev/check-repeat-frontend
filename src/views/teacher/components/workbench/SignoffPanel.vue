@@ -344,4 +344,104 @@ watch(() => props.paperId, resetForm)
   text-align: center;
   color: var(--apple-ink-muted-48);
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.signoff-panel {
+  gap: var(--apple-spacing-sm);
+  padding: var(--apple-spacing-sm) 0 var(--apple-spacing-xs);
+  font-family: var(--apple-font-text);
+}
+
+.signoff-panel :deep(.el-textarea__inner),
+.signoff-panel :deep(.el-input__wrapper) {
+  border-radius: var(--apple-rounded-md);
+  font-size: var(--apple-fs-caption);
+}
+
+.signoff-card {
+  padding: var(--apple-spacing-sm);
+  border-radius: var(--apple-rounded-md);
+}
+
+.signed-head {
+  gap: var(--apple-spacing-xs);
+  margin-bottom: var(--apple-spacing-sm);
+}
+
+.signed-label {
+  font-size: var(--apple-fs-fine-print);
+}
+
+.signed-grid {
+  gap: var(--apple-spacing-xs);
+}
+
+.signed-grid dt,
+.signed-comment dt {
+  font-size: var(--apple-fs-fine-print);
+}
+
+.signed-grid dd,
+.signed-comment dd {
+  margin: var(--apple-spacing-xxs) 0 0;
+  font-size: var(--apple-fs-caption);
+}
+
+.signed-grid dd.score {
+  font-size: var(--apple-fs-body-strong);
+}
+
+.signed-comment {
+  margin-top: var(--apple-spacing-sm);
+  padding-top: var(--apple-spacing-xs);
+}
+
+.report-summary {
+  gap: var(--apple-spacing-xs);
+  padding: var(--apple-spacing-xs);
+  border-radius: var(--apple-rounded-sm);
+}
+
+.summary-item span {
+  font-size: var(--apple-fs-fine-print);
+}
+
+.summary-item strong {
+  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-caption-strong);
+}
+
+.summary-item strong.time {
+  font-size: var(--apple-fs-fine-print);
+}
+
+.signoff-form :deep(.el-form-item) {
+  margin-bottom: var(--apple-spacing-md);
+}
+
+.signoff-form :deep(.el-form-item__label) {
+  padding-bottom: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.score-row {
+  gap: var(--apple-spacing-xs);
+}
+
+.quick-score {
+  padding: 2px var(--apple-spacing-xs);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.signoff-hint {
+  font-size: var(--apple-fs-fine-print);
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .signed-grid,
+  .report-summary {
+    grid-template-columns: 1fr;
+  }
+}
 </style>

@@ -351,4 +351,116 @@ watch(() => props.currentId, async () => {
   border: 1px solid var(--apple-hairline);
   border-radius: var(--apple-rounded-xs);
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.review-queue {
+  font-family: var(--apple-font-text);
+}
+
+.queue-head {
+  padding: var(--apple-spacing-md) var(--apple-spacing-md) var(--apple-spacing-xs);
+}
+
+.queue-title {
+  gap: var(--apple-spacing-xs);
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-body-strong);
+}
+
+.queue-count {
+  font-size: var(--apple-fs-fine-print);
+}
+
+.queue-search {
+  padding: 0 var(--apple-spacing-md);
+
+  :deep(.el-input__wrapper) {
+    border-radius: var(--apple-rounded-md);
+    font-size: var(--apple-fs-fine-print);
+  }
+}
+
+.queue-filters {
+  gap: var(--apple-spacing-xxs);
+  padding: var(--apple-spacing-xs) var(--apple-spacing-md) var(--apple-spacing-sm);
+}
+
+.filter-chip {
+  padding: 3px var(--apple-spacing-xs);
+  font-size: var(--apple-fs-fine-print);
+  transition: var(--apple-transition-fast);
+}
+
+.queue-list {
+  padding: 0 var(--apple-spacing-sm) var(--apple-spacing-md);
+  gap: var(--apple-spacing-xs);
+}
+
+.queue-card {
+  padding: var(--apple-spacing-xs) var(--apple-spacing-sm);
+  border-radius: var(--apple-rounded-md);
+  transition: var(--apple-transition-fast);
+}
+
+.card-top {
+  gap: var(--apple-spacing-xxs);
+}
+
+.student-name {
+  font-size: var(--apple-fs-caption);
+}
+
+.flag {
+  padding: 0 var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
+  line-height: 16px;
+}
+
+.card-title {
+  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
+  line-height: 1.4;
+}
+
+.card-meta {
+  gap: var(--apple-spacing-xs);
+  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.queue-empty {
+  padding: var(--apple-spacing-xl) var(--apple-spacing-sm);
+  font-size: var(--apple-fs-caption);
+}
+
+.queue-empty p {
+  margin: var(--apple-spacing-xs) 0;
+}
+
+.queue-hint {
+  gap: var(--apple-spacing-sm);
+  padding: var(--apple-spacing-xs) var(--apple-spacing-md);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.queue-hint span {
+  gap: var(--apple-spacing-xxs);
+}
+
+.queue-hint kbd {
+  font-size: var(--apple-fs-fine-print);
+}
+
+@media (max-width: 768px) {
+  .queue-head {
+    padding: var(--apple-spacing-sm);
+  }
+
+  .queue-search,
+  .queue-filters,
+  .queue-list {
+    padding-left: var(--apple-spacing-sm);
+    padding-right: var(--apple-spacing-sm);
+  }
+}
 </style>

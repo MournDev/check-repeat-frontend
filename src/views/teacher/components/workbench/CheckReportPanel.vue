@@ -524,4 +524,157 @@ watch(() => props.sources, () => {
   font-size: 0.6875rem;
   color: var(--apple-ink-muted-48);
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.check-report-panel {
+  gap: var(--apple-spacing-sm);
+  padding: var(--apple-spacing-sm) 0 var(--apple-spacing-xs);
+  font-family: var(--apple-font-text);
+}
+
+.report-state {
+  padding: var(--apple-spacing-lg);
+}
+
+.report-state p {
+  margin: var(--apple-spacing-sm) 0;
+  font-size: var(--apple-fs-caption);
+}
+
+.state-tip {
+  font-size: var(--apple-fs-fine-print);
+  line-height: 1.5;
+}
+
+.risk-banner {
+  gap: var(--apple-spacing-sm);
+  padding: var(--apple-spacing-sm);
+  border-radius: var(--apple-rounded-md);
+}
+
+.ring-num {
+  font-size: var(--apple-fs-fine-print);
+}
+
+.risk-title {
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-caption);
+}
+
+.risk-meta {
+  margin-top: var(--apple-spacing-xxs);
+  gap: var(--apple-spacing-xxs) var(--apple-spacing-xs);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.metric-grid {
+  gap: var(--apple-spacing-xs);
+}
+
+.metric-item {
+  padding: var(--apple-spacing-xs);
+  border-radius: var(--apple-rounded-sm);
+}
+
+.metric-label {
+  font-size: var(--apple-fs-fine-print);
+}
+
+.metric-value {
+  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-body-strong);
+}
+
+.source-section {
+  padding-top: var(--apple-spacing-sm);
+}
+
+.section-head {
+  margin-bottom: var(--apple-spacing-xs);
+  font-size: var(--apple-fs-caption);
+}
+
+.section-count {
+  font-size: var(--apple-fs-fine-print);
+}
+
+.source-empty {
+  padding: var(--apple-spacing-md) 0;
+  font-size: var(--apple-fs-caption);
+}
+
+.source-row {
+  gap: var(--apple-spacing-xs);
+  padding: var(--apple-spacing-xs) 2px;
+}
+
+.source-index {
+  font-size: var(--apple-fs-fine-print);
+}
+
+.source-name {
+  font-size: var(--apple-fs-caption);
+}
+
+.source-sub {
+  gap: var(--apple-spacing-xs);
+  margin-top: 2px;
+  font-size: var(--apple-fs-fine-print);
+}
+
+.source-rate {
+  font-size: var(--apple-fs-fine-print);
+}
+
+.source-arrow {
+  font-size: var(--apple-fs-fine-print);
+}
+
+.source-detail {
+  padding: 2px 0 var(--apple-spacing-xs) 26px;
+}
+
+.source-link {
+  margin-bottom: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.match-list {
+  gap: var(--apple-spacing-xs);
+}
+
+.match-item,
+.match-plain {
+  padding: var(--apple-spacing-xs);
+  border-radius: var(--apple-rounded-sm);
+}
+
+.match-head {
+  margin-bottom: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.match-content,
+.match-plain {
+  font-size: var(--apple-fs-fine-print);
+  line-height: 1.6;
+}
+
+.report-foot {
+  gap: var(--apple-spacing-sm);
+}
+
+.foot-note {
+  font-size: var(--apple-fs-fine-print);
+}
+
+@media (max-width: 768px) {
+  .risk-banner {
+    gap: var(--apple-spacing-xs);
+  }
+
+  .source-detail {
+    padding-left: var(--apple-spacing-md);
+  }
+}
 </style>

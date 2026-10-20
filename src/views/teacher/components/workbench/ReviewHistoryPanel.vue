@@ -210,4 +210,58 @@ watch(() => props.paperId, load, { immediate: true })
   color: var(--apple-ink-muted-80);
   white-space: pre-wrap;
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.review-history-panel {
+  padding: var(--apple-spacing-sm) 0 var(--apple-spacing-xs);
+  font-family: var(--apple-font-text);
+}
+
+.history-empty p {
+  margin: var(--apple-spacing-sm) 0 var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-caption);
+}
+
+.history-empty span {
+  font-size: var(--apple-fs-fine-print);
+}
+
+.history-list {
+  padding: 0 0 0 var(--apple-spacing-md);
+}
+
+.history-item {
+  margin-bottom: var(--apple-spacing-sm);
+}
+
+.history-card {
+  padding: var(--apple-spacing-xs) var(--apple-spacing-sm);
+  border-radius: var(--apple-rounded-sm);
+}
+
+.history-head {
+  gap: var(--apple-spacing-xs);
+}
+
+.status-tag {
+  padding: 0 var(--apple-spacing-xs);
+  font-size: var(--apple-fs-fine-print);
+  line-height: 18px;
+}
+
+.history-time {
+  font-size: var(--apple-fs-fine-print);
+}
+
+.history-meta {
+  gap: var(--apple-spacing-xxs) var(--apple-spacing-sm);
+  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
+}
+
+.history-opinion {
+  margin: var(--apple-spacing-xxs) 0 0;
+  font-size: var(--apple-fs-fine-print);
+  line-height: 1.6;
+}
 </style>
