@@ -91,33 +91,61 @@
                   命中句 {{ sentenceMetrics.hitCount }}
                 </span>
               </div>
-              <el-button
-                type="primary"
-                plain
-                :icon="DataLine"
-                :disabled="!baseInfo.taskId"
-                @click="goSentenceDetail"
-              >
-                查看句级明细
-              </el-button>
+              <div class="overview-actions">
+                <label class="overview-toggle">
+                  <span>仅看重复段落</span>
+                  <el-switch v-model="onlyRepeat" size="small" />
+                </label>
+                <el-button
+                  type="primary"
+                  plain
+                  :icon="DataLine"
+                  :disabled="!baseInfo.taskId"
+                  @click="goSentenceDetail"
+                >
+                  查看句级明细
+                </el-button>
+              </div>
             </div>
 
-            <div v-if="paragraphs.length" class="paragraph-list">
+            <div v-if="selectedSourceId" class="overview-filter">
+              <span class="chip chip-active">
+                来源：{{ selectedSourceName }}
+                <button class="chip-close" type="button" aria-label="清除来源筛选" @click="clearSourceFilter">×</button>
+              </span>
+            </div>
+
+            <div v-if="visibleParagraphs.length" class="paragraph-list">
               <article
-                v-for="(item, index) in paragraphs"
-                :key="item.paragraphNo ?? index"
+                v-for="item in visibleParagraphs"
+                :key="item.displayNo"
                 class="paragraph-item"
                 :class="{ 'is-repeat': item.isRepeat }"
               >
                 <header class="paragraph-head">
-                  <span class="paragraph-no">第 {{ item.paragraphNo ?? index + 1 }} 段</span>
-                  <span v-if="item.isRepeat" class="paragraph-badge">相似度 {{ formatRate(item.similarity) }}</span>
+                  <span class="paragraph-no">第 {{ item.displayNo }} 段</span>
+                  <div class="paragraph-tags">
+                    <button
+                      v-for="sourceId in (item.sourceIds || []).slice(0, 2)"
+                      :key="sourceId"
+                      type="button"
+                      class="paragraph-source"
+                      :title="sourceNameById(sourceId)"
+                      @click="filterBySource(sourceId)"
+                    >
+                      {{ sourceNameById(sourceId) }}
+                    </button>
+                    <span v-if="(item.sourceIds || []).length > 2" class="paragraph-source-more">
+                      +{{ item.sourceIds.length - 2 }}
+                    </span>
+                    <span v-if="item.isRepeat" class="paragraph-badge">相似度 {{ formatRate(item.similarity) }}</span>
+                  </div>
                 </header>
                 <!-- 后端生成的分段正文，仅含固定标红 span -->
                 <div class="paragraph-content" v-html="item.content"></div>
               </article>
             </div>
-            <el-empty v-else description="暂无可预览的正文分段" />
+            <el-empty v-else :description="paragraphEmptyText" />
           </el-tab-pane>
 
           <!-- 相似来源 -->
@@ -139,6 +167,14 @@
                 </div>
                 <div class="source-side">
                   <span class="source-rate">{{ formatRate(source.maxSimilarity) }}</span>
+                  <button
+                    v-if="hasParagraphsForSource(source.sourceId)"
+                    type="button"
+                    class="source-locate"
+                    @click="filterBySource(source.sourceId)"
+                  >
+                    定位段落
+                  </button>
                   <a
                     v-if="source.sourceUrl"
                     class="source-link"
@@ -374,6 +410,53 @@ const sortedSources = computed(() => {
   return [...similarSources.value].sort((a, b) => (Number(b.maxSimilarity) || 0) - (Number(a.maxSimilarity) || 0))
 })
 
+// ── 阅读筛选 ────────────────────────────────────────────────
+const onlyRepeat = ref(false)
+const selectedSourceId = ref('')
+
+const visibleParagraphs = computed(() => {
+  return paragraphs.value
+    .map((item, index) => ({ ...item, displayNo: item.paragraphNo ?? index + 1 }))
+    .filter((item) => {
+      if (onlyRepeat.value && !item.isRepeat) return false
+      if (!selectedSourceId.value) return true
+      return (item.sourceIds || []).some((id) => String(id) === selectedSourceId.value)
+    })
+})
+
+const paragraphEmptyText = computed(() => {
+  if (selectedSourceId.value) return '该来源没有可预览的重复段落'
+  if (onlyRepeat.value) return '未检测到重复段落'
+  return '暂无可预览的正文分段'
+})
+
+const selectedSourceName = computed(() => {
+  if (!selectedSourceId.value) return ''
+  const hit = similarSources.value.find((item) => String(item.sourceId) === selectedSourceId.value)
+  return hit?.sourceName || '所选来源'
+})
+
+const sourceNameById = (id) => {
+  const key = String(id)
+  const hit = similarSources.value.find((item) => String(item.sourceId) === key)
+  return hit?.sourceName || `来源 ${key}`
+}
+
+const hasParagraphsForSource = (id) => {
+  const key = String(id)
+  return paragraphs.value.some((item) => (item.sourceIds || []).some((sourceId) => String(sourceId) === key))
+}
+
+const filterBySource = (id) => {
+  if (id === null || id === undefined) return
+  selectedSourceId.value = String(id)
+  activeTab.value = 'overview'
+}
+
+const clearSourceFilter = () => {
+  selectedSourceId.value = ''
+}
+
 // 对比指标行：正负变化按「越大越差」着色
 const compareMetrics = computed(() => {
   const data = comparison.value
@@ -478,6 +561,8 @@ const loadReport = async () => {
   hasReport.value = false
   compareSelected.value = []
   comparison.value = null
+  onlyRepeat.value = false
+  selectedSourceId.value = ''
 
   try {
     // 历史列表先发起；若 query 已带 reportId，则报告详情与其并行
@@ -975,6 +1060,90 @@ onUnmounted(() => {
   }
 }
 
+// ── 阅读筛选 ────────────────────────────────────────────────
+.overview-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--apple-spacing-md);
+  flex-shrink: 0;
+}
+
+.overview-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--apple-spacing-xs);
+  font-size: var(--apple-fs-caption);
+  color: var(--apple-ink-secondary);
+  cursor: pointer;
+}
+
+.overview-filter {
+  margin-bottom: var(--apple-spacing-sm);
+}
+
+.chip-active {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--apple-info-bg);
+  color: var(--apple-primary);
+}
+
+.chip-close {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.paragraph-tags {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.paragraph-source {
+  max-width: 160px;
+  padding: 2px 8px;
+  overflow: hidden;
+  border: none;
+  border-radius: var(--apple-rounded-pill);
+  background: var(--apple-surface);
+  color: var(--apple-primary);
+  font-size: var(--apple-fs-fine-print);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--apple-info-bg);
+  }
+}
+
+.paragraph-source-more {
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
+}
+
+.source-locate {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--apple-primary);
+  font-size: var(--apple-fs-fine-print);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--apple-primary-hover);
+    text-decoration: underline;
+  }
+}
+
 // ── 历史记录 ────────────────────────────────────────────────
 .history-toolbar {
   display: flex;
@@ -1231,6 +1400,21 @@ onUnmounted(() => {
   .overview-head {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .overview-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .paragraph-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--apple-spacing-xxs);
+  }
+
+  .paragraph-tags {
+    justify-content: flex-start;
   }
 
   .source-item {
