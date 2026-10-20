@@ -1867,4 +1867,305 @@ onMounted(() => {
         flex-direction: column;
     }
 }
+
+// ── 视觉统一（design-tokens 覆盖层） ────────────────────────
+.paper-details-container {
+    padding: var(--apple-spacing-lg);
+    background: var(--apple-canvas-parchment);
+    color: var(--apple-ink);
+    font-family: var(--apple-font-text);
+
+    :deep(.el-tag) {
+        border-radius: var(--apple-rounded-pill);
+        font-weight: 600;
+    }
+}
+
+.paper-header {
+    margin-bottom: var(--apple-spacing-lg);
+    padding: var(--apple-spacing-lg) var(--apple-spacing-xl);
+    background: var(--apple-surface);
+    border: 1px solid var(--apple-hairline);
+    border-radius: var(--apple-rounded-lg);
+
+    .header-content {
+        gap: var(--apple-spacing-xs);
+
+        .back-btn {
+            padding-left: 0;
+            color: var(--apple-primary);
+            font-size: var(--apple-fs-caption);
+            font-weight: 500;
+
+            &:hover {
+                color: var(--apple-primary-hover);
+            }
+        }
+
+        .paper-title {
+            font-family: var(--apple-font-display);
+            font-size: var(--apple-fs-lead-airy);
+            font-weight: 600;
+            color: var(--apple-ink);
+            line-height: 1.3;
+        }
+
+        .paper-status-row {
+            gap: var(--apple-spacing-sm);
+
+            .status-tag {
+                font-size: var(--apple-fs-fine-print);
+            }
+
+            .paper-meta {
+                gap: var(--apple-spacing-md);
+
+                .meta-item {
+                    gap: 4px;
+                    font-size: var(--apple-fs-fine-print);
+                    color: var(--apple-ink-muted-48);
+                }
+            }
+        }
+    }
+}
+
+.paper-content {
+    .section-card {
+        margin-bottom: var(--apple-spacing-md);
+        background: var(--apple-surface);
+        border: 1px solid var(--apple-hairline);
+        border-radius: var(--apple-rounded-lg);
+
+        :deep(.el-card__header) {
+            padding: var(--apple-spacing-sm) var(--apple-spacing-lg);
+            background: var(--apple-surface);
+            border-bottom: 1px solid var(--apple-divider-soft);
+        }
+
+        :deep(.el-card__body) {
+            padding: var(--apple-spacing-lg);
+        }
+    }
+}
+
+.section-header {
+    gap: var(--apple-spacing-xs);
+    font-family: var(--apple-font-display);
+    font-size: var(--apple-fs-caption-strong);
+    font-weight: 600;
+    color: var(--apple-ink);
+
+    .el-icon {
+        color: var(--apple-ink-muted-48);
+    }
+
+    .advisor-name {
+        color: var(--apple-ink-secondary);
+        font-size: var(--apple-fs-fine-print);
+        font-weight: 500;
+    }
+}
+
+.info-section {
+    .info-label {
+        margin-bottom: 6px;
+        font-size: var(--apple-fs-fine-print);
+        font-weight: 500;
+        color: var(--apple-ink-muted-48);
+    }
+
+    .info-value {
+        color: var(--apple-ink);
+        line-height: 1.6;
+    }
+
+    .abstract-text {
+        font-size: var(--apple-fs-caption);
+        line-height: 1.7;
+        color: var(--apple-ink-secondary);
+    }
+}
+
+.info-divider {
+    background: var(--apple-divider-soft);
+}
+
+.info-grid {
+    gap: var(--apple-spacing-sm);
+
+    .info-cell {
+        .info-label {
+            font-size: var(--apple-fs-fine-print);
+            color: var(--apple-ink-muted-48);
+        }
+
+        .info-value {
+            font-size: var(--apple-fs-caption);
+            font-weight: 500;
+            color: var(--apple-ink);
+        }
+    }
+}
+
+.similarity-row {
+    gap: var(--apple-spacing-md);
+
+    .similarity-rate {
+        font-family: var(--apple-font-display);
+        font-size: var(--apple-fs-display-md);
+        font-weight: 600;
+    }
+
+    .similarity-detail {
+        gap: 6px;
+
+        .similarity-tip {
+            font-size: var(--apple-fs-caption);
+            color: var(--apple-ink-muted-48);
+        }
+    }
+
+    .similarity-actions {
+        gap: var(--apple-spacing-xs);
+    }
+}
+
+.check-task-info {
+    margin-top: var(--apple-spacing-md);
+    padding-top: var(--apple-spacing-md);
+    border-top: 1px solid var(--apple-divider-soft);
+
+    .task-row {
+        padding: 5px 0;
+        font-size: var(--apple-fs-caption);
+
+        .task-label {
+            color: var(--apple-ink-muted-48);
+        }
+
+        .task-value {
+            color: var(--apple-ink);
+        }
+    }
+}
+
+.feedback-text {
+    padding: var(--apple-spacing-md);
+    margin-bottom: var(--apple-spacing-md);
+    background: var(--apple-canvas-parchment);
+    border-left: 3px solid var(--apple-primary);
+    border-radius: var(--apple-rounded-sm);
+    color: var(--apple-ink-secondary);
+    font-size: var(--apple-fs-caption);
+    line-height: 1.7;
+}
+
+.feedback-actions {
+    gap: var(--apple-spacing-xs);
+}
+
+.file-info-container {
+    .file-card {
+        padding: var(--apple-spacing-sm);
+        background: var(--apple-canvas-parchment);
+        border: 1px solid var(--apple-divider-soft);
+        border-radius: var(--apple-rounded-md);
+    }
+
+    .file-icon-wrapper {
+        border-radius: var(--apple-rounded-md);
+    }
+
+    .file-main-info {
+        .file-name {
+            font-size: var(--apple-fs-caption);
+            color: var(--apple-ink);
+        }
+
+        .file-meta {
+            gap: var(--apple-spacing-sm);
+            font-size: var(--apple-fs-fine-print);
+            color: var(--apple-ink-muted-48);
+        }
+    }
+
+    .file-actions {
+        gap: var(--apple-spacing-xs);
+    }
+}
+
+.review-history {
+    .review-item {
+        padding: var(--apple-spacing-sm);
+        margin-bottom: var(--apple-spacing-xs);
+        background: var(--apple-canvas-parchment);
+        border-radius: var(--apple-rounded-md);
+
+        .review-header {
+            .reviewer-info {
+                .reviewer-name {
+                    font-size: var(--apple-fs-fine-print);
+                    color: var(--apple-ink);
+                }
+            }
+
+            .review-time {
+                font-size: var(--apple-fs-fine-print);
+                color: var(--apple-ink-muted-48);
+            }
+        }
+
+        .review-content {
+            font-size: var(--apple-fs-caption);
+            color: var(--apple-ink-secondary);
+            line-height: 1.6;
+        }
+    }
+}
+
+.preview-wrapper {
+    background: var(--apple-canvas);
+
+    .preview-iframe {
+        background: var(--apple-canvas);
+    }
+
+    .preview-error {
+        background: var(--apple-canvas);
+
+        .error-detail {
+            color: var(--apple-ink-muted-48);
+            font-size: var(--apple-fs-caption);
+        }
+    }
+}
+
+.preview-footer {
+    .file-info .file-name {
+        color: var(--apple-ink);
+    }
+
+    .footer-actions {
+        gap: var(--apple-spacing-xs);
+    }
+}
+
+@media (max-width: 768px) {
+    .paper-details-container {
+        padding: var(--apple-spacing-sm);
+    }
+
+    .paper-header {
+        padding: var(--apple-spacing-md);
+    }
+
+    .paper-content {
+        .section-card {
+            :deep(.el-card__body) {
+                padding: var(--apple-spacing-md);
+            }
+        }
+    }
+}
 </style>
