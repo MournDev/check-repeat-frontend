@@ -376,7 +376,7 @@ import { getAvatarUrl } from '@/utils/avatar'
 import { getSimilarityColor, getSimilarityTagType as baseGetSimilarityTagType } from '@/utils/reviewStatus.js'
 import { loadPaperTypes, getPaperTypeText } from '@/utils/paperType.js'
 import { loadDefenseDict, getDefenseDictText, DICT_PAPER_STATUS } from '@/utils/defenseDict.js'
-import { getSmartPreviewBlobUrl, getSmartPreviewReportBlobUrl, downloadFileBlob, revokeBlobUrl } from '@/utils/filePreview'
+import { getPreviewUrl, getSmartPreviewReportBlobUrl, downloadFileBlob, revokeBlobUrl } from '@/utils/filePreview'
 
 // 图标引入
 import {
@@ -460,15 +460,15 @@ const previewFile = async (file) => {
     currentFileType.value = getFileExtension(file.originalFilename)
 
     // 2. 显示预览弹框，开始加载
-    // /api/file/** 需要登录态，iframe 直连接口地址会 401；改为带 JWT 拉取 blob 再给 iframe
+    // 先带 JWT 取回后端给出的预览地址，再交给 iframe 直接加载：
+    // office 是 kkFileView 的预览页、其余是直出的文件流，两者都不能包成 blob
     previewVisible.value = true
     previewLoading.value = true
     previewError.value = false
     previewUrl.value = ''
 
     try {
-        revokeBlobUrl(previewUrl.value)
-        previewUrl.value = await getSmartPreviewBlobUrl(file.id)
+        previewUrl.value = await getPreviewUrl(file.id)
     } catch (error) {
         handlePreviewError(error)
     } finally {
@@ -511,8 +511,7 @@ const retryPreview = async () => {
         previewLoading.value = true
         previewError.value = false
         try {
-            revokeBlobUrl(previewUrl.value)
-            previewUrl.value = await getSmartPreviewBlobUrl(currentFileId.value) // 重新赋值触发iframe刷新
+            previewUrl.value = await getPreviewUrl(currentFileId.value) // 重新赋值触发iframe刷新
         } catch (error) {
             handlePreviewError(error)
         } finally {
@@ -525,8 +524,8 @@ const retryPreview = async () => {
 const openInNewWindow = async () => {
     if (currentFileId.value) {
         try {
-            const blobUrl = await getSmartPreviewBlobUrl(currentFileId.value)
-            window.open(blobUrl, '_blank', 'width=1200,height=800')
+            const url = await getPreviewUrl(currentFileId.value)
+            window.open(url, '_blank', 'width=1200,height=800')
             closePreview()
         } catch (error) {
             ElMessage.error(error.message || '打开失败，请重试')
