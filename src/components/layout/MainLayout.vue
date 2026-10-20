@@ -964,4 +964,201 @@ onUnmounted(() => {
   .notification-menu { width: 300px; }
   .app-footer { padding: 32px 17px 17px; }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.app-shell {
+  background: var(--apple-canvas-parchment);
+  font-family: var(--apple-font-text);
+}
+
+.global-nav {
+  height: var(--apple-global-nav-height);
+  padding: 0 var(--apple-spacing-lg);
+  background: var(--apple-surface-black);
+}
+
+.brand-name {
+  font-size: var(--apple-fs-nav-link);
+  letter-spacing: 0;
+}
+
+.nav-link {
+  padding: 6px var(--apple-spacing-sm);
+  border-radius: var(--apple-rounded-sm);
+  font-size: var(--apple-fs-nav-link);
+  letter-spacing: var(--apple-ls-nav-link);
+  color: var(--apple-body-muted);
+
+  &:hover { color: var(--apple-body-on-dark); }
+
+  &.active { color: var(--apple-primary-on-dark); font-weight: 600; }
+}
+
+.nav-icon-btn {
+  border-radius: var(--apple-rounded-sm);
+  color: var(--apple-body-muted);
+
+  &:hover { color: var(--apple-body-on-dark); }
+}
+
+.nav-user-btn {
+  border-radius: var(--apple-rounded-sm);
+  font-size: var(--apple-fs-nav-link);
+  color: var(--apple-body-muted);
+}
+
+.nav-avatar {
+  border-radius: var(--apple-rounded-pill);
+  background: var(--apple-primary-on-dark);
+  color: var(--apple-ink);
+}
+
+.nav-user-name { font-size: var(--apple-fs-nav-link); }
+
+.sub-nav {
+  height: var(--apple-sub-nav-height);
+  padding: 0 var(--apple-spacing-lg);
+  border-bottom: 1px solid var(--apple-hairline-alpha);
+
+  .sub-nav-title {
+    font-family: var(--apple-font-display);
+    font-size: var(--apple-fs-tagline);
+    line-height: var(--apple-lh-tagline);
+    letter-spacing: var(--apple-ls-tagline);
+    color: var(--apple-ink);
+  }
+}
+
+.breadcrumb {
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
+}
+
+.role-badge {
+  font-size: var(--apple-fs-caption);
+  color: var(--apple-ink-muted-48);
+}
+
+.sidebar { background: var(--apple-surface-tile-1); }
+
+.sidebar-nav { padding: var(--apple-spacing-xs) var(--apple-spacing-sm); }
+
+.sidebar-section-label,
+.sidebar-sub-label {
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
+}
+
+.sidebar-item {
+  gap: var(--apple-spacing-xs);
+  padding: var(--apple-spacing-xs) var(--apple-spacing-sm);
+  border-radius: var(--apple-rounded-sm);
+  font-size: var(--apple-fs-caption);
+  color: var(--apple-body-muted);
+}
+
+.sidebar-spacer { height: var(--apple-spacing-md); }
+
+.maintenance-overlay {
+  background: var(--apple-canvas-parchment);
+  padding: var(--apple-spacing-xl);
+}
+
+.maintenance-panel {
+  .maintenance-icon { margin-bottom: var(--apple-spacing-md); }
+
+  h2 {
+    margin-bottom: var(--apple-spacing-sm);
+    font-size: var(--apple-fs-tagline);
+    color: var(--apple-ink);
+  }
+
+  .maintenance-notice { font-size: var(--apple-fs-caption); }
+
+  .maintenance-time {
+    margin-top: var(--apple-spacing-xs);
+    font-size: var(--apple-fs-fine-print);
+  }
+
+  .el-button { margin-top: var(--apple-spacing-lg); }
+}
+
+.content-inner { padding: var(--apple-spacing-xl); }
+
+.app-footer {
+  padding: var(--apple-spacing-xxl) var(--apple-spacing-xl) var(--apple-spacing-lg);
+  background: var(--apple-canvas-parchment);
+  border-top: 1px solid var(--apple-hairline);
+}
+
+.footer-links {
+  gap: var(--apple-spacing-lg);
+  margin-bottom: var(--apple-spacing-sm);
+
+  a {
+    font-size: var(--apple-fs-fine-print);
+    letter-spacing: var(--apple-ls-fine-print);
+    color: var(--apple-ink-muted-48);
+
+    &:hover { color: var(--apple-ink); }
+  }
+}
+
+.footer-copy {
+  font-size: var(--apple-fs-fine-print);
+  letter-spacing: var(--apple-ls-fine-print);
+  color: var(--apple-ink-muted-48);
+}
+
+.notification-item {
+  gap: var(--apple-spacing-sm);
+  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+  border-bottom: 1px solid var(--apple-divider-soft);
+
+  &:hover { background: var(--apple-canvas-parchment); }
+  &.unread { background: var(--apple-surface-pearl); }
+
+  .notification-icon {
+    border-radius: var(--apple-rounded-sm);
+    background: var(--apple-canvas-parchment);
+    color: var(--apple-primary);
+  }
+
+  .notification-title {
+    margin-bottom: var(--apple-spacing-xxs);
+    font-size: var(--apple-fs-caption);
+    color: var(--apple-ink);
+  }
+
+  .notification-desc {
+    font-size: var(--apple-fs-fine-print);
+    color: var(--apple-ink-muted-48);
+  }
+
+  .notification-time {
+    margin-top: var(--apple-spacing-xxs);
+    font-size: var(--apple-fs-fine-print);
+    color: var(--apple-ink-muted-48);
+  }
+}
+
+.empty-notification { padding: var(--apple-spacing-lg); }
+
+.notification-footer {
+  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+  border-top: 1px solid var(--apple-divider-soft);
+}
+
+@media (max-width: 833px) {
+  .content-inner { padding: var(--apple-spacing-lg) var(--apple-spacing-md); }
+  .sub-nav,
+  .global-nav { padding: 0 var(--apple-spacing-md); }
+  .sidebar.sidebar-open { box-shadow: var(--apple-shadow-product); }
+}
+
+@media (max-width: 640px) {
+  .sub-nav-title { font-size: var(--apple-fs-body-strong); }
+  .content-inner { padding: var(--apple-spacing-md) var(--apple-spacing-sm); }
+  .app-footer { padding: var(--apple-spacing-xl) var(--apple-spacing-md) var(--apple-spacing-md); }
+}
 </style>

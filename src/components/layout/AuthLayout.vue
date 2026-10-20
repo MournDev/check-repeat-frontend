@@ -221,4 +221,63 @@ const props = withDefaults(defineProps<AuthLayoutProps>(), {
   .right-panel { padding: 20px; }
   .form-title { font-size: 24px; }
 }
+
+/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
+.left-panel { padding: var(--apple-spacing-xxl); }
+
+.left-top { gap: var(--apple-spacing-xs); }
+
+.brand-mark { border-radius: var(--apple-rounded-md); }
+
+.brand-name {
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-tagline);
+  letter-spacing: var(--apple-ls-tagline);
+  color: var(--apple-on-dark);
+}
+
+.left-tagline {
+  font-family: var(--apple-font-text);
+  font-size: var(--apple-fs-lead-airy);
+  line-height: var(--apple-lh-lead-airy);
+}
+
+.right-panel { padding: var(--apple-spacing-xl); }
+
+.mobile-logo {
+  gap: var(--apple-spacing-xs);
+  margin-bottom: var(--apple-spacing-xxl);
+  font-size: var(--apple-fs-button-large);
+}
+
+.mobile-logo-icon { border-radius: var(--apple-rounded-sm); }
+
+.form-header { margin-bottom: var(--apple-spacing-xl); }
+
+.form-title {
+  margin: 0 0 var(--apple-spacing-xs);
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-display-lg);
+  line-height: var(--apple-lh-display-lg);
+  color: var(--apple-ink);
+}
+
+.form-subtitle {
+  font-size: var(--apple-fs-body-strong);
+  line-height: var(--apple-lh-body);
+  letter-spacing: var(--apple-ls-body);
+}
+
+@media (max-width: 1068px) {
+  .form-title { font-size: var(--apple-fs-display-md); }
+}
+
+@media (max-width: 640px) {
+  .form-title { font-size: var(--apple-fs-lead); }
+}
+
+@media (max-width: 480px) {
+  .right-panel { padding: var(--apple-spacing-md); }
+  .form-title { font-size: var(--apple-fs-lead-airy); }
+}
 </style>
