@@ -1,6 +1,7 @@
 import { ref, onUnmounted } from 'vue'
 import { ElMessage, ElLoading } from 'element-plus'
 import { getPaperContent, getPaperPreviewUrl } from '@/api/teacher.js'
+import { buildPreviewUrl } from '@/utils/previewUrl'
 
 /**
  * 论文在线预览：加载 / URL 改写 / 超时提示 / 重试 / 复制链接 / 全屏
@@ -15,24 +16,6 @@ export function usePaperPreview() {
 
   let loadingInstance = null
   let timeoutTimer = null
-
-  const buildPreviewUrl = (rawUrl) => {
-    if (!rawUrl) return ''
-    if (rawUrl.includes('onlinePreview')) return rawUrl
-    try {
-      if (rawUrl.includes('url=')) {
-        const urlParam = new URLSearchParams(rawUrl.split('?')[1]).get('url')
-        if (urlParam) {
-          const decodedUrl = decodeURIComponent(atob(urlParam))
-          const previewBase = import.meta.env.VITE_KKFILEVIEW_BASE_URL || ''
-          return `${previewBase}/onlinePreview?url=${btoa(decodedUrl)}`
-        }
-      }
-    } catch (e) {
-      console.warn('URL处理失败:', e)
-    }
-    return rawUrl
-  }
 
   const notifyPreviewFallback = () => {
     ElMessage.info('在线预览暂不可用，已展示论文基本信息')

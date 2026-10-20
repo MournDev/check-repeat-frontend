@@ -129,6 +129,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import PageHeader from '@/components/common/PageHeader.vue'
 import { Refresh, FullScreen } from '@element-plus/icons-vue'
@@ -141,6 +142,8 @@ import PendingPaperTable from '@/views/teacher/components/PendingPaperTable.vue'
 import PaperPreviewDialog from '@/views/teacher/components/PaperPreviewDialog.vue'
 import CheckSignoffDialog from '@/views/teacher/components/CheckSignoffDialog.vue'
 import { usePendingPapers } from '@/composables/usePendingPapers.js'
+
+const router = useRouter()
 
 // 表格组件引用（须在 usePendingPapers 之前声明，供 onLoaded 回调清空跨页勾选）
 const pendingTableRef = ref(null)
@@ -203,10 +206,15 @@ const reviewDialogVisible = ref(false)
 const currentPaperId = ref(null)
 
 const reviewPaper = (paper) => {
-  // 单篇入口始终为单篇模式
-  reviewMode.value = 'single'
-  currentPaperId.value = paper.paperId ?? paper.paperBaseInfo?.paperId ?? paper.id ?? null
-  reviewDialogVisible.value = true
+  const paperId = paper.paperId ?? paper.paperBaseInfo?.paperId ?? paper.id ?? null
+  if (!paperId) {
+    ElMessage.warning('未获取到论文ID，无法进入审核工作台')
+    return
+  }
+  router.push({
+    name: 'TeacherReviewWorkbench',
+    query: { paperId: String(paperId) }
+  })
 }
 
 const batchReview = async () => {

@@ -39,6 +39,14 @@ export const signoffCheckReport = (paperId, data) => {
   });
 };
 
+// 查询论文最新一次签核记录（未签核时 data=null）
+export const getCheckSignoff = (paperId) => {
+  return request({
+    url: `/api/teacher/papers/${paperId}/check-signoff`,
+    method: "get",
+  });
+};
+
 // 指导进度看板
 export const getGuidanceProgress = () => {
   return request({

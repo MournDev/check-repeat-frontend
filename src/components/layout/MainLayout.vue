@@ -278,7 +278,10 @@ const activeMenu = computed(() => {
   let best = ''
   for (const item of sidebarMenu.value.items) {
     const base = item.path
-    if ((path === base || path.startsWith(`${base}/`)) && base.length > best.length) {
+    const aliasHit = (item.activeMatch || []).some(
+      alias => path === alias || path.startsWith(`${alias}/`)
+    )
+    if ((path === base || path.startsWith(`${base}/`) || aliasHit) && base.length > best.length) {
       best = base
     }
   }

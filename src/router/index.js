@@ -104,7 +104,7 @@ export const asyncRoutes = [
         // 否则 buildMenus 继承链上找不到任何 roles 而一项都不显示。
         // order 统一插在各角色菜单尾部的设置/帮助区：学生 9.5（个人设置与帮助之间）、
         // 教师/管理员 10.5/12.5（设置之后）、超管 13（最末，spacer 分区）。
-        meta: { title: "消息中心", menu: { icon: "Message", roles: ["STUDENT", "TEACHER", "ADMIN", "SUPER_ADMIN"], STUDENT: { order: 9.5 }, TEACHER: { order: 10.5 }, ADMIN: { order: 12.5 }, SUPER_ADMIN: { order: 13, spacer: true } } },
+        meta: { title: "消息中心", menu: { icon: "Message", roles: ["STUDENT", "TEACHER", "ADMIN", "SUPER_ADMIN"], STUDENT: { order: 9.5 }, TEACHER: { order: 10.5, group: "设置" }, ADMIN: { order: 12.5 }, SUPER_ADMIN: { order: 13, spacer: true } } },
       },
     ],
   },
@@ -143,26 +143,28 @@ export const asyncRoutes = [
     component: () => import("@/components/layout/MainLayout.vue"),
     meta: { requiresAuth: true, roles: ["TEACHER"], title: "教师" },
     children: [
-      { path: "", name: "TeacherDashboard", component: () => import("@/views/teacher/Dashboard.vue"), meta: { title: "审核工作台", menu: { icon: "DataBoard", label: "审核工作台", order: 1, top: { order: 1, label: "工作台", exact: true } } } },
-      { path: "student-list", name: "StudentList", component: () => import("@/views/teacher/StudentList.vue"), meta: { title: "学生管理", menu: { icon: "UserFilled", order: 2, top: { order: 3, label: "学生管理", match: ["/teacher/student"] } } } },
+      { path: "", name: "TeacherDashboard", component: () => import("@/views/teacher/Dashboard.vue"), meta: { title: "审核工作台", menu: { icon: "DataBoard", label: "审核工作台", group: "工作台", order: 1, top: { order: 1, label: "工作台", exact: true } } } },
+      { path: "student-list", name: "StudentList", component: () => import("@/views/teacher/StudentList.vue"), meta: { title: "学生管理", menu: { icon: "UserFilled", group: "学生", order: 5, top: { order: 3, label: "学生管理", match: ["/teacher/student"] } } } },
       // PaperReview 是承载子页面的容器，本身不是导航目标；菜单里挂的是它的两个子页
       { path: "paper-review", name: "PaperReview", component: () => import("@/views/teacher/PaperReview.vue"), meta: { title: "论文审核", menu: { hidden: true } }, children: [
         { path: '', name: 'PendingReviewsDefault', component: () => import('@/views/teacher/PendingReviews.vue'), meta: { title: '待审核论文' } },
-        { path: "pending", name: "PendingReviews", component: () => import("@/views/teacher/PendingReviews.vue"), meta: { title: "待审核论文", menu: { icon: "Clock", group: "论文审核", order: 3, top: { order: 2, label: "论文审核", match: ["/teacher/paper-review"] } } } },
-        { path: "audit-records", name: "AuditRecords", component: () => import("@/views/teacher/AuditRecords.vue"), meta: { title: "审核记录", menu: { icon: "Histogram", group: "论文审核", order: 4 } } }
+        { path: "pending", name: "PendingReviews", component: () => import("@/views/teacher/PendingReviews.vue"), meta: { title: "待审核论文", menu: { icon: "Clock", group: "论文", order: 3, activeMatch: ["/teacher/review-workbench"], top: { order: 2, label: "论文审核", match: ["/teacher/paper-review", "/teacher/review-workbench"] } } } },
+        { path: "audit-records", name: "AuditRecords", component: () => import("@/views/teacher/AuditRecords.vue"), meta: { title: "审核记录", menu: { icon: "Histogram", group: "论文", order: 4 } } }
       ]},
-      { path: "data-statistics", name: "DataStatistics", component: () => import("@/views/teacher/DataStatistics.vue"), meta: { title: "数据统计", menu: { icon: "TrendCharts", order: 5 } } },
-      // order 4.5 有意插在审核记录(4)与数据统计(5)之间
-      { path: "defense-workbench", name: "DefenseWorkbench", component: () => import("@/views/teacher/DefenseWorkbench.vue"), meta: { title: "答辩工作台", menu: { icon: "Microphone", order: 4.5 } } },
-      // order 4.6 插在答辩工作台(4.5)与数据统计(5)之间（P5 指导进度看板）
-      { path: "guidance-progress", name: "TeacherGuidanceProgress", component: () => import("@/views/teacher/GuidanceProgress.vue"), meta: { title: "指导进度看板", menu: { icon: "Odometer", order: 4.6 } } },
-      // order 4.7 插在指导进度看板(4.6)与数据统计(5)之间（P6a 学生评价汇总）
-      { path: "advisor-eval-summary", name: "AdvisorEvalSummary", component: () => import("@/views/teacher/AdvisorEvalSummary.vue"), meta: { title: "学生评价汇总", menu: { icon: "Star", order: 4.7 } } },
-      { path: "profile", name: "TeacherProfile", component: () => import("@/views/teacher/Profile.vue"), meta: { title: "个人中心", menu: { icon: "Setting", label: "我的设置", order: 10, spacer: true } } },
-      { path: "review-templates", name: "ReviewTemplates", component: () => import("@/views/teacher/ReviewTemplates.vue"), meta: { title: "审核意见模板", menu: { icon: "Document", order: 6 } } },
-      { path: "student-groups", name: "StudentGroups", component: () => import("@/views/teacher/StudentGroups.vue"), meta: { title: "学生分组管理", menu: { icon: "UserFilled", order: 7 } } },
-      { path: "chat-center", name: "ChatCenter", component: () => import("@/views/teacher/ChatCenter.vue"), meta: { title: "在线聊天", menu: { icon: "ChatDotRound", order: 8, badge: "chat" } } },
-      { path: "file-management", name: "TeacherFileManagement", component: () => import("@/views/teacher/FileManagement.vue"), meta: { title: "文件管理", menu: { icon: "Folder", order: 9 } } },
+      { path: "data-statistics", name: "DataStatistics", component: () => import("@/views/teacher/DataStatistics.vue"), meta: { title: "数据统计", menu: { icon: "TrendCharts", group: "工作台", order: 2 } } },
+      // order 9 排在学生组之后、设置组之前
+      { path: "defense-workbench", name: "DefenseWorkbench", component: () => import("@/views/teacher/DefenseWorkbench.vue"), meta: { title: "答辩工作台", menu: { icon: "Microphone", group: "答辩", order: 9 } } },
+      // order 7 插在学生分组(6)与学生评价汇总(8)之间（P5 指导进度看板）
+      { path: "guidance-progress", name: "TeacherGuidanceProgress", component: () => import("@/views/teacher/GuidanceProgress.vue"), meta: { title: "指导进度看板", menu: { icon: "Odometer", group: "学生", order: 7 } } },
+      // 隐藏路由：从待审核列表/指导看板进入，不占菜单
+      { path: "review-workbench", name: "TeacherReviewWorkbench", component: () => import("@/views/teacher/ReviewWorkbench.vue"), meta: { title: "论文审核", menu: { hidden: true } } },
+      // order 8 排在与学生相关的最后一项（学生评价汇总）
+      { path: "advisor-eval-summary", name: "AdvisorEvalSummary", component: () => import("@/views/teacher/AdvisorEvalSummary.vue"), meta: { title: "学生评价汇总", menu: { icon: "Star", group: "学生", order: 8 } } },
+      { path: "profile", name: "TeacherProfile", component: () => import("@/views/teacher/Profile.vue"), meta: { title: "个人中心", menu: { icon: "Setting", label: "我的设置", group: "设置", order: 11, spacer: true } } },
+      { path: "review-templates", name: "ReviewTemplates", component: () => import("@/views/teacher/ReviewTemplates.vue"), meta: { title: "审核意见模板", menu: { icon: "Document", group: "论文", order: 4.5 } } },
+      { path: "student-groups", name: "StudentGroups", component: () => import("@/views/teacher/StudentGroups.vue"), meta: { title: "学生分组管理", menu: { icon: "UserFilled", group: "学生", order: 6 } } },
+      { path: "chat-center", name: "ChatCenter", component: () => import("@/views/teacher/ChatCenter.vue"), meta: { title: "在线聊天", menu: { icon: "ChatDotRound", group: "学生", order: 8.5, badge: "chat" } } },
+      { path: "file-management", name: "TeacherFileManagement", component: () => import("@/views/teacher/FileManagement.vue"), meta: { title: "文件管理", menu: { icon: "Folder", group: "设置", order: 10 } } },
     ],
   },
   {

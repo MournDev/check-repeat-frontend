@@ -124,11 +124,16 @@ const loadReportSummary = async () => {
     const reportRes = await getPaperReport(latest.id)
     if (reportRes?.code === 200 && reportRes.data) {
       const rateStat = reportRes.data.rateStat || {}
+      const sourceList = Array.isArray(reportRes.data.similarSources) ? reportRes.data.similarSources : []
+      const maxPerSource = sourceList.length
+        ? Math.max(...sourceList.map(item => Number(item.maxSimilarity) || 0))
+        : null
       summary.value = {
-        repeatRate: rateStat.repeatRate ?? null,
-        maxPerSource: rateStat.maxPerSource ?? null,
-        citationRate: rateStat.citationRate ?? null,
-        checkTime: reportRes.data.baseInfo?.generateTime || ''
+        repeatRate: rateStat.repeatRate ?? reportRes.data.baseInfo?.similarityRate ?? null,
+        maxPerSource,
+        // 后端 ReportPreviewDTO 未提供引用率，展示「—」，不伪造 0
+        citationRate: null,
+        checkTime: reportRes.data.baseInfo?.generateTime || reportRes.data.baseInfo?.checkTime || ''
       }
     }
     // code 非 200 时 summary 保持 null，走「加载失败」提示，不阻断签核（后端兜底）
