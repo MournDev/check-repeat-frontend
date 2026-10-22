@@ -187,7 +187,7 @@
         <el-table-column prop="avgSimilarity" label="平均相似度" width="120">
           <template #default="{ row }">
             <el-tag :type="getSimilarityTagType(row.avgSimilarity)">
-              {{ row.avgSimilarity }}%
+              {{ formatPercent(row.avgSimilarity) }}
             </el-tag>
           </template>
         </el-table-column>
@@ -203,6 +203,7 @@ import { useUserStore } from '@/stores/user'
 import { ElMessage, ElLoading } from 'element-plus'
 import PageHeader from '@/components/common/PageHeader.vue'
 import { getSimilarityTagType } from '@/utils/similarity.js'
+import { formatPercent } from '@/utils/dataType.js'
 
 // API 接口导入
 import {

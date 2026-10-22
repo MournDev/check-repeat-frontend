@@ -205,7 +205,7 @@
                       >
                         <div class="area-header">
                           <el-tag type="danger">{{ area.section }}</el-tag>
-                          <span class="similarity-rate">{{ area.similarity }}%</span>
+                          <span class="similarity-rate">{{ formatPercent(area.similarity) }}</span>
                         </div>
                         <div class="area-issue">{{ area.issue }}</div>
                         <div class="area-suggestion">
@@ -224,7 +224,7 @@
                       >
                         <div class="area-header">
                           <el-tag type="success">{{ aspect.section }}</el-tag>
-                          <span class="similarity-rate good">{{ aspect.similarity }}%</span>
+                          <span class="similarity-rate good">{{ formatPercent(aspect.similarity) }}</span>
                         </div>
                         <div class="area-issue">{{ aspect.strength }}</div>
                         <div class="area-suggestion">
@@ -420,6 +420,7 @@
 <script setup>
 import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import { sanitizeHtml } from '@/utils/markdown'
+import { formatPercent } from '@/utils/dataType.js'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import { 

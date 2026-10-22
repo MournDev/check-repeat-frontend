@@ -103,7 +103,7 @@
 
                         <div class="similarity-row">
                             <div class="similarity-rate" :style="{ color: getSimilarityColor(getSimilarityRate) }">
-                                {{ getSimilarityRate }}%
+                                {{ formatPercent(getSimilarityRate) }}
                             </div>
                             <div class="similarity-detail">
                                 <el-tag :type="getSimilarityTagType(getSimilarityRate)" size="small" effect="light">
@@ -379,6 +379,7 @@ import { getStatusText, getStatusType } from '@/utils/reviewStatus.js'
 import { loadPaperTypes, getPaperTypeText } from '@/utils/paperType.js'
 import { loadDefenseDict, getDefenseDictText, DICT_PAPER_STATUS } from '@/utils/defenseDict.js'
 import { getPreviewUrl, getSmartPreviewReportBlobUrl, downloadFileBlob, revokeBlobUrl } from '@/utils/filePreview'
+import { formatPercent } from '@/utils/dataType.js'
 
 // 图标引入
 import {

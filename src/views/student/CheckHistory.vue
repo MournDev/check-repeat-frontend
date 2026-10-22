@@ -21,7 +21,7 @@
         <div class="paper-stats">
           <div class="stat-item">
             <div class="stat-label">总相似比</div>
-            <div class="stat-value" :class="getCurrentSimilarityClass(paperInfo.currentSimilarity)">{{ paperInfo.currentSimilarity }}%</div>
+            <div class="stat-value" :class="getCurrentSimilarityClass(paperInfo.currentSimilarity)">{{ formatPercent(paperInfo.currentSimilarity) }}</div>
           </div>
           <!-- P5 新指标：存量任务为 null，显示「—」不按 0 处理 -->
           <div class="stat-item">
@@ -34,7 +34,7 @@
           </div>
           <div class="stat-item">
             <div class="stat-label">历史最低</div>
-            <div class="stat-value lowest">{{ paperInfo.lowestSimilarity }}%</div>
+            <div class="stat-value lowest">{{ formatPercent(paperInfo.lowestSimilarity) }}</div>
           </div>
           <div class="stat-item">
             <div class="stat-label">版本数</div>
@@ -149,7 +149,7 @@
                       V{{ record.version }}
                     </el-tag>
                     <span class="similarity-badge" :class="getSimilarityClass(record.similarity)">
-                      {{ record.similarity }}%
+                      {{ formatPercent(record.similarity) }}
                     </span>
                     <el-tag :type="getRatingType(record.rating)" size="small">
                       {{ getRatingText(record.rating) }}
@@ -270,7 +270,7 @@
                       :class="getSimilarityClass(section.from)"
                     ></div>
                   </div>
-                  <span class="similarity-value">{{ section.from }}%</span>
+                  <span class="similarity-value">{{ formatPercent(section.from) }}</span>
                 </div>
                 <div class="similarity-item">
                   <div class="version-label">V{{ compareData.toVersion }}</div>
@@ -281,7 +281,7 @@
                       :class="getSimilarityClass(section.to)"
                     ></div>
                   </div>
-                  <span class="similarity-value">{{ section.to }}%</span>
+                  <span class="similarity-value">{{ formatPercent(section.to) }}</span>
                 </div>
               </div>
             </div>
@@ -309,7 +309,7 @@
             <el-icon><DataAnalysis /></el-icon>
           </div>
           <div class="stat-info">
-            <div class="stat-number">{{ stats.averageSimilarity }}%</div>
+            <div class="stat-number">{{ formatPercent(stats.averageSimilarity) }}</div>
             <div class="stat-label">平均相似度</div>
           </div>
         </div>
@@ -341,6 +341,7 @@ import {
 import { getCheckHistory, getSimilarityTrend, compareVersionHistory } from '@/api/student'
 import { getPaperSimilarityTrend } from '@/api/p5'
 import { getSimilarityColor } from '@/utils/similarity.js'
+import { formatPercent } from '@/utils/dataType.js'
 import { useChart } from '@/composables/useChart'
 import PageHeader from '@/components/common/PageHeader.vue'
 

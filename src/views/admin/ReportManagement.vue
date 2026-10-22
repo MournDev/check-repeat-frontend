@@ -115,7 +115,7 @@
         <el-table-column prop="similarity" label="相似度" width="100">
           <template #default="{ row }">
             <el-tag :type="getSimilarityTagType(row.similarity)">
-              {{ row.similarity }}%
+              {{ formatPercent(row.similarity) }}
             </el-tag>
           </template>
         </el-table-column>
@@ -260,7 +260,7 @@
                     <strong>本文:</strong> {{ paragraph.paperText }}
                   </div>
                   <div class="match-similarity">
-                    匹配度: {{ paragraph.similarity }}%
+                    匹配度: {{ formatPercent(paragraph.similarity) }}
                   </div>
                 </div>
               </div>

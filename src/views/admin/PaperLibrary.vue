@@ -60,7 +60,7 @@
               <el-icon><TrendCharts /></el-icon>
             </div>
             <div class="stat-info">
-              <div class="stat-value">{{ libraryStats.avgSimilarity || 0 }}%</div>
+              <div class="stat-value">{{ formatPercent(libraryStats.avgSimilarity) }}</div>
               <div class="stat-label">平均相似度</div>
             </div>
           </div>
@@ -218,7 +218,7 @@
         <el-table-column prop="similarityRate" label="相似度" width="100">
           <template #default="{ row }">
             <el-tag :type="getSimilarityTagType(row.similarityRate)">
-              {{ row.similarityRate }}%
+              {{ formatPercent(row.similarityRate) }}
             </el-tag>
           </template>
         </el-table-column>
@@ -240,7 +240,7 @@
           <template #default="{ row }">
             <div v-if="row.checkCompleted === 1 && row.checkSource === 'local'">
               <el-tag :type="getSimilarityTagType(row.similarityRate)">
-                {{ row.similarityRate }}%
+                {{ formatPercent(row.similarityRate) }}
               </el-tag>
               <div class="check-time">{{ formatDate(row.checkTime) }}</div>
             </div>
@@ -253,7 +253,7 @@
           <template #default="{ row }">
             <div v-if="row.checkCompleted === 1 && row.checkSource === 'third_party'">
               <el-tag :type="getSimilarityTagType(row.similarityRate)">
-                {{ row.similarityRate }}%
+                {{ formatPercent(row.similarityRate) }}
               </el-tag>
               <div class="check-time">{{ formatDate(row.checkTime) }}</div>
             </div>
@@ -409,7 +409,7 @@
           <el-descriptions-item label="指导老师">{{ currentPaper.teacherName }}</el-descriptions-item>
           <el-descriptions-item label="相似度">
             <el-tag :type="getSimilarityTagType(currentPaper.similarityRate)">
-              {{ currentPaper.similarityRate }}%
+              {{ formatPercent(currentPaper.similarityRate) }}
             </el-tag>
           </el-descriptions-item>
           <el-descriptions-item label="论文状态">
@@ -434,7 +434,7 @@
         <div class="section" v-if="currentPaper.checkCompleted === 1 && currentPaper.checkSource === 'local'">
           <h3>校内查重结果</h3>
           <el-tag :type="getSimilarityTagType(currentPaper.similarityRate)">
-            相似度: {{ currentPaper.similarityRate }}%
+            相似度: {{ formatPercent(currentPaper.similarityRate) }}
           </el-tag>
           <div class="check-details">
             <p>查重时间: {{ formatDate(currentPaper.checkTime) }}</p>
@@ -445,7 +445,7 @@
         <div class="section" v-if="currentPaper.checkCompleted === 1 && currentPaper.checkSource === 'third_party'">
           <h3>第三方查重结果</h3>
           <el-tag :type="getSimilarityTagType(currentPaper.similarityRate)">
-            相似度: {{ currentPaper.similarityRate }}%
+            相似度: {{ formatPercent(currentPaper.similarityRate) }}
           </el-tag>
           <div class="check-details">
             <p>查重时间: {{ formatDate(currentPaper.checkTime) }}</p>
@@ -456,7 +456,7 @@
         <div class="section" v-if="currentPaper.internalCheck">
           <h3>校内查重结果</h3>
           <el-tag :type="getSimilarityTagType(currentPaper.internalCheck.score)">
-            相似度: {{ currentPaper.internalCheck.score }}%
+            相似度: {{ formatPercent(currentPaper.internalCheck.score) }}
           </el-tag>
           <div class="check-details">
             <p>查重时间: {{ formatDate(currentPaper.internalCheck.time) }}</p>
@@ -464,7 +464,7 @@
               <h4>相似论文:</h4>
               <ul>
                 <li v-for="detail in currentPaper.internalCheck.details" :key="detail.paperId">
-                  《{{ detail.title }}》 - {{ detail.author }} (相似度: {{ detail.similarity }}%)
+                  《{{ detail.title }}》 - {{ detail.author }} (相似度: {{ formatPercent(detail.similarity) }})
                 </li>
               </ul>
             </div>
@@ -474,7 +474,7 @@
         <div class="section" v-if="currentPaper.thirdPartyCheck">
           <h3>第三方查重结果</h3>
           <el-tag :type="getSimilarityTagType(currentPaper.thirdPartyCheck.score)">
-            相似度: {{ currentPaper.thirdPartyCheck.score }}%
+            相似度: {{ formatPercent(currentPaper.thirdPartyCheck.score) }}
           </el-tag>
           <p>查重时间: {{ formatDate(currentPaper.thirdPartyCheck.time) }}</p>
         </div>
@@ -542,6 +542,7 @@ import PageHeader from '@/components/common/PageHeader.vue'
 import ListPageShell from '@/components/common/ListPageShell.vue'
 import { getStatusText, getStatusType } from '@/utils/reviewStatus.js'
 import { getSimilarityTagType as similarityTagType } from '@/utils/similarity.js'
+import { formatPercent } from '@/utils/dataType.js'
 
 // 响应式数据
 const loading = ref(false)

@@ -150,7 +150,7 @@
           <el-icon color="var(--apple-success)" size="48"><SuccessFilled /></el-icon>
         </div>
         <p>论文查重检测已完成！</p>
-        <p>总相似比: <strong>{{ finalSimilarity }}%</strong></p>
+        <p>总相似比: <strong>{{ formatPercent(finalSimilarity) }}</strong></p>
         <!-- P5 新指标：存量任务为 null，显示「—」不按 0 处理 -->
         <p>单篇最大: <strong>{{ maxPerSource != null ? maxPerSource + '%' : '—' }}</strong></p>
         <p>引用率: <strong>{{ citationRate != null ? citationRate + '%' : '—' }}</strong></p>
@@ -177,6 +177,7 @@ import {
 // 任务状态要用 taskDetail（按 paperId 查），它同时带回推送订阅需要的 taskId
 import { getCheckTaskDetail } from '@/api/student'
 import { useCheckProgress } from '@/composables/useCheckProgress'
+import { formatPercent } from '@/utils/dataType.js'
 import PageHeader from '@/components/common/PageHeader.vue'
 
 const route = useRoute()

@@ -150,7 +150,7 @@
           </div>
           <div class="info-item">
             <span class="label">相似度：</span>
-            <span class="value">{{ currentPaper.similarity }}%</span>
+            <span class="value">{{ formatPercent(currentPaper.similarity) }}</span>
           </div>
         </div>
 
@@ -225,7 +225,7 @@
               <div v-if="row.similarity !== null && row.similarity !== undefined">
                 <el-progress :percentage="row.similarity" :stroke-width="6" :show-text="false"
                   :color="getSimilarityColor(row.similarity)" class="similarity-progress" />
-                <span class="similarity-value">{{ row.similarity }}%</span>
+                <span class="similarity-value">{{ formatPercent(row.similarity) }}</span>
               </div>
               <span v-else>--</span>
             </template>
@@ -274,6 +274,7 @@ import {
 } from '@/api/teacher'
 import { useUserStore } from '@/stores/user'
 import { getSimilarityColor } from '@/utils/similarity.js'
+import { formatPercent } from '@/utils/dataType.js'
 import { getPreviewUrl, downloadFileBlob } from '@/utils/filePreview'
 import StudentStats from './components/StudentStats.vue'
 import StudentFilterBar from './components/StudentFilterBar.vue'

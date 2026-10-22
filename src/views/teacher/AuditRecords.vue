@@ -135,7 +135,7 @@
                 class="similarity-progress"
               />
               <span class="similarity-value" :class="getSimilarityClass(row.similarity || row.paperBaseInfo?.similarity || row.paperBaseInfo?.similarityRate || row.similarityRate || 0)">
-                {{ (row.similarity || row.paperBaseInfo?.similarity || row.paperBaseInfo?.similarityRate || row.similarityRate || 0) }}%
+                {{ formatPercent(row.similarity || row.paperBaseInfo?.similarity || row.paperBaseInfo?.similarityRate || row.similarityRate || 0) }}
               </span>
             </div>
           </template>
@@ -220,7 +220,7 @@ import PaperDetail from '@/views/student/PaperDetail.vue'
 import { getReviewedList, downloadPaper, contactStudent, exportReviewRecords } from '@/api/teacher.js'
 import { getReviewResultText, getReviewResultTagType, REVIEW_RESULT } from '@/utils/reviewStatus.js'
 import { getSimilarityColor, getSimilarityClass } from '@/utils/similarity.js'
-import { formatDateTime } from '@/utils/dataType.js'
+import { formatDateTime, formatPercent } from '@/utils/dataType.js'
 import {
   Refresh,
   Search,

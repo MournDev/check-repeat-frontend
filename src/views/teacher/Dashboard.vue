@@ -158,7 +158,7 @@
                       {{ paper.priority === 'urgent' ? '紧急' : paper.priority === 'high' ? '高' : '普通' }}
                     </span>
                     <span v-if="paper.similarity" :class="'tag ' + (paper.similarity > 30 ? 'danger' : paper.similarity > 15 ? 'warning' : 'success')">
-                      {{ paper.similarity }}%相似
+                      {{ formatPercent(paper.similarity) }}相似
                     </span>
                   </div>
                 </div>
@@ -443,7 +443,7 @@ import { ref, onMounted, reactive, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { ElMessage } from 'element-plus'
-import { getPaperStatusText, getPaperStatusType } from '@/utils/dataType'
+import { getPaperStatusText, getPaperStatusType, formatPercent } from '@/utils/dataType'
 
 // API 接口导入
 import {

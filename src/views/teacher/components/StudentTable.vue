@@ -97,7 +97,7 @@
           <div v-if="row.similarity !== null && row.similarity !== undefined">
             <el-progress :percentage="row.similarity" :stroke-width="6" :show-text="false"
               :color="getSimilarityColor(row.similarity)" class="similarity-progress" />
-            <span class="similarity-value">{{ row.similarity }}%</span>
+            <span class="similarity-value">{{ formatPercent(row.similarity) }}</span>
           </div>
           <span v-else>--</span>
         </template>
@@ -175,6 +175,7 @@ import {
   List, Refresh, Message, UserFilled, More, Document, Delete
 } from '@element-plus/icons-vue'
 import { getSimilarityColor } from '@/utils/similarity.js'
+import { formatPercent } from '@/utils/dataType.js'
 
 defineProps({
   students: {
