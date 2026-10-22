@@ -443,7 +443,7 @@ import { ref, onMounted, reactive, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { ElMessage } from 'element-plus'
-import { getPaperStatusText, getPaperStatusType, formatPercent } from '@/utils/dataType'
+import { getPaperStatusText, getPaperStatusType, formatPercent, formatDate, formatDateTime } from '@/utils/dataType'
 
 // API 接口导入
 import {
@@ -696,9 +696,9 @@ const formatTime = (date) => {
   const target = new Date(date)
   
   if (now.toDateString() === target.toDateString()) {
-    return target.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+    return formatDateTime(target, 'HH:mm')
   } else {
-    return target.toLocaleDateString('zh-CN')
+    return formatDate(target)
   }
 }
 

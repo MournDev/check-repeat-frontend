@@ -215,6 +215,7 @@ import {
 } from '@/api/user'
 import AvatarUploader from './AvatarUploader.vue'
 import { useCollegeMajor, dictRowById } from '@/composables/useCollegeMajor'
+import { formatDateTime } from '@/utils/dataType.js'
 
 const userStore = useUserStore()
 const route = useRoute()
@@ -317,7 +318,6 @@ async function loadLoginLogs() {
 }
 function handleLogSizeChange(sz) { logPageSize.value = sz; logPage.value = 1; loadLoginLogs() }
 function onLogPageChange(p) { logPage.value = p; loadLoginLogs() }
-function formatDateTime(d) { return d ? new Date(d).toLocaleString('zh-CN') : '' }
 
 // ============ 邮箱 ============
 const emailVerifyDialogVisible = ref(false)

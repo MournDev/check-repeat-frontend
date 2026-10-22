@@ -44,7 +44,7 @@
       </el-table-column>
       <el-table-column prop="viewCount" label="浏览" width="80" align="right" />
       <el-table-column prop="createTime" label="创建时间" width="160">
-        <template #default="{ row }">{{ formatDate(row.createTime) }}</template>
+        <template #default="{ row }">{{ formatDateTime(row.createTime, 'YYYY-MM-DD HH:mm') }}</template>
       </el-table-column>
       <el-table-column label="操作" width="220" fixed="right">
         <template #default="{ row }">
@@ -134,6 +134,7 @@ import {
 import { getCategories } from '@/api/knowledge'
 import { ElMessage } from 'element-plus'
 import { renderMarkdown } from '@/utils/markdown'
+import { formatDateTime } from '@/utils/dataType.js'
 import ListPageShell from '@/components/common/ListPageShell.vue'
 
 const articles = ref([])
@@ -249,10 +250,6 @@ function statusType(s) {
 }
 function statusLabel(s) {
   return s === 'PUBLISHED' ? '已发布' : s === 'DRAFT' ? '草稿' : '已归档'
-}
-function formatDate(d) {
-  if (!d) return ''
-  return new Date(d).toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
 }
 </script>
 

@@ -99,7 +99,7 @@
           <el-table :data="operationLogs" style="width: 100%" v-loading="operationLoading" stripe @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="50" />
             <el-table-column prop="operationTime" label="操作时间" min-width="170">
-              <template #default="{ row }">{{ formatDate(row.operationTime) }}</template>
+              <template #default="{ row }">{{ formatDateTime(row.operationTime) }}</template>
             </el-table-column>
             <el-table-column prop="userName" label="操作用户" min-width="120" />
             <el-table-column prop="userType" label="用户类型" min-width="100">
@@ -169,7 +169,7 @@
 
           <el-table :data="loginLogs" style="width: 100%" v-loading="loginLoading" stripe>
             <el-table-column prop="loginTime" label="登录时间" min-width="170">
-              <template #default="{ row }">{{ formatDate(row.loginTime) }}</template>
+              <template #default="{ row }">{{ formatDateTime(row.loginTime) }}</template>
             </el-table-column>
             <el-table-column prop="username" label="用户名" min-width="120" />
             <el-table-column prop="loginIp" label="登录IP" min-width="140" />
@@ -200,7 +200,7 @@
         >
           <el-table :data="backupRecords" style="width: 100%" v-loading="backupLoading" stripe>
             <el-table-column prop="createTime" label="备份时间" min-width="170">
-              <template #default="{ row }">{{ formatDate(row.createTime) }}</template>
+              <template #default="{ row }">{{ formatDateTime(row.createTime) }}</template>
             </el-table-column>
             <el-table-column prop="fileName" label="文件名" min-width="220" show-overflow-tooltip />
             <el-table-column prop="fileSize" label="文件大小" width="100">
@@ -310,7 +310,7 @@
     <el-dialog v-model="detailDialogVisible" title="操作日志详情" width="600px">
       <div v-if="currentLog" class="log-detail">
         <el-descriptions :column="1" border>
-          <el-descriptions-item label="操作时间">{{ formatDate(currentLog.operationTime) }}</el-descriptions-item>
+          <el-descriptions-item label="操作时间">{{ formatDateTime(currentLog.operationTime) }}</el-descriptions-item>
           <el-descriptions-item label="操作用户">{{ currentLog.userName }}</el-descriptions-item>
           <el-descriptions-item label="用户类型">{{ getUserTypeName(currentLog.userType) }}</el-descriptions-item>
           <el-descriptions-item label="操作类型">{{ getOperationName(currentLog.operationType) }}</el-descriptions-item>
@@ -345,6 +345,7 @@ import { Refresh, Download, Search, Delete } from '@element-plus/icons-vue'
 import { useChart } from '@/composables/useChart'
 import PageHeader from '@/components/common/PageHeader.vue'
 import ListPageShell from '@/components/common/ListPageShell.vue'
+import { formatDateTime } from '@/utils/dataType.js'
 
 // ==================== 操作类型字典 ====================
 const OPERATION_MODULES = [
@@ -905,10 +906,6 @@ const handleCleanExpired = async () => {
 }
 
 // ==================== 格式化工具函数 ====================
-function formatDate(dateString) {
-  if (!dateString) return ''
-  return new Date(dateString).toLocaleString('zh-CN')
-}
 
 function getUserTypeName(userType) {
   const map = { 'STUDENT': '学生', 'TEACHER': '教师', 'ADMIN': '管理员', 'SUPER_ADMIN': 'super_admin' }

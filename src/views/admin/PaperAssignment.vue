@@ -60,7 +60,7 @@
         <el-table-column prop="grade" label="年级" width="100"></el-table-column>
         <el-table-column prop="submitTime" label="提交时间" width="180">
           <template #default="{ row }">
-            {{ formatDate(row.submitTime) }}
+            {{ formatDateTime(row.submitTime) }}
           </template>
         </el-table-column>
         <el-table-column label="操作" fixed="right" width="200">
@@ -115,6 +115,7 @@ import {
 } from '@element-plus/icons-vue'
 import PageHeader from '@/components/common/PageHeader.vue'
 import ListPageShell from '@/components/common/ListPageShell.vue'
+import { formatDateTime } from '@/utils/dataType.js'
 
 // 响应式数据
 const loading = ref(false)
@@ -284,11 +285,6 @@ const handleSizeChange = (val) => {
 const handleCurrentChange = (val) => {
   pagination.currentPage = val
   loadPendingStudents()
-}
-
-const formatDate = (dateString) => {
-  if (!dateString) return ''
-  return new Date(dateString).toLocaleString('zh-CN')
 }
 
 // 生命周期

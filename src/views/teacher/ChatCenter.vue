@@ -135,6 +135,7 @@ import {
   clearMessages, exportChatRecords, getStudentInfo, uploadFile
 } from '@/api/teacher.js'
 import { useMessageWebSocket } from '@/composables/useMessageWebSocket'
+import { formatDateTime } from '@/utils/dataType.js'
 
 const userStore = useUserStore()
 const messageStore = useMessageStore()
@@ -453,15 +454,7 @@ const formatTime = (time) => {
   } else if (diff < 604800000) {
     return `${Math.floor(diff / 86400000)}天前`
   } else {
-    return date.toLocaleDateString('zh-CN', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit'
-    }) + ' ' + date.toLocaleTimeString('zh-CN', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    })
+    return formatDateTime(date)
   }
 }
 

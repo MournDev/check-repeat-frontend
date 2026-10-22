@@ -203,7 +203,7 @@
       <el-table :data="executionHistory" style="width: 100%" v-loading="historyLoading">
         <el-table-column prop="startTime" label="开始时间" width="180">
           <template #default="{ row }">
-            {{ formatDate(row.startTime) }}
+            {{ formatDateTime(row.startTime) }}
           </template>
         </el-table-column>
         <el-table-column prop="strategy" label="策略" width="120">
@@ -324,7 +324,7 @@
       <div v-if="currentExecution" class="execution-detail">
         <el-descriptions :column="2" border>
           <el-descriptions-item label="执行时间">
-            {{ formatDate(currentExecution.startTime) }}
+            {{ formatDateTime(currentExecution.startTime) }}
           </el-descriptions-item>
           <el-descriptions-item label="分配策略">
             {{ getStrategyName(currentExecution.strategy) }}
@@ -419,6 +419,7 @@ import {
   MagicStick, Setting, Refresh, Histogram, Document, ArrowRight
 } from '@element-plus/icons-vue'
 import PageHeader from '@/components/common/PageHeader.vue'
+import { formatDateTime } from '@/utils/dataType.js'
 
 // 响应式数据
 const processing = ref(false)
@@ -648,7 +649,7 @@ const viewExecutionDetail = async (record) => {
 const applyAssignment = async (record) => {
   try {
     await ElMessageBox.confirm(
-      `确定要应用 ${formatDate(record.startTime)} 的分配结果吗？这将覆盖当前的所有分配关系。`,
+      `确定要应用 ${formatDateTime(record.startTime)} 的分配结果吗？这将覆盖当前的所有分配关系。`,
       '应用分配结果',
       {
         confirmButtonText: '确定应用',
@@ -671,11 +672,6 @@ const applyAssignment = async (record) => {
       ElMessage.error('应用分配结果失败: ' + error.message)
     }
   }
-}
-
-const formatDate = (dateString) => {
-  if (!dateString) return ''
-  return new Date(dateString).toLocaleString('zh-CN')
 }
 
 const formatDuration = (milliseconds) => {

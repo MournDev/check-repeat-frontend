@@ -224,7 +224,7 @@
             <div class="paper-meta">
               <div class="meta-item">
                 <el-icon><Calendar /></el-icon>
-                <span>提交时间：{{ formatDate(paper.submitTime) }}</span>
+                <span>提交时间：{{ formatDate(paper.submitTime, '-') }}</span>
               </div>
               <div class="meta-item">
                 <el-icon><User /></el-icon>
@@ -259,7 +259,7 @@
               >
                 <div class="timeline-node" :class="version.isCurrent ? 'current' : ''"></div>
                 <div class="timeline-content">
-                  <div class="timeline-timestamp">{{ formatDate(version.submitTime) }}</div>
+                  <div class="timeline-timestamp">{{ formatDate(version.submitTime, '-') }}</div>
                   <div class="version-item">
                     <div class="version-header">
                       <span class="version-title">版本 v{{ version.submitVersion }}</span>
@@ -332,7 +332,7 @@
             {{ currentPaper.paperTitle }}
           </el-descriptions-item>
           <el-descriptions-item label="提交时间">
-            {{ formatDateTime(currentPaper.submitTime) }}
+            {{ formatDateTime(currentPaper.submitTime, 'YYYY-MM-DD HH:mm:ss', '-') }}
           </el-descriptions-item>
           <el-descriptions-item label="指导老师">
             {{ currentPaper.advisorName || "待分配" }}
@@ -426,7 +426,7 @@
               <div class="version-info">
                 <div class="info-item">
                   <div class="info-label">提交时间</div>
-                  <div class="info-value">{{ formatDate(compareVersions[0]?.submitTime) }}</div>
+                  <div class="info-value">{{ formatDate(compareVersions[0]?.submitTime, '-') }}</div>
                 </div>
                 <div class="info-item">
                   <div class="info-label">总相似比</div>
@@ -445,7 +445,7 @@
               <div class="version-info">
                 <div class="info-item">
                   <div class="info-label">提交时间</div>
-                  <div class="info-value">{{ formatDate(compareVersions[1]?.submitTime) }}</div>
+                  <div class="info-value">{{ formatDate(compareVersions[1]?.submitTime, '-') }}</div>
                 </div>
                 <div class="info-item">
                   <div class="info-label">总相似比</div>
@@ -509,6 +509,7 @@ import { loadPaperTypes, getPaperTypeText } from "@/utils/paperType.js";
 import { getStatusText, getStatusType } from '@/utils/reviewStatus.js';
 import PageHeader from '@/components/common/PageHeader.vue';
 import ListPageShell from '@/components/common/ListPageShell.vue';
+import { formatDate, formatDateTime } from '@/utils/dataType.js';
 import { 
   getStudentPaperPage, 
   withdrawPaper as withdrawPaperApi, 
@@ -759,16 +760,6 @@ const toggleVersions = async (paperId) => {
 // 原先这里有一份硬编码映射，且未命中时返回 "其他" —— 会把未知/脏值
 // 伪装成一个合法类型；共享模块未命中时返回原始 code，一眼能看出数据有问题。
 
-const formatDate = (date) => {
-  if (!date) return "-";
-  return new Date(date).toLocaleDateString("zh-CN");
-};
-
-const formatDateTime = (date) => {
-  if (!date) return "-";
-  return new Date(date).toLocaleString("zh-CN");
-};
-
 const formatFileSize = (bytes) => {
   if (bytes === 0) return "0 B";
   const k = 1024;
@@ -992,7 +983,7 @@ const viewVersionDetail = async (version) => {
       ElMessageBox.alert(
         `<div style="text-align: left;">
           <p><strong>版本号：</strong>V${res.data.version}</p>
-          <p><strong>提交时间：</strong>${formatDateTime(res.data.submitTime)}</p>
+          <p><strong>提交时间：</strong>${formatDateTime(res.data.submitTime, 'YYYY-MM-DD HH:mm:ss', '-')}</p>
           <p><strong>总相似比：</strong>${res.data.similarityRate != null ? res.data.similarityRate + '%' : '—'}</p>
           <p><strong>字数：</strong>${res.data.wordCount}字</p>
           <p><strong>修改说明：</strong>${res.data.changes || '无'}</p>

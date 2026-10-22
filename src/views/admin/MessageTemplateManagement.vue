@@ -45,7 +45,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="createTime" label="创建时间" width="170">
-          <template #default="{ row }">{{ formatDate(row.createTime) }}</template>
+          <template #default="{ row }">{{ formatDateTime(row.createTime) }}</template>
         </el-table-column>
         <el-table-column label="操作" width="220" fixed="right">
           <template #default="{ row }">
@@ -116,6 +116,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { getTemplateList, createTemplate, updateTemplate, deleteTemplate, toggleTemplateStatus, renderTemplate } from '@/api/admin/templates'
 import PageHeader from '@/components/common/PageHeader.vue'
 import ListPageShell from '@/components/common/ListPageShell.vue'
+import { formatDateTime } from '@/utils/dataType.js'
 
 const loading = ref(false)
 const templateList = ref([])
@@ -151,11 +152,6 @@ const rules = {
   templateType: [{ required: true, message: '请输入模板类型', trigger: 'blur' }],
   titleTemplate: [{ required: true, message: '请输入标题模板', trigger: 'blur' }],
   contentTemplate: [{ required: true, message: '请输入内容模板', trigger: 'blur' }]
-}
-
-const formatDate = (dateStr) => {
-  if (!dateStr) return '-'
-  return dateStr.replace('T', ' ').substring(0, 19)
 }
 
 const fetchList = async () => {

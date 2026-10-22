@@ -241,6 +241,7 @@ import {
   confirmPaper, rejectPaper as rejectAssignment, getPaperDetail
 } from '@/api/user.js'
 import { useMessageWebSocket } from '@/composables/useMessageWebSocket'
+import { formatDateTime } from '@/utils/dataType.js'
 
 const props = defineProps({
   onMessageClick: {
@@ -592,10 +593,7 @@ const formatTime = (time) => {
   } else if (diff < 604800000) {
     return `${Math.floor(diff / 86400000)}天前`
   } else {
-    return date.toLocaleDateString('zh-CN') + ' ' + date.toLocaleTimeString('zh-CN', {
-      hour: '2-digit',
-      minute: '2-digit'
-    })
+    return formatDateTime(date, 'YYYY-MM-DD HH:mm')
   }
 }
 

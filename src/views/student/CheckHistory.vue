@@ -137,7 +137,7 @@
             <div class="timeline-node" :class="getTimelineType(record.rating)"></div>
             <div class="timeline-line" v-if="index < historyRecords.length - 1"></div>
             <div class="timeline-content">
-              <div class="timeline-timestamp">{{ formatDateTime(record.checkTime) }}</div>
+              <div class="timeline-timestamp">{{ formatDateTime(record.checkTime, 'YYYY-MM-DD HH:mm', '-') }}</div>
               <div class="history-record" :class="{ 'current-version': record.isCurrent }">
                 <div class="record-header">
                   <div class="version-info">
@@ -341,7 +341,7 @@ import {
 import { getCheckHistory, getSimilarityTrend, compareVersionHistory } from '@/api/student'
 import { getPaperSimilarityTrend } from '@/api/p5'
 import { getSimilarityColor } from '@/utils/similarity.js'
-import { formatPercent } from '@/utils/dataType.js'
+import { formatDateTime, formatPercent } from '@/utils/dataType.js'
 import { useChart } from '@/composables/useChart'
 import PageHeader from '@/components/common/PageHeader.vue'
 
@@ -881,16 +881,6 @@ const computeTrendFromRecords = (records) => {
   }
 }
 
-const formatDateTime = (date) => {
-  if (!date) return '-'
-  return new Date(date).toLocaleString('zh-CN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
-}
 
 // 生命周期
 onMounted(async () => {

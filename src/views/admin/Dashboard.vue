@@ -246,6 +246,7 @@ import { useChart } from '@/composables/useChart'
 import { getUserList } from '@/api/admin/users'
 import { getPaperList } from '@/api/admin/papers'
 import { getAssignmentStats } from '@/api/admin/assignment'
+import { formatDate, formatDateTime } from '@/utils/dataType.js'
 
 // 图标引入
 import {
@@ -350,7 +351,7 @@ const loadDashboardData = async () => {
       uptime: monitorData.uptime || '未知',
       database: monitorData.databaseType || '未知',
       lastBackup: statsResponse.data.lastBackup
-        ? new Date(statsResponse.data.lastBackup).toLocaleString('zh-CN')
+        ? formatDateTime(statsResponse.data.lastBackup)
         : '暂无'
     }
   } catch (error) {
@@ -441,9 +442,9 @@ const formatTime = (date) => {
   const target = new Date(date)
   
   if (now.toDateString() === target.toDateString()) {
-    return target.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+    return formatDateTime(target, 'HH:mm')
   } else {
-    return target.toLocaleDateString('zh-CN')
+    return formatDate(target)
   }
 }
 

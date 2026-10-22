@@ -1033,18 +1033,6 @@ const getReviewStatus = (paper) => {
   return statusMap[paper.status] || '未知状态';
 }
 
-// 使用工具函数中的 formatDateTime
-// const formatDateTime = (date) => {
-//   if (!date) return '-'
-//   return new Date(date).toLocaleString('zh-CN', {
-//     year: 'numeric',
-//     month: '2-digit',
-//     day: '2-digit',
-//     hour: '2-digit',
-//     minute: '2-digit'
-//   })
-// }
-
 onMounted(() => {
   // 确保 userStore.token 存在
   if (userStore.token) {

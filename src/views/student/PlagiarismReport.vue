@@ -338,7 +338,7 @@ import {
 import { getPaperReport, exportCheckReport, getSimpleCheckReport } from '@/api/student'
 import { getSentenceDetail } from '@/api/p5'
 import PageHeader from '@/components/common/PageHeader.vue'
-import { formatPercent } from '@/utils/dataType.js'
+import { formatDateTime as formatDateTimeShared, formatPercent } from '@/utils/dataType.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -510,11 +510,12 @@ const formatDelta = (delta, type) => {
   return type === 'rate' ? `${sign}${abs.toFixed(1)}%` : `${sign}${abs}`
 }
 
+// 非法日期保留原始串，便于发现脏数据（共享实现只会返回占位符）
 const formatDateTime = (date) => {
   if (!date) return '—'
   const d = new Date(date)
   if (Number.isNaN(d.getTime())) return String(date)
-  return d.toLocaleString('zh-CN')
+  return formatDateTimeShared(d)
 }
 
 // ── 数据加载 ────────────────────────────────────────────────

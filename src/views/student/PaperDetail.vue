@@ -21,7 +21,7 @@
                                 <el-icon>
                                     <Calendar />
                                 </el-icon>
-                                提交时间：{{ formatDateTime(paperDetails.submitTime) }}
+                                提交时间：{{ formatDateTime(paperDetails.submitTime, 'YYYY-MM-DD HH:mm') }}
                             </span>
                             <span class="meta-item">
                                 <el-icon>
@@ -135,11 +135,11 @@
                             </div>
                             <div class="task-row" v-if="checkTask.startTime">
                                 <span class="task-label">开始时间</span>
-                                <span class="task-value">{{ formatDateTime(checkTask.startTime) }}</span>
+                                <span class="task-value">{{ formatDateTime(checkTask.startTime, 'YYYY-MM-DD HH:mm') }}</span>
                             </div>
                             <div class="task-row" v-if="checkTask.endTime">
                                 <span class="task-label">结束时间</span>
-                                <span class="task-value">{{ formatDateTime(checkTask.endTime) }}</span>
+                                <span class="task-value">{{ formatDateTime(checkTask.endTime, 'YYYY-MM-DD HH:mm') }}</span>
                             </div>
                             <div class="task-row" v-if="checkTask.failReason">
                                 <span class="task-label">失败原因</span>
@@ -198,13 +198,13 @@
                         </template>
 
                         <el-steps :active="getActiveStep(paperDetails.paperStatus)" finish-status="success" align-center>
-                            <el-step title="提交论文" :description="formatDate(paperDetails.submitTime)" />
+                            <el-step title="提交论文" :description="formatDate(paperDetails.submitTime, '-')" />
                             <el-step :title="paperDetails.teacherName ? '分配导师' : '等待分配'"
                                 :description="paperDetails.teacherName || '处理中'" />
                             <el-step :title="getReviewStepTitle(paperDetails.paperStatus)"
                                 :description="getReviewStepDesc(paperDetails)" />
                             <el-step title="审核完成"
-                                :description="paperDetails.paperStatus === 'completed' ? formatDate(paperDetails.reviewTime) : '--'" />
+                                :description="paperDetails.paperStatus === 'completed' ? formatDate(paperDetails.reviewTime, '-') : '--'" />
                             <el-step :title="dictStatusText('mid_defense', '中期答辩')" :icon="Calendar" :description="getDefenseStepDesc('mid_defense')" />
                             <el-step :title="dictStatusText('final_defense', '终期答辩')" :icon="Trophy" :description="getDefenseStepDesc('final_defense')" />
                             <el-step :title="dictStatusText('defense_passed', '答辩通过')" :icon="CircleCheckFilled" :description="getDefenseStepDesc('defense_passed')" />
@@ -236,7 +236,7 @@
                                         <div class="file-meta">
                                             <span>{{ fileInfo.fileSizeDesc }}</span>
                                             <span v-if="fileInfo.wordCount > 0">{{ fileInfo.wordCount }}字</span>
-                                            <span>{{ formatDate(fileInfo.uploadTime) }}</span>
+                                            <span>{{ formatDate(fileInfo.uploadTime, '-') }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -306,7 +306,7 @@
                                             {{ getReviewTypeText(review.type) }}
                                         </el-tag>
                                     </div>
-                                    <span class="review-time">{{ formatDate(review.reviewTime) }}</span>
+                                    <span class="review-time">{{ formatDate(review.reviewTime, '-') }}</span>
                                 </div>
                                 <div class="review-content">{{ review.comments }}</div>
                             </div>
@@ -379,7 +379,7 @@ import { getStatusText, getStatusType } from '@/utils/reviewStatus.js'
 import { loadPaperTypes, getPaperTypeText } from '@/utils/paperType.js'
 import { loadDefenseDict, getDefenseDictText, DICT_PAPER_STATUS } from '@/utils/defenseDict.js'
 import { getPreviewUrl, getSmartPreviewReportBlobUrl, downloadFileBlob, revokeBlobUrl } from '@/utils/filePreview'
-import { formatPercent } from '@/utils/dataType.js'
+import { formatDateTime, formatDate, formatPercent } from '@/utils/dataType.js'
 
 // 图标引入
 import {
@@ -1111,26 +1111,6 @@ const replyToFeedback = async () => {
 };
 
 //状态处理：论文状态文案与标签色统一走 utils/reviewStatus.js
-
-const formatDateTime = (date) => {
-    if (!date) return '-'
-    return new Date(date).toLocaleString('zh-CN', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit'
-    })
-}
-
-const formatDate = (date) => {
-    if (!date) return '-'
-    return new Date(date).toLocaleDateString('zh-CN', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-    })
-}
 
 // 论文类型的文案不再由本页维护：getPaperTypeText / getPaperTypeTagType
 // 来自 utils/paperType.js（数据源是后端 PaperTypeEnum），见文件顶部 import。

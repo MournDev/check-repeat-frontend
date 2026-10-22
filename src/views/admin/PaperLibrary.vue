@@ -242,7 +242,7 @@
               <el-tag :type="getSimilarityTagType(row.similarityRate)">
                 {{ formatPercent(row.similarityRate) }}
               </el-tag>
-              <div class="check-time">{{ formatDate(row.checkTime) }}</div>
+              <div class="check-time">{{ formatDateTime(row.checkTime) }}</div>
             </div>
             <div v-else>
               <el-tag type="info">未查重</el-tag>
@@ -255,7 +255,7 @@
               <el-tag :type="getSimilarityTagType(row.similarityRate)">
                 {{ formatPercent(row.similarityRate) }}
               </el-tag>
-              <div class="check-time">{{ formatDate(row.checkTime) }}</div>
+              <div class="check-time">{{ formatDateTime(row.checkTime) }}</div>
             </div>
             <div v-else>
               <el-tag type="info">未查重</el-tag>
@@ -264,7 +264,7 @@
         </el-table-column>
         <el-table-column prop="submitTime" label="提交时间" width="120">
           <template #default="{ row }">
-            {{ formatDate(row.submitTime) }}
+            {{ formatDateTime(row.submitTime) }}
           </template>
         </el-table-column>
         <el-table-column prop="teacherName" label="指导老师" width="120"></el-table-column>
@@ -422,7 +422,7 @@
               {{ getAllocationStatusText(currentPaper.allocationStatus) }}
             </el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="提交时间">{{ formatDate(currentPaper.submitTime) }}</el-descriptions-item>
+          <el-descriptions-item label="提交时间">{{ formatDateTime(currentPaper.submitTime) }}</el-descriptions-item>
           <el-descriptions-item label="字数">{{ currentPaper.wordCount }}字</el-descriptions-item>
         </el-descriptions>
 
@@ -437,7 +437,7 @@
             相似度: {{ formatPercent(currentPaper.similarityRate) }}
           </el-tag>
           <div class="check-details">
-            <p>查重时间: {{ formatDate(currentPaper.checkTime) }}</p>
+            <p>查重时间: {{ formatDateTime(currentPaper.checkTime) }}</p>
             <p>查重引擎: {{ getCheckEngineText(currentPaper.checkEngineType) }}</p>
           </div>
         </div>
@@ -448,7 +448,7 @@
             相似度: {{ formatPercent(currentPaper.similarityRate) }}
           </el-tag>
           <div class="check-details">
-            <p>查重时间: {{ formatDate(currentPaper.checkTime) }}</p>
+            <p>查重时间: {{ formatDateTime(currentPaper.checkTime) }}</p>
             <p>查重引擎: {{ getCheckEngineText(currentPaper.checkEngineType) }}</p>
           </div>
         </div>
@@ -459,7 +459,7 @@
             相似度: {{ formatPercent(currentPaper.internalCheck.score) }}
           </el-tag>
           <div class="check-details">
-            <p>查重时间: {{ formatDate(currentPaper.internalCheck.time) }}</p>
+            <p>查重时间: {{ formatDateTime(currentPaper.internalCheck.time) }}</p>
             <div v-if="(currentPaper.internalCheck.details || []).length > 0">
               <h4>相似论文:</h4>
               <ul>
@@ -476,7 +476,7 @@
           <el-tag :type="getSimilarityTagType(currentPaper.thirdPartyCheck.score)">
             相似度: {{ formatPercent(currentPaper.thirdPartyCheck.score) }}
           </el-tag>
-          <p>查重时间: {{ formatDate(currentPaper.thirdPartyCheck.time) }}</p>
+          <p>查重时间: {{ formatDateTime(currentPaper.thirdPartyCheck.time) }}</p>
         </div>
       </div>
       <template #footer>
@@ -542,7 +542,7 @@ import PageHeader from '@/components/common/PageHeader.vue'
 import ListPageShell from '@/components/common/ListPageShell.vue'
 import { getStatusText, getStatusType } from '@/utils/reviewStatus.js'
 import { getSimilarityTagType as similarityTagType } from '@/utils/similarity.js'
-import { formatPercent } from '@/utils/dataType.js'
+import { formatDateTime, formatPercent } from '@/utils/dataType.js'
 
 // 响应式数据
 const loading = ref(false)
@@ -774,11 +774,6 @@ const getMajorName = (majorCode) => {
     'ME': '机械工程'
   }
   return majorMap[majorCode] || majorCode
-}
-
-const formatDate = (dateString) => {
-  if (!dateString) return ''
-  return new Date(dateString).toLocaleString('zh-CN')
 }
 
 // 论文库沿用 20/50 业务阈值，颜色语义与全站一致（low/medium/high）

@@ -100,7 +100,7 @@
         <el-table-column prop="phone" label="手机号" width="120"></el-table-column>
         <el-table-column prop="createTime" label="创建时间" width="160">
           <template #default="{ row }">
-            {{ formatDate(row.createTime) }}
+            {{ formatDateTime(row.createTime) }}
           </template>
         </el-table-column>
         <el-table-column prop="status" label="状态" width="100">
@@ -168,8 +168,8 @@
         </template>
         <el-descriptions-item label="邮箱">{{ currentUser.email }}</el-descriptions-item>
         <el-descriptions-item label="手机号">{{ currentUser.phone }}</el-descriptions-item>
-        <el-descriptions-item label="创建时间">{{ formatDate(currentUser.createTime) }}</el-descriptions-item>
-        <el-descriptions-item label="最后登录">{{ formatDate(currentUser.lastLoginTime) }}</el-descriptions-item>
+        <el-descriptions-item label="创建时间">{{ formatDateTime(currentUser.createTime) }}</el-descriptions-item>
+        <el-descriptions-item label="最后登录">{{ formatDateTime(currentUser.lastLoginTime) }}</el-descriptions-item>
       </el-descriptions>
       <template #footer>
         <el-button @click="detailDialogVisible = false">关闭</el-button>
@@ -289,6 +289,7 @@ import {
 } from '@element-plus/icons-vue'
 import PageHeader from '@/components/common/PageHeader.vue'
 import ListPageShell from '@/components/common/ListPageShell.vue'
+import { formatDateTime } from '@/utils/dataType.js'
 
 // 响应式数据
 const loading = ref(false)
@@ -562,11 +563,6 @@ const toStatusNumber = (status) => {
   if (s === 'ENABLED') return 1
   if (s === 'DISABLED') return 0
   return 0
-}
-
-const formatDate = (dateString) => {
-  if (!dateString) return ''
-  return new Date(dateString).toLocaleString('zh-CN')
 }
 
 const getMajorName = (majorCode) => {

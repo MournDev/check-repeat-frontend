@@ -361,6 +361,7 @@ import {
   Download, Document, Refresh, MoreFilled, Delete, User
 } from '@element-plus/icons-vue'
 import { getAvatarUrl } from '@/utils/avatar'
+import { formatDateTime } from '@/utils/dataType.js'
 import { useMessageWebSocket } from '@/composables/useMessageWebSocket'
 
 // 响应式数据
@@ -870,21 +871,20 @@ const formatMessageTime = (date) => {
   
   // 今天
   if (now.toDateString() === target.toDateString()) {
-    return target.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+    return formatDateTime(target, 'HH:mm:ss')
   }
   // 昨天
   else if (diff < oneDay * 2 && diff >= oneDay) {
-    return '昨天 ' + target.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+    return '昨天 ' + formatDateTime(target, 'HH:mm:ss')
   }
   // 本周内
   else if (diff < oneDay * 7) {
     const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-    return weekdays[target.getDay()] + ' ' + target.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+    return weekdays[target.getDay()] + ' ' + formatDateTime(target, 'HH:mm:ss')
   }
   // 更早
   else {
-    return target.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }) + 
-           ' ' + target.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+    return formatDateTime(target)
   }
 }
 

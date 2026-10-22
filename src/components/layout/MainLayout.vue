@@ -183,6 +183,7 @@ import { useMessageStore } from '@/stores/message'
 import { useMessageWebSocket } from '@/composables/useMessageWebSocket'
 import { subscribeTopic } from '@/utils/stompClient'
 import { buildMenus, SECTION_LABELS } from '@/utils/menu'
+import { formatDate } from '@/utils/dataType.js'
 import { asyncRoutes, ROLE_HOME } from '@/router'
 
 import {
@@ -444,7 +445,7 @@ const formatTime = (time) => {
   if (diff < 60000) return '刚刚'
   if (diff < 3600000) return `${Math.floor(diff / 60000)}分钟前`
   if (diff < 86400000) return `${Math.floor(diff / 3600000)}小时前`
-  return new Date(time).toLocaleDateString()
+  return formatDate(time)
 }
 
 // 通知点击：未读的先调已读接口并回源角标（SSOT 约定：页面操作后 loadSystemUnread 回源，

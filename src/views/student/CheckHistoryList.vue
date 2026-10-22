@@ -103,7 +103,7 @@
         
         <el-table-column prop="submitTime" label="提交时间" width="180">
           <template #default="{ row }">
-            {{ formatDate(row.submitTime) }}
+            {{ formatDateTime(row.submitTime, 'YYYY-MM-DD HH:mm', '-') }}
           </template>
         </el-table-column>
         
@@ -170,6 +170,7 @@ import {
 } from '@/utils/paperType.js'
 import PageHeader from '@/components/common/PageHeader.vue'
 import ListPageShell from '@/components/common/ListPageShell.vue'
+import { formatDateTime } from '@/utils/dataType.js'
 import { getSimilarityClass } from '@/utils/similarity.js'
 import { getStatusText, getStatusType } from '@/utils/reviewStatus.js'
 
@@ -281,16 +282,6 @@ const viewCheckHistory = (paperId) => {
 // 本页不再维护第二套映射（原「审核驳回 / 已撤回 / 需修改」等文案已废弃）。
 const getStatusTagType = (status) => getStatusType(status)
 
-const formatDate = (date) => {
-  if (!date) return '-'
-  return new Date(date).toLocaleString('zh-CN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
-}
 
 // 生命周期
 onMounted(() => {

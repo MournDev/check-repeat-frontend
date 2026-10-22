@@ -93,7 +93,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="createTime" label="创建时间" width="170">
-              <template #default="{ row }">{{ formatDate(row.createTime) }}</template>
+              <template #default="{ row }">{{ formatDateTime(row.createTime) }}</template>
             </el-table-column>
             <el-table-column label="操作" width="200" fixed="right">
               <template #default="{ row }">
@@ -222,8 +222,8 @@
           <el-tag :type="currentNotice.isRead === 1 ? 'info' : 'danger'">{{ currentNotice.isRead === 1 ? '已读' : '未读' }}</el-tag>
         </el-descriptions-item>
         <el-descriptions-item label="通知内容">{{ currentNotice.noticeContent }}</el-descriptions-item>
-        <el-descriptions-item label="创建时间">{{ formatDate(currentNotice.createTime) }}</el-descriptions-item>
-        <el-descriptions-item v-if="currentNotice.readTime" label="阅读时间">{{ formatDate(currentNotice.readTime) }}</el-descriptions-item>
+        <el-descriptions-item label="创建时间">{{ formatDateTime(currentNotice.createTime) }}</el-descriptions-item>
+        <el-descriptions-item v-if="currentNotice.readTime" label="阅读时间">{{ formatDateTime(currentNotice.readTime) }}</el-descriptions-item>
         <el-descriptions-item v-if="currentNotice.relatedType" label="关联类型">{{ currentNotice.relatedType }}</el-descriptions-item>
         <el-descriptions-item v-if="currentNotice.relatedId" label="关联ID">{{ currentNotice.relatedId }}</el-descriptions-item>
       </el-descriptions>
@@ -244,6 +244,7 @@ import { useMessageStore } from '@/stores/message'
 import { useMaintenanceStore } from '@/stores/maintenance'
 import PageHeader from '@/components/common/PageHeader.vue'
 import ListPageShell from '@/components/common/ListPageShell.vue'
+import { formatDateTime } from '@/utils/dataType.js'
 
 const userStore = useUserStore()
 const messageStore = useMessageStore()
@@ -279,11 +280,6 @@ const getNoticeTypeName = (type) => NOTICE_TYPES[type] || '未知'
 const getNoticeTypeTag = (type) => NOTICE_TYPE_TAGS[type] || 'info'
 const getPriorityName = (p) => ({ 0: '普通', 1: '重要', 2: '紧急' })[p] || '未知'
 const getPriorityTag = (p) => ({ 0: 'info', 1: 'warning', 2: 'danger' })[p] || 'info'
-
-const formatDate = (dateStr) => {
-  if (!dateStr) return '-'
-  return dateStr.replace('T', ' ').substring(0, 19)
-}
 
 // ============ 通知列表（原有能力） ============
 const fetchList = async () => {

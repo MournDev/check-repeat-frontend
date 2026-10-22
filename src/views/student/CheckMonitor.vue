@@ -177,7 +177,7 @@ import {
 // 任务状态要用 taskDetail（按 paperId 查），它同时带回推送订阅需要的 taskId
 import { getCheckTaskDetail } from '@/api/student'
 import { useCheckProgress } from '@/composables/useCheckProgress'
-import { formatPercent } from '@/utils/dataType.js'
+import { formatDateTime, formatPercent } from '@/utils/dataType.js'
 import PageHeader from '@/components/common/PageHeader.vue'
 
 const route = useRoute()
@@ -404,10 +404,7 @@ const formatEstimatedTime = (seconds) => {
   if (!seconds) return '计算中...'
   const now = new Date()
   const finishTime = new Date(now.getTime() + seconds * 1000)
-  return finishTime.toLocaleTimeString('zh-CN', { 
-    hour: '2-digit', 
-    minute: '2-digit' 
-  })
+  return formatDateTime(finishTime, 'HH:mm')
 }
 
 const clearLogs = () => {
@@ -526,12 +523,7 @@ const stopPolling = () => {
 
 const addLog = (level, message) => {
   const now = new Date()
-  const time = now.toLocaleTimeString('zh-CN', { 
-    hour12: false,
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit'
-  })
+  const time = formatDateTime(now, 'HH:mm:ss')
   
   logs.value.push({
     time,

@@ -256,6 +256,7 @@ import {
   Refresh, Check, QuestionFilled, Upload
 } from '@element-plus/icons-vue'
 import PageHeader from '@/components/common/PageHeader.vue'
+import { formatDateTime } from '@/utils/dataType.js'
 
 // 响应式数据
 const activeTab = ref(0)
@@ -286,11 +287,6 @@ const lastBackupTime = ref('暂无')
 const backupDir = ref('—')
 const backupSettingsForm = reactive({ enabled: true, retentionDays: 30 })
 let backupSettingsLoaded = false
-
-const formatDateTime = (dateStr) => {
-  if (!dateStr) return ''
-  return new Date(dateStr).toLocaleString('zh-CN')
-}
 
 // 方法
 const refreshConfig = async () => {
@@ -402,7 +398,7 @@ const exportConfig = async () => {
     window.URL.revokeObjectURL(url)
     
     ElMessage.success('配置导出成功')
-    lastBackupTime.value = new Date().toLocaleString('zh-CN')
+    lastBackupTime.value = formatDateTime(new Date())
   } catch (error) {
     console.error('导出配置失败:', error)
     ElMessage.error('配置导出失败')

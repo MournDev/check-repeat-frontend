@@ -181,7 +181,7 @@
         </el-table-column>
         <el-table-column prop="assignTime" label="分配时间" width="160">
           <template #default="{ row }">
-            {{ formatDate(row.assignTime) }}
+            {{ formatDateTime(row.assignTime) }}
           </template>
         </el-table-column>
         <el-table-column prop="status" label="状态" width="100">
@@ -241,14 +241,14 @@
               {{ getTypeName(currentRecord.assignmentType) }}
             </el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="分配时间">{{ formatDate(currentRecord.assignTime) }}</el-descriptions-item>
+          <el-descriptions-item label="分配时间">{{ formatDateTime(currentRecord.assignTime) }}</el-descriptions-item>
           <el-descriptions-item label="状态">
             <el-tag :type="getStatusTag(currentRecord.status)">
               {{ getStatusName(currentRecord.status) }}
             </el-tag>
           </el-descriptions-item>
           <el-descriptions-item label="操作人">{{ currentRecord.operator || '' }}</el-descriptions-item>
-          <el-descriptions-item label="操作时间">{{ formatDate(currentRecord.operateTime) }}</el-descriptions-item>
+          <el-descriptions-item label="操作时间">{{ formatDateTime(currentRecord.operateTime) }}</el-descriptions-item>
         </el-descriptions>
         
         <div class="detail-section" v-if="currentRecord.reason">
@@ -369,6 +369,7 @@ import {
 } from '@element-plus/icons-vue'
 import PageHeader from '@/components/common/PageHeader.vue'
 import ListPageShell from '@/components/common/ListPageShell.vue'
+import { formatDateTime } from '@/utils/dataType.js'
 
 // 响应式数据
 const loading = ref(false)
@@ -612,11 +613,6 @@ const getStatusTag = (status) => {
     'pending': 'warning'
   }
   return tagMap[status] || 'info'
-}
-
-const formatDate = (dateString) => {
-  if (!dateString) return ''
-  return new Date(dateString).toLocaleString('zh-CN')
 }
 
 const getLoadTagType = (currentLoad) => {
