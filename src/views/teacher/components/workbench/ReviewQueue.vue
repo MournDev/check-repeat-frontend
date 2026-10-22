@@ -131,7 +131,7 @@ watch(() => props.currentId, async () => {
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .review-queue {
   display: flex;
   flex-direction: column;
