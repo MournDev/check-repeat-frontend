@@ -6,8 +6,15 @@
       </template>
     </PageHeader>
 
-    <!-- 筛选栏 -->
-    <el-card class="filter-card" shadow="never">
+    <ListPageShell
+      v-model:page="currentPage"
+      v-model:page-size="pageSize"
+      :total="total"
+      :page-sizes="[10, 20, 50]"
+      @size-change="handleSizeChange"
+      @page-change="fetchList"
+    >
+      <template #filters>
       <el-form :model="filterForm" label-width="80px" inline>
         <el-form-item label="模板类型">
           <el-input v-model="filterForm.templateType" placeholder="请输入模板类型" clearable style="width: 160px" @change="fetchList" />
@@ -20,10 +27,8 @@
           <el-button @click="resetFilter">重置</el-button>
         </el-form-item>
       </el-form>
-    </el-card>
+      </template>
 
-    <!-- 表格 -->
-    <el-card class="table-card" shadow="never">
       <el-table :data="templateList" v-loading="loading" stripe style="width: 100%">
         <el-table-column type="index" :index="(idx) => (currentPage - 1) * pageSize + idx + 1" label="序号" width="70" />
         <el-table-column prop="templateCode" label="模板编码" width="160" show-overflow-tooltip />
@@ -51,10 +56,7 @@
         </el-table-column>
       </el-table>
 
-      <div class="pagination-wrapper">
-        <el-pagination v-model:current-page="currentPage" :page-size="pageSize" :total="total" layout="total, sizes, prev, pager, next, jumper" :page-sizes="[10, 20, 50]" @size-change="handleSizeChange" @current-change="fetchList" />
-      </div>
-    </el-card>
+    </ListPageShell>
 
     <!-- 新增/编辑对话框 -->
     <el-dialog v-model="dialogVisible" :title="isEdit ? '编辑模板' : '新增模板'" width="600px" destroy-on-close>
@@ -113,6 +115,7 @@ import { ref, reactive, onMounted, nextTick } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getTemplateList, createTemplate, updateTemplate, deleteTemplate, toggleTemplateStatus, renderTemplate } from '@/api/admin/templates'
 import PageHeader from '@/components/common/PageHeader.vue'
+import ListPageShell from '@/components/common/ListPageShell.vue'
 
 const loading = ref(false)
 const templateList = ref([])

@@ -2,8 +2,17 @@
   <div class="compare-lib-management">
     <PageHeader description="管理查重系统使用的比对数据源（本地库/远程库）" />
 
-    <!-- 筛选栏 -->
-    <el-card class="filter-card" shadow="never">
+    <ListPageShell
+      v-model:page="currentPage"
+      v-model:page-size="pageSize"
+      title="比对库列表"
+      :total="total"
+      :page-sizes="[10, 20, 50]"
+      :show-pagination="total > pageSize"
+      @size-change="fetchList"
+      @page-change="fetchList"
+    >
+      <template #filters>
       <el-form :model="filterForm" label-width="80px" inline>
         <el-form-item label="库名称">
           <el-input v-model="filterForm.libName" placeholder="搜索比对库名称" clearable style="width: 200px" @keyup.enter="fetchList" @clear="fetchList" />
@@ -25,15 +34,10 @@
           <el-button @click="resetFilter">重置</el-button>
         </el-form-item>
       </el-form>
-    </el-card>
+      </template>
 
-    <!-- 表格 -->
-    <el-card class="table-card" shadow="never">
-      <template #header>
-        <div class="card-header">
-          <span class="card-title">比对库列表</span>
-          <el-button type="primary" @click="openDialog(null)">新增比对库</el-button>
-        </div>
+      <template #header-extra>
+        <el-button type="primary" @click="openDialog(null)">新增比对库</el-button>
       </template>
 
       <el-table :data="libList" v-loading="loading" stripe style="width: 100%">
@@ -61,10 +65,7 @@
         </el-table-column>
       </el-table>
 
-      <div class="pagination-wrapper" v-if="total > pageSize">
-        <el-pagination v-model:current-page="currentPage" :page-size="pageSize" :total="total" layout="total, sizes, prev, pager, next, jumper" :page-sizes="[10, 20, 50]" @size-change="fetchList" @current-change="fetchList" />
-      </div>
-    </el-card>
+    </ListPageShell>
 
     <!-- 新增/编辑对话框 -->
     <el-dialog v-model="dialogVisible" :title="editingId ? '编辑比对库' : '新增比对库'" width="550px" destroy-on-close>
@@ -104,6 +105,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getCompareLibList, saveOrUpdateCompareLib, toggleLibEnabled } from '@/api/admin/config'
 import PageHeader from '@/components/common/PageHeader.vue'
+import ListPageShell from '@/components/common/ListPageShell.vue'
 
 const loading = ref(false)
 const submitting = ref(false)

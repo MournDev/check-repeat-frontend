@@ -43,18 +43,17 @@
       </div>
     </el-card>
     
-    <!-- 待分配学生列表 -->
-    <el-card class="students-card" v-loading="loading">
-      <template #header>
-        <div class="card-header">
-          <span class="card-title">
-            <el-icon><User /></el-icon>
-            待分配学生列表
-          </span>
-        </div>
-      </template>
-      
-      <el-table :data="pendingStudents" style="width: 100%">
+    <ListPageShell
+      v-model:page="pagination.currentPage"
+      v-model:page-size="pagination.pageSize"
+      title="待分配学生列表"
+      :icon="User"
+      :total="pagination.total"
+      :page-sizes="[10, 20, 50]"
+      @size-change="handleSizeChange"
+      @page-change="handleCurrentChange"
+    >
+      <el-table :data="pendingStudents" style="width: 100%" v-loading="loading">
         <el-table-column prop="studentName" label="学生姓名" width="120"></el-table-column>
         <el-table-column prop="studentId" label="学号" width="120"></el-table-column>
         <el-table-column prop="major" label="专业" width="150"></el-table-column>
@@ -71,19 +70,7 @@
           </template>
         </el-table-column>
       </el-table>
-      
-      <div class="pagination-container">
-        <el-pagination
-          v-model:current-page="pagination.currentPage"
-          v-model:page-size="pagination.pageSize"
-          :page-sizes="[10, 20, 50]"
-          :total="pagination.total"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        />
-      </div>
-    </el-card>
+    </ListPageShell>
 
     <!-- 学生详情对话框 -->
     <el-dialog v-model="detailDialogVisible" title="学生详细信息" width="600px" destroy-on-close>
@@ -127,6 +114,7 @@ import {
   MagicStick, Pointer, Refresh, User, Checked, UserFilled, DataAnalysis
 } from '@element-plus/icons-vue'
 import PageHeader from '@/components/common/PageHeader.vue'
+import ListPageShell from '@/components/common/ListPageShell.vue'
 
 // 响应式数据
 const loading = ref(false)

@@ -14,28 +14,34 @@
       </div>
     </el-card>
 
-    <!-- 筛选 -->
-    <el-card class="console-card filter-card" shadow="never">
-      <div class="filter-row">
-        <el-select v-model="filters.batchType" placeholder="批次类型" clearable class="filter-item" @change="handleSearch">
-          <el-option v-for="o in batchTypeOpts" :key="o.value" :label="o.label" :value="o.value" />
-        </el-select>
-        <el-select v-model="filters.collegeId" placeholder="学院（可空为全校）" clearable filterable class="filter-item filter-college" @change="handleSearch">
-          <el-option v-for="c in colleges" :key="c.id" :label="c.collegeName" :value="String(c.id)" />
-        </el-select>
-        <el-select v-model="filters.status" placeholder="批次状态" clearable class="filter-item" @change="handleSearch">
-          <el-option v-for="o in batchStatusOpts" :key="o.value" :label="o.label" :value="Number(o.value)" />
-        </el-select>
-        <el-button @click="handleSearch">
-          <el-icon><Search /></el-icon>
-          查询
-        </el-button>
-        <el-button @click="handleReset">重置</el-button>
-      </div>
-    </el-card>
+    <!-- 筛选 + 列表 -->
+    <ListPageShell
+      v-model:page="pagination.current"
+      v-model:page-size="pagination.size"
+      :total="total"
+      :page-sizes="[10, 20, 50]"
+      @size-change="fetchBatches(1)"
+      @page-change="fetchBatches()"
+    >
+      <template #filters>
+        <div class="filter-row">
+          <el-select v-model="filters.batchType" placeholder="批次类型" clearable class="filter-item" @change="handleSearch">
+            <el-option v-for="o in batchTypeOpts" :key="o.value" :label="o.label" :value="o.value" />
+          </el-select>
+          <el-select v-model="filters.collegeId" placeholder="学院（可空为全校）" clearable filterable class="filter-item filter-college" @change="handleSearch">
+            <el-option v-for="c in colleges" :key="c.id" :label="c.collegeName" :value="String(c.id)" />
+          </el-select>
+          <el-select v-model="filters.status" placeholder="批次状态" clearable class="filter-item" @change="handleSearch">
+            <el-option v-for="o in batchStatusOpts" :key="o.value" :label="o.label" :value="Number(o.value)" />
+          </el-select>
+          <el-button @click="handleSearch">
+            <el-icon><Search /></el-icon>
+            查询
+          </el-button>
+          <el-button @click="handleReset">重置</el-button>
+        </div>
+      </template>
 
-    <!-- 列表 -->
-    <el-card class="console-card" shadow="never">
       <el-table :data="batches" v-loading="loading" row-key="id" class="batch-table">
         <el-table-column prop="batchNo" label="批次编号" min-width="150" show-overflow-tooltip />
         <el-table-column label="类型" width="100">
@@ -89,20 +95,7 @@
           <el-empty description="暂无答辩批次" />
         </template>
       </el-table>
-
-      <div class="pager-row">
-        <el-pagination
-          v-model:current-page="pagination.current"
-          v-model:page-size="pagination.size"
-          :total="total"
-          :page-sizes="[10, 20, 50]"
-          layout="total, sizes, prev, pager, next, jumper"
-          background
-          @size-change="fetchBatches(1)"
-          @current-change="fetchBatches()"
-        />
-      </div>
-    </el-card>
+    </ListPageShell>
 
     <!-- 新建 / 编辑弹窗 -->
     <el-dialog v-model="dialog.visible" :title="dialog.isEdit ? '编辑答辩批次' : '新建答辩批次'" width="560px" destroy-on-close>
@@ -165,6 +158,7 @@ import { computed, reactive, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus, Search } from '@element-plus/icons-vue'
+import ListPageShell from '@/components/common/ListPageShell.vue'
 import { createDefenseBatch, updateDefenseBatch, getDefenseBatchList, deleteDefenseBatch } from '@/api/defense'
 import { getColleges } from '@/api/admin/common'
 import { getReviewWorkflowTeachers } from '@/api/admin/config'

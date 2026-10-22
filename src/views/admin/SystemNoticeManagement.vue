@@ -25,8 +25,16 @@
           </el-card>
         </div>
 
-        <!-- 筛选栏 -->
-        <el-card class="filter-card" shadow="never">
+        <ListPageShell
+          v-model:page="currentPage"
+          v-model:page-size="pageSize"
+          title="通知列表"
+          :total="total"
+          :page-sizes="[10, 20, 50]"
+          @size-change="handleSizeChange"
+          @page-change="fetchList"
+        >
+          <template #filters>
           <el-form :model="filterForm" label-width="80px" inline>
             <el-form-item label="通知类型">
               <el-select v-model="filterForm.noticeType" placeholder="全部" clearable style="width: 140px" @change="fetchList">
@@ -58,18 +66,11 @@
               <el-button @click="resetFilter">重置</el-button>
             </el-form-item>
           </el-form>
-        </el-card>
+          </template>
 
-        <!-- 表格 -->
-        <el-card class="table-card" shadow="never">
-          <template #header>
-            <div class="card-header">
-              <span class="card-title">通知列表</span>
-              <div class="card-actions">
-                <el-button size="small" @click="handleMarkAllRead">全部已读</el-button>
-                <el-button size="small" type="danger" @click="handleClearAll">清空全部</el-button>
-              </div>
-            </div>
+          <template #header-extra>
+            <el-button size="small" @click="handleMarkAllRead">全部已读</el-button>
+            <el-button size="small" type="danger" @click="handleClearAll">清空全部</el-button>
           </template>
 
           <el-table :data="noticeList" v-loading="loading" stripe style="width: 100%" @selection-change="handleSelectionChange">
@@ -109,10 +110,7 @@
             <el-button size="small" type="danger" @click="handleBatchDelete">批量删除</el-button>
           </div>
 
-          <div class="pagination-wrapper">
-            <el-pagination v-model:current-page="currentPage" :page-size="pageSize" :total="total" layout="total, sizes, prev, pager, next, jumper" :page-sizes="[10, 20, 50]" @size-change="handleSizeChange" @current-change="fetchList" />
-          </div>
-        </el-card>
+        </ListPageShell>
       </el-tab-pane>
 
       <!-- ============ 页签 2：发布公告（仅超级管理员） ============ -->
@@ -245,6 +243,7 @@ import { useUserStore } from '@/stores/user'
 import { useMessageStore } from '@/stores/message'
 import { useMaintenanceStore } from '@/stores/maintenance'
 import PageHeader from '@/components/common/PageHeader.vue'
+import ListPageShell from '@/components/common/ListPageShell.vue'
 
 const userStore = useUserStore()
 const messageStore = useMessageStore()

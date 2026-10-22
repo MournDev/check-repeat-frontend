@@ -12,66 +12,6 @@
       </template>
     </PageHeader>
 
-    <!-- 筛选和搜索 -->
-    <el-card class="filter-card" shadow="never">
-      <el-form :model="filterForm" label-width="80px" inline>
-        <el-form-item label="分配时间">
-          <el-date-picker
-            v-model="filterForm.dateRange"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            value-format="YYYY-MM-DD"
-            style="width: 240px"
-          />
-        </el-form-item>
-        <el-form-item label="分配类型">
-          <el-select v-model="filterForm.assignmentType" placeholder="请选择类型" clearable style="width: 120px">
-            <el-option label="手动分配" value="manual"></el-option>
-            <el-option label="自动分配" value="auto"></el-option>
-            <el-option label="重新分配" value="reassign"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="专业">
-          <el-select v-model="filterForm.major" placeholder="请选择专业" clearable style="width: 150px">
-            <el-option label="计算机科学与技术" value="CS"></el-option>
-            <el-option label="软件工程" value="SE"></el-option>
-            <el-option label="电子信息工程" value="EE"></el-option>
-            <el-option label="机械工程" value="ME"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-select v-model="filterForm.status" placeholder="请选择状态" clearable style="width: 120px">
-            <el-option label="已生效" value="active"></el-option>
-            <el-option label="已撤销" value="revoked"></el-option>
-            <el-option label="待确认" value="pending"></el-option>
-            <el-option label="待重新分配" value="pending_reassign"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="关键词">
-          <el-input
-            v-model="filterForm.keyword"
-            placeholder="学生姓名/学号/教师姓名"
-            clearable
-            style="width: 200px"
-          >
-            <template #prefix>
-              <el-icon><Search /></el-icon>
-            </template>
-          </el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" :icon="Search" @click="handleSearch">
-            搜索
-          </el-button>
-          <el-button :icon="RefreshLeft" @click="resetFilter">
-            重置
-          </el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
-
     <!-- 统计概览 -->
     <el-row :gutter="16" class="stats-cards">
       <el-col :xs="12" :sm="6">
@@ -128,24 +68,84 @@
       </el-col>
     </el-row>
 
-    <!-- 分配记录表格 -->
-    <el-card class="table-card" shadow="never">
-      <template #header>
-        <div class="card-header">
-          <span class="card-title">
-            <el-icon><Files /></el-icon>
-            分配记录列表
-          </span>
-          <div class="table-actions">
-            <el-button 
-              type="danger" 
-              :icon="Delete" 
-              :disabled="selectedRecords.length === 0"
-              @click="batchDelete"
-            >
-              批量删除 ({{ selectedRecords.length }})
-            </el-button>
-          </div>
+    <ListPageShell
+      v-model:page="pagination.currentPage"
+      v-model:page-size="pagination.pageSize"
+      title="分配记录列表"
+      :icon="Files"
+      :total="pagination.total"
+      @size-change="handleSizeChange"
+      @page-change="handleCurrentChange"
+    >
+      <template #filters>
+      <el-form :model="filterForm" label-width="80px" inline>
+        <el-form-item label="分配时间">
+          <el-date-picker
+            v-model="filterForm.dateRange"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            value-format="YYYY-MM-DD"
+            style="width: 240px"
+          />
+        </el-form-item>
+        <el-form-item label="分配类型">
+          <el-select v-model="filterForm.assignmentType" placeholder="请选择类型" clearable style="width: 120px">
+            <el-option label="手动分配" value="manual"></el-option>
+            <el-option label="自动分配" value="auto"></el-option>
+            <el-option label="重新分配" value="reassign"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="专业">
+          <el-select v-model="filterForm.major" placeholder="请选择专业" clearable style="width: 150px">
+            <el-option label="计算机科学与技术" value="CS"></el-option>
+            <el-option label="软件工程" value="SE"></el-option>
+            <el-option label="电子信息工程" value="EE"></el-option>
+            <el-option label="机械工程" value="ME"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-select v-model="filterForm.status" placeholder="请选择状态" clearable style="width: 120px">
+            <el-option label="已生效" value="active"></el-option>
+            <el-option label="已撤销" value="revoked"></el-option>
+            <el-option label="待确认" value="pending"></el-option>
+            <el-option label="待重新分配" value="pending_reassign"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="关键词">
+          <el-input
+            v-model="filterForm.keyword"
+            placeholder="学生姓名/学号/教师姓名"
+            clearable
+            style="width: 200px"
+          >
+            <template #prefix>
+              <el-icon><Search /></el-icon>
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" :icon="Search" @click="handleSearch">
+            搜索
+          </el-button>
+          <el-button :icon="RefreshLeft" @click="resetFilter">
+            重置
+          </el-button>
+        </el-form-item>
+      </el-form>
+      </template>
+
+      <template #header-extra>
+        <div class="table-actions">
+          <el-button 
+            type="danger" 
+            :icon="Delete" 
+            :disabled="selectedRecords.length === 0"
+            @click="batchDelete"
+          >
+            批量删除 ({{ selectedRecords.length }})
+          </el-button>
         </div>
       </template>
 
@@ -218,18 +218,7 @@
           </template>
         </el-table-column>
       </el-table>
-
-      <!-- 分页 -->
-      <div class="pagination-container">
-        <el-pagination
-          v-model:current-page="pagination.currentPage"
-          v-model:page-size="pagination.pageSize"
-          :page-sizes="[10, 20, 50, 100]"
-          :total="pagination.total"
-          layout="total, sizes, prev, pager, next, jumper"
-        />
-      </div>
-    </el-card>
+    </ListPageShell>
 
     <!-- 记录详情对话框 -->
     <el-dialog
@@ -379,6 +368,7 @@ import {
   User, UserFilled, Files, Delete
 } from '@element-plus/icons-vue'
 import PageHeader from '@/components/common/PageHeader.vue'
+import ListPageShell from '@/components/common/ListPageShell.vue'
 
 // 响应式数据
 const loading = ref(false)

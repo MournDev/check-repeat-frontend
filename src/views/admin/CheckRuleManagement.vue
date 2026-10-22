@@ -2,8 +2,17 @@
   <div class="check-rule-management">
     <PageHeader description="管理论文查重的规则配置，包括阈值、次数限制和关联比对库" />
 
-    <!-- 筛选栏 -->
-    <el-card class="filter-card" shadow="never">
+    <ListPageShell
+      v-model:page="currentPage"
+      v-model:page-size="pageSize"
+      title="规则列表"
+      :total="total"
+      :page-sizes="[10, 20, 50]"
+      :show-pagination="total > pageSize"
+      @size-change="fetchList"
+      @page-change="fetchList"
+    >
+      <template #filters>
       <el-form :model="filterForm" label-width="80px" inline>
         <el-form-item label="规则名称">
           <el-input v-model="filterForm.ruleName" placeholder="搜索规则名称" clearable style="width: 200px" @keyup.enter="fetchList" @clear="fetchList" />
@@ -19,15 +28,10 @@
           <el-button @click="resetFilter">重置</el-button>
         </el-form-item>
       </el-form>
-    </el-card>
+      </template>
 
-    <!-- 表格 -->
-    <el-card class="table-card" shadow="never">
-      <template #header>
-        <div class="card-header">
-          <span class="card-title">规则列表</span>
-          <el-button type="primary" @click="openDialog(null)">新增规则</el-button>
-        </div>
+      <template #header-extra>
+        <el-button type="primary" @click="openDialog(null)">新增规则</el-button>
       </template>
 
       <el-table :data="ruleList" v-loading="loading" stripe style="width: 100%">
@@ -67,20 +71,19 @@
         </el-table-column>
       </el-table>
 
-      <div class="pagination-wrapper" v-if="total > pageSize">
-        <el-pagination v-model:current-page="currentPage" :page-size="pageSize" :total="total" layout="total, sizes, prev, pager, next, jumper" :page-sizes="[10, 20, 50]" @size-change="fetchList" @current-change="fetchList" />
-      </div>
-    </el-card>
+    </ListPageShell>
 
-    <!-- 学院查重额度 -->
-    <el-card class="table-card" shadow="never">
-      <template #header>
-        <div class="card-header">
-          <span class="card-title">学院查重额度</span>
-          <el-button type="primary" @click="openQuotaDialog(null)">新增额度</el-button>
-        </div>
-      </template>
-
+    <ListPageShell
+      v-model:page="quotaCurrentPage"
+      v-model:page-size="quotaPageSize"
+      title="学院查重额度"
+      :total="quotaTotal"
+      :page-sizes="[10, 20, 50]"
+      :show-pagination="quotaTotal > quotaPageSize"
+      @size-change="handleQuotaSearch"
+      @page-change="fetchQuotaList"
+    >
+      <template #filters>
       <el-form label-width="80px" inline class="quota-filter">
         <el-form-item label="额度月份">
           <el-date-picker
@@ -96,6 +99,11 @@
           <el-button type="primary" @click="handleQuotaSearch">查询</el-button>
         </el-form-item>
       </el-form>
+      </template>
+
+      <template #header-extra>
+        <el-button type="primary" @click="openQuotaDialog(null)">新增额度</el-button>
+      </template>
 
       <el-table :data="quotaList" v-loading="quotaLoading" stripe style="width: 100%">
         <el-table-column prop="collegeName" label="学院" min-width="180" show-overflow-tooltip />
@@ -117,10 +125,7 @@
         </template>
       </el-table>
 
-      <div class="pagination-wrapper" v-if="quotaTotal > quotaPageSize">
-        <el-pagination v-model:current-page="quotaCurrentPage" v-model:page-size="quotaPageSize" :total="quotaTotal" layout="total, sizes, prev, pager, next, jumper" :page-sizes="[10, 20, 50]" @size-change="handleQuotaSearch" @current-change="fetchQuotaList" />
-      </div>
-    </el-card>
+    </ListPageShell>
 
     <!-- 新增/编辑对话框 -->
     <el-dialog v-model="dialogVisible" :title="editingId ? '编辑规则' : '新增规则'" width="600px" destroy-on-close>
@@ -195,6 +200,7 @@ import { getCheckRuleList, saveOrUpdateCheckRule, deleteCheckRule, getRuleRelate
 import { getColleges } from '@/api/admin/common'
 import { getCheckQuotaList, saveCheckQuota } from '@/api/p5'
 import PageHeader from '@/components/common/PageHeader.vue'
+import ListPageShell from '@/components/common/ListPageShell.vue'
 
 const loading = ref(false)
 const submitting = ref(false)

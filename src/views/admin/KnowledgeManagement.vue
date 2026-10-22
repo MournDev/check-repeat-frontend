@@ -1,26 +1,38 @@
 <template>
   <div class="knowledge-admin">
-    <div class="page-toolbar">
-      <div class="toolbar-left">
-        <el-input
-          v-model="searchKeyword"
-          placeholder="搜索文章..."
-          :prefix-icon="Search"
-          clearable
-          style="width: 240px"
-          @keyup.enter="fetchList"
-          @clear="fetchList"
-        />
-        <el-select v-model="filterStatus" placeholder="状态筛选" clearable style="width: 120px" @change="fetchList">
-          <el-option label="已发布" value="PUBLISHED" />
-          <el-option label="草稿" value="DRAFT" />
-          <el-option label="已归档" value="ARCHIVED" />
-        </el-select>
-      </div>
-      <el-button type="primary" :icon="Plus" @click="openEditor(null)">新增文章</el-button>
-    </div>
+    <ListPageShell
+      v-model:page="page"
+      v-model:page-size="pageSize"
+      :total="total"
+      :page-sizes="[10, 20, 50]"
+      :show-pagination="total > pageSize"
+      @size-change="fetchList"
+      @page-change="fetchList"
+    >
+      <template #filters>
+        <div class="toolbar-left">
+          <el-input
+            v-model="searchKeyword"
+            placeholder="搜索文章..."
+            :prefix-icon="Search"
+            clearable
+            style="width: 240px"
+            @keyup.enter="fetchList"
+            @clear="fetchList"
+          />
+          <el-select v-model="filterStatus" placeholder="状态筛选" clearable style="width: 120px" @change="fetchList">
+            <el-option label="已发布" value="PUBLISHED" />
+            <el-option label="草稿" value="DRAFT" />
+            <el-option label="已归档" value="ARCHIVED" />
+          </el-select>
+        </div>
+      </template>
 
-    <el-table :data="articles" v-loading="loading" stripe style="width: 100%">
+      <template #header-extra>
+        <el-button type="primary" :icon="Plus" @click="openEditor(null)">新增文章</el-button>
+      </template>
+
+      <el-table :data="articles" v-loading="loading" stripe style="width: 100%">
       <el-table-column type="index" :index="(idx) => (page - 1) * pageSize + idx + 1" label="序号" width="70" />
       <el-table-column prop="title" label="标题" min-width="200" show-overflow-tooltip />
       <el-table-column prop="authorName" label="作者" width="100" />
@@ -60,17 +72,7 @@
       </el-table-column>
     </el-table>
 
-    <div class="kb-pagination" v-if="total > pageSize">
-      <el-pagination
-        v-model:current-page="page"
-        :page-size="pageSize"
-        :total="total"
-        layout="total, sizes, prev, pager, next, jumper"
-        :page-sizes="[10, 20, 50]"
-        @size-change="fetchList"
-        @current-change="fetchList"
-      />
-    </div>
+    </ListPageShell>
 
     <!-- 编辑抽屉 -->
     <el-drawer
@@ -132,12 +134,13 @@ import {
 import { getCategories } from '@/api/knowledge'
 import { ElMessage } from 'element-plus'
 import { renderMarkdown } from '@/utils/markdown'
+import ListPageShell from '@/components/common/ListPageShell.vue'
 
 const articles = ref([])
 const total = ref(0)
 const loading = ref(false)
 const page = ref(1)
-const pageSize = 10
+const pageSize = ref(10)
 const searchKeyword = ref('')
 const filterStatus = ref('')
 
@@ -171,7 +174,7 @@ async function loadCategories() {
 async function fetchList() {
   loading.value = true
   try {
-    const params = { page: page.value, size: pageSize }
+    const params = { page: page.value, size: pageSize.value }
     if (searchKeyword.value) params.keyword = searchKeyword.value
     if (filterStatus.value) params.status = filterStatus.value
     const res = await adminListArticles(params)

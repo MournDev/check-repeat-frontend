@@ -102,12 +102,15 @@
     </el-card>
 
     <!-- 查重任务列表 -->
-    <el-card class="table-card">
-      <template #header>
-        <div class="table-header">
-          <span>查重任务列表</span>
-        </div>
-      </template>
+    <ListPageShell
+      v-model:page="currentPage"
+      v-model:page-size="pageSize"
+      title="查重任务列表"
+      :total="taskList.length"
+      :page-sizes="[10, 20, 50, 100]"
+      @size-change="handleSizeChange"
+      @page-change="handleCurrentChange"
+    >
       
       <el-table :data="currentPageData" style="width: 100%" :loading="loading">
         <el-table-column type="index" label="序号" width="80" />
@@ -235,20 +238,7 @@
           </template>
         </el-table-column>
       </el-table>
-      
-      <!-- 分页 -->
-      <div class="pagination-container">
-        <el-pagination
-          v-model:current-page="currentPage"
-          v-model:page-size="pageSize"
-          :page-sizes="[10, 20, 50, 100]"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="taskList.length"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        />
-      </div>
-    </el-card>
+    </ListPageShell>
 
     <!-- 报告查看对话框 -->
     <el-dialog
@@ -312,10 +302,11 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { ElMessage, ElButton, ElTable, ElTag, ElProgress, ElTooltip, ElBadge, ElMessageBox, ElCard, ElPagination, ElDescriptions, ElDescriptionsItem } from 'element-plus';
+import { ElMessage, ElButton, ElTable, ElTag, ElProgress, ElTooltip, ElBadge, ElMessageBox, ElCard, ElDescriptions, ElDescriptionsItem } from 'element-plus';
 import { Refresh, Upload } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
 import { useCheckProgress } from '@/composables/useCheckProgress';
+import ListPageShell from '@/components/common/ListPageShell.vue';
 import * as studentApi from '@/api/student';
 import { getSimilarityTagType } from '@/utils/similarity.js';
 import dayjs from 'dayjs';

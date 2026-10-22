@@ -149,18 +149,22 @@
       </el-col>
     </el-row>
 
-    <!-- 明细分页表 -->
-    <el-card class="console-card" shadow="never">
-      <template #header>
+    <ListPageShell
+      v-model:page="pageNum"
+      v-model:page-size="pageSize"
+      title="评价明细"
+      :icon="Document"
+      :total="total"
+      @size-change="fetchPage"
+      @page-change="fetchPage"
+    >
+      <template #header-extra>
         <div class="card-header">
-          <span class="card-title">
-            <el-icon><Document /></el-icon>
-            评价明细
-          </span>
           <span class="header-tip">学生实名信息仅管理端可见，用于防滥用追溯，请勿外泄展示</span>
         </div>
       </template>
 
+      <template #filters>
       <!-- 筛选器（时间范围同时驱动统计卡/排行/学院对比与明细列表，其余项仅过滤列表与导出） -->
       <div class="filter-bar">
         <el-date-picker
@@ -212,6 +216,7 @@
         </el-select>
         <el-button :icon="Refresh" @click="resetFilters">重置</el-button>
       </div>
+      </template>
 
       <el-table :data="pageList" row-key="id" v-loading="pageLoading">
         <el-table-column label="论文 / 学生" min-width="220">
@@ -272,20 +277,7 @@
           <el-empty description="暂无评价明细" :image-size="80" />
         </template>
       </el-table>
-
-      <div class="table-footer">
-        <el-pagination
-          v-model:current-page="pageNum"
-          v-model:page-size="pageSize"
-          :page-sizes="[10, 20, 50, 100]"
-          :total="total"
-          layout="total, sizes, prev, pager, next, jumper"
-          background
-          @size-change="fetchPage"
-          @current-change="fetchPage"
-        />
-      </div>
-    </el-card>
+    </ListPageShell>
   </div>
 </template>
 
@@ -303,6 +295,7 @@ import { getAvailableTeachers } from '@/api/admin/assignment'
 import { saveBlobAs } from '@/utils/download'
 import { advisorEvalTagLabel, isNegativeAdvisorEvalTag } from '@/utils/advisorEvalTag'
 import { useChart } from '@/composables/useChart'
+import ListPageShell from '@/components/common/ListPageShell.vue'
 
 // ── 标签字典统一取 utils/advisorEvalTag.js（SSOT），此处仅做模板别名 ──
 const tagLabel = advisorEvalTagLabel

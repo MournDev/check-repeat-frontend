@@ -47,8 +47,15 @@
           </div>
         </div>
 
-        <el-card shadow="never">
-          <template #header>
+        <ListPageShell
+          v-model:page="operationPagination.pageNum"
+          v-model:page-size="operationPagination.pageSize"
+          :total="operationPagination.total"
+          :page-sizes="[10, 20, 50, 100]"
+          @size-change="loadOperationLogs"
+          @page-change="loadOperationLogs"
+        >
+          <template #filters>
             <div class="tab-header">
               <div class="header-filters">
                 <el-date-picker
@@ -126,24 +133,20 @@
             <el-button size="small" type="danger" @click="handleBatchDelete">批量删除</el-button>
           </div>
 
-          <div class="pagination-wrapper">
-            <el-pagination
-              v-model:current-page="operationPagination.pageNum"
-              v-model:page-size="operationPagination.pageSize"
-              :page-sizes="[10, 20, 50, 100]"
-              :total="operationPagination.total"
-              layout="total, sizes, prev, pager, next, jumper"
-              @size-change="loadOperationLogs"
-              @current-change="loadOperationLogs"
-            />
-          </div>
-        </el-card>
+        </ListPageShell>
       </el-tab-pane>
 
       <!-- 登录日志 -->
       <el-tab-pane label="登录日志" name="login">
-        <el-card shadow="never">
-          <template #header>
+        <ListPageShell
+          v-model:page="loginPagination.pageNum"
+          v-model:page-size="loginPagination.pageSize"
+          :total="loginPagination.total"
+          :page-sizes="[10, 20, 50, 100]"
+          @size-change="loadLoginLogs"
+          @page-change="loadLoginLogs"
+        >
+          <template #filters>
             <div class="tab-header">
               <div class="header-filters">
                 <el-date-picker
@@ -182,23 +185,19 @@
             <el-table-column prop="failReason" label="失败原因" min-width="150" show-overflow-tooltip />
           </el-table>
 
-          <div class="pagination-wrapper">
-            <el-pagination
-              v-model:current-page="loginPagination.pageNum"
-              v-model:page-size="loginPagination.pageSize"
-              :page-sizes="[10, 20, 50, 100]"
-              :total="loginPagination.total"
-              layout="total, sizes, prev, pager, next, jumper"
-              @size-change="loadLoginLogs"
-              @current-change="loadLoginLogs"
-            />
-          </div>
-        </el-card>
+        </ListPageShell>
       </el-tab-pane>
 
       <!-- 备份记录 -->
       <el-tab-pane label="备份记录" name="backup">
-        <el-card shadow="never">
+        <ListPageShell
+          v-model:page="backupPagination.pageNum"
+          v-model:page-size="backupPagination.pageSize"
+          :total="backupPagination.total"
+          :page-sizes="[10, 20, 50]"
+          @size-change="loadBackupRecords"
+          @page-change="loadBackupRecords"
+        >
           <el-table :data="backupRecords" style="width: 100%" v-loading="backupLoading" stripe>
             <el-table-column prop="createTime" label="备份时间" min-width="170">
               <template #default="{ row }">{{ formatDate(row.createTime) }}</template>
@@ -227,18 +226,7 @@
             <el-table-column prop="errorMessage" label="错误信息" min-width="160" show-overflow-tooltip />
           </el-table>
 
-          <div class="pagination-wrapper">
-            <el-pagination
-              v-model:current-page="backupPagination.pageNum"
-              v-model:page-size="backupPagination.pageSize"
-              :page-sizes="[10, 20, 50]"
-              :total="backupPagination.total"
-              layout="total, sizes, prev, pager, next, jumper"
-              @size-change="loadBackupRecords"
-              @current-change="loadBackupRecords"
-            />
-          </div>
-        </el-card>
+        </ListPageShell>
       </el-tab-pane>
 
       <!-- 统计分析 -->
@@ -356,6 +344,7 @@ import { useUserStore } from '@/stores/user'
 import { Refresh, Download, Search, Delete } from '@element-plus/icons-vue'
 import { useChart } from '@/composables/useChart'
 import PageHeader from '@/components/common/PageHeader.vue'
+import ListPageShell from '@/components/common/ListPageShell.vue'
 
 // ==================== 操作类型字典 ====================
 const OPERATION_MODULES = [

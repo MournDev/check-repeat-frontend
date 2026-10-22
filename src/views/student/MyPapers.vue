@@ -7,10 +7,23 @@
       </template>
     </PageHeader>
 
-    <!-- 筛选和搜索 -->
-    <div class="filter-card">
-      <div class="filter-form">
-        <div class="form-row">
+    <ListPageShell
+      v-model:page="pagination.current"
+      v-model:page-size="pagination.size"
+      title="论文列表"
+      :icon="Document"
+      :total="total"
+      :page-sizes="[5, 10, 20, 50]"
+      show-total
+      total-suffix="篇论文"
+      @size-change="handleSizeChange"
+      @page-change="handleCurrentChange"
+    >
+      <!-- 筛选和搜索 -->
+      <template #filters>
+        <div class="filter-card list-scope">
+          <div class="filter-form list-scope">
+            <div class="form-row">
           <div class="form-group">
             <label class="form-label">论文状态</label>
             <select 
@@ -63,51 +76,49 @@
               <span>重置</span>
             </button>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 论文列表 -->
-    <div class="papers-card">
-      <div class="card-header">
-        <div class="card-title">
-          <el-icon><Document /></el-icon>
-          <span>论文列表</span>
-        </div>
-        <div class="header-actions-group">
-          <!-- 批量操作工具栏 -->
-          <div v-if="selectedPaperIds.length > 0" class="batch-toolbar">
-            <span class="selected-count">
-              已选择 {{ selectedPaperIds.length }} 篇论文
-            </span>
-            <button class="primary-button" @click="batchDownload">
-              <el-icon><Download /></el-icon>
-              <span>批量下载</span>
-            </button>
-            <button class="success-button" @click="batchCheckPlagiarism">
-              <el-icon><Document /></el-icon>
-              <span>批量查重</span>
-            </button>
-            <button class="danger-button" @click="batchDelete">
-              <el-icon><Delete /></el-icon>
-              <span>批量删除</span>
-            </button>
-            <div class="divider"></div>
-            <label class="checkbox-label">
-              <input 
-                type="checkbox" 
-                v-model="selectAll" 
-                @change="handleSelectAll"
-                class="checkbox-input"
-              />
-              <span class="checkbox-text">全选</span>
-            </label>
+            </div>
           </div>
-          <span v-else class="card-extra"> 共 {{ total }} 篇论文 </span>
         </div>
-      </div>
+      </template>
 
-      <div class="papers-list" v-loading="papersLoading">
+      <template #header-extra>
+        <div v-if="selectedPaperIds.length > 0" class="papers-card list-scope">
+          <div class="header-actions-group">
+            <!-- 批量操作工具栏 -->
+            <div class="batch-toolbar">
+              <span class="selected-count">
+                已选择 {{ selectedPaperIds.length }} 篇论文
+              </span>
+              <button class="primary-button" @click="batchDownload">
+                <el-icon><Download /></el-icon>
+                <span>批量下载</span>
+              </button>
+              <button class="success-button" @click="batchCheckPlagiarism">
+                <el-icon><Document /></el-icon>
+                <span>批量查重</span>
+              </button>
+              <button class="danger-button" @click="batchDelete">
+                <el-icon><Delete /></el-icon>
+                <span>批量删除</span>
+              </button>
+              <div class="divider"></div>
+              <label class="checkbox-label">
+                <input 
+                  type="checkbox" 
+                  v-model="selectAll" 
+                  @change="handleSelectAll"
+                  class="checkbox-input"
+                />
+                <span class="checkbox-text">全选</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <!-- 论文列表 -->
+      <div class="papers-card list-scope">
+        <div class="papers-list" v-loading="papersLoading">
         <div
           v-for="paper in papers"
           :key="paper.id"
@@ -310,20 +321,8 @@
           </button>
         </div>
       </div>
-      <div v-if="papers.length > 0" class="pagination-container">
-        <el-pagination
-          :current-page="pagination.current"
-          @update:current-page="pagination.current = $event"
-          :page-size="pagination.size"
-          @update:page-size="pagination.size = $event"
-          :page-sizes="[5, 10, 20, 50]"
-          :total="total"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        />
       </div>
-    </div>
+    </ListPageShell>
 
     <!-- 论文详情对话框 -->
     <el-dialog v-model="detailDialogVisible" :title="paperTitle" width="800px">
@@ -509,6 +508,7 @@ import { getDictDataByType } from "@/api/user.js";
 import { loadPaperTypes, getPaperTypeText } from "@/utils/paperType.js";
 import { getStatusText, getStatusType } from '@/utils/reviewStatus.js';
 import PageHeader from '@/components/common/PageHeader.vue';
+import ListPageShell from '@/components/common/ListPageShell.vue';
 import { 
   getStudentPaperPage, 
   withdrawPaper as withdrawPaperApi, 
@@ -1212,6 +1212,12 @@ const batchDelete = async () => {
 </script>
 
 <style lang="scss" scoped>
+// 骨架迁移：原 .filter-card / .papers-card 仅作为 scoped 样式的选择器前缀保留，
+// display: contents 让其不再生成额外卡片盒子，避免与 ListPageShell 的卡片重复。
+.list-scope {
+  display: contents;
+}
+
 // 全局样式
 .my-papers-page {
   min-height: 100vh;

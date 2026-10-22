@@ -68,8 +68,16 @@
       </el-col>
     </el-row>
 
-    <!-- 筛选和搜索 -->
-    <el-card class="filter-card" shadow="never">
+    <ListPageShell
+      v-model:page="pagination.currentPage"
+      v-model:page-size="pagination.pageSize"
+      title="论文列表"
+      :icon="Files"
+      :total="pagination.total"
+      @size-change="handleSizeChange"
+      @page-change="handleCurrentChange"
+    >
+      <template #filters>
       <el-form :model="filterForm" label-width="80px" inline>
         <el-form-item label="学院">
           <el-select
@@ -145,48 +153,40 @@
           </el-button>
         </el-form-item>
       </el-form>
-    </el-card>
+      </template>
 
-    <!-- 论文列表 -->
-    <el-card class="table-card" shadow="never">
-      <template #header>
-        <div class="card-header">
-          <span class="card-title">
-            <el-icon><Files /></el-icon>
-            论文列表
-          </span>
-          <div class="table-actions">
-            <el-button
-              type="success"
-              :icon="Check"
-              :disabled="selectedPapers.length === 0"
-              @click="performBatchInternalCheck"
-            >
-              批量校内查重
-            </el-button>
-            <el-button
-              type="warning"
-              :icon="MagicStick"
-              :disabled="selectedPapers.length === 0"
-              @click="performBatchThirdPartyCheck"
-            >
-              批量第三方查重
-            </el-button>
-            <el-button
-              type="primary"
-              :icon="Stamp"
-              :disabled="auditableSelected.length === 0"
-              @click="showBatchAuditDialog"
-            >
-              批量审核
-            </el-button>
-            <el-button
-              :icon="Download"
-              @click="exportLibrary"
-            >
-              导出数据
-            </el-button>
-          </div>
+      <template #header-extra>
+        <div class="table-actions">
+          <el-button
+            type="success"
+            :icon="Check"
+            :disabled="selectedPapers.length === 0"
+            @click="performBatchInternalCheck"
+          >
+            批量校内查重
+          </el-button>
+          <el-button
+            type="warning"
+            :icon="MagicStick"
+            :disabled="selectedPapers.length === 0"
+            @click="performBatchThirdPartyCheck"
+          >
+            批量第三方查重
+          </el-button>
+          <el-button
+            type="primary"
+            :icon="Stamp"
+            :disabled="auditableSelected.length === 0"
+            @click="showBatchAuditDialog"
+          >
+            批量审核
+          </el-button>
+          <el-button
+            :icon="Download"
+            @click="exportLibrary"
+          >
+            导出数据
+          </el-button>
         </div>
       </template>
 
@@ -302,20 +302,7 @@
           </template>
         </el-table-column>
       </el-table>
-
-      <!-- 分页 -->
-      <div class="pagination-container">
-        <el-pagination
-          v-model:current-page="pagination.currentPage"
-          v-model:page-size="pagination.pageSize"
-          :page-sizes="[10, 20, 50, 100]"
-          :total="pagination.total"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        />
-      </div>
-    </el-card>
+    </ListPageShell>
 
     <!-- 上传论文对话框 -->
     <el-dialog
@@ -552,6 +539,7 @@ import {
   TrendCharts, Files, Download, MagicStick, UploadFilled, Stamp
 } from '@element-plus/icons-vue'
 import PageHeader from '@/components/common/PageHeader.vue'
+import ListPageShell from '@/components/common/ListPageShell.vue'
 import { getStatusText, getStatusType } from '@/utils/reviewStatus.js'
 import { getSimilarityTagType as similarityTagType } from '@/utils/similarity.js'
 

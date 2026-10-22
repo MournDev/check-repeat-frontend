@@ -13,41 +13,6 @@
       </template>
     </PageHeader>
 
-    <!-- 搜索和筛选 -->
-    <el-card class="filter-card" shadow="never">
-      <el-form :inline="true" :model="searchForm" class="search-form">
-        <el-form-item label="论文标题">
-          <el-input v-model="searchForm.paperTitle" placeholder="输入论文标题" clearable />
-        </el-form-item>
-        <el-form-item label="学生姓名">
-          <el-input v-model="searchForm.studentName" placeholder="输入学生姓名" clearable />
-        </el-form-item>
-        <el-form-item label="查重状态">
-          <el-select v-model="searchForm.checkStatus" placeholder="选择查重状态" clearable>
-            <el-option label="全部" value="" />
-            <el-option label="待查重" value="pending" />
-            <el-option label="处理中" value="checking" />
-            <el-option label="已完成" value="completed" />
-            <el-option label="失败" value="failure" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="相似度范围">
-          <el-select v-model="searchForm.similarityRange" placeholder="选择相似度范围" clearable>
-            <el-option label="全部" value="" />
-            <el-option label="0-15%" value="0-15" />
-            <el-option label="15-30%" value="15-30" />
-            <el-option label="30%以上" value="30+" />
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="search">
-            <el-icon><Search /></el-icon>搜索
-          </el-button>
-          <el-button @click="resetSearch">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
-
     <!-- 统计信息 -->
     <el-row :gutter="20" style="margin: 20px 0;">
       <el-col :span="6">
@@ -84,14 +49,53 @@
       </el-col>
     </el-row>
 
-    <!-- 报告列表 -->
-    <el-card class="report-list-card" shadow="never">
-      <template #header>
-        <div class="card-header">
-          <el-checkbox v-model="selectAll" @change="handleSelectAll">全选</el-checkbox>
-          <span style="margin-left: 20px;">报告列表</span>
-          <span style="margin-left: 10px; color: var(--apple-ink-secondary);">(共 {{ total }} 条)</span>
-        </div>
+    <ListPageShell
+      v-model:page="currentPage"
+      v-model:page-size="pageSize"
+      title="报告列表"
+      :icon="Document"
+      :total="total"
+      show-total
+      total-suffix="条"
+      @size-change="handleSizeChange"
+      @page-change="handleCurrentChange"
+    >
+      <template #filters>
+      <el-form :inline="true" :model="searchForm" class="search-form">
+        <el-form-item label="论文标题">
+          <el-input v-model="searchForm.paperTitle" placeholder="输入论文标题" clearable />
+        </el-form-item>
+        <el-form-item label="学生姓名">
+          <el-input v-model="searchForm.studentName" placeholder="输入学生姓名" clearable />
+        </el-form-item>
+        <el-form-item label="查重状态">
+          <el-select v-model="searchForm.checkStatus" placeholder="选择查重状态" clearable>
+            <el-option label="全部" value="" />
+            <el-option label="待查重" value="pending" />
+            <el-option label="处理中" value="checking" />
+            <el-option label="已完成" value="completed" />
+            <el-option label="失败" value="failure" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="相似度范围">
+          <el-select v-model="searchForm.similarityRange" placeholder="选择相似度范围" clearable>
+            <el-option label="全部" value="" />
+            <el-option label="0-15%" value="0-15" />
+            <el-option label="15-30%" value="15-30" />
+            <el-option label="30%以上" value="30+" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="search">
+            <el-icon><Search /></el-icon>搜索
+          </el-button>
+          <el-button @click="resetSearch">重置</el-button>
+        </el-form-item>
+      </el-form>
+      </template>
+
+      <template #header-extra>
+        <el-checkbox v-model="selectAll" @change="handleSelectAll">全选</el-checkbox>
       </template>
 
       <el-table
@@ -134,20 +138,7 @@
           </template>
         </el-table-column>
       </el-table>
-
-      <!-- 分页 -->
-      <div class="pagination-container">
-        <el-pagination
-          v-model:current-page="currentPage"
-          v-model:page-size="pageSize"
-          :page-sizes="[10, 20, 50, 100]"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        />
-      </div>
-    </el-card>
+    </ListPageShell>
 
     <!-- 报告详情对话框 -->
     <el-dialog
@@ -295,6 +286,7 @@ import {
 import { getReportList, getReportStats, getReportDetail, batchExportReports } from '@/api/admin/reports'
 import { getSimilarityColor, getSimilarityTagType } from '@/utils/similarity.js'
 import PageHeader from '@/components/common/PageHeader.vue'
+import ListPageShell from '@/components/common/ListPageShell.vue'
 
 const router = useRouter()
 
