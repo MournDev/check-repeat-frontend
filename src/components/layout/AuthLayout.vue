@@ -50,31 +50,20 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { computed } from 'vue'
+<script setup>
 import AnimatedCharacters from '@/components/animated-characters/AnimatedCharacters.vue'
 
 // 品牌名唯一来源：.env 的 VITE_SYSTEM_NAME
 const systemName = import.meta.env.VITE_SYSTEM_NAME
 
-interface AuthLayoutProps {
-  pageType?: 'login' | 'register' | 'reset';
-  title?: string;
-  subtitle?: string;
-  isTyping?: boolean;
-  showPassword?: boolean;
-  passwordLength?: number;
-  isError?: boolean;
-}
-
-const props = withDefaults(defineProps<AuthLayoutProps>(), {
-  pageType: 'login',
-  title: '登录到工作台',
-  subtitle: '统一接入学生论文管理系统',
-  isTyping: false,
-  showPassword: false,
-  passwordLength: 0,
-  isError: false,
+defineProps({
+  pageType: { type: String, default: 'login' },
+  title: { type: String, default: '登录到工作台' },
+  subtitle: { type: String, default: '统一接入学生论文管理系统' },
+  isTyping: { type: Boolean, default: false },
+  showPassword: { type: Boolean, default: false },
+  passwordLength: { type: Number, default: 0 },
+  isError: { type: Boolean, default: false },
 })
 </script>
 
