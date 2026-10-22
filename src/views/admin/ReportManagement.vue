@@ -293,8 +293,7 @@ import {
   Check, ArrowLeft
 } from '@element-plus/icons-vue'
 import { getReportList, getReportStats, getReportDetail, batchExportReports } from '@/api/admin/reports'
-import { getSimilarityColor } from '@/utils/dataType.js'
-import { getSimilarityTagType } from '@/utils/reviewStatus.js'
+import { getSimilarityColor, getSimilarityTagType } from '@/utils/similarity.js'
 import PageHeader from '@/components/common/PageHeader.vue'
 
 const router = useRouter()

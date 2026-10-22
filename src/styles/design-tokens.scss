@@ -139,6 +139,12 @@
   --apple-info: #8e8e93;                     // Apple system gray
   --apple-rounded-xl: 22px;                  // 大于 --apple-rounded-lg(18) 的卡片层级
 
+  // ── 重复率等级语义色（与 src/utils/similarity.js 常量镜像）──
+  --apple-rate-low: var(--apple-success);    // < 15% 低重复
+  --apple-rate-medium: var(--apple-warning); // 15–30% 中等重复
+  --apple-rate-high: var(--apple-danger);    // ≥ 30% 高重复
+  --apple-rate-unknown: var(--apple-info);   // 未检测
+
   // ── 高频存量色收敛（2026-10-16 硬编码治理第二批）──────────
   // 下列值在业务页面中被大量硬编码且无前述 token 对应，按实际使用语义命名收录，
   // 新代码一律引用变量，禁止再写字面值。

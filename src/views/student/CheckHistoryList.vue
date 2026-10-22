@@ -170,6 +170,7 @@ import {
 } from '@/utils/paperType.js'
 import PageHeader from '@/components/common/PageHeader.vue'
 import ListPageShell from '@/components/common/ListPageShell.vue'
+import { getSimilarityClass } from '@/utils/similarity.js'
 import { getStatusText, getStatusType } from '@/utils/reviewStatus.js'
 
 const router = useRouter()
@@ -280,13 +281,6 @@ const viewCheckHistory = (paperId) => {
 // 本页不再维护第二套映射（原「审核驳回 / 已撤回 / 需修改」等文案已废弃）。
 const getStatusTagType = (status) => getStatusType(status)
 
-const getSimilarityClass = (rate) => {
-  if (rate < 15) return 'similarity-excellent'
-  if (rate < 30) return 'similarity-good'
-  if (rate < 50) return 'similarity-warning'
-  return 'similarity-danger'
-}
-
 const formatDate = (date) => {
   if (!date) return '-'
   return new Date(date).toLocaleString('zh-CN', {
@@ -363,10 +357,9 @@ onMounted(() => {
     }
   }
 
-  .similarity-excellent { color: var(--apple-success); }
-  .similarity-good { color: var(--apple-primary); }
-  .similarity-warning { color: var(--apple-warning); }
-  .similarity-danger { color: var(--apple-danger); }
+  .similarity-low { color: var(--apple-rate-low); }
+  .similarity-medium { color: var(--apple-rate-medium); }
+  .similarity-high { color: var(--apple-rate-high); }
   
   .pagination-container {
     padding: 20px;

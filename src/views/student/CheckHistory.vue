@@ -340,7 +340,7 @@ import {
 
 import { getCheckHistory, getSimilarityTrend, compareVersionHistory } from '@/api/student'
 import { getPaperSimilarityTrend } from '@/api/p5'
-import { getSimilarityColor } from '@/utils/dataType.js'
+import { getSimilarityColor } from '@/utils/similarity.js'
 import { useChart } from '@/composables/useChart'
 import PageHeader from '@/components/common/PageHeader.vue'
 

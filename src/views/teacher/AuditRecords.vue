@@ -218,7 +218,8 @@ import PageHeader from '@/components/common/PageHeader.vue'
 import ListPageShell from '@/components/common/ListPageShell.vue'
 import PaperDetail from '@/views/student/PaperDetail.vue'
 import { getReviewedList, downloadPaper, contactStudent, exportReviewRecords } from '@/api/teacher.js'
-import { getReviewResultText, getReviewResultTagType, getSimilarityColor, getSimilarityClass, REVIEW_RESULT } from '@/utils/reviewStatus.js'
+import { getReviewResultText, getReviewResultTagType, REVIEW_RESULT } from '@/utils/reviewStatus.js'
+import { getSimilarityColor, getSimilarityClass } from '@/utils/similarity.js'
 import { formatDateTime } from '@/utils/dataType.js'
 import {
   Refresh,
@@ -548,18 +549,7 @@ onMounted(() => {
   font-weight: 400;
 }
 
-/* 与 getSimilarityClass 返回的类名对应 */
-.similarity-low {
-  color: var(--apple-success);
-}
-
-.similarity-medium {
-  color: var(--apple-warning);
-}
-
-.similarity-high {
-  color: var(--apple-danger);
-}
+/* 颜色由 global-styles.scss 的 similarity-* 语义类统一提供 */
 
 .feedback-text {
   max-width: 200px;

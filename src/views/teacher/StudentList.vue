@@ -274,7 +274,7 @@ import {
   getStudentPapers
 } from '@/api/teacher'
 import { useUserStore } from '@/stores/user'
-import { getSimilarityColor } from '@/utils/reviewStatus.js'
+import { getSimilarityColor } from '@/utils/similarity.js'
 import { getPreviewUrl, downloadFileBlob } from '@/utils/filePreview'
 import StudentStats from './components/StudentStats.vue'
 import StudentFilterBar from './components/StudentFilterBar.vue'

@@ -125,7 +125,7 @@
 import { reactive, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import { formatDateTime } from '@/utils/dataType.js'
-import { getSimilarityColor } from '@/utils/reviewStatus.js'
+import { getSimilarityColor } from '@/utils/similarity.js'
 
 const props = defineProps({
   paperId: { type: [String, Number], default: '' },

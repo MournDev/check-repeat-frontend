@@ -152,30 +152,7 @@ export const handleSimilarity = (similarity) => {
   return Math.max(0, Math.min(100, Math.round(num)));
 };
 
-/**
- * 获取相似度颜色
- * @param {number} similarity - 相似度值
- * @returns {string}
- */
-export const getSimilarityColor = (similarity) => {
-  const sim = handleSimilarity(similarity);
-  if (sim < 15) return '#34c759';  // 绿色 - 优秀
-  if (sim < 30) return '#ff9500';  // 黄色 - 良好
-  return '#ff3b30';  // 红色 - 需关注
-};
-
-/**
- * 获取相似度状态文本
- * @param {number} similarity - 相似度值
- * @returns {string}
- */
-export const getSimilarityStatus = (similarity) => {
-  const sim = handleSimilarity(similarity);
-  if (sim === 0) return '未检测';
-  if (sim < 15) return '优秀';
-  if (sim < 30) return '良好';
-  return '需修改';
-};
+// 重复率分档、文案、颜色与标签类型统一由 utils/similarity.js 提供（SSOT）。
 
 /**
  * 获取论文状态文本

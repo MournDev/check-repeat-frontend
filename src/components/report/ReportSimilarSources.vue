@@ -46,7 +46,7 @@
 <script setup>
 import { User, Document } from '@element-plus/icons-vue'
 
-import { getSimilarityTagType } from '@/utils/reviewStatus.js'
+import { getSimilarityTagType } from '@/utils/similarity.js'
 
 const props = defineProps({
   sources: {

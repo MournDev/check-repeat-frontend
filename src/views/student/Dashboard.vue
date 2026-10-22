@@ -87,7 +87,7 @@
                 ></div>
               </div>
               <p class="similarity-note">
-                {{ hasSimilarityData ? getSimilarityStatus(latestPaperSimilarity) : '该论文暂未生成查重结果' }}
+                {{ hasSimilarityData ? getSimilarityLabel(latestPaperSimilarity) : '该论文暂未生成查重结果' }}
               </p>
             </div>
 
@@ -443,8 +443,8 @@ import {
   Collection, Plus, DataAnalysis, User, Histogram, Microphone
 } from '@element-plus/icons-vue'
 import { getAvatarUrl } from '@/utils/avatar'
-import { handleSimilarity, getSimilarityColor, getSimilarityStatus, getPaperStatusText, getPaperStatusType, formatDateTime } from '@/utils/dataType'
-import { getSimilarityTagType as baseGetSimilarityTagType } from '@/utils/reviewStatus.js'
+import { handleSimilarity, getPaperStatusText, getPaperStatusType, formatDateTime } from '@/utils/dataType'
+import { getSimilarityClass, getSimilarityLabel, getSimilarityLevel } from '@/utils/similarity.js'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -952,21 +952,6 @@ const hasSimilarityData = computed(() => {
          'similarity' in latestPaper.value
 })
 
-// 相似度类名获取函数
-const getSimilarityClass = (similarity) => {
-  if (!similarity) return 'similarity-neutral'
-  const sim = handleSimilarity(similarity)
-  if (sim < 15) return 'similarity-low'
-  if (sim < 30) return 'similarity-medium'
-  return 'similarity-high'
-}
-
-// 相似度标签类型获取函数
-const getSimilarityTagType = (similarity) => {
-  if (!similarity) return 'info'
-  return baseGetSimilarityTagType(handleSimilarity(similarity))
-}
-
 // 待办优先级圆点
 const getPriorityClass = (priority) => {
   const map = {
@@ -1125,11 +1110,14 @@ const getStatusClass = (status) => {
 };
 
 const getSimilarityStatusClass = (similarity) => {
-  if (!similarity) return 'status-info';
-  const sim = handleSimilarity(similarity);
-  if (sim < 15) return 'status-success';
-  if (sim < 30) return 'status-warning';
-  return 'status-danger';
+  if (!hasSimilarityData.value) return 'status-info'
+  const map = {
+    low: 'status-success',
+    medium: 'status-warning',
+    high: 'status-danger',
+    unknown: 'status-info',
+  }
+  return map[getSimilarityLevel(similarity)]
 };
 
 const addAllToCalendar = () => {
@@ -1562,9 +1550,9 @@ const renderComparisonChart = () => {
   border-radius: var(--apple-rounded-pill);
   transition: width var(--apple-transition-slow);
 
-  &.similarity-low { background: var(--apple-success); }
-  &.similarity-medium { background: var(--apple-warning); }
-  &.similarity-high { background: var(--apple-danger); }
+  &.similarity-low { background: var(--apple-rate-low); }
+  &.similarity-medium { background: var(--apple-rate-medium); }
+  &.similarity-high { background: var(--apple-rate-high); }
   &.similarity-neutral { background: var(--apple-hairline); }
 }
 

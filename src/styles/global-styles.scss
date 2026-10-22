@@ -212,6 +212,12 @@ a {
 .text-xs { font-size: var(--app-fs-meta); }
 .text-lg { font-size: var(--app-fs-heading); }
 .text-xl { font-size: var(--app-fs-title); }
+
+// ── 重复率等级（与 utils/similarity.js 的 className 对应）──
+.similarity-low { color: var(--apple-rate-low); }
+.similarity-medium { color: var(--apple-rate-medium); }
+.similarity-high { color: var(--apple-rate-high); }
+.similarity-unknown { color: var(--apple-rate-unknown); }
 .mt-sm { margin-top: var(--apple-spacing-xs); }
 .mt-md { margin-top: var(--apple-spacing-md); }
 .mt-lg { margin-top: var(--apple-spacing-lg); }

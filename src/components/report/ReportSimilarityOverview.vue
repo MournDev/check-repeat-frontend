@@ -33,7 +33,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import { getSimilarityColor } from '@/utils/dataType.js'
+import { getSimilarityColor } from '@/utils/similarity.js'
 
 const props = defineProps({
   similarity: {

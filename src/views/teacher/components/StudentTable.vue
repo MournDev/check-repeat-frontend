@@ -174,7 +174,7 @@ import { ref } from 'vue'
 import {
   List, Refresh, Message, UserFilled, More, Document, Delete
 } from '@element-plus/icons-vue'
-import { getSimilarityColor } from '@/utils/reviewStatus.js'
+import { getSimilarityColor } from '@/utils/similarity.js'
 
 defineProps({
   students: {

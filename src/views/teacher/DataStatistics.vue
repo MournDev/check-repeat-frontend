@@ -202,7 +202,7 @@ import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { ElMessage, ElLoading } from 'element-plus'
 import PageHeader from '@/components/common/PageHeader.vue'
-import { getSimilarityTagType } from '@/utils/reviewStatus.js'
+import { getSimilarityTagType } from '@/utils/similarity.js'
 
 // API 接口导入
 import {

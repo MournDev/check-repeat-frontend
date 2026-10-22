@@ -103,27 +103,6 @@ export const isValidReviewStatus = (status) => {
   return [REVIEW_RESULT.PASS, REVIEW_RESULT.REJECT].includes(Number(status))
 }
 
-// ── 相似度 ─────────────────────────────────────────────────
-// Apple 语义色板，与 --apple-success/warning/danger 对齐；供 el-progress :color 等 JS 场景使用
-export const getSimilarityColor = (similarity) => {
-  if (!similarity) return '#8e8e93'
-  if (similarity < 15) return '#34c759'
-  if (similarity < 30) return '#ff9500'
-  return '#ff3b30'
-}
-
-export const getSimilarityClass = (similarity) => {
-  if (similarity < 15) return 'similarity-low'
-  if (similarity < 30) return 'similarity-medium'
-  return 'similarity-high'
-}
-
-export const getSimilarityTagType = (similarity) => {
-  if (similarity < 15) return 'success'
-  if (similarity < 30) return 'warning'
-  return 'danger'
-}
-
 export default {
   PAPER_STATUS,
   PAPER_STATUS_META,
@@ -136,8 +115,5 @@ export default {
   getReviewResultTagType,
   getReviewResultClass,
   convertToBackendStatus,
-  isValidReviewStatus,
-  getSimilarityClass,
-  getSimilarityColor,
-  getSimilarityTagType
+  isValidReviewStatus
 }

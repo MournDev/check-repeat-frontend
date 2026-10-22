@@ -134,7 +134,7 @@
           <template #default="{ row }">
             <span v-if="row.checkRate != null">
               {{ row.checkRate }}%
-              <el-tag :type="getSimilarityColor(row.checkRate)" size="small" style="margin-left: 4px">
+              <el-tag :type="getSimilarityTagType(row.checkRate)" size="small" style="margin-left: 4px">
                 {{ getRiskLevel(row.checkRate) }}
               </el-tag>
             </span>
@@ -260,7 +260,7 @@
       <div v-if="reportData" class="report-content">
         <h3>{{ reportData.targetPaperTitle }}</h3>
         <p>总体相似度：{{ reportData.overallSimilarity }}%</p>
-        <p>风险等级：<el-tag :type="getSimilarityColor(reportData.overallSimilarity)">{{ reportData.riskLevel }}</el-tag></p>
+        <p>风险等级：<el-tag :type="getSimilarityTagType(reportData.overallSimilarity)">{{ reportData.riskLevel }}</el-tag></p>
         <div class="report-sections">
           <h4>相似段落</h4>
           <div v-if="reportData.similarSegments && reportData.similarSegments.length > 0">
@@ -317,6 +317,7 @@ import { Refresh, Upload } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
 import { useCheckProgress } from '@/composables/useCheckProgress';
 import * as studentApi from '@/api/student';
+import { getSimilarityTagType } from '@/utils/similarity.js';
 import dayjs from 'dayjs';
 
 const router = useRouter();
@@ -755,16 +756,6 @@ const getStatusText = (status) => {
     cancelled: '已取消'
   };
   return texts[status] || status;
-};
-
-/**
- * 获取相似度颜色
- */
-const getSimilarityColor = (similarity) => {
-  if (similarity < 15) return 'success';
-  if (similarity < 30) return 'warning';
-  if (similarity < 50) return 'danger';
-  return 'danger';
 };
 
 /**

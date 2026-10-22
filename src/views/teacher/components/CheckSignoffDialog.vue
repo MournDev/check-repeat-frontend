@@ -88,7 +88,7 @@ import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { signoffCheckReport } from '@/api/p5.js'
 import { getSimpleCheckReport, getPaperReport } from '@/api/teacher.js'
-import { getSimilarityColor } from '@/utils/reviewStatus.js'
+import { getSimilarityColor } from '@/utils/similarity.js'
 
 const emit = defineEmits(['success', 'view-report'])
 

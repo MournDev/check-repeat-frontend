@@ -553,6 +553,7 @@ import {
 } from '@element-plus/icons-vue'
 import PageHeader from '@/components/common/PageHeader.vue'
 import { getStatusText, getStatusType } from '@/utils/reviewStatus.js'
+import { getSimilarityTagType as similarityTagType } from '@/utils/similarity.js'
 
 // 响应式数据
 const loading = ref(false)
@@ -791,11 +792,8 @@ const formatDate = (dateString) => {
   return new Date(dateString).toLocaleString('zh-CN')
 }
 
-const getSimilarityTagType = (score) => {
-  if (score >= 50) return 'danger'
-  if (score >= 20) return 'warning'
-  return 'success'
-}
+// 论文库沿用 20/50 业务阈值，颜色语义与全站一致（low/medium/high）
+const getSimilarityTagType = (score) => similarityTagType(score, { low: 20, medium: 50 })
 
 // 论文状态文案与标签色统一走 utils/reviewStatus.js（与 DB 字典 paper_status 对齐）
 const getStatusLabelType = (status) => getStatusType(status)

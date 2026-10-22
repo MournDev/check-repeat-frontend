@@ -76,7 +76,7 @@
 import { computed, nextTick, ref, watch } from 'vue'
 import { Document, Refresh, Search } from '@element-plus/icons-vue'
 import { isOverdue, isUrgent } from '@/composables/usePendingPapers.js'
-import { getSimilarityClass } from '@/utils/reviewStatus.js'
+import { getSimilarityClass } from '@/utils/similarity.js'
 import { formatDateTime } from '@/utils/dataType.js'
 
 const props = defineProps({
@@ -294,17 +294,7 @@ watch(() => props.currentId, async () => {
   font-weight: 600;
 }
 
-.card-meta .sim.similarity-low {
-  color: var(--apple-success);
-}
-
-.card-meta .sim.similarity-medium {
-  color: var(--apple-warning);
-}
-
-.card-meta .sim.similarity-high {
-  color: var(--apple-danger);
-}
+/* 颜色由 global-styles.scss 的 similarity-* 语义类统一提供 */
 
 .queue-empty {
   padding: 40px 12px;

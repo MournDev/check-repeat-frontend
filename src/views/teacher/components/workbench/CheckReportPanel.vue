@@ -129,7 +129,7 @@
 import { computed, ref, watch } from 'vue'
 import { ArrowRight, Document, Download, WarningFilled } from '@element-plus/icons-vue'
 import { formatDateTime } from '@/utils/dataType.js'
-import { getSimilarityColor } from '@/utils/reviewStatus.js'
+import { getSimilarityColor } from '@/utils/similarity.js'
 
 const props = defineProps({
   loading: { type: Boolean, default: false },
