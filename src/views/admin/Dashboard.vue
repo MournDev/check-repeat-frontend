@@ -50,7 +50,7 @@
           <el-icon><TrendCharts /></el-icon>
         </div>
         <div class="stat-content">
-          <div class="stat-value">{{ stats.systemHealth || 0 }}%</div>
+          <div class="stat-value">{{ stats.systemHealth == null ? '—' : stats.systemHealth + '%' }}</div>
           <div class="stat-label">系统健康度</div>
         </div>
       </div>
@@ -328,7 +328,7 @@ const loadDashboardData = async () => {
       totalPapers: statsResponse.data.validPapers ?? 0,
       validPapers: statsResponse.data.validPapers ?? 0,
       unassignedCount: statsResponse.data.pendingPapers ?? 0,
-      systemHealth: statsResponse.data.systemMonitor?.healthScore ?? 95
+      systemHealth: statsResponse.data.systemMonitor?.healthScore ?? null
     }
 
     // 处理用户分布

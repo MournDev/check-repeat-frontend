@@ -16,21 +16,6 @@
             <el-icon><Refresh /></el-icon>
             刷新数据
           </button>
-          <el-dropdown @command="handleSettingCommand">
-            <button class="icon-button">
-              <el-icon><Setting /></el-icon>
-            </button>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item command="theme">
-                  {{ isDarkMode ? '切换到浅色模式' : '切换到深色模式' }}
-                </el-dropdown-item>
-                <el-dropdown-item command="layout">
-                  布局设置
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
         </div>
       </div>
       
@@ -477,7 +462,7 @@ import { useChart } from '@/composables/useChart'
 import {
   EditPen, Refresh, UserFilled, Clock, Check, TrendCharts,
   Document, More, User, Files, View, Download, DataLine,
-  Operation, Histogram, Setting, ArrowUp, ArrowDown, Bell,
+  Operation, Histogram, ArrowUp, ArrowDown, Bell,
   Timer, Reading, Message
 } from '@element-plus/icons-vue'
 
@@ -492,7 +477,6 @@ const reviewStatusDistribution = ref([])
 const reviewChartData = ref(null) // 新增：存储图表数据
 const collegeDistribution = ref([])
 const recentActivities = ref([])
-const isDarkMode = ref(false)
 const loading = reactive({
   stats: false,
   pending: false,
@@ -665,34 +649,6 @@ const goToMessageCenter = () => {
 
 const reviewPaper = (paperId) => {
   router.push(`/teacher/review-workbench?paperId=${paperId}`)
-}
-
-// 处理设置命令
-const handleSettingCommand = (command) => {
-  switch (command) {
-    case 'theme':
-      toggleDarkMode()
-      break
-    case 'layout':
-      openLayoutSettings()
-      break
-    default:
-      break
-  }
-}
-
-// 切换深色模式
-const toggleDarkMode = () => {
-  isDarkMode.value = !isDarkMode.value
-  // 这里可以添加深色模式的实现逻辑
-  // 例如：document.documentElement.classList.toggle('dark')
-  ElMessage.success(`已切换到${isDarkMode.value ? '深色' : '浅色'}模式`)
-}
-
-// 打开布局设置对话框
-const openLayoutSettings = () => {
-  // 这里可以添加布局设置对话框的实现逻辑
-  ElMessage.info('布局设置功能开发中')
 }
 
 const downloadPaperFile = async (paperId) => {
@@ -1773,34 +1729,6 @@ onMounted(() => {
 
   .el-icon {
     font-size: var(--apple-fs-body);
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--apple-primary-focus);
-    outline-offset: 2px;
-  }
-}
-
-.icon-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--apple-touch-target-min);
-  height: var(--apple-touch-target-min);
-  border-radius: var(--apple-rounded-sm);
-  background: transparent;
-  color: var(--apple-ink-muted-48);
-  border: none;
-  cursor: pointer;
-  transition: background-color var(--apple-transition-normal);
-
-  &:hover {
-    background: var(--apple-canvas-parchment);
-    color: var(--apple-ink);
-  }
-
-  .el-icon {
-    font-size: var(--apple-fs-caption-strong);
   }
 
   &:focus-visible {

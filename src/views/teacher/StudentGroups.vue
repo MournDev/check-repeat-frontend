@@ -1,7 +1,7 @@
 <template>
   <div class="student-groups">
     <!-- 页面头部 -->
-    <PageHeader title="学生分组管理" description="创建和管理学生分组，方便批量操作">
+    <PageHeader description="创建和管理学生分组，方便批量操作">
       <template #actions>
         <el-button type="primary" :icon="Plus" @click="showGroupDialog">
           新建分组
@@ -52,12 +52,6 @@
         <div class="group-footer">
           <el-button size="small" type="primary" @click="openAddStudentsDialog(group.id)">
             添加学生
-          </el-button>
-          <el-button size="small" @click="sendMessageToGroup(group.id)">
-            发送消息
-          </el-button>
-          <el-button size="small" @click="exportGroupData(group.id)">
-            导出数据
           </el-button>
         </div>
       </el-card>
@@ -380,16 +374,6 @@ const resetAddStudentsForm = () => {
   selectedStudentIds.value = []
   students.value = []
   currentGroupId.value = null
-}
-
-const sendMessageToGroup = (groupId) => {
-  // 发送消息功能，后续实现
-  ElMessage.info('发送消息功能开发中')
-}
-
-const exportGroupData = (groupId) => {
-  // 导出数据功能，后续实现
-  ElMessage.info('导出数据功能开发中')
 }
 
 const formatDate = (date) => {

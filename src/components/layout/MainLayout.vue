@@ -158,12 +158,6 @@
           <!-- Footer -->
           <footer class="app-footer">
             <div class="footer-inner">
-              <div class="footer-links">
-                <a href="#">关于我们</a>
-                <a href="#">帮助中心</a>
-                <a href="#">隐私政策</a>
-                <a href="#">使用条款</a>
-              </div>
               <p class="footer-copy">&copy; 2026 {{ systemName }} 版权所有</p>
             </div>
           </footer>
@@ -844,21 +838,6 @@ onUnmounted(() => {
   margin: 0 auto;
 }
 
-.footer-links {
-  display: flex;
-  gap: 24px;
-  margin-bottom: 12px;
-
-  a {
-    font-size: 12px;
-    font-weight: 400;
-    letter-spacing: -0.12px;
-    color: #7a7a7a;
-    text-decoration: none;
-    &:hover { color: #1d1d1f; }
-  }
-}
-
 .footer-copy {
   font-size: 12px;
   font-weight: 400;
@@ -1089,19 +1068,6 @@ onUnmounted(() => {
   padding: var(--apple-spacing-xxl) var(--apple-spacing-xl) var(--apple-spacing-lg);
   background: var(--apple-canvas-parchment);
   border-top: 1px solid var(--apple-hairline);
-}
-
-.footer-links {
-  gap: var(--apple-spacing-lg);
-  margin-bottom: var(--apple-spacing-sm);
-
-  a {
-    font-size: var(--apple-fs-fine-print);
-    letter-spacing: var(--apple-ls-fine-print);
-    color: var(--apple-ink-muted-48);
-
-    &:hover { color: var(--apple-ink); }
-  }
 }
 
 .footer-copy {
