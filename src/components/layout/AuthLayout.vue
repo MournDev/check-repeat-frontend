@@ -280,4 +280,128 @@ const props = withDefaults(defineProps<AuthLayoutProps>(), {
   .right-panel { padding: var(--apple-spacing-md); }
   .form-title { font-size: var(--apple-fs-lead-airy); }
 }
+
+/* ── 共享认证表单（Login / Register / Reset 插槽内容，样式集中在此） ── */
+.form-wrapper :deep(.el-form-item) {
+  margin-bottom: var(--apple-spacing-md);
+}
+
+.form-wrapper :deep(.el-input__wrapper) {
+  height: 48px;
+  background: var(--apple-canvas-parchment);
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-pill);
+  box-shadow: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-wrapper :deep(.el-input__wrapper:hover) {
+  border-color: var(--apple-primary);
+}
+
+.form-wrapper :deep(.el-input__wrapper.is-focus),
+.form-wrapper :deep(.el-input__wrapper:focus) {
+  border-color: var(--apple-primary);
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.12);
+  background: var(--apple-surface);
+}
+
+.form-wrapper :deep(.el-input__inner) {
+  background: transparent;
+  font-size: var(--apple-fs-caption);
+  color: var(--apple-ink);
+}
+
+.form-wrapper :deep(.el-input__inner::placeholder) {
+  color: var(--apple-ink-secondary);
+}
+
+.form-wrapper :deep(.field-label) {
+  margin-bottom: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
+  font-weight: 400;
+  letter-spacing: 0.2px;
+  color: var(--apple-ink);
+}
+
+.form-wrapper :deep(.eye-toggle) {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  color: var(--apple-ink-secondary);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.form-wrapper :deep(.eye-toggle:hover) {
+  color: var(--apple-ink);
+}
+
+.form-wrapper :deep(.el-button.submit-btn) {
+  width: 100%;
+  height: 48px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  border-radius: var(--apple-rounded-pill);
+  background: var(--apple-primary);
+  border-color: var(--apple-primary);
+  transition: background 0.2s, opacity 0.2s;
+  cursor: pointer;
+}
+
+.form-wrapper :deep(.el-button.submit-btn:hover) {
+  background: var(--apple-primary-active);
+  border-color: var(--apple-primary-active);
+  opacity: 1;
+}
+
+.form-wrapper :deep(.el-button.submit-btn:active) {
+  opacity: 0.85;
+}
+
+.form-wrapper :deep(.divider) {
+  display: flex;
+  align-items: center;
+  gap: var(--apple-spacing-sm);
+  margin: var(--apple-spacing-md) 0 0;
+  font-size: var(--apple-fs-fine-print);
+}
+
+.form-wrapper :deep(.divider::before),
+.form-wrapper :deep(.divider::after) {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--apple-hairline);
+}
+
+.form-wrapper :deep(.divider span) {
+  color: var(--apple-ink-secondary);
+  white-space: nowrap;
+}
+
+.form-wrapper :deep(.signup-row) {
+  margin-top: var(--apple-spacing-lg);
+  text-align: center;
+  font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-secondary);
+}
+
+/* 同页第二行链接（如登录页「报告验真」）收窄间距 */
+.form-wrapper :deep(.signup-row-tight) {
+  margin-top: var(--apple-spacing-xs);
+}
+
+.form-wrapper :deep(.el-button.signup-link) {
+  color: var(--apple-primary);
+  font-weight: 400;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.form-wrapper :deep(.el-button.signup-link:hover) {
+  color: var(--apple-primary-active);
+  text-decoration: underline;
+}
 </style>

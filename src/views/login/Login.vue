@@ -1,153 +1,113 @@
 <template>
-  <div class="login-page">
-    <!-- 左侧：角色视觉区 -->
-    <div class="left-panel">
-      <div class="left-top">
-        <div class="brand-mark">
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-            <rect width="28" height="28" rx="7" fill="white" fill-opacity="0.15" />
-            <path d="M7 14L12 9L17 14L12 19L7 14Z" fill="white" fill-opacity="0.9" />
-            <path d="M13 14L18 9L21 12V16L18 19L13 14Z" fill="white" fill-opacity="0.5" />
-          </svg>
-        </div>
-        <span class="brand-name">{{ systemName }}</span>
-      </div>
-
-      <div class="characters-area">
-        <AnimatedCharacters
-          :is-typing="isTyping"
-          :show-password="showPassword"
-          :password-length="passwordLength"
-          :is-login-failed="!!error"
-        />
-      </div>
-
-      <!-- 底部链接已移除 -->
-
-    </div>
-
-    <!-- 右侧：登录表单 -->
-    <div class="right-panel">
-      <div class="form-wrapper">
-        <div class="mobile-logo">
-          <div class="mobile-logo-icon">
-            <svg width="20" height="20" viewBox="0 0 28 28" fill="none">
-              <path d="M7 14L12 9L17 14L12 19L7 14Z" fill="#0066cc" fill-opacity="0.9" />
-              <path d="M13 14L18 9L21 12V16L18 19L13 14Z" fill="#5ac8fa" fill-opacity="0.7" />
-            </svg>
-          </div>
-          <span>{{ systemName }}</span>
-        </div>
-
-        <div class="form-header">
-          <h1 class="form-title">登录到工作台</h1>
-          <p class="form-subtitle">
-            统一接入论文管理系统
-          </p>
-        </div>
-
-        <el-form
-          name="login"
-          :model="loginForm"
-          @submit.prevent="handleLogin"
-          autocomplete="off"
-          size="large"
-          class="login-form"
+  <AuthLayout
+    page-type="login"
+    title="登录到工作台"
+    subtitle="统一接入论文管理系统"
+    :is-typing="isTyping"
+    :show-password="showPassword"
+    :password-length="passwordLength"
+    :is-error="!!error"
+  >
+    <el-form
+      name="login"
+      :model="loginForm"
+      @submit.prevent="handleLogin"
+      autocomplete="off"
+      size="large"
+      class="auth-form"
+    >
+      <div class="field-label">账号</div>
+      <el-form-item
+        prop="username"
+        :rules="[
+          { required: true, message: '请输入账号' },
+          { min: 3, message: '账号长度不能少于 3 个字符' },
+        ]"
+      >
+        <el-input
+          v-model="loginForm.username"
+          placeholder="输入您的账号"
+          @focus="isTyping = true; error = ''"
+          @blur="isTyping = false"
         >
-          <div class="field-label">账号</div>
-          <el-form-item
-            prop="username"
-            :rules="[
-              { required: true, message: '请输入账号' },
-              { min: 3, message: '账号长度不能少于 3 个字符' },
-            ]"
-          >
-            <el-input
-              v-model="loginForm.username"
-              placeholder="输入您的账号"
-              @focus="isTyping = true; error = ''"
-              @blur="isTyping = false"
-            >
-              <template #prefix>
-                <el-icon><User /></el-icon>
-              </template>
-            </el-input>
-          </el-form-item>
+          <template #prefix>
+            <el-icon><User /></el-icon>
+          </template>
+        </el-input>
+      </el-form-item>
 
-          <div class="field-label">密码</div>
-          <el-form-item
-            prop="password"
-            :rules="[
-              { required: true, message: '请输入密码' },
-              { min: 6, message: '密码长度不能少于 6 个字符' },
-            ]"
-          >
-            <el-input
-              v-model="loginForm.password"
-              :type="showPassword ? 'text' : 'password'"
-              placeholder="输入您的密码"
-              @focus="isTyping = true; error = ''"
-              @blur="isTyping = false"
-            >
-              <template #prefix>
-                <el-icon><Lock /></el-icon>
-              </template>
-              <template #suffix>
-                <span class="eye-toggle" @click="showPassword = !showPassword">
-                  <el-icon v-if="showPassword"><View /></el-icon>
-                  <el-icon v-else><Hide /></el-icon>
-                </span>
-              </template>
-            </el-input>
-          </el-form-item>
+      <div class="field-label">密码</div>
+      <el-form-item
+        prop="password"
+        :rules="[
+          { required: true, message: '请输入密码' },
+          { min: 6, message: '密码长度不能少于 6 个字符' },
+        ]"
+      >
+        <el-input
+          v-model="loginForm.password"
+          :type="showPassword ? 'text' : 'password'"
+          placeholder="输入您的密码"
+          @focus="isTyping = true; error = ''"
+          @blur="isTyping = false"
+        >
+          <template #prefix>
+            <el-icon><Lock /></el-icon>
+          </template>
+          <template #suffix>
+            <span class="eye-toggle" @click="showPassword = !showPassword">
+              <el-icon v-if="showPassword"><View /></el-icon>
+              <el-icon v-else><Hide /></el-icon>
+            </span>
+          </template>
+        </el-input>
+      </el-form-item>
 
-          <el-alert
-            v-if="error"
-            :title="error"
-            type="error"
-            show-icon
-            :closable="false"
-            style="margin-bottom: 16px;"
-          />
+      <el-alert
+        v-if="error"
+        :title="error"
+        type="error"
+        show-icon
+        :closable="false"
+        class="login-error"
+      />
 
-          <el-form-item :style="{ marginBottom: 0 }">
-            <el-button
-              type="primary"
-              native-type="submit"
-              :loading="loading"
-              class="submit-btn"
-            >
-              {{ loading ? '登录中...' : '登录' }}
-            </el-button>
-          </el-form-item>
-        </el-form>
+      <el-form-item :style="{ marginBottom: 0 }">
+        <el-button
+          type="primary"
+          native-type="submit"
+          :loading="loading"
+          class="submit-btn"
+        >
+          {{ loading ? '登录中...' : '登录' }}
+        </el-button>
+      </el-form-item>
+    </el-form>
 
-        <div class="password-forgot">
-          <el-button link @click="handleForgotPassword" class="forgot-link">
-            忘记密码？
-          </el-button>
-        </div>
-
-        <div class="divider">
-          <span>或</span>
-        </div>
-
-        <div class="signup-row">
-          暂无账号？
-          <el-button link @click="handleRegister" class="signup-link">
-            前往注册
-          </el-button>
-        </div>
-
-        <div class="signup-row" style="margin-top: 8px">
-          需要验证查重报告真伪？
-          <el-button link @click="router.push('/report-verify')" class="signup-link">
-            报告验真
-          </el-button>
-        </div>
-      </div>
+    <div class="password-forgot">
+      <el-button link @click="handleForgotPassword" class="forgot-link">
+        忘记密码？
+      </el-button>
     </div>
-  </div>
+
+    <div class="divider">
+      <span>或</span>
+    </div>
+
+    <div class="signup-row">
+      暂无账号？
+      <el-button link @click="handleRegister" class="signup-link">
+        前往注册
+      </el-button>
+    </div>
+
+    <div class="signup-row signup-row-tight">
+      需要验证查重报告真伪？
+      <el-button link @click="router.push('/report-verify')" class="signup-link">
+        报告验真
+      </el-button>
+    </div>
+  </AuthLayout>
 </template>
 
 <script setup>
@@ -158,13 +118,10 @@ import { tokenManager } from '@/utils/tokenManager'
 import { ROLE_HOME } from '@/router'
 import { ElMessage } from 'element-plus'
 import { User, Lock, View, Hide } from '@element-plus/icons-vue'
-import AnimatedCharacters from '@/components/animated-characters/AnimatedCharacters.vue'
+import AuthLayout from '@/components/layout/AuthLayout.vue'
 
 const router = useRouter()
 const userStore = useUserStore()
-
-// 品牌名唯一来源：.env 的 VITE_SYSTEM_NAME（document.title 也用它，见 router 守卫）
-const systemName = import.meta.env.VITE_SYSTEM_NAME
 
 // 已登录用户访问 / 或 /login 时直接送回角色落地页，避免重复登录覆盖会话
 onMounted(() => {
@@ -250,418 +207,27 @@ const handleForgotPassword = () => {
 </script>
 
 <style lang="scss" scoped>
-.login-page {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: 100vh;
-}
-
-/* 左侧面板 */
-.left-panel {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 48px;
-  background: var(--apple-surface-tile-1);
-  overflow: hidden;
-}
-
-.left-top {
-  position: relative;
-  z-index: 20;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--apple-surface);
-  letter-spacing: 0.5px;
-}
-
-.brand-mark {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  backdrop-filter: blur(8px);
-}
-
-.brand-name {
-  color: var(--apple-surface);
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: 1px;
-}
-
-.characters-area {
-  position: relative;
-  z-index: 20;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  height: 500px;
-}
-
-.left-footer {
-  position: relative;
-  z-index: 20;
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-
-.left-footer a {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.45);
-  text-decoration: none;
-  transition: color 0.2s;
-  cursor: pointer;
-}
-
-.left-footer a:hover {
-  color: rgba(255, 255, 255, 0.85);
-}
-
-/* 右侧面板 */
-.right-panel {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 32px;
-  background: var(--apple-surface);
-}
-
-.form-wrapper {
-  width: 100%;
-  max-width: 400px;
-}
-
-.mobile-logo {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--apple-slate-ink);
-  margin-bottom: 48px;
-}
-
-.mobile-logo-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: var(--apple-info-bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.form-header {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.form-title {
-  font-size: 26px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--apple-slate-ink);
-  margin: 0 0 10px 0;
-  line-height: 1.3;
-}
-
-.form-subtitle {
-  font-size: 14px;
-  color: var(--apple-ink-secondary);
-  margin: 0;
-  line-height: 1.6;
-}
-
-.login-form {
-  :deep(.el-form-item) {
-    margin-bottom: 20px;
-  }
-
-  :deep(.el-input__wrapper) {
-    height: 48px !important;
-    background: var(--apple-canvas-parchment) !important;
-    border: 1px solid var(--apple-surface-chip-translucent) !important;
-    border-radius: 9999px !important;
-    transition: border-color 0.2s, box-shadow 0.2s !important;
-  }
-
-  :deep(.el-input__wrapper:hover) {
-    border-color: var(--apple-primary) !important;
-  }
-
-  :deep(.el-input__wrapper.is-focus),
-  :deep(.el-input__wrapper:focus) {
-    border-color: var(--apple-primary) !important;
-    outline: 2px solid var(--apple-primary);
-    outline-offset: -2px;
-    background: var(--apple-surface) !important;
-  }
-
-  :deep(.el-input__inner) {
-    background: transparent !important;
-    font-size: 14px !important;
-    color: var(--apple-ink) !important;
-  }
-
-  :deep(.el-input__inner::placeholder) {
-    color: var(--apple-ink-secondary) !important;
-  }
-}
-
-.field-label {
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--apple-ink);
-  margin-bottom: 6px;
-  letter-spacing: 0.2px;
-}
-
-.eye-toggle {
-  color: var(--apple-ink-secondary);
-  cursor: pointer;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  transition: color 0.2s;
-}
-
-.eye-toggle:hover {
-  color: var(--apple-ink);
-}
-
-.submit-btn {
-  width: 100%;
-  height: 48px !important;
-  font-size: 15px !important;
-  font-weight: 600 !important;
-  border-radius: 9999px !important;
-  background: var(--apple-primary) !important;
-  border-color: var(--apple-primary) !important;
-  letter-spacing: 1px;
-  transition: background 0.2s, opacity 0.2s !important;
-  cursor: pointer;
-}
-
-.submit-btn:hover {
-  background: var(--apple-primary-active) !important;
-  border-color: var(--apple-primary-active) !important;
-  opacity: 1 !important;
-}
-
-.submit-btn:active {
-  opacity: 0.85 !important;
-}
-
-.divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 20px 0 0;
-  color: var(--apple-surface-chip-translucent);
-  font-size: 13px;
-}
-
-.divider::before,
-.divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--apple-surface-chip-translucent);
-}
-
-.divider span {
-  color: var(--apple-ink-secondary);
-  white-space: nowrap;
-}
-
-.signup-row {
-  text-align: center;
-  font-size: 13px;
-  color: var(--apple-ink-secondary);
-  margin-top: 28px;
-}
-
-.signup-link {
-  color: var(--apple-primary) !important;
-  font-weight: 400;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.signup-link:hover {
-  text-decoration: underline;
-  color: var(--apple-primary-active) !important;
-}
-
-.password-forgot {
-  text-align: right;
-  margin-top: 12px;
-  margin-bottom: 16px;
-}
-
-.forgot-link {
-  color: var(--apple-ink-secondary) !important;
-  font-size: 13px;
-  font-weight: 400;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.forgot-link:hover {
-  color: var(--apple-primary) !important;
-  text-decoration: underline;
-}
-
-/* 响应式设计 */
-@media (max-width: 1024px) {
-  .login-page {
-    grid-template-columns: 1fr;
-  }
-
-  .left-panel {
-    display: none;
-  }
-
-  .mobile-logo {
-    display: flex;
-  }
-}
-
-@media (max-width: 480px) {
-  .right-panel {
-    padding: 20px;
-  }
-
-  .form-title {
-    font-size: 22px;
-  }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.login-page {
-  font-family: var(--apple-font-text);
-}
-
-.left-panel {
-  padding: var(--apple-spacing-xxl);
-  background: var(--apple-surface-tile-1);
-}
-
-.left-top {
-  gap: var(--apple-spacing-xs);
-  font-size: var(--apple-fs-tagline);
-}
-
-.brand-mark {
-  border-radius: var(--apple-rounded-md);
-}
-
-.brand-name {
-  font-size: var(--apple-fs-tagline);
-}
-
-.left-footer {
-  gap: var(--apple-spacing-lg);
-}
-
-.left-footer a {
-  font-size: var(--apple-fs-fine-print);
-}
-
-.right-panel {
-  padding: var(--apple-spacing-xl);
-}
-
-.mobile-logo {
-  gap: var(--apple-spacing-xs);
-  margin-bottom: var(--apple-spacing-xxl);
-  font-size: var(--apple-fs-tagline);
-  color: var(--apple-ink);
-}
-
-.mobile-logo-icon {
-  border-radius: var(--apple-rounded-sm);
-}
-
-.form-header {
-  margin-bottom: var(--apple-spacing-xl);
-}
-
-.form-title {
-  margin-bottom: var(--apple-spacing-xs);
-  font-size: var(--apple-fs-lead-airy);
-  font-family: var(--apple-font-display);
-  color: var(--apple-ink);
-}
-
-.form-subtitle {
-  font-size: var(--apple-fs-caption);
-}
-
-.login-form {
-  :deep(.el-form-item) {
-    margin-bottom: var(--apple-spacing-md);
-  }
-
-  :deep(.el-input__wrapper) {
-    border: 1px solid var(--apple-hairline) !important;
-    border-radius: var(--apple-rounded-pill) !important;
-  }
-
-  :deep(.el-input__inner) {
-    font-size: var(--apple-fs-caption) !important;
-  }
-}
-
-.field-label {
-  margin-bottom: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
-}
-
-.divider {
-  gap: var(--apple-spacing-sm);
-  margin-top: var(--apple-spacing-md);
-  font-size: var(--apple-fs-fine-print);
-}
-
-.divider::before,
-.divider::after {
-  background: var(--apple-hairline);
-}
-
-.signup-row {
-  margin-top: var(--apple-spacing-lg);
-  font-size: var(--apple-fs-fine-print);
+/* 表单控件、按钮、分隔线与链接样式统一在 AuthLayout，本页只保留登录页特有元素 */
+.login-error {
+  margin-bottom: var(--apple-spacing-md);
 }
 
 .password-forgot {
   margin-top: var(--apple-spacing-sm);
   margin-bottom: var(--apple-spacing-md);
+  text-align: right;
 }
 
-.forgot-link {
+.password-forgot :deep(.el-button) {
   font-size: var(--apple-fs-fine-print);
+  font-weight: 400;
+  color: var(--apple-ink-secondary);
+  text-decoration: none;
+  cursor: pointer;
 }
 
-@media (max-width: 480px) {
-  .right-panel {
-    padding: var(--apple-spacing-md);
-  }
-
-  .form-title {
-    font-size: var(--apple-fs-tagline);
-  }
+.password-forgot :deep(.el-button:hover) {
+  color: var(--apple-primary);
+  text-decoration: underline;
 }
 </style>
