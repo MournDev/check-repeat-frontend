@@ -307,40 +307,6 @@ onMounted(() => {
   background-color: var(--apple-canvas-parchment);
   min-height: 100vh;
 
-  .filter-card {
-    margin-bottom: 20px;
-    border-radius: 18px;
-    
-    :deep(.el-card__body) {
-      padding: 20px;
-    }
-  }
-
-  .papers-card {
-    border-radius: 18px;
-    
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      font-weight: 600;
-      color: var(--apple-ink);
-
-      .header-right {
-        .total-count {
-          font-size: 17px;
-          color: var(--apple-ink-secondary);
-          font-weight: normal;
-        }
-      }
-    }
-    
-    :deep(.el-card__body) {
-      padding: 0;
-    }
-  }
-
   .paper-title-cell {
     display: flex;
     align-items: center;
@@ -360,32 +326,12 @@ onMounted(() => {
   .similarity-low { color: var(--apple-rate-low); }
   .similarity-medium { color: var(--apple-rate-medium); }
   .similarity-high { color: var(--apple-rate-high); }
-  
-  .pagination-container {
-    padding: 20px;
-    display: flex;
-    justify-content: flex-end;
-    border-top: 1px solid var(--apple-hairline);
-  }
 }
 
 // 响应式设计
 @media (max-width: 768px) {
   .check-history-list-page {
     padding: 12px;
-    
-    .papers-card {
-      .card-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-      }
-    }
-    
-    .pagination-container {
-      padding: 12px;
-      justify-content: center;
-    }
   }
 }
 
@@ -396,63 +342,6 @@ onMounted(() => {
   color: var(--apple-ink);
   font-family: var(--apple-font-text);
 
-  .filter-card {
-    margin-bottom: var(--apple-spacing-md);
-    background: var(--apple-surface);
-    border: 1px solid var(--apple-hairline);
-    border-radius: var(--apple-rounded-lg);
-
-    :deep(.el-card__body) {
-      padding: var(--apple-spacing-md);
-    }
-
-    :deep(.el-form-item) {
-      margin-bottom: var(--apple-spacing-xs);
-    }
-
-    :deep(.el-form-item__label) {
-      font-size: var(--apple-fs-fine-print);
-      font-weight: 600;
-      color: var(--apple-ink-muted-48);
-    }
-
-    :deep(.el-select__wrapper),
-    :deep(.el-input__wrapper) {
-      border-radius: var(--apple-rounded-md);
-      font-size: var(--apple-fs-caption);
-    }
-  }
-
-  .papers-card {
-    background: var(--apple-surface);
-    border: 1px solid var(--apple-hairline);
-    border-radius: var(--apple-rounded-lg);
-    overflow: hidden;
-
-    :deep(.el-card__header) {
-      padding: var(--apple-spacing-md) var(--apple-spacing-lg);
-      border-bottom: 1px solid var(--apple-divider-soft);
-    }
-
-    :deep(.el-card__body) {
-      padding: 0;
-    }
-
-    .card-header {
-      gap: var(--apple-spacing-xs);
-      font-family: var(--apple-font-display);
-      font-size: var(--apple-fs-body-strong);
-      font-weight: 600;
-
-      .header-right {
-        .total-count {
-          font-size: var(--apple-fs-fine-print);
-          color: var(--apple-ink-muted-48);
-        }
-      }
-    }
-  }
-
   .paper-title-cell {
     gap: var(--apple-spacing-xs);
 
@@ -461,26 +350,11 @@ onMounted(() => {
       color: var(--apple-ink);
     }
   }
-
-  .pagination-container {
-    padding: var(--apple-spacing-md) var(--apple-spacing-lg);
-    border-top: 1px solid var(--apple-divider-soft);
-  }
 }
 
 @media (max-width: 768px) {
   .check-history-list-page {
     padding: var(--apple-spacing-sm);
-
-    .papers-card {
-      .card-header {
-        gap: var(--apple-spacing-sm);
-      }
-    }
-
-    .pagination-container {
-      padding: var(--apple-spacing-sm);
-    }
   }
 }
 </style>

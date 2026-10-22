@@ -449,10 +449,6 @@ onMounted(() => {
   font-family: var(--apple-font-text);
 }
 
-.filter-card {
-  margin-bottom: 16px;
-}
-
 .filter-content {
   padding: 0;
 }
@@ -461,26 +457,6 @@ onMounted(() => {
   display: flex;
   gap: 12px;
   padding-top: 4px;
-}
-
-.data-card {
-  margin-bottom: 20px;
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0;
-}
-
-.card-header .header-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 16px;
-  font-weight: 400;
-  color: var(--apple-ink);
 }
 
 .student-info {
@@ -565,40 +541,19 @@ onMounted(() => {
   align-items: center;
 }
 
-.pagination-wrapper {
-  display: flex;
-  justify-content: flex-end;
-  padding-top: 20px;
-}
-
 /* 响应式设计 */
 @media (max-width: 768px) {
   .teacher-review {
     padding: 12px;
   }
   
-  .header-right {
-    display: flex;
-    justify-content: center;
-  }
-  
   .filter-actions {
     flex-wrap: wrap;
-  }
-  
-  .card-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
   }
   
   .action-buttons {
     flex-direction: column;
     gap: 4px;
-  }
-  
-  .pagination-wrapper {
-    justify-content: center;
   }
 }
 
@@ -626,36 +581,9 @@ onMounted(() => {
   font-family: var(--apple-font-text);
 }
 
-.filter-card {
-  margin-bottom: var(--apple-spacing-md);
-}
-
-.filter-card :deep(.el-input__wrapper),
-.filter-card :deep(.el-select__wrapper),
-.filter-card :deep(.el-range-editor.el-input__wrapper) {
-  border-radius: var(--apple-rounded-md);
-  font-size: var(--apple-fs-caption);
-}
-
-.filter-card :deep(.el-form-item__label) {
-  font-size: var(--apple-fs-fine-print);
-  font-weight: 600;
-}
-
 .filter-actions {
   gap: var(--apple-spacing-sm);
   padding-top: var(--apple-spacing-xxs);
-}
-
-.data-card {
-  margin-bottom: var(--apple-spacing-md);
-}
-
-.card-header .header-left {
-  gap: var(--apple-spacing-xs);
-  font-family: var(--apple-font-display);
-  font-size: var(--apple-fs-body-strong);
-  font-weight: 600;
 }
 
 .student-info,
@@ -689,17 +617,9 @@ onMounted(() => {
   gap: var(--apple-spacing-xs);
 }
 
-.pagination-wrapper {
-  padding-top: var(--apple-spacing-md);
-}
-
 @media (max-width: 768px) {
   .filter-actions {
     gap: var(--apple-spacing-xs);
-  }
-
-  .card-header {
-    gap: var(--apple-spacing-sm);
   }
 
   .action-buttons {

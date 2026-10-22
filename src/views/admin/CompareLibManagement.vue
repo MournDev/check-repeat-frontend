@@ -249,53 +249,10 @@ onMounted(() => {
 .compare-lib-management {
   padding: 0;
 }
-.filter-card {
-  margin-bottom: 16px;
-}
-.table-card {
-  margin-bottom: 16px;
-}
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.card-title {
-  font-weight: 600;
-  font-size: 15px;
-}
-.pagination-wrapper {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 16px;
-}
 
 /* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
 .compare-lib-management {
   font-family: var(--apple-font-text);
 }
 
-.filter-card,
-.table-card {
-  margin-bottom: var(--apple-spacing-md);
-}
-
-.card-title {
-  font-size: var(--apple-fs-caption);
-  font-family: var(--apple-font-display);
-}
-
-.pagination-wrapper {
-  margin-top: var(--apple-spacing-md);
-}
-
-@media (max-width: 768px) {
-  .card-header {
-    gap: var(--apple-spacing-sm);
-  }
-
-  .pagination-wrapper {
-    justify-content: center;
-  }
-}
 </style>

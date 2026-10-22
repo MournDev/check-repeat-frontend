@@ -1385,34 +1385,6 @@ const batchDelete = async () => {
   margin: 0 auto;
   padding: 0 24px;
   
-  .card-header {
-    background: white;
-    border: 1px solid var(--apple-slate-border);
-    border-radius: 18px 12px 0 0;
-    padding: 20px 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    
-    .card-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: var(--apple-slate-ink);
-      
-      .el-icon {
-        color: var(--apple-slate-sub);
-      }
-    }
-    
-    .card-extra {
-      color: var(--apple-slate-sub);
-      font-size: 0.875rem;
-    }
-  }
-  
   .header-actions-group {
     display: flex;
     align-items: center;
@@ -1922,71 +1894,6 @@ const batchDelete = async () => {
       }
     }
   }
-  
-  .pagination-container {
-    background: white;
-    border: 1px solid var(--apple-slate-border);
-    border-top: none;
-    border-radius: 0 0 12px 12px;
-    padding: 20px 24px;
-    
-    .pagination {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      
-      .page-info {
-        color: var(--apple-slate-sub);
-        font-size: 0.875rem;
-      }
-      
-      .page-controls {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        
-        .page-button {
-          padding: 4px 12px;
-          border: 1px solid var(--apple-slate-border);
-          border-radius: 11px;
-          background: white;
-          color: var(--apple-slate-sub);
-          font-size: 0.875rem;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          
-          &:hover:not(:disabled) {
-            border-color: var(--apple-slate-border-strong);
-            color: var(--apple-slate-ink);
-            /* translateY removed */
-          }
-          
-          &:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-          }
-        }
-        
-        .page-number {
-          font-size: 0.875rem;
-          color: var(--apple-slate-sub);
-        }
-        
-        .page-size-select {
-          padding: 4px 8px;
-          border: 1px solid var(--apple-slate-border);
-          border-radius: 11px;
-          font-size: 0.875rem;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          
-          &:hover {
-            border-color: var(--apple-slate-border-strong);
-          }
-        }
-      }
-    }
-  }
 }
 
 // 论文详情
@@ -2305,25 +2212,6 @@ const batchDelete = async () => {
   }
   
   .papers-card {
-    .card-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 16px;
-      
-      .header-actions-group {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-        width: 100%;
-        
-        .batch-toolbar {
-          flex-wrap: wrap;
-          width: 100%;
-        }
-      }
-    }
-    
     .papers-list {
       padding: 16px;
       
@@ -2371,18 +2259,6 @@ const batchDelete = async () => {
         
         .paper-toggle {
           padding: 12px 16px;
-        }
-      }
-    }
-    
-    .pagination-container {
-      .pagination {
-        flex-direction: column;
-        gap: 12px;
-        align-items: stretch;
-        
-        .page-controls {
-          justify-content: center;
         }
       }
     }
@@ -2528,30 +2404,6 @@ const batchDelete = async () => {
     border: 1px solid var(--apple-hairline);
     border-radius: var(--apple-rounded-lg);
     overflow: hidden;
-
-    .card-header {
-      padding: var(--apple-spacing-md) var(--apple-spacing-lg);
-      background: var(--apple-surface);
-      border: none;
-      border-bottom: 1px solid var(--apple-divider-soft);
-      border-radius: 0;
-
-      .card-title {
-        font-family: var(--apple-font-display);
-        font-size: var(--apple-fs-body-strong);
-        font-weight: 600;
-        color: var(--apple-ink);
-
-        .el-icon {
-          color: var(--apple-ink-muted-48);
-        }
-      }
-
-      .card-extra {
-        font-size: var(--apple-fs-fine-print);
-        color: var(--apple-ink-muted-48);
-      }
-    }
 
     .header-actions-group {
       .batch-toolbar {
@@ -2820,18 +2672,6 @@ const batchDelete = async () => {
         }
       }
     }
-
-    .pagination-container {
-      padding: var(--apple-spacing-sm) var(--apple-spacing-lg);
-      background: transparent;
-      border: none;
-      border-top: 1px solid var(--apple-divider-soft);
-      border-radius: 0;
-
-      :deep(.el-pagination) {
-        font-family: var(--apple-font-text);
-      }
-    }
   }
 }
 
@@ -2917,14 +2757,6 @@ const batchDelete = async () => {
     .papers-card {
       .papers-list {
         padding: var(--apple-spacing-sm);
-      }
-
-      .card-header {
-        padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-      }
-
-      .pagination-container {
-        padding: var(--apple-spacing-sm) var(--apple-spacing-md);
       }
     }
   }

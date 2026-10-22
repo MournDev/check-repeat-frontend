@@ -498,26 +498,6 @@ onMounted(() => {
 .check-rule-management {
   padding: 0;
 }
-.filter-card {
-  margin-bottom: 16px;
-}
-.table-card {
-  margin-bottom: 16px;
-}
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.card-title {
-  font-weight: 600;
-  font-size: 15px;
-}
-.pagination-wrapper {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 16px;
-}
 .lib-tag {
   margin: 2px 4px 2px 0;
 }
@@ -539,20 +519,6 @@ onMounted(() => {
   font-family: var(--apple-font-text);
 }
 
-.filter-card,
-.table-card {
-  margin-bottom: var(--apple-spacing-md);
-}
-
-.card-title {
-  font-size: var(--apple-fs-caption);
-  font-family: var(--apple-font-display);
-}
-
-.pagination-wrapper {
-  margin-top: var(--apple-spacing-md);
-}
-
 .lib-tag {
   margin: var(--apple-spacing-xxs) var(--apple-spacing-xxs) var(--apple-spacing-xxs) 0;
 }
@@ -568,15 +534,5 @@ onMounted(() => {
 
 .quota-filter {
   margin-bottom: var(--apple-spacing-xs);
-}
-
-@media (max-width: 768px) {
-  .card-header {
-    gap: var(--apple-spacing-sm);
-  }
-
-  .pagination-wrapper {
-    justify-content: center;
-  }
 }
 </style>

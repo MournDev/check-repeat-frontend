@@ -543,11 +543,6 @@ onMounted(() => {
   min-height: 100vh;
 }
 
-.filter-card {
-  margin-bottom: 20px;
-  border-radius: 18px;
-}
-
 .search-form {
   display: flex;
   align-items: center;
@@ -606,12 +601,6 @@ onMounted(() => {
   overflow: hidden;
   text-overflow: ellipsis;
   line-height: 1.4;
-}
-
-.pagination-container {
-  margin-top: 20px;
-  display: flex;
-  justify-content: flex-end;
 }
 
 .report-detail {
@@ -754,7 +743,6 @@ onMounted(() => {
   font-family: var(--apple-font-text);
 }
 
-.filter-card,
 .report-list-card {
   margin-bottom: var(--apple-spacing-md);
   border-radius: var(--apple-rounded-lg);
@@ -785,10 +773,6 @@ onMounted(() => {
   gap: var(--apple-spacing-sm);
   font-size: var(--apple-fs-body-strong);
   font-family: var(--apple-font-display);
-}
-
-.pagination-container {
-  margin-top: var(--apple-spacing-md);
 }
 
 .report-detail,

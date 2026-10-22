@@ -752,15 +752,6 @@ onMounted(() => {
   padding: 0;
 }
 
-.filter-card {
-  margin-bottom: 1.5rem;
-  border-radius: 18px;
-  
-  :deep(.el-card__body) {
-    padding: 1.25rem;
-  }
-}
-
 .stats-cards {
   margin-bottom: 1.5rem;
   
@@ -821,44 +812,6 @@ onMounted(() => {
   }
 }
 
-.table-card {
-  border-radius: 18px;
-
-  :deep(.el-card__header) {
-    padding: 1rem 1.25rem;
-    border-bottom: 1px solid var(--apple-surface-chip-translucent);
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      .card-title {
-        display: flex;
-        align-items: center;
-        font-weight: 600;
-        color: var(--apple-ink);
-
-        .el-icon {
-          margin-right: 0.5rem;
-          color: var(--apple-primary);
-        }
-      }
-    }
-  }
-  
-  :deep(.el-card__body) {
-    padding: 0;
-  }
-}
-
-.pagination-container {
-  padding: 1rem;
-  display: flex;
-  justify-content: flex-end;
-  border-top: 1px solid var(--apple-surface-chip-translucent);
-}
-
 .record-detail {
   .detail-section {
     margin: 1.5rem 0;
@@ -913,56 +866,11 @@ onMounted(() => {
       margin-bottom: 0.75rem;
     }
   }
-  
-  .filter-card {
-    :deep(.el-form) {
-      .el-form-item {
-        margin-bottom: 1rem;
-        width: 100%;
-        
-        .el-input,
-        .el-select,
-        .el-date-editor {
-          width: 100% !important;
-        }
-      }
-    }
-  }
-  
-  .table-card {
-    :deep(.el-table) {
-      .el-table__cell {
-        padding: 8px 0;
-      }
-    }
-  }
-  
-  .pagination-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-    
-    :deep(.el-pagination) {
-      .el-pagination__sizes,
-      .el-pagination__jump {
-        display: none;
-      }
-    }
-  }
 }
 
 /* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
 .assignment-history {
   font-family: var(--apple-font-text);
-}
-
-.filter-card {
-  margin-bottom: var(--apple-spacing-lg);
-  border-radius: var(--apple-rounded-lg);
-
-  :deep(.el-card__body) {
-    padding: var(--apple-spacing-md);
-  }
 }
 
 .stats-cards {
@@ -987,29 +895,6 @@ onMounted(() => {
       }
     }
   }
-}
-
-.table-card {
-  border-radius: var(--apple-rounded-lg);
-
-  :deep(.el-card__header) {
-    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-    border-bottom: 1px solid var(--apple-hairline);
-
-    .card-header .card-title {
-      font-size: var(--apple-fs-body-strong);
-      font-family: var(--apple-font-display);
-
-      .el-icon {
-        margin-right: var(--apple-spacing-xs);
-      }
-    }
-  }
-}
-
-.pagination-container {
-  padding: var(--apple-spacing-sm);
-  border-top: 1px solid var(--apple-hairline);
 }
 
 .record-detail .detail-section {
@@ -1051,10 +936,6 @@ onMounted(() => {
 @media (max-width: 768px) {
   .stats-cards .el-col {
     margin-bottom: var(--apple-spacing-sm);
-  }
-
-  .pagination-container {
-    margin-top: var(--apple-spacing-md);
   }
 }
 </style>

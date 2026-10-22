@@ -855,20 +855,10 @@ onUnmounted(() => {
     color: var(--apple-primary);
   }
 
-  .table-card {
-    margin-bottom: 24px;
-  }
-
   .table-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-  }
-
-  .pagination-container {
-    margin-top: 20px;
-    display: flex;
-    justify-content: flex-end;
   }
 
   .ellipsis {
@@ -1036,8 +1026,7 @@ onUnmounted(() => {
     color: var(--apple-ink);
   }
 
-  .rule-info-card,
-  .table-card {
+  .rule-info-card {
     margin-bottom: var(--apple-spacing-lg);
     background: var(--apple-surface);
     border: 1px solid var(--apple-hairline);
@@ -1054,10 +1043,6 @@ onUnmounted(() => {
   .paper-type-name {
     font-size: var(--apple-fs-caption);
     color: var(--apple-ink);
-  }
-
-  .pagination-container {
-    margin-top: var(--apple-spacing-md);
   }
 
   .fail-text {

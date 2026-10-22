@@ -958,13 +958,6 @@ onMounted(() => {
   }
 }
 
-.pagination-wrapper {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 1rem;
-  padding-top: 0.5rem;
-}
-
 .log-detail {
   :deep(.el-descriptions__label) { width: 100px; }
 }
@@ -1015,7 +1008,6 @@ onMounted(() => {
 /* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
 .log-center { font-family: var(--apple-font-text); }
 .log-tabs .tab-header .header-filters { gap: var(--apple-spacing-sm); }
-.pagination-wrapper { margin-top: var(--apple-spacing-md); padding-top: var(--apple-spacing-xs); }
 .stats-row { gap: var(--apple-spacing-md); margin-bottom: var(--apple-spacing-md); }
 .stat-card { padding: var(--apple-spacing-xs) 0; }
 .stat-value { font-size: var(--apple-fs-lead); }
