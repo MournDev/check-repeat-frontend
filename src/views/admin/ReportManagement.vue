@@ -201,7 +201,7 @@
                     :show-text="false"
                   />
                   <div class="similarity-text">
-                    <div class="percentage">{{ selectedReport?.similarity }}%</div>
+                    <div class="percentage">{{ formatPercent(selectedReport?.similarity) }}</div>
                     <div class="rating">{{ getSimilarityRating(selectedReport?.similarity) }}</div>
                   </div>
                 </div>
@@ -240,7 +240,7 @@
               <div class="source-header">
                 <h4>{{ source.title }}</h4>
                 <el-tag :type="getSimilarityTagType(source.similarity)">
-                  相似度: {{ source.similarity }}%
+                  相似度: {{ formatPercent(source.similarity) }}
                 </el-tag>
               </div>
               <div class="source-meta">
@@ -284,7 +284,8 @@ import {
   Check, ArrowLeft
 } from '@element-plus/icons-vue'
 import { getReportList, getReportStats, getReportDetail, batchExportReports } from '@/api/admin/reports'
-import { getSimilarityColor, getSimilarityTagType } from '@/utils/similarity.js'
+import { getSimilarityColor, getSimilarityTagType, getSimilarityLabel as getSimilarityRating } from '@/utils/similarity.js'
+import { formatPercent } from '@/utils/dataType.js'
 import { getCheckStatusText as getStatusLabel, getCheckStatusType as getStatusTagType } from '@/utils/checkStatus.js'
 import PageHeader from '@/components/common/PageHeader.vue'
 import ListPageShell from '@/components/common/ListPageShell.vue'
@@ -424,12 +425,6 @@ const batchExport = () => {
     console.error('批量导出失败', err)
     ElMessage.error(err.message || '批量导出失败')
   })
-}
-
-const getSimilarityRating = (similarity) => {
-  if (similarity < 15) return '优秀'
-  if (similarity < 30) return '良好'
-  return '需要修改'
 }
 
 // 查重状态词表与后端 check_task.check_status 统一走 utils/checkStatus.js，
