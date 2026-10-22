@@ -1,5 +1,7 @@
 <template>
   <div class="app-shell">
+    <!-- 键盘用户跳过导航直达内容 -->
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
     <!-- Global Nav (ultra-thin, pure black) -->
     <header class="global-nav">
       <div class="global-nav-left">
@@ -130,7 +132,7 @@
       </aside>
 
       <!-- Main Content -->
-      <main class="main-content">
+      <main id="main-content" class="main-content" tabindex="-1">
         <!-- 系统公告/维护模式（非管理员角色）：横幅 + 维护面板替代业务内容 -->
         <el-alert
           v-if="maintenanceStore.showBanner"
@@ -513,6 +515,24 @@ onUnmounted(() => {
   background: var(--apple-canvas-parchment);
 }
 
+// ── Skip link：仅键盘聚焦时出现 ───────────────────────────
+.skip-link {
+  position: fixed;
+  top: -60px;
+  left: var(--app-space-3);
+  z-index: 300;
+  padding: var(--app-space-2) var(--app-space-3);
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--app-radius-sm);
+  background: var(--apple-canvas);
+  color: var(--apple-ink);
+  font-size: var(--app-fs-caption);
+  font-weight: 600;
+  transition: top var(--apple-transition-fast);
+
+  &:focus { top: var(--app-space-2); }
+}
+
 // ── Global Nav (44px, pure black) ────────────────────────
 .global-nav {
   display: flex;
@@ -784,12 +804,25 @@ onUnmounted(() => {
 
 .sidebar-spacer { height: 16px; }
 
+// 深色底上的键盘焦点环用亮蓝，保证对比度
+.sidebar-item:focus-visible,
+.sidebar-group-toggle:focus-visible,
+.nav-icon-btn:focus-visible,
+.nav-user-btn:focus-visible,
+.nav-menu-toggle:focus-visible {
+  outline: 2px solid var(--apple-primary-on-dark);
+  outline-offset: 2px;
+}
+
 // ── Main Content ──────────────────────────────────────────
 .main-content {
   flex: 1;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+
+  // 跳过导航的落点不需要焦点环（非交互区域）
+  &:focus { outline: none; }
 }
 
 // ── 维护模式（横幅 + 面板，仅非管理员角色） ────────────────

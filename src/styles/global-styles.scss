@@ -218,6 +218,26 @@ a {
 .similarity-medium { color: var(--apple-rate-medium); }
 .similarity-high { color: var(--apple-rate-high); }
 .similarity-unknown { color: var(--apple-rate-unknown); }
+
+// ── 键盘焦点：统一可见环（仅键盘导航触发，鼠标点击不显示）────
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--apple-primary-focus);
+  outline-offset: 2px;
+}
+
+// ── 尊重系统「减少动态效果」设置 ──────────────────────────
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 .mt-sm { margin-top: var(--apple-spacing-xs); }
 .mt-md { margin-top: var(--apple-spacing-md); }
 .mt-lg { margin-top: var(--apple-spacing-lg); }
