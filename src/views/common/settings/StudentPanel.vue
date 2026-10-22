@@ -539,7 +539,7 @@ defineExpose({ save: saveProfile })
   &:last-child { border-bottom: none; }
   .security-info { display: flex; align-items: center;
     .el-icon { margin-right: 0.75rem; color: var(--apple-primary); font-size: 1.25rem; }
-    .security-details { .security-title { font-weight: 600; color: var(--apple-ink); margin-bottom: 0.25rem; } .security-desc { font-size: 0.875rem; color: var(--apple-ink-secondary); } }
+    .security-details { .security-title { font-weight: 600; color: var(--apple-ink); margin-bottom: 0.25rem; } .security-desc { font-size: var(--apple-fs-caption); color: var(--apple-ink-secondary); } }
   }
 }
 .form-actions { display: flex; gap: 0.75rem; }

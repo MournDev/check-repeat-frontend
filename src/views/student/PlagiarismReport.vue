@@ -1094,7 +1094,7 @@ onUnmounted(() => {
   border: none;
   background: transparent;
   color: inherit;
-  font-size: 14px;
+  font-size: var(--apple-fs-caption);
   line-height: 1;
   cursor: pointer;
 }

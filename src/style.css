@@ -202,7 +202,7 @@ tr:hover {
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #b0b0b5;
+  background: var(--apple-scrollbar-thumb-hover);
 }
 
 /* ── Selection ────────────────────────────────────────── */
