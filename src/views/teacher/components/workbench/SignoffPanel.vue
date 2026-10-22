@@ -39,11 +39,11 @@
       <section class="report-summary">
         <div class="summary-item">
           <span>总相似比</span>
-          <strong :style="{ color: getSimilarityColor(metrics?.repeatRate) }">{{ formatRate(metrics?.repeatRate) }}</strong>
+          <strong :style="{ color: getSimilarityColor(metrics?.repeatRate) }">{{ formatPercent(metrics?.repeatRate) }}</strong>
         </div>
         <div class="summary-item">
           <span>单篇最大</span>
-          <strong>{{ formatRate(metrics?.maxPerSource) }}</strong>
+          <strong>{{ formatPercent(metrics?.maxPerSource) }}</strong>
         </div>
         <div class="summary-item">
           <span>检测时间</span>
@@ -124,7 +124,7 @@
 <script setup>
 import { reactive, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
-import { formatDateTime } from '@/utils/dataType.js'
+import { formatDateTime, formatPercent } from '@/utils/dataType.js'
 import { getSimilarityColor } from '@/utils/similarity.js'
 
 const props = defineProps({
@@ -168,13 +168,6 @@ const rules = {
       trigger: 'change'
     }
   ]
-}
-
-const formatRate = (value) => {
-  if (value === null || value === undefined || value === '') return '—'
-  const num = Number(value)
-  if (!Number.isFinite(num)) return '—'
-  return Number.isInteger(num) ? `${num}%` : `${num.toFixed(2)}%`
 }
 
 const formatScore = (value) => {

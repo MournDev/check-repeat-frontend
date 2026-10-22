@@ -294,6 +294,7 @@ import { getAllColleges } from '@/api/user'
 import { getAvailableTeachers } from '@/api/admin/assignment'
 import { saveBlobAs } from '@/utils/download'
 import { advisorEvalTagLabel, isNegativeAdvisorEvalTag } from '@/utils/advisorEvalTag'
+import { formatPercent } from '@/utils/dataType.js'
 import { useChart } from '@/composables/useChart'
 import ListPageShell from '@/components/common/ListPageShell.vue'
 
@@ -305,7 +306,6 @@ const formatFixed = (v, digits) => {
   if (v === null || v === undefined || v === '') return '—'
   return Number(v).toFixed(digits)
 }
-const formatPercent = (v) => (v === null || v === undefined || v === '' ? '—' : `${Number(v).toFixed(2)}%`)
 const formatDateTime = (val) => (val ? String(val).replace('T', ' ').slice(0, 19) : '—')
 
 // ── 统计 ──

@@ -74,15 +74,13 @@ import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Download, Histogram, TrendCharts, DataAnalysis } from '@element-plus/icons-vue'
 import { useChart } from '@/composables/useChart'
+import { formatPercent } from '@/utils/dataType.js'
 import {
   getSimilarityDistribution,
   getCollegeCompare,
   getMonthlyTrend,
   exportStatReport
 } from '@/api/p5'
-
-// 百分比统一保留 2 位小数拼 %，null 显示「—」
-const formatPercent = (v) => (v === null || v === undefined || v === '' ? '—' : `${Number(v).toFixed(2)}%`)
 
 // ==================== 相似度分布 ====================
 const distChart = useChart()

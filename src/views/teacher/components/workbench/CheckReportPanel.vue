@@ -29,7 +29,7 @@
               :stroke-dasharray="`${ringOffset} ${ringCircumference}`"
             />
           </svg>
-          <span class="ring-num">{{ formatRate(metrics.repeatRate) }}</span>
+          <span class="ring-num">{{ formatPercent(metrics.repeatRate) }}</span>
         </div>
         <div class="risk-info">
           <div class="risk-title">总相似比 · {{ risk.label }}</div>
@@ -46,16 +46,16 @@
         <div class="metric-item">
           <span class="metric-label">总相似比</span>
           <strong class="metric-value" :style="{ color: getSimilarityColor(metrics.repeatRate) }">
-            {{ formatRate(metrics.repeatRate) }}
+            {{ formatPercent(metrics.repeatRate) }}
           </strong>
         </div>
         <div class="metric-item">
           <span class="metric-label">单篇最大</span>
-          <strong class="metric-value">{{ formatRate(metrics.maxPerSource) }}</strong>
+          <strong class="metric-value">{{ formatPercent(metrics.maxPerSource) }}</strong>
         </div>
         <div class="metric-item">
           <span class="metric-label">引用率</span>
-          <strong class="metric-value muted">{{ formatRate(metrics.citationRate) }}</strong>
+          <strong class="metric-value muted">{{ formatPercent(metrics.citationRate) }}</strong>
         </div>
       </section>
 
@@ -77,7 +77,7 @@
                 <span v-if="source.matchedParagraphs">匹配段落 {{ source.matchedParagraphs }}</span>
               </span>
             </span>
-            <span class="source-rate">{{ formatRate(source.maxSimilarity) }}</span>
+            <span class="source-rate">{{ formatPercent(source.maxSimilarity) }}</span>
             <el-icon class="source-arrow" :class="{ expanded: expandedId === String(source.sourceId) }">
               <ArrowRight />
             </el-icon>
@@ -93,7 +93,7 @@
                 <div v-for="item in matchedParagraphs(source)" :key="item.paragraphNo" class="match-item">
                   <div class="match-head">
                     <span>第 {{ item.paragraphNo }} 段</span>
-                    <span class="match-rate">{{ formatRate(item.similarity) }}</span>
+                    <span class="match-rate">{{ formatPercent(item.similarity) }}</span>
                   </div>
                   <div class="match-content" v-html="item.content" />
                 </div>
@@ -128,7 +128,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { ArrowRight, Document, Download, WarningFilled } from '@element-plus/icons-vue'
-import { formatDateTime } from '@/utils/dataType.js'
+import { formatDateTime, formatPercent } from '@/utils/dataType.js'
 import { getSimilarityColor } from '@/utils/similarity.js'
 
 const props = defineProps({
@@ -161,13 +161,6 @@ const risk = computed(() => {
   if (rate < 30) return { label: '中风险', cls: 'medium' }
   return { label: '高风险', cls: 'high' }
 })
-
-const formatRate = (value) => {
-  if (value === null || value === undefined || value === '') return '—'
-  const num = Number(value)
-  if (!Number.isFinite(num)) return '—'
-  return Number.isInteger(num) ? `${num}%` : `${num.toFixed(2)}%`
-}
 
 const toggleSource = (source) => {
   const id = String(source.sourceId)

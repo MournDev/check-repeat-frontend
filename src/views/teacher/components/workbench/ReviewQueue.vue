@@ -47,7 +47,7 @@
         <div class="card-title">{{ paper.paperTitle || '未命名论文' }}</div>
         <div class="card-meta">
           <span class="sim" :class="getSimilarityClass(Number(paper.similarity) || 0)">
-            {{ formatRate(paper.similarity) }}
+            {{ formatPercent(paper.similarity) }}
           </span>
           <span>V{{ paper.version || 1 }}</span>
           <span v-if="paper.deadline">{{ formatDateTime(paper.deadline, 'MM-DD HH:mm') }} 截止</span>
@@ -77,7 +77,7 @@ import { computed, nextTick, ref, watch } from 'vue'
 import { Document, Refresh, Search } from '@element-plus/icons-vue'
 import { isOverdue, isUrgent } from '@/composables/usePendingPapers.js'
 import { getSimilarityClass } from '@/utils/similarity.js'
-import { formatDateTime } from '@/utils/dataType.js'
+import { formatDateTime, formatPercent } from '@/utils/dataType.js'
 
 const props = defineProps({
   papers: { type: Array, default: () => [] },
@@ -115,12 +115,6 @@ const filteredPapers = computed(() => {
 
   return list
 })
-
-const formatRate = (value) => {
-  if (value === null || value === undefined || value === '') return '—'
-  const num = Number(value)
-  return Number.isFinite(num) ? `${num}%` : '—'
-}
 
 const resetLocalFilter = () => {
   keyword.value = ''

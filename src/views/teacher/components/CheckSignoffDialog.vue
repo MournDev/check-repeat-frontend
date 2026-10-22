@@ -29,11 +29,11 @@
           <span class="summary-item">
             总相似比
             <strong :style="{ color: getSimilarityColor(summary.repeatRate) }">
-              {{ formatRate(summary.repeatRate) }}
+              {{ formatPercent(summary.repeatRate) }}
             </strong>
           </span>
-          <span class="summary-item">单篇最大 <strong>{{ formatRate(summary.maxPerSource) }}</strong></span>
-          <span class="summary-item">引用率 <strong>{{ formatRate(summary.citationRate) }}</strong></span>
+          <span class="summary-item">单篇最大 <strong>{{ formatPercent(summary.maxPerSource) }}</strong></span>
+          <span class="summary-item">引用率 <strong>{{ formatPercent(summary.citationRate) }}</strong></span>
           <el-button type="primary" link class="summary-report-btn" @click="emit('view-report', paper.paperId)">
             查看完整报告
           </el-button>
@@ -89,6 +89,7 @@ import { ElMessage } from 'element-plus'
 import { signoffCheckReport } from '@/api/p5.js'
 import { getSimpleCheckReport, getPaperReport } from '@/api/teacher.js'
 import { getSimilarityColor } from '@/utils/similarity.js'
+import { formatPercent } from '@/utils/dataType.js'
 
 const emit = defineEmits(['success', 'view-report'])
 
@@ -106,8 +107,6 @@ const noReport = ref(false)
 const summary = ref(null)
 
 // 存量任务 maxPerSource/citationRate 可能为 null，按 P5 口径约定显「—」不按 0
-const formatRate = (v) => (v === null || v === undefined ? '—' : `${v}%`)
-
 /** 加载该论文最新一次 completed 查重报告的口径摘要（总相似比/单篇最大/引用率） */
 const loadReportSummary = async () => {
   summaryLoading.value = true

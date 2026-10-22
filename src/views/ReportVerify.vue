@@ -98,6 +98,7 @@ import { ref } from 'vue'
 import { ElForm, ElFormItem, ElInput, ElButton, ElAlert, ElIcon } from 'element-plus'
 import { CircleCheckFilled, WarningFilled, CircleCloseFilled } from '@element-plus/icons-vue'
 import { verifyReport } from '@/api/p5'
+import { formatPercent } from '@/utils/dataType.js'
 
 const reportNo = ref('')
 const loading = ref(false)
@@ -106,9 +107,7 @@ const result = ref(null)
 const rateLimitTip = ref('')
 const networkTip = ref('')
 
-// 百分比统一 2 位小数拼 %；存量报告 maxPerSource/citationRate 为 null 时显示「—」
-const formatPercent = (v) => (v === null || v === undefined ? '—' : `${Number(v).toFixed(2)}%`)
-
+// 存量报告 maxPerSource/citationRate 为 null 时显示「—」
 const handleVerify = async () => {
   const no = reportNo.value.trim()
   if (!no) {

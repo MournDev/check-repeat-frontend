@@ -148,6 +148,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ArrowLeft, Refresh } from '@element-plus/icons-vue'
 import { getSentenceDetail } from '@/api/p5'
 import PageHeader from '@/components/common/PageHeader.vue'
+import { formatPercent } from '@/utils/dataType.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -164,8 +165,6 @@ const items = ref([])
 const activeSourceId = ref(null)
 
 // null（存量任务）显示「—」，不按 0 处理
-const formatPercent = (value) => (value == null ? '—' : `${value}%`)
-
 const normalizeShare = (value) => {
   const num = Number(value)
   if (!Number.isFinite(num)) return 0

@@ -138,6 +138,20 @@ export const daysBetween = (startDate, endDate) => {
 };
 
 /**
+ * 百分比统一展示：空值/非法值 → 「—」；整数 → 「12%」；小数 → 「12.35%」。
+ * 全站重复率、相似度、引用率等比率型字段共用，避免各页各写一套精度。
+ * @param {*} value
+ * @param {number} digits 小数位（默认 2）
+ * @returns {string}
+ */
+export const formatPercent = (value, digits = 2) => {
+  if (value === null || value === undefined || value === '') return '—';
+  const num = Number(value);
+  if (!Number.isFinite(num)) return '—';
+  return Number.isInteger(num) ? `${num}%` : `${num.toFixed(digits)}%`;
+};
+
+/**
  * 处理相似度值，确保在合理范围内
  * @param {*} similarity - 相似度值
  * @returns {number}

@@ -58,18 +58,18 @@
         <div class="metric-card">
           <span class="metric-label">总相似比</span>
           <span class="metric-value" :class="similarityTone">
-            {{ formatRate(totalSimilarity) }}
+            {{ formatPercent(totalSimilarity) }}
           </span>
           <span class="metric-hint">{{ similarityHint }}</span>
         </div>
         <div class="metric-card">
           <span class="metric-label">单篇最大</span>
-          <span class="metric-value neutral">{{ formatRate(maxPerSource) }}</span>
+          <span class="metric-value neutral">{{ formatPercent(maxPerSource) }}</span>
           <span class="metric-hint">与单一来源的最高相似度</span>
         </div>
         <div class="metric-card">
           <span class="metric-label">引用率</span>
-          <span class="metric-value neutral">{{ formatRate(citationRate) }}</span>
+          <span class="metric-value neutral">{{ formatPercent(citationRate) }}</span>
           <span class="metric-hint">引用命中句占正文比例</span>
         </div>
       </section>
@@ -138,7 +138,7 @@
                     <span v-if="(item.sourceIds || []).length > 2" class="paragraph-source-more">
                       +{{ item.sourceIds.length - 2 }}
                     </span>
-                    <span v-if="item.isRepeat" class="paragraph-badge">相似度 {{ formatRate(item.similarity) }}</span>
+                    <span v-if="item.isRepeat" class="paragraph-badge">相似度 {{ formatPercent(item.similarity) }}</span>
                   </div>
                 </header>
                 <!-- 后端生成的分段正文，仅含固定标红 span -->
@@ -166,7 +166,7 @@
                   </div>
                 </div>
                 <div class="source-side">
-                  <span class="source-rate">{{ formatRate(source.maxSimilarity) }}</span>
+                  <span class="source-rate">{{ formatPercent(source.maxSimilarity) }}</span>
                   <button
                     v-if="hasParagraphsForSource(source.sourceId)"
                     type="button"
@@ -282,7 +282,7 @@
                 <ul v-if="comparison.addedSources.length">
                   <li v-for="item in comparison.addedSources" :key="item.name">
                     <span class="compare-source-name">{{ item.name }}</span>
-                    <span class="compare-source-rate">{{ formatRate(item.rate) }}</span>
+                    <span class="compare-source-rate">{{ formatPercent(item.rate) }}</span>
                   </li>
                 </ul>
                 <p v-else class="compare-empty">无新增来源</p>
@@ -294,7 +294,7 @@
                   <li v-for="item in comparison.changedSources" :key="item.name">
                     <span class="compare-source-name">{{ item.name }}</span>
                     <span class="compare-source-rate">
-                      {{ formatRate(item.from) }} → {{ formatRate(item.to) }}
+                      {{ formatPercent(item.from) }} → {{ formatPercent(item.to) }}
                     </span>
                   </li>
                 </ul>
@@ -306,7 +306,7 @@
                 <ul v-if="comparison.removedSources.length">
                   <li v-for="item in comparison.removedSources" :key="item.name">
                     <span class="compare-source-name">{{ item.name }}</span>
-                    <span class="compare-source-rate">{{ formatRate(item.rate) }}</span>
+                    <span class="compare-source-rate">{{ formatPercent(item.rate) }}</span>
                   </li>
                 </ul>
                 <p v-else class="compare-empty">无消失来源</p>
@@ -338,6 +338,7 @@ import {
 import { getPaperReport, exportCheckReport, getSimpleCheckReport } from '@/api/student'
 import { getSentenceDetail } from '@/api/p5'
 import PageHeader from '@/components/common/PageHeader.vue'
+import { formatPercent } from '@/utils/dataType.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -477,8 +478,8 @@ const compareMetrics = computed(() => {
     }
     return {
       label: row.label,
-      base: row.type === 'rate' ? formatRate(row.base) : formatCount(row.base),
-      target: row.type === 'rate' ? formatRate(row.target) : formatCount(row.target),
+      base: row.type === 'rate' ? formatPercent(row.base) : formatCount(row.base),
+      target: row.type === 'rate' ? formatPercent(row.target) : formatCount(row.target),
       delta: formatDelta(delta, row.type),
       tone
     }
@@ -494,13 +495,6 @@ function firstNumber(...values) {
     }
   }
   return null
-}
-
-const formatRate = (value) => {
-  if (value === null || value === undefined || value === '') return '—'
-  const num = Number(value)
-  if (Number.isNaN(num)) return '—'
-  return `${num.toFixed(1)}%`
 }
 
 const formatCount = (value) => {
