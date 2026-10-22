@@ -1107,17 +1107,6 @@ onMounted(() => {
         height: 40px;
         border-radius: 11px;
       }
-      
-      .session-status {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        width: 10px;
-        height: 10px;
-        background: var(--apple-primary);
-        border: 2px solid white;
-        border-radius: 50%;
-      }
     }
     
     .session-content {
@@ -1566,10 +1555,6 @@ onMounted(() => {
 
         .el-avatar {
           border-radius: var(--apple-rounded-md);
-        }
-
-        .session-status {
-          border-color: var(--apple-surface);
         }
       }
 

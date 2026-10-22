@@ -994,7 +994,6 @@ onMounted(() => {
         }
       }
       
-      .student-load,
       .teacher-load {
         font-size: 0.875rem;
         color: var(--apple-ink-secondary);
@@ -1198,7 +1197,6 @@ onMounted(() => {
         }
       }
 
-      .student-load,
       .teacher-load {
         font-size: var(--apple-fs-fine-print);
       }

@@ -1275,20 +1275,6 @@ onMounted(async () => {
                   gap: 12px;
                   flex-wrap: wrap;
                   
-                  .version-tag {
-                    padding: 4px 12px;
-                    border-radius: 16px;
-                    font-size: 0.75rem;
-                    font-weight: 600;
-                    background: var(--apple-slate-border);
-                    color: var(--apple-slate-sub);
-                    
-                    &.current {
-                      background: #8b5cf6;
-                      color: white;
-                    }
-                  }
-                  
                   .similarity-badge {
                     padding: 4px 12px;
                     border-radius: 16px;
@@ -1301,41 +1287,11 @@ onMounted(async () => {
                     &.danger { background: var(--apple-danger-bg); color: var(--apple-danger); }
                   }
                   
-                  .rating-tag {
-                    padding: 2px 8px;
-                    border-radius: 18px;
-                    font-size: 0.75rem;
-                    font-weight: 600;
-                    
-                    &.success { background: var(--apple-success-bg); color: var(--apple-success); }
-                    &.primary { background: var(--apple-info-bg); color: var(--apple-primary); }
-                    &.warning { background: var(--apple-warning-bg); color: var(--apple-warning); }
-                    &.danger { background: var(--apple-danger-bg); color: var(--apple-danger); }
-                    &.info { background: var(--apple-slate-bg); color: var(--apple-slate-sub); }
-                  }
                 }
                 
                 .record-actions {
                   display: flex;
                   gap: 8px;
-                  
-                  .action-button {
-                    padding: 6px 12px;
-                    border: 1px solid var(--apple-slate-border);
-                    border-radius: 11px;
-                    background: white;
-                    color: var(--apple-slate-sub);
-                    font-size: 0.75rem;
-                    font-weight: 600;
-                    cursor: pointer;
-                    transition: all 0.2s ease;
-                    
-                    &:hover {
-                      border-color: var(--apple-slate-border-strong);
-                      color: var(--apple-slate-ink);
-                      /* translateY removed */
-                    }
-                  }
                 }
               }
               
@@ -1955,22 +1911,7 @@ onMounted(async () => {
                     font-weight: 600;
                   }
 
-                  .version-tag {
-                    padding: 3px 10px;
-                    border-radius: var(--apple-rounded-pill);
-                    font-size: var(--apple-fs-fine-print);
-                    font-weight: 600;
-                    background: var(--apple-divider-soft);
-                    color: var(--apple-ink-secondary);
-
-                    &.current {
-                      background: var(--apple-primary);
-                      color: var(--apple-on-primary);
-                    }
-                  }
-
-                  .similarity-badge,
-                  .rating-tag {
+                  .similarity-badge {
                     padding: 3px 10px;
                     border-radius: var(--apple-rounded-pill);
                     font-size: var(--apple-fs-fine-print);
@@ -1999,22 +1940,6 @@ onMounted(async () => {
 
                 .record-actions {
                   gap: var(--apple-spacing-xxs);
-
-                  .action-button {
-                    padding: 5px 10px;
-                    background: var(--apple-surface);
-                    border-color: var(--apple-hairline);
-                    border-radius: var(--apple-rounded-sm);
-                    color: var(--apple-ink-secondary);
-                    font-size: var(--apple-fs-fine-print);
-                    font-weight: 500;
-
-                    &:hover {
-                      background: var(--apple-canvas-parchment);
-                      border-color: var(--apple-hairline);
-                      color: var(--apple-ink);
-                    }
-                  }
                 }
               }
 
