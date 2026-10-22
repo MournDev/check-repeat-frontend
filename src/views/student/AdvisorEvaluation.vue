@@ -37,7 +37,7 @@
             <el-icon><CircleCheckFilled /></el-icon>
             已提交评价
           </span>
-          <span class="submit-time">提交时间：{{ formatDateTime(status.submitTime) }}</span>
+          <span class="submit-time">提交时间：{{ formatDateTime(status.submitTime, 'YYYY-MM-DD HH:mm:ss', '—') }}</span>
         </div>
       </template>
       <div class="readonly-body">
@@ -164,6 +164,7 @@ import {
   advisorEvalTagLabel,
   isNegativeAdvisorEvalTag
 } from '@/utils/advisorEvalTag'
+import { formatDateTime } from '@/utils/dataType.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -217,11 +218,6 @@ const tagOptions = computed(() => {
 
 const tagLabel = advisorEvalTagLabel
 const tagType = (value) => (isNegativeAdvisorEvalTag(value) ? 'danger' : 'success')
-
-const formatDateTime = (val) => {
-  if (!val) return '—'
-  return String(val).replace('T', ' ').slice(0, 19)
-}
 
 const fetchStatus = async () => {
   loading.value = true

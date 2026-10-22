@@ -26,7 +26,7 @@
           </template>
         </el-table-column>
         <el-table-column label="答辩时间" width="160">
-          <template #default="{ row }">{{ formatDateTime(row.defenseDate) }}</template>
+          <template #default="{ row }">{{ formatDateTime(row.defenseDate, 'YYYY-MM-DD HH:mm', '—') }}</template>
         </el-table-column>
         <el-table-column label="地点" min-width="150" show-overflow-tooltip>
           <template #default="{ row }">
@@ -93,6 +93,7 @@ import {
   DICT_MODE,
   DICT_RESULT
 } from '@/utils/defenseDict'
+import { formatDateTime } from '@/utils/dataType.js'
 
 const loading = ref(false)
 const list = ref([])
@@ -122,11 +123,6 @@ const modeText = (v) =>
   getDefenseDictText(DICT_MODE, v, v === 'online' ? '线上答辩' : v === 'offline' ? '线下答辩' : v || '—')
 const resultText = (v) => getDefenseDictText(DICT_RESULT, v, { pass: '通过', fail: '不通过', postpone: '缓辩' }[v] || v)
 const resultTagType = (v) => ({ pass: 'success', fail: 'danger', postpone: 'warning' }[v] || 'info')
-
-const formatDateTime = (val) => {
-  if (!val) return '—'
-  return String(val).replace('T', ' ').slice(0, 16)
-}
 
 onMounted(() => {
   fetchList()

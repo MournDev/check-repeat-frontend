@@ -142,7 +142,7 @@
           </div>
           <div class="info-item">
             <span class="label">提交时间：</span>
-            <span class="value">{{ formatDate(currentPaper.submitTime) }}</span>
+            <span class="value">{{ formatDate(currentPaper.submitTime, '--') }}</span>
           </div>
           <div class="info-item">
             <span class="label">文件大小：</span>
@@ -217,7 +217,7 @@
           </el-table-column>
           <el-table-column prop="submitTime" label="提交时间" width="140">
             <template #default="{ row }">
-              <span class="submit-time">{{ formatDate(row.submitTime) }}</span>
+              <span class="submit-time">{{ formatDate(row.submitTime, '--') }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="similarity" label="相似度" width="100">
@@ -274,7 +274,7 @@ import {
 } from '@/api/teacher'
 import { useUserStore } from '@/stores/user'
 import { getSimilarityColor } from '@/utils/similarity.js'
-import { formatPercent } from '@/utils/dataType.js'
+import { formatPercent, formatDate } from '@/utils/dataType.js'
 import { getPreviewUrl, downloadFileBlob } from '@/utils/filePreview'
 import StudentStats from './components/StudentStats.vue'
 import StudentFilterBar from './components/StudentFilterBar.vue'
@@ -503,15 +503,6 @@ const getStatusText = (status) => {
     'completed': '已完成'
   }
   return textMap[status] || '未知状态'
-}
-
-const formatDate = (date) => {
-  if (!date) return '--'
-  return new Date(date).toLocaleDateString('zh-CN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  })
 }
 
 // ── 学生行操作 ──────────────────────────────────────────────

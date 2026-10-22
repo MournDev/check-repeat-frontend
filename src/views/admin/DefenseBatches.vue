@@ -55,7 +55,7 @@
           <template #default="{ row }">{{ row.collegeName || '全校' }}</template>
         </el-table-column>
         <el-table-column label="答辩时间" width="160">
-          <template #default="{ row }">{{ formatDateTime(row.defenseDate) }}</template>
+          <template #default="{ row }">{{ formatDateTime(row.defenseDate, 'YYYY-MM-DD HH:mm', '—') }}</template>
         </el-table-column>
         <el-table-column label="地点 / 方式" min-width="170" show-overflow-tooltip>
           <template #default="{ row }">
@@ -170,6 +170,7 @@ import {
   DICT_BATCH_STATUS,
   DICT_MODE
 } from '@/utils/defenseDict'
+import { formatDateTime } from '@/utils/dataType.js'
 
 const router = useRouter()
 
@@ -355,11 +356,6 @@ const statusText = (v) => {
   return getDefenseDictText(DICT_BATCH_STATUS, v, { 0: '筹备中', 1: '进行中', 2: '已结束' }[v] ?? '—')
 }
 const statusTagType = (v) => ({ 0: 'info', 1: 'primary', 2: 'success' }[v] || 'info')
-
-const formatDateTime = (val) => {
-  if (!val) return '—'
-  return String(val).replace('T', ' ').slice(0, 16)
-}
 
 onMounted(async () => {
   fetchBatches()

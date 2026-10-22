@@ -18,7 +18,7 @@
             </template>
           </el-table-column>
           <el-table-column label="答辩时间" width="160">
-            <template #default="{ row }">{{ formatDateTime(row.defenseDate) }}</template>
+            <template #default="{ row }">{{ formatDateTime(row.defenseDate, 'YYYY-MM-DD HH:mm', '—') }}</template>
           </el-table-column>
           <el-table-column label="地点 / 方式" min-width="170" show-overflow-tooltip>
             <template #default="{ row }">
@@ -87,7 +87,7 @@
         </div>
         <el-descriptions :column="3" border class="meeting-desc">
           <el-descriptions-item label="批次类型">{{ batch.batchTypeDesc || batchTypeText(batch.batchType) }}</el-descriptions-item>
-          <el-descriptions-item label="答辩时间">{{ formatDateTime(batch.defenseDate) }}</el-descriptions-item>
+          <el-descriptions-item label="答辩时间">{{ formatDateTime(batch.defenseDate, 'YYYY-MM-DD HH:mm', '—') }}</el-descriptions-item>
           <el-descriptions-item label="答辩方式">{{ batch.modeDesc || modeText(batch.mode) }}</el-descriptions-item>
           <el-descriptions-item label="地点" :span="2">{{ batch.location || '—' }}</el-descriptions-item>
           <el-descriptions-item label="备注">{{ batch.remark || '—' }}</el-descriptions-item>
@@ -160,7 +160,7 @@
           </el-table-column>
           <el-table-column label="结论提交" min-width="150">
             <template #default="{ row }">
-              <span v-if="row.submitTime">{{ row.submitByName || '' }} · {{ formatDateTime(row.submitTime) }}</span>
+              <span v-if="row.submitTime">{{ row.submitByName || '' }} · {{ formatDateTime(row.submitTime, 'YYYY-MM-DD HH:mm', '—') }}</span>
               <span v-else class="muted">—</span>
             </template>
           </el-table-column>
@@ -264,6 +264,7 @@ import {
   DICT_RESULT,
   DICT_GRADE
 } from '@/utils/defenseDict'
+import { formatDateTime } from '@/utils/dataType.js'
 
 const userStore = useUserStore()
 
@@ -502,11 +503,6 @@ const resultOpts = computed(() =>
         { value: 'postpone', label: '缓辩' }
       ]
 )
-
-const formatDateTime = (val) => {
-  if (!val) return '—'
-  return String(val).replace('T', ' ').slice(0, 16)
-}
 
 onMounted(() => {
   fetchBatches()

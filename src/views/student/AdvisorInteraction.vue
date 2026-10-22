@@ -888,11 +888,6 @@ const formatMessageTime = (date) => {
   }
 }
 
-const formatDate = (date) => {
-  if (!date) return '-'
-  return new Date(date).toLocaleDateString('zh-CN')
-}
-
 // 是否在两条消息之间显示居中时间分隔（例如相邻消息间隔 >= 5 分钟）
 const shouldShowTimeSeparator = (index, message) => {
   try {

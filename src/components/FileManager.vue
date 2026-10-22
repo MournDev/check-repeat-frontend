@@ -73,7 +73,7 @@
                     <span>{{ formatFileSize(file.size) }}</span>
                     <span>{{ file.uploader }}</span>
                   </div>
-                  <div class="fm-file-time">{{ formatDate(file.uploadTime) }}</div>
+                  <div class="fm-file-time">{{ formatDate(file.uploadTime, '-') }}</div>
                 </div>
                 <div class="fm-file-actions">
                   <el-button type="primary" text size="small" @click="previewFile(file)">
@@ -122,6 +122,7 @@ import {
 import { useUserStore } from '@/stores/user'
 import { getFileIcon } from '@/utils/fileType.js'
 import { formatFileSize } from '@/utils/common.js'
+import { formatDate } from '@/utils/dataType.js'
 import PaperPreviewDialog from '@/components/PaperPreviewDialog.vue'
 
 const props = defineProps({
@@ -314,15 +315,6 @@ const getSessionAvatar = (session) => {
 const getSessionInitial = (session) => {
   const name = session.name || ''
   return name.charAt(0).toUpperCase()
-}
-
-const formatDate = (date) => {
-  if (!date) return '-'
-  return new Date(date).toLocaleDateString('zh-CN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  })
 }
 
 onMounted(() => {

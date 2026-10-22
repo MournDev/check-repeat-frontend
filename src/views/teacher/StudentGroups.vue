@@ -160,6 +160,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import PageHeader from '@/components/common/PageHeader.vue'
+import { formatDate } from '@/utils/dataType.js'
 
 // 图标导入
 import {
@@ -374,11 +375,6 @@ const resetAddStudentsForm = () => {
   selectedStudentIds.value = []
   students.value = []
   currentGroupId.value = null
-}
-
-const formatDate = (date) => {
-  if (!date) return ''
-  return new Date(date).toLocaleDateString('zh-CN')
 }
 
 const loadGroups = async () => {

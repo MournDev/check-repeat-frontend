@@ -124,6 +124,7 @@ import {
   getCategories, getArticles, getPopular, getArticle, searchArticles
 } from '@/api/knowledge'
 import { renderMarkdown } from '@/utils/markdown'
+import { formatDate } from '@/utils/dataType.js'
 
 // 状态
 const keyword = ref('')
@@ -204,14 +205,9 @@ function closeDetail() {
   detailId.value = null
   detail.value = null
 }
-
-function formatDate(d) {
-  if (!d) return ''
-  return new Date(d).toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })
-}
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .knowledge-base { max-width: 1100px; margin: 0 auto; padding: 16px 24px; }
 .search-bar { margin-bottom: 20px; }
 .search-bar :deep(.el-input-group__append) { background: var(--apple-primary-on-dark); border-color: var(--apple-primary-on-dark); color: var(--apple-surface); }

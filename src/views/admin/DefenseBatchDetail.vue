@@ -16,7 +16,7 @@
           </h2>
           <p class="head-desc">
             {{ batchTypeText(batch.batchType) }} · {{ batch.collegeName || '全校' }} ·
-            {{ formatDateTime(batch.defenseDate) }} · {{ batch.modeDesc || modeText(batch.mode) }}
+            {{ formatDateTime(batch.defenseDate, 'YYYY-MM-DD HH:mm', '—') }} · {{ batch.modeDesc || modeText(batch.mode) }}
             <template v-if="batch.location"> · {{ batch.location }}</template>
           </p>
         </div>
@@ -127,7 +127,7 @@
         <el-table-column label="结论提交" min-width="150">
           <template #default="{ row }">
             <span v-if="row.submitTime">
-              {{ row.submitByName || '' }} · {{ formatDateTime(row.submitTime) }}
+              {{ row.submitByName || '' }} · {{ formatDateTime(row.submitTime, 'YYYY-MM-DD HH:mm', '—') }}
             </span>
             <span v-else class="muted">—</span>
           </template>
@@ -271,6 +271,7 @@ import {
   DICT_PAPER_STATUS
 } from '@/utils/defenseDict'
 import { getStatusText, getStatusType } from '@/utils/reviewStatus'
+import { formatDateTime } from '@/utils/dataType.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -513,11 +514,6 @@ const resultTagType = (v) => ({ pass: 'success', fail: 'danger', postpone: 'warn
 // 文案优先读数据库字典 paper_status，未加载时回落到前端统一字典
 const paperStatusText = (v) => getDefenseDictText(DICT_PAPER_STATUS, v, getStatusText(v, v || '—'))
 const paperStatusTagType = (v) => getStatusType(v)
-
-const formatDateTime = (val) => {
-  if (!val) return '—'
-  return String(val).replace('T', ' ').slice(0, 16)
-}
 
 onMounted(() => {
   fetchDetail()

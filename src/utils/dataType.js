@@ -93,13 +93,14 @@ export const ensureObject = (value, defaultValue = {}) => {
  * 格式化日期时间
  * @param {*} date - 日期值
  * @param {string} format - 格式
+ * @param {string} fallback - 空值/非法值占位
  * @returns {string}
  */
-export const formatDateTime = (date, format = 'YYYY-MM-DD HH:mm:ss') => {
-  if (!date) return '';
+export const formatDateTime = (date, format = 'YYYY-MM-DD HH:mm:ss', fallback = '') => {
+  if (!date) return fallback;
   
   const d = new Date(date);
-  if (isNaN(d.getTime())) return '';
+  if (isNaN(d.getTime())) return fallback;
   
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -115,6 +116,16 @@ export const formatDateTime = (date, format = 'YYYY-MM-DD HH:mm:ss') => {
     .replace('HH', hours)
     .replace('mm', minutes)
     .replace('ss', seconds);
+};
+
+/**
+ * 格式化日期（仅年月日）
+ * @param {*} date - 日期值
+ * @param {string} fallback - 空值/非法值占位
+ * @returns {string}
+ */
+export const formatDate = (date, fallback = '') => {
+  return formatDateTime(date, 'YYYY-MM-DD', fallback);
 };
 
 /**

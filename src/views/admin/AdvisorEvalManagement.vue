@@ -271,7 +271,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="createTime" label="提交时间" width="160">
-          <template #default="{ row }">{{ formatDateTime(row.createTime) }}</template>
+          <template #default="{ row }">{{ formatDateTime(row.createTime, 'YYYY-MM-DD HH:mm:ss', '—') }}</template>
         </el-table-column>
         <template #empty>
           <el-empty description="暂无评价明细" :image-size="80" />
@@ -294,7 +294,7 @@ import { getAllColleges } from '@/api/user'
 import { getAvailableTeachers } from '@/api/admin/assignment'
 import { saveBlobAs } from '@/utils/download'
 import { advisorEvalTagLabel, isNegativeAdvisorEvalTag } from '@/utils/advisorEvalTag'
-import { formatPercent } from '@/utils/dataType.js'
+import { formatDateTime, formatPercent } from '@/utils/dataType.js'
 import { useChart } from '@/composables/useChart'
 import ListPageShell from '@/components/common/ListPageShell.vue'
 
@@ -306,8 +306,6 @@ const formatFixed = (v, digits) => {
   if (v === null || v === undefined || v === '') return '—'
   return Number(v).toFixed(digits)
 }
-const formatDateTime = (val) => (val ? String(val).replace('T', ' ').slice(0, 19) : '—')
-
 // ── 统计 ──
 const statsLoading = ref(false)
 const stats = ref({})

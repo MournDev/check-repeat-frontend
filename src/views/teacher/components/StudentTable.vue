@@ -86,7 +86,7 @@
       <el-table-column prop="submitTime" label="提交时间" width="155" sortable>
         <template #default="{ row }">
           <span v-if="row.submitTime" class="submit-time">
-            {{ formatDate(row.submitTime) }}
+            {{ formatDate(row.submitTime, '--') }}
           </span>
           <span v-else class="no-submit">--</span>
         </template>
@@ -175,7 +175,7 @@ import {
   List, Refresh, Message, UserFilled, More, Document, Delete
 } from '@element-plus/icons-vue'
 import { getSimilarityColor } from '@/utils/similarity.js'
-import { formatPercent } from '@/utils/dataType.js'
+import { formatPercent, formatDate } from '@/utils/dataType.js'
 
 defineProps({
   students: {
@@ -269,15 +269,6 @@ const getStatusText = (status) => {
     'completed': '已完成'
   }
   return textMap[status] || '未知状态'
-}
-
-const formatDate = (date) => {
-  if (!date) return '--'
-  return new Date(date).toLocaleDateString('zh-CN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  })
 }
 </script>
 
