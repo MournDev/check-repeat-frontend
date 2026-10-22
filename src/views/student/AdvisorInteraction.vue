@@ -764,7 +764,6 @@ const refreshMessages = async () => {
   
   loadingMessages.value = true
   try {
-    // TODO: 调用刷新消息接口
     await loadMessages(activeSessionId.value)
     ElMessage.success('消息已刷新')
   } catch (error) {

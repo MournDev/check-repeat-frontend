@@ -82,7 +82,7 @@
           <div class="form-group">
             <label class="form-label">论文附件</label>
             <div class="upload-area" @drop="handleDrop" @dragover.prevent @dragenter.prevent @dragleave.prevent>
-              <el-upload class="upload-file" :action="uploadUrl" :headers="uploadHeaders" :data="uploadData"
+              <el-upload ref="uploadRef" class="upload-file" :action="uploadUrl" :headers="uploadHeaders" :data="uploadData"
                 :file-list="fileList" :before-upload="beforeUpload" :on-success="onUploadSuccess" :on-error="onUploadError"
                 :on-remove="handleFileRemove" :limit="1" accept=".pdf,.doc,.docx" name="file"
                 :on-progress="onUploadProgress" :show-file-list="true">
@@ -189,6 +189,7 @@ const router = useRouter()
 const userStore = useUserStore()
 const basicFormRef = ref(null)
 const uploadFormRef = ref(null)
+const uploadRef = ref(null)
 const submitLoading = ref(false)
 const fileList = ref([])
 // 上传成功的原始文件名——确认页展示用。fileList 经 :file-list 单向绑定不回写，
@@ -529,17 +530,17 @@ const onUploadError = (error) => {
 }
 
 // 拖拽上传处理
-const handleDrop = (event) => {
+const handleDrop = async (event) => {
   event.preventDefault()
   const files = event.dataTransfer.files
   if (files.length > 0) {
-    // 处理文件上传逻辑
     const file = files[0]
-    beforeUpload(file).then(valid => {
-      if (valid) {
-        // 这里可以手动触发上传
-      }
-    })
+    const valid = await beforeUpload(file)
+    if (valid) {
+      // 拖拽入口不在 el-upload 内部，需手动交给组件并触发上传
+      uploadRef.value?.handleStart(file)
+      uploadRef.value?.submit()
+    }
   }
 }
 

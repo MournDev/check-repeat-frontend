@@ -735,12 +735,10 @@ const clearAllRead = async () => {
       return
     }
     if (readIds.length > 0) {
-      // 这里可以调用批量删除API
-      // 暂时直接从前端移除
-      const response = await deleteAllMessages(readIds, userId)
+      const response = await deleteAllMessages(readIds)
       if (response.code === 200) {
-        const updatedNotifications = notifications.value.filter(item => !item.isRead)
-        messageStore.setNotifications(updatedNotifications)
+        await loadMessages()
+        messageStore.loadSystemUnread(userId)
         ElMessage.success(`已成功清空 ${readIds.length} 条已读消息`)
       } else {
         ElMessage.error('清空失败')
@@ -810,15 +808,19 @@ const batchDelete = async () => {
       cancelButtonText: '取消',
       type: 'warning'
     })
+  } catch {
+    return // 用户取消
+  }
 
-    // 这里可以调用批量删除API
-    // 暂时直接从前端移除（服务端未删，未读计数不变，不动 store）
-    const updatedNotifications = notifications.value.filter(item => !item.selected)
-    messageStore.setNotifications(updatedNotifications)
-
-    ElMessage.success(`已删除 ${selectedIds.length} 条消息`)
+  try {
+    const response = await deleteAllMessages(selectedIds)
+    if (response.code === 200) {
+      await loadMessages()
+      messageStore.loadSystemUnread(getCurrentUserId())
+      ElMessage.success(`已删除 ${selectedIds.length} 条消息`)
+    }
   } catch (error) {
-    // 用户取消操作
+    console.error('批量删除消息失败:', error)
   }
 }
 

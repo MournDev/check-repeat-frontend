@@ -41,7 +41,6 @@
       :total="total"
       :selected-count="selectedStudents.length"
       @selection-change="onSelectionChange"
-      @sort-change="handleSortChange"
       @refresh="refreshList"
       @view-paper="viewPaper"
       @view-all-papers="viewAllPapers"
@@ -478,10 +477,6 @@ const resetFilters = () => {
 const refreshList = async () => {
   await loadStudents()
   await loadStats()
-}
-
-const handleSortChange = ({ prop, order }) => {
-  // 实际应用中这里会重新请求排序后的数据
 }
 
 // ── 展示工具方法（供 dialog 内部使用） ──────────────────────
