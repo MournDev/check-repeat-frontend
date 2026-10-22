@@ -374,6 +374,7 @@ import { ElMessage, ElMessageBox, ElLoading } from 'element-plus'
 import { getPaperDetails, deleteFile as deleteFileAPI, createCheckTask, getCheckTaskDetail } from "@/api/student.js"
 import { getAvatarUrl } from '@/utils/avatar'
 import { getSimilarityColor, getSimilarityTagType as baseGetSimilarityTagType } from '@/utils/similarity.js'
+import { getCheckStatusText, getCheckStatusType as getCheckStatusTag } from '@/utils/checkStatus.js'
 import { getStatusText, getStatusType } from '@/utils/reviewStatus.js'
 import { loadPaperTypes, getPaperTypeText } from '@/utils/paperType.js'
 import { loadDefenseDict, getDefenseDictText, DICT_PAPER_STATUS } from '@/utils/defenseDict.js'
@@ -1382,31 +1383,6 @@ const findSubjectLabelByCode = (code, tree = subjectTree.value) => {
         }
     }
     return code // 没找到就显示编号
-}
-
-const getCheckStatusTag = (status) => {
-    if (!status) return 'info'
-
-    const tagMap = {
-        'completed': 'success',
-        'checking': 'warning',
-        'failure': 'danger',
-        'pending': 'info'
-    }
-    return tagMap[status] || 'info'
-}
-
-// 检测状态文本（已有，确保正确）
-const getCheckStatusText = (status) => {
-    if (!status) return '未检测'
-
-    const textMap = {
-        'completed': '已完成',
-        'checking': '检测中',
-        'failure': '失败',
-        'pending': '排队中'
-    }
-    return textMap[status] || '未知'
 }
 
 const getCheckStatusIcon = (status) => {

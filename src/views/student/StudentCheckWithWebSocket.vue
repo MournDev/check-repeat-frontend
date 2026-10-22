@@ -123,10 +123,10 @@
         </el-table-column>
         <el-table-column prop="checkStatus" label="状态" width="120">
           <template #default="{ row }">
-            <el-tag :type="getStatusColor(row.checkStatus)">
-              {{ getStatusText(row.checkStatus) }}
+            <el-tag :type="getCheckStatusType(row.checkStatus)">
+              {{ getCheckStatusText(row.checkStatus) }}
             </el-tag>
-            <div v-if="row.checkStatus === 'FAILURE' && row.failReason" class="fail-reason">
+            <div v-if="String(row.checkStatus).toLowerCase() === 'failure' && row.failReason" class="fail-reason">
               <el-tooltip :content="row.failReason" placement="top">
                 <span class="fail-text">{{ row.failReason }}</span>
               </el-tooltip>
@@ -309,6 +309,7 @@ import { useCheckProgress } from '@/composables/useCheckProgress';
 import ListPageShell from '@/components/common/ListPageShell.vue';
 import * as studentApi from '@/api/student';
 import { getSimilarityTagType } from '@/utils/similarity.js';
+import { getCheckStatusText, getCheckStatusType } from '@/utils/checkStatus.js';
 import dayjs from 'dayjs';
 
 const router = useRouter();
@@ -714,39 +715,11 @@ const updateSingleTask = (updatedTask) => {
 };
 
 /**
- * 获取状态颜色
- */
-const getStatusColor = (status) => {
-  const colors = {
-    pending: 'warning',
-    checking: 'primary',
-    completed: 'success',
-    failure: 'danger',
-    cancelled: 'info'
-  };
-  return colors[status] || 'info';
-};
-
-/**
  * 格式化时间
  */
 const formatTime = (time) => {
   if (!time) return '-';
   return dayjs(time).format('YYYY-MM-DD HH:mm:ss');
-};
-
-/**
- * 获取状态文本
- */
-const getStatusText = (status) => {
-  const texts = {
-    pending: '待处理',
-    checking: '查重中',
-    completed: '已完成',
-    failure: '失败',
-    cancelled: '已取消'
-  };
-  return texts[status] || status;
 };
 
 /**

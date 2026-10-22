@@ -72,7 +72,7 @@
           <el-select v-model="searchForm.checkStatus" placeholder="选择查重状态" clearable>
             <el-option label="全部" value="" />
             <el-option label="待查重" value="pending" />
-            <el-option label="处理中" value="checking" />
+            <el-option label="查重中" value="checking" />
             <el-option label="已完成" value="completed" />
             <el-option label="失败" value="failure" />
           </el-select>
@@ -285,6 +285,7 @@ import {
 } from '@element-plus/icons-vue'
 import { getReportList, getReportStats, getReportDetail, batchExportReports } from '@/api/admin/reports'
 import { getSimilarityColor, getSimilarityTagType } from '@/utils/similarity.js'
+import { getCheckStatusText as getStatusLabel, getCheckStatusType as getStatusTagType } from '@/utils/checkStatus.js'
 import PageHeader from '@/components/common/PageHeader.vue'
 import ListPageShell from '@/components/common/ListPageShell.vue'
 
@@ -431,30 +432,8 @@ const getSimilarityRating = (similarity) => {
   return '需要修改'
 }
 
-// 查重状态词表与后端 check_task.check_status 保持一致
-// 注意：不要复用 utils/reviewStatus.js 的 getStatusText —— 那是 PaperStatusEnum，
-// 词表不同（rejected/revision_needed vs failure）
-const CHECK_STATUS_LABELS = {
-  pending: '待查重',
-  checking: '处理中',
-  completed: '已完成',
-  failure: '失败'
-}
-
-const getStatusLabel = (status) => CHECK_STATUS_LABELS[status] || status || '-'
-
-const getStatusTagType = (status) => {
-  switch (status) {
-    case 'completed':
-      return 'success'
-    case 'checking':
-      return 'warning'
-    case 'failure':
-      return 'danger'
-    default:
-      return 'info'
-  }
-}
+// 查重状态词表与后端 check_task.check_status 统一走 utils/checkStatus.js，
+// 不要复用 reviewStatus.js 的 getStatusText（那是 PaperStatusEnum，词表不同）
 
 // 构造列表与统计共用的查询参数（两者口径必须一致）
 const buildQueryParams = () => {
