@@ -10,9 +10,19 @@
       </template>
     </PageHeader>
 
-    <!-- 筛选和搜索 -->
-    <el-card class="filter-card" shadow="never">
-      <el-form :model="filterForm" inline>
+    <ListPageShell
+      v-model:page="pagination.current"
+      v-model:page-size="pagination.size"
+      title="选择论文查看查重历史"
+      :icon="Document"
+      :total="total"
+      show-total
+      total-suffix="篇论文"
+      @size-change="handleSizeChange"
+      @page-change="handleCurrentChange"
+    >
+      <template #filters>
+        <el-form :model="filterForm" inline>
         <el-form-item label="论文状态">
           <el-select
             v-model="filterForm.paperStatus"
@@ -65,21 +75,8 @@
           </el-button>
         </el-form-item>
       </el-form>
-    </el-card>
-
-    <!-- 论文列表 -->
-    <el-card class="papers-card" shadow="never">
-      <template #header>
-        <div class="card-header">
-          <el-icon><Document /></el-icon>
-          <span>选择论文查看查重历史</span>
-          <div class="header-right">
-            <span class="total-count">共 {{ total }} 篇论文</span>
-          </div>
-        </div>
       </template>
 
-      <!-- 论文列表 -->
       <el-table 
         :data="papers" 
         stripe 
@@ -153,20 +150,7 @@
           </template>
         </el-table-column>
       </el-table>
-      
-      <!-- 分页 -->
-      <div class="pagination-container">
-        <el-pagination
-          v-model:current-page="pagination.current"
-          v-model:page-size="pagination.size"
-          :page-sizes="[10, 20, 50, 100]"
-          :total="total"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        />
-      </div>
-    </el-card>
+    </ListPageShell>
   </div>
 </template>
 
@@ -185,6 +169,7 @@ import {
   usePaperTypesLoaded
 } from '@/utils/paperType.js'
 import PageHeader from '@/components/common/PageHeader.vue'
+import ListPageShell from '@/components/common/ListPageShell.vue'
 import { getStatusText, getStatusType } from '@/utils/reviewStatus.js'
 
 const router = useRouter()

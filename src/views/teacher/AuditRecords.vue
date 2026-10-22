@@ -9,9 +9,18 @@
       </template>
     </PageHeader>
 
-    <!-- 筛选条件 -->
-    <el-card class="filter-card console-card" shadow="never">
-      <div class="filter-content">
+    <ListPageShell
+      v-model:page="currentPage"
+      v-model:page-size="pageSize"
+      title="审核记录列表"
+      :icon="List"
+      :total="total"
+      show-total
+      total-suffix="条记录"
+      @size-change="handleSizeChange"
+      @page-change="handleCurrentChange"
+    >
+      <template #filters>
         <el-form :model="filterForm" label-width="auto">
           <el-row :gutter="20">
             <el-col :xs="24" :sm="12" :md="8" :lg="6">
@@ -80,21 +89,6 @@
             </el-col>
           </el-row>
         </el-form>
-      </div>
-    </el-card>
-
-    <!-- 数据表格 -->
-    <el-card class="data-card console-card" shadow="never">
-      <template #header>
-        <div class="card-header">
-          <div class="header-left">
-            <el-icon><List /></el-icon>
-            <span>审核记录列表</span>
-          </div>
-          <div class="header-right">
-            <el-text type="info">共 {{ total }} 条记录</el-text>
-          </div>
-        </div>
       </template>
 
       <el-table 
@@ -202,20 +196,7 @@
           </template>
         </el-table-column>
       </el-table>
-
-      <!-- 分页 -->
-      <div class="pagination-wrapper">
-        <el-pagination
-          v-model:current-page="currentPage"
-          v-model:page-size="pageSize"
-          :page-sizes="[10, 20, 50, 100]"
-          :total="total"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        />
-      </div>
-    </el-card>
+    </ListPageShell>
 
     <!-- 论文详情对话框 -->
     <el-dialog
@@ -234,6 +215,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import PageHeader from '@/components/common/PageHeader.vue'
+import ListPageShell from '@/components/common/ListPageShell.vue'
 import PaperDetail from '@/views/student/PaperDetail.vue'
 import { getReviewedList, downloadPaper, contactStudent, exportReviewRecords } from '@/api/teacher.js'
 import { getReviewResultText, getReviewResultTagType, getSimilarityColor, getSimilarityClass, REVIEW_RESULT } from '@/utils/reviewStatus.js'

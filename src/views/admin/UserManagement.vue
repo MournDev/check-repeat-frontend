@@ -13,9 +13,18 @@
       </template>
     </PageHeader>
 
-    <!-- 筛选条件 -->
-    <el-card class="filter-card" shadow="never">
-      <el-form :model="filterForm" label-width="80px" inline>
+    <ListPageShell
+      v-model:page="pagination.currentPage"
+      v-model:page-size="pagination.pageSize"
+      title="用户列表"
+      :icon="User"
+      :total="pagination.total"
+      :show-pagination="!fetchAllUsers"
+      @size-change="handleSizeChange"
+      @page-change="handleCurrentChange"
+    >
+      <template #filters>
+        <el-form :model="filterForm" label-width="80px" inline>
         <el-form-item label="人员类型">
           <el-select v-model="filterForm.userType" placeholder="请选择人员类型" clearable>
             <el-option label="学生" value="STUDENT"></el-option>
@@ -46,34 +55,24 @@
             重置
           </el-button>
         </el-form-item>
-      </el-form>
-    </el-card>
+        </el-form>
+      </template>
 
-    <!-- 用户列表 -->
-    <el-card class="table-card" shadow="never">
-      <template #header>
-        <div class="card-header">
-          <span class="card-title">
-            <el-icon><User /></el-icon>
-            用户列表
-          </span>
-          <div class="table-actions">
-            <el-button 
-              type="danger" 
-              :icon="Delete" 
-              :disabled="selectedUsers.length === 0"
-              @click="batchDelete"
-            >
-              批量删除
-            </el-button>
-            <el-button 
-              :icon="Download" 
-              @click="exportUsers"
-            >
-              导出数据
-            </el-button>
-          </div>
-        </div>
+      <template #header-extra>
+        <el-button
+          type="danger"
+          :icon="Delete"
+          :disabled="selectedUsers.length === 0"
+          @click="batchDelete"
+        >
+          批量删除
+        </el-button>
+        <el-button
+          :icon="Download"
+          @click="exportUsers"
+        >
+          导出数据
+        </el-button>
       </template>
 
       <el-table
@@ -137,18 +136,7 @@
           </template>
         </el-table-column>
       </el-table>
-
-      <!-- 分页 -->
-      <div class="pagination-container" v-if="!fetchAllUsers">
-        <el-pagination
-          v-model:current-page="pagination.currentPage"
-          v-model:page-size="pagination.pageSize"
-          :page-sizes="[10, 20, 50, 100]"
-          :total="pagination.total"
-          layout="total, sizes, prev, pager, next, jumper"
-        />
-      </div>
-    </el-card>
+    </ListPageShell>
 
     <!-- 用户详情对话框 -->
     <el-dialog
@@ -300,6 +288,7 @@ import {
   Plus, Refresh, Search, RefreshLeft, User, Delete, Download
 } from '@element-plus/icons-vue'
 import PageHeader from '@/components/common/PageHeader.vue'
+import ListPageShell from '@/components/common/ListPageShell.vue'
 
 // 响应式数据
 const loading = ref(false)
