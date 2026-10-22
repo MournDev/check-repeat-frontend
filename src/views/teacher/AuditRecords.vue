@@ -1,7 +1,7 @@
 <template>
   <div class="teacher-review">
     <!-- 页面头部 -->
-    <PageHeader title="审核记录" description="查看您审核过的论文记录">
+    <PageHeader description="查看您审核过的论文记录">
       <template #actions>
         <el-button type="primary" :icon="Refresh" @click="refreshData">
           刷新数据

@@ -10,9 +10,6 @@
 
 <template>
   <div class="check-container">
-    <!-- 页面标题 -->
-    <h2 class="page-title">查重任务管理</h2>
-    
     <!-- 操作栏 -->
     <div class="action-bar">
       <el-button type="primary" @click="loadTaskList">
@@ -812,12 +809,6 @@ onUnmounted(() => {
 .check-container {
   padding: 24px;
 
-  .page-title {
-    margin-bottom: 24px;
-    color: var(--apple-ink);
-    font-size: 1.5rem;
-    font-weight: 600;
-  }
 
   .action-bar {
     margin-bottom: 24px;
@@ -1024,15 +1015,6 @@ onUnmounted(() => {
   background: var(--apple-canvas-parchment);
   color: var(--apple-ink);
   font-family: var(--apple-font-text);
-
-  .page-title {
-    margin: 0 0 var(--apple-spacing-lg);
-    font-family: var(--apple-font-display);
-    font-size: 1.25rem;
-    font-weight: 700;
-    line-height: 1.2;
-    color: var(--apple-ink);
-  }
 
   .action-bar {
     gap: var(--apple-spacing-xs);

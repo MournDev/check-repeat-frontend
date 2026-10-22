@@ -1,6 +1,6 @@
 <template>
   <div class="compare-lib-management">
-    <PageHeader title="比对库管理" description="管理查重系统使用的比对数据源（本地库/远程库）" />
+    <PageHeader description="管理查重系统使用的比对数据源（本地库/远程库）" />
 
     <!-- 筛选栏 -->
     <el-card class="filter-card" shadow="never">

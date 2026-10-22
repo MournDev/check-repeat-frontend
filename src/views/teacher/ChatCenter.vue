@@ -1,7 +1,6 @@
 <template>
   <div class="chat-center">
     <div class="header">
-      <h1>在线聊天</h1>
       <div class="header-actions">
         <el-button type="default" link @click="refreshSessions">
           <el-icon>
@@ -525,17 +524,11 @@ watch(
 
   .header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     margin-bottom: 24px;
     padding-bottom: 16px;
     border-bottom: 1px solid var(--apple-hairline);
-
-    h1 {
-      margin: 0;
-      color: var(--apple-ink);
-      font-size: 24px;
-    }
 
     .header-actions {
       display: flex;
@@ -844,14 +837,6 @@ watch(
     gap: var(--apple-spacing-md);
     margin-bottom: var(--apple-spacing-lg);
     padding-bottom: var(--apple-spacing-md);
-
-    h1 {
-      font-family: var(--apple-font-display);
-      font-size: 1.25rem;
-      font-weight: 700;
-      line-height: 1.2;
-      color: var(--apple-ink);
-    }
   }
 
   .chat-container {

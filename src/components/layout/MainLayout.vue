@@ -95,7 +95,7 @@
             {{ item.title }}
           </el-breadcrumb-item>
         </el-breadcrumb>
-        <h2 class="sub-nav-title">{{ currentPageTitle }}</h2>
+        <h1 class="sub-nav-title">{{ currentPageTitle }}</h1>
       </div>
       <div class="sub-nav-right">
         <span class="role-badge">{{ getRoleName }}</span>

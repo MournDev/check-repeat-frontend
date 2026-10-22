@@ -1,7 +1,7 @@
 <template>
   <div class="similarity-threshold">
     <!-- 页面头部 -->
-    <PageHeader title="相似度阈值设置" description="设置论文查重的相似度阈值，超过阈值的论文将被标记为需要重点审核" />
+    <PageHeader description="设置论文查重的相似度阈值，超过阈值的论文将被标记为需要重点审核" />
 
     <!-- 阈值设置表单 -->
     <el-card shadow="never" class="threshold-card">

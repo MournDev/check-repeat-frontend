@@ -1,6 +1,6 @@
 <template>
   <div class="check-rule-management">
-    <PageHeader title="查重规则管理" description="管理论文查重的规则配置，包括阈值、次数限制和关联比对库" />
+    <PageHeader description="管理论文查重的规则配置，包括阈值、次数限制和关联比对库" />
 
     <!-- 筛选栏 -->
     <el-card class="filter-card" shadow="never">

@@ -1,7 +1,7 @@
 <template>
   <div class="check-history-page">
     <!-- 页面头部 -->
-    <PageHeader title="查重历史记录">
+    <PageHeader>
       <template #actions>
         <button class="back-button" @click="goBack">
           <el-icon><ArrowLeft /></el-icon>

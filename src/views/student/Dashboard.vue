@@ -1,7 +1,6 @@
 <template>
   <div class="dashboard-page">
     <PageHeader
-      title="工作台"
       :description="`欢迎回来，${userStore.userInfo?.realName || '同学'} · ${currentDate}`"
     >
       <template #actions>

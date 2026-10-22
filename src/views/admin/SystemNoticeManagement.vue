@@ -1,6 +1,6 @@
 <template>
   <div class="notice-management">
-    <PageHeader title="系统公告与维护" description="管理系统站内通知；超级管理员可向全员广播公告并控制维护模式" />
+    <PageHeader description="管理系统站内通知；超级管理员可向全员广播公告并控制维护模式" />
 
     <el-tabs v-model="activeTab" class="notice-tabs" @tab-change="handleTabChange">
       <!-- ============ 页签 1：通知列表（管理员/超管可见） ============ -->

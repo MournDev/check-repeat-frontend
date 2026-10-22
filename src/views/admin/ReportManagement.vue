@@ -1,7 +1,7 @@
 <template>
   <div class="admin-report-management">
     <!-- 页面头部 -->
-    <PageHeader title="报告管理">
+    <PageHeader>
       <template #actions>
         <el-button text :icon="ArrowLeft" @click="goBack">返回</el-button>
         <el-button type="primary" @click="batchExport">

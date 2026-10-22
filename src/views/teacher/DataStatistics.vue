@@ -1,7 +1,7 @@
 <template>
   <div class="teacher-dashboard">
     <!-- 页面头部 -->
-    <PageHeader title="数据统计" description="查看您的论文审核数据和工作统计">
+    <PageHeader description="查看您的论文审核数据和工作统计">
       <template #actions>
         <el-button-group>
           <el-button :type="timeRange === 'week' ? 'primary' : ''" @click="handleTimeRangeChange('week')">

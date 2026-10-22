@@ -1,7 +1,7 @@
 <template>
   <div class="system-config">
     <!-- 页面头部 -->
-    <PageHeader title="系统配置" description="管理系统各项配置参数和运行设置">
+    <PageHeader description="管理系统各项配置参数和运行设置">
       <template #actions>
         <el-button type="primary" :icon="Refresh" @click="refreshConfig">
           刷新配置

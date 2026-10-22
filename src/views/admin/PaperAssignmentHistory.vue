@@ -1,7 +1,7 @@
 <template>
   <div class="assignment-history">
     <!-- 页面头部 -->
-    <PageHeader title="分配记录" description="查看和管理所有论文指导老师分配的历史记录">
+    <PageHeader description="查看和管理所有论文指导老师分配的历史记录">
       <template #actions>
         <el-button type="primary" :icon="Refresh" @click="refreshHistory">
           刷新记录

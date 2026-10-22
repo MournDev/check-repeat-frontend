@@ -1,7 +1,7 @@
 <template>
   <div class="review-templates">
     <!-- 页面头部 -->
-    <PageHeader title="审核意见模板" description="管理常用的审核意见模板，提高审核效率">
+    <PageHeader description="管理常用的审核意见模板，提高审核效率">
       <template #actions>
         <el-button type="primary" :icon="Plus" @click="showTemplateDialog">
           新建模板

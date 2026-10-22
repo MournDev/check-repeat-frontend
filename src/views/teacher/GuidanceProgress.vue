@@ -2,7 +2,6 @@
   <div class="guidance-progress">
     <!-- 页头（全站统一 PageHeader 组件） -->
     <PageHeader
-      title="指导进度看板"
       description="我指导论文的状态分布与查重 / 成绩一览，查重完成的论文可直接签核查重报告。"
     >
       <template #actions>

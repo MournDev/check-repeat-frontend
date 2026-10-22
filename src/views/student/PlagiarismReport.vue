@@ -1,6 +1,6 @@
 <template>
   <div class="report-page">
-    <PageHeader title="查重报告" :description="reportNoText">
+    <PageHeader :description="reportNoText">
       <template #actions>
         <el-button text :icon="ArrowLeft" @click="goBack">返回</el-button>
         <el-button :icon="Share" @click="shareReport">分享</el-button>

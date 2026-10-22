@@ -1,7 +1,7 @@
 <template>
   <div class="my-papers-page">
     <!-- 页面标题 -->
-    <PageHeader title="我的论文" description="管理您的所有论文提交记录">
+    <PageHeader description="管理您的所有论文提交记录">
       <template #actions>
         <el-button type="primary" :icon="UploadFilled" @click="goToPaperSubmit">提交新论文</el-button>
       </template>

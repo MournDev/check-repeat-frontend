@@ -1,6 +1,6 @@
 <template>
   <div class="paper-assignment">
-    <PageHeader title="论文分配管理" description="管理学生论文指导老师分配">
+    <PageHeader description="管理学生论文指导老师分配">
       <template #actions>
         <el-button type="primary" :icon="MagicStick" @click="handleAutoAssign">自动分配</el-button>
         <el-button :icon="Pointer" @click="handleManualAssign">手动分配</el-button>

@@ -1,7 +1,7 @@
 <template>
   <div class="check-monitor-page">
     <!-- 页面头部 -->
-    <PageHeader title="查重进度监控">
+    <PageHeader>
       <template #actions>
         <el-button text @click="goBack">
           <el-icon><ArrowLeft /></el-icon>

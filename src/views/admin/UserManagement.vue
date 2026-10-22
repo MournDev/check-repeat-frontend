@@ -1,7 +1,7 @@
 <template>
   <div class="user-management">
     <!-- 页面头部 -->
-    <PageHeader title="人员管理" description="统一管理系统内所有人员账号（学生/教师）">
+    <PageHeader description="统一管理系统内所有人员账号（学生/教师）">
       <template #actions>
         <el-button type="primary" :icon="Plus" @click="showAddUserDialog">
           新增用户

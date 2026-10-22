@@ -1,7 +1,7 @@
 <template>
   <div class="paper-library">
     <!-- 页面头部 -->
-    <PageHeader title="论文库管理" description="统一管理校内所有论文资源，支持校内查重和第三方查重">
+    <PageHeader description="统一管理校内所有论文资源，支持校内查重和第三方查重">
       <template #actions>
         <el-button type="primary" :icon="Upload" @click="showUploadDialog">
           上传论文

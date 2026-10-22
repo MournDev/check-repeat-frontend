@@ -1,7 +1,7 @@
 <template>
   <div class="review-workflow">
     <!-- 页面头部 -->
-    <PageHeader title="审核工作流配置" description="配置论文审核的工作流程，包括审核步骤和审批人设置" />
+    <PageHeader description="配置论文审核的工作流程，包括审核步骤和审批人设置" />
 
     <!-- 工作流配置 -->
     <el-card shadow="never" class="workflow-card">

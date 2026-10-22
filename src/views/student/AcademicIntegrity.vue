@@ -1,7 +1,7 @@
 <template>
   <div class="academic-integrity-page">
     <!-- 页面头部 -->
-    <PageHeader title="学术诚信指导中心" description="提升学术素养，规范引用行为" />
+    <PageHeader description="提升学术素养，规范引用行为" />
 
     <!-- 导航Tabs -->
     <el-card class="navigation-card" shadow="never">

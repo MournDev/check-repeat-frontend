@@ -1,7 +1,7 @@
 <template>
   <div :class="['user-settings', 'role-' + role.toLowerCase()]">
     <!-- 页面头部 -->
-    <PageHeader :title="pageTitle" :description="pageSubtitle">
+    <PageHeader :description="pageSubtitle">
       <template #actions>
         <el-button type="primary" :icon="Check" @click="saveSettings" size="large">
           保存设置
@@ -27,7 +27,6 @@ import PageHeader from '@/components/common/PageHeader.vue'
 const userStore = useUserStore()
 
 const role = computed(() => userStore.role || 'STUDENT')
-const pageTitle = computed(() => ({ ADMIN: '管理员设置', TEACHER: '个人设置', STUDENT: '个人中心' }[role.value] || '个人设置'))
 const pageSubtitle = computed(() => ({ ADMIN: '管理您的个人资料和系统偏好设置', TEACHER: '管理您的个人资料和系统偏好设置', STUDENT: '管理您的个人信息和账户设置' }[role.value] || ''))
 
 const panelRef = ref()

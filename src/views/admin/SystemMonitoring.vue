@@ -1,6 +1,6 @@
 <template>
   <div class="system-monitoring">
-    <PageHeader title="系统监控" description="实时监控系统性能指标、资源使用率和API响应时间">
+    <PageHeader description="实时监控系统性能指标、资源使用率和API响应时间">
       <template #actions>
         <el-select v-model="refreshInterval" style="width: 120px" @change="handleRefreshChange">
           <el-option label="手动刷新" :value="0" />

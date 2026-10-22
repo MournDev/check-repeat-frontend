@@ -4,7 +4,6 @@
     <div class="welcome-section">
       <div class="welcome-content">
         <div class="welcome-left">
-          <h1 class="welcome-title">审核工作台</h1>
           <p class="welcome-subtitle">欢迎回来，{{ userStore.userInfo?.realName || '老师' }}！这里是您的论文审核中心</p>
         </div>
         <div class="welcome-actions">
@@ -837,14 +836,6 @@ onMounted(() => {
     margin-bottom: 24px;
     
     .welcome-left {
-      
-      .welcome-title {
-        font-size: var(--apple-fs-display-lg);
-        font-weight: 700;
-        color: var(--apple-ink);
-        margin: 0 0 var(--apple-spacing-sm) 0;
-        line-height: var(--apple-lh-display-lg);
-      }
 
       .welcome-subtitle {
         font-size: var(--apple-fs-body);
@@ -1789,10 +1780,6 @@ onMounted(() => {
     grid-template-columns: 1fr;
   }
   
-  .welcome-title {
-    font-size: 1.5rem !important;
-  }
-  
   .card {
     padding: 20px;
   }
@@ -1843,10 +1830,6 @@ onMounted(() => {
 @media (max-width: 768px) {
   .teacher-dashboard {
     padding: var(--apple-spacing-md);
-
-    .welcome-title {
-      font-size: var(--apple-fs-lead-airy);
-    }
 
     .welcome-content {
       flex-direction: column;

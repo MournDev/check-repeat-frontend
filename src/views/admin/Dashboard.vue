@@ -4,7 +4,6 @@
     <div class="welcome-section">
       <div class="welcome-content">
         <div class="welcome-left">
-          <h1 class="welcome-title">运营概览</h1>
           <p class="welcome-subtitle">欢迎回来，{{ userStore.userInfo?.realName || '管理员' }}！这里是业务数据总览</p>
         </div>
         <div class="welcome-actions">
@@ -478,15 +477,7 @@ onMounted(() => {
     margin-bottom: 24px;
     
     .welcome-left {
-      
-      .welcome-title {
-        font-size: 2rem;
-        font-weight: 700;
-        color: var(--apple-ink);
-        margin: 0 0 8px 0;
-        line-height: 1.2;
-      }
-      
+
       .welcome-subtitle {
         font-size: 1rem;
         color: var(--apple-ink-secondary);
@@ -860,10 +851,6 @@ onMounted(() => {
     grid-template-columns: 1fr;
   }
   
-  .welcome-title {
-    font-size: 1.5rem !important;
-  }
-  
   .card {
     padding: 20px;
   }
@@ -883,11 +870,6 @@ onMounted(() => {
   }
 
   .welcome-left {
-    .welcome-title {
-      margin-bottom: var(--apple-spacing-xs);
-      font-size: var(--apple-fs-display-md);
-    }
-
     .welcome-subtitle {
       font-size: var(--apple-fs-caption);
     }

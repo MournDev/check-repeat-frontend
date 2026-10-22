@@ -1,7 +1,7 @@
 <template>
   <div class="student-management">
     <!-- 页面头部 -->
-    <PageHeader title="学生管理" description="管理所有学生信息，分配导师，跟踪论文进度">
+    <PageHeader description="管理所有学生信息，分配导师，跟踪论文进度">
       <template #actions>
         <el-button type="primary" :icon="Plus" @click="addNewStudent" size="large">
           添加学生

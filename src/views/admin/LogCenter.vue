@@ -1,6 +1,6 @@
 <template>
   <div class="log-center">
-    <PageHeader title="日志中心" description="操作审计、登录记录与备份历史">
+    <PageHeader description="操作审计、登录记录与备份历史">
       <template #actions>
         <el-button type="primary" :icon="Refresh" @click="refreshLogs">刷新数据</el-button>
         <el-button :icon="Download" @click="exportLogs">导出日志</el-button>

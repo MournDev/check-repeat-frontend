@@ -1,6 +1,6 @@
 <template>
   <div class="template-management">
-    <PageHeader title="消息模板管理" description="管理系统通知的消息模板，支持变量渲染预览">
+    <PageHeader description="管理系统通知的消息模板，支持变量渲染预览">
       <template #actions>
         <el-button type="primary" @click="handleAdd">新增模板</el-button>
       </template>

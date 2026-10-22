@@ -1,7 +1,7 @@
 <template>
   <div class="manual-assignment">
     <!-- 页面头部 -->
-    <PageHeader title="手动论文分配" description="为学生手动指定指导老师，支持批量分配和精细调整">
+    <PageHeader description="为学生手动指定指导老师，支持批量分配和精细调整">
       <template #actions>
         <el-button type="primary" :icon="Refresh" @click="refreshData">
           刷新数据

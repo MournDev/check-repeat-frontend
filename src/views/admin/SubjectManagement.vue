@@ -1,7 +1,6 @@
 <template>
   <div class="subject-management">
     <PageHeader
-      title="学科领域管理"
       description="学科领域只支持两级：一级门类与二级学科。论文的学科领域、相似度阈值、教师研究方向都用这一套取值域。"
     />
 

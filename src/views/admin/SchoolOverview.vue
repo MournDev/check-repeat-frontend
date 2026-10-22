@@ -2,7 +2,6 @@
   <div class="school-overview">
     <!-- 页面头部（全站统一 PageHeader 组件） -->
     <PageHeader
-      title="全校数据概览"
       description="实时展示全校论文查重系统运行状况和关键指标"
     >
       <template #actions>

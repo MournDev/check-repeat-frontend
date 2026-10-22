@@ -1,7 +1,7 @@
 <template>
   <div class="auto-assignment">
     <!-- 页面头部 -->
-    <PageHeader title="自动论文分配" description="基于智能算法自动分配指导老师，支持多种分配策略">
+    <PageHeader description="基于智能算法自动分配指导老师，支持多种分配策略">
       <template #actions>
         <el-button type="primary" :icon="MagicStick" @click="handleStartAutoAssignment" :loading="processing">
           开始自动分配

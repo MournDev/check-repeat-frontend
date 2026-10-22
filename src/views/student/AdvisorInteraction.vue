@@ -1,7 +1,7 @@
 <template>
   <div class="advisor-interaction-page">
     <!-- 页面标题 -->
-    <PageHeader title="导师互动" description="与指导老师沟通交流，获取论文指导" />
+    <PageHeader description="与指导老师沟通交流，获取论文指导" />
 
     <el-row :gutter="20" class="interaction-content">
       <!-- 左侧：消息会话列表 -->

@@ -1,7 +1,7 @@
 <template>
   <div class="sentence-detail-page">
     <!-- 页面头部 -->
-    <PageHeader title="句级检测明细">
+    <PageHeader>
       <template #actions>
         <el-button text @click="goBack">
           <el-icon><ArrowLeft /></el-icon>
