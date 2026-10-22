@@ -741,7 +741,7 @@ const clearAllRead = async () => {
       if (response.code === 200) {
         const updatedNotifications = notifications.value.filter(item => !item.isRead)
         messageStore.setNotifications(updatedNotifications)
-        ElMessage.success('已成功清空 ${readIds.length} 条已读消息')
+        ElMessage.success(`已成功清空 ${readIds.length} 条已读消息`)
       } else {
         ElMessage.error('清空失败')
       }

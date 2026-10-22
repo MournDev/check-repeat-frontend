@@ -263,8 +263,6 @@ const loadData = async () => {
 
     // 初始化图表
     await initCharts()
-
-    ElMessage.success('数据加载完成')
   } catch (error) {
     console.error('加载数据失败:', error)
     ElMessage.error('加载数据失败: ' + error.message)

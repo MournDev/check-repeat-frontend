@@ -40,7 +40,6 @@
         v-else-if="previewUrl"
         :src="previewUrl"
         class="preview-iframe"
-        @load="handleIframeLoad"
         @error="handleIframeError"
       ></iframe>
     </div>
@@ -168,10 +167,6 @@ const loadPreview = async () => {
     loadingInstance.close()
     loading.value = false
   }
-}
-
-const handleIframeLoad = () => {
-  ElMessage.success('预览加载完成')
 }
 
 const handleIframeError = () => {

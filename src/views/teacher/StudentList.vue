@@ -478,7 +478,6 @@ const resetFilters = () => {
 const refreshList = async () => {
   await loadStudents()
   await loadStats()
-  ElMessage.success('数据已刷新')
 }
 
 const handleSortChange = ({ prop, order }) => {

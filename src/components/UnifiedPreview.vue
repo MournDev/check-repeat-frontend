@@ -67,7 +67,7 @@
 
       <!-- KKFileView预览 (Office文件) -->
       <div v-else-if="fileType === 'office' && kkfileviewUrl" class="office-preview">
-        <iframe :src="kkfileviewUrl" class="office-iframe" @load="handleIframeLoad" @error="handleIframeError" />
+        <iframe :src="kkfileviewUrl" class="office-iframe" @error="handleIframeError" />
       </div>
 
       <!-- 不支持预览 -->
@@ -198,10 +198,6 @@ const loadPreview = async () => {
   } finally {
     loading.value = false;
   }
-};
-
-const handleIframeLoad = () => {
-  ElMessage.success('预览加载完成');
 };
 
 const handleIframeError = () => {

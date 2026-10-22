@@ -502,7 +502,6 @@ const refreshData = async () => {
   try {
     loading.stats = true
     await loadDashboardData()
-    ElMessage.success('数据已刷新')
   } catch (error) {
     ElMessage.error('刷新失败')
   } finally {

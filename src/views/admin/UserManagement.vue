@@ -372,7 +372,6 @@ const dialogTitle = computed(() => {
 // 方法
 const refreshData = () => {
   loadUserList()
-  ElMessage.success('数据已刷新')
 }
 
 const handleSearch = () => {
