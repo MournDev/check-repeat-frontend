@@ -34,4 +34,16 @@ defineProps({
   gap: var(--app-space-3);
   margin-left: auto;
 }
+
+@media (max-width: 640px) {
+  .page-header {
+    align-items: flex-start;
+  }
+
+  .page-header-actions {
+    width: 100%;
+    margin-left: 0;
+    flex-wrap: wrap;
+  }
+}
 </style>

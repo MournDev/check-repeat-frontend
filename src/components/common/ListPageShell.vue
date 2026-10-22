@@ -95,4 +95,20 @@ defineEmits(['page-change', 'size-change'])
   justify-content: flex-end;
   margin-top: var(--app-space-4);
 }
+
+@media (max-width: 640px) {
+  .list-page__header {
+    flex-wrap: wrap;
+  }
+
+  .list-page__extra {
+    width: 100%;
+    margin-left: 0;
+    flex-wrap: wrap;
+  }
+
+  .list-page__pagination {
+    justify-content: center;
+  }
+}
 </style>

@@ -77,16 +77,18 @@
 
     <!-- Sub Nav (frosted parchment, context title) -->
     <div class="sub-nav">
-      <div class="sub-nav-left">
-        <el-breadcrumb separator="/" class="sub-nav-breadcrumb">
-          <el-breadcrumb-item v-for="(item, index) in breadcrumbItems" :key="index" :to="item.path || undefined">
-            {{ item.title }}
-          </el-breadcrumb-item>
-        </el-breadcrumb>
-        <h1 class="sub-nav-title">{{ currentPageTitle }}</h1>
-      </div>
-      <div class="sub-nav-right">
-        <span class="role-badge">{{ getRoleName }}</span>
+      <div class="sub-nav-inner">
+        <div class="sub-nav-left">
+          <el-breadcrumb separator="/" class="sub-nav-breadcrumb">
+            <el-breadcrumb-item v-for="(item, index) in breadcrumbItems" :key="index" :to="item.path || undefined">
+              {{ item.title }}
+            </el-breadcrumb-item>
+          </el-breadcrumb>
+          <h1 class="sub-nav-title">{{ currentPageTitle }}</h1>
+        </div>
+        <div class="sub-nav-right">
+          <span class="role-badge">{{ getRoleName }}</span>
+        </div>
       </div>
     </div>
 
@@ -617,13 +619,10 @@ onUnmounted(() => {
 .nav-user-name { font-size: 12px; white-space: nowrap; }
 .nav-chevron { font-size: 10px; margin-left: 2px; }
 
-// ── Sub Nav (52px, frosted parchment) ────────────────────
+// ── Sub Nav (48px, frosted parchment) ────────────────────
 .sub-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   height: var(--app-subnav-height);
-  padding: 0 var(--app-page-gutter);
+  padding: 0;
   background: rgba(245, 245, 247, 0.8);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
@@ -634,10 +633,26 @@ onUnmounted(() => {
   z-index: 99;
 }
 
+.sub-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--app-space-4);
+  width: 100%;
+  // 顶栏横跨全宽，内层按「侧边栏宽度 + 内容最大宽度」居中，
+  // 左内边距补上侧边栏宽度与内容区 gutter，使标题与内容区文字左边缘对齐
+  max-width: calc(var(--app-content-max) + var(--app-sidebar-width));
+  height: 100%;
+  margin: 0 auto;
+  padding-left: calc(var(--app-sidebar-width) + var(--app-page-gutter));
+  padding-right: var(--app-page-gutter);
+}
+
 .sub-nav-left {
   display: flex;
   flex-direction: column;
   gap: 0;
+  min-width: 0;
 }
 
 .sub-nav-breadcrumb {
@@ -678,7 +693,7 @@ onUnmounted(() => {
 
 // ── Sidebar (near-black, Apple-style) ────────────────────
 .sidebar {
-  width: 240px;
+  width: var(--app-sidebar-width);
   background: #272729;
   overflow-y: auto;
   flex-shrink: 0;
@@ -841,8 +856,9 @@ onUnmounted(() => {
 }
 
 .footer-inner {
-  max-width: 980px;
+  max-width: var(--app-content-max);
   margin: 0 auto;
+  padding: 0 var(--app-page-gutter);
 }
 
 .footer-copy {
@@ -935,7 +951,7 @@ onUnmounted(() => {
 
   .content-inner { padding: var(--app-space-4) var(--app-space-3); }
 
-  .sub-nav { padding: 0 var(--app-space-3); }
+  .sub-nav-inner { padding: 0 var(--app-space-3); }
   .global-nav { padding: 0 var(--app-space-3); }
 }
 
@@ -990,7 +1006,7 @@ onUnmounted(() => {
 
 .sub-nav {
   height: var(--app-subnav-height);
-  padding: 0 var(--app-page-gutter);
+  padding: 0;
   border-bottom: 1px solid var(--apple-hairline-alpha);
 
   .sub-nav-title {
@@ -999,6 +1015,9 @@ onUnmounted(() => {
     line-height: var(--app-lh-heading);
     letter-spacing: 0;
     color: var(--apple-ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 
@@ -1057,10 +1076,15 @@ onUnmounted(() => {
   .el-button { margin-top: var(--apple-spacing-lg); }
 }
 
-.content-inner { padding: var(--app-page-gutter); }
+.content-inner {
+  width: 100%;
+  max-width: var(--app-content-max);
+  margin: 0 auto;
+  padding: var(--app-page-gutter);
+}
 
 .app-footer {
-  padding: var(--app-space-8) var(--app-page-gutter) var(--app-space-4);
+  padding: var(--app-space-8) 0 var(--app-space-4);
   background: var(--apple-canvas-parchment);
   border-top: 1px solid var(--apple-hairline);
 }
@@ -1112,14 +1136,17 @@ onUnmounted(() => {
 
 @media (max-width: 833px) {
   .content-inner { padding: var(--app-space-4) var(--app-space-3); }
-  .sub-nav,
+  .sub-nav-inner,
   .global-nav { padding: 0 var(--app-space-3); }
   .sidebar.sidebar-open { box-shadow: var(--apple-shadow-product); }
 }
 
 @media (max-width: 640px) {
   .sub-nav-title { font-size: var(--app-fs-heading); }
+  .sub-nav-breadcrumb,
+  .sub-nav-right { display: none; }
   .content-inner { padding: var(--app-space-3) var(--app-page-gutter-mobile); }
-  .app-footer { padding: var(--app-space-6) var(--app-space-3) var(--app-space-3); }
+  .app-footer { padding: var(--app-space-6) 0 var(--app-space-3); }
+  .footer-inner { padding: 0 var(--app-page-gutter-mobile); }
 }
 </style>
