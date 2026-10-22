@@ -69,9 +69,9 @@ const getSimilarityRating = (similarity) => {
 .similarity-card {
   text-align: center;
   padding: 32px;
-  background: #f5f5f7;
+  background: var(--apple-canvas-parchment);
   border-radius: 18px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--apple-hairline);
   transition: border-color 0.2s ease;
 }
 
@@ -101,7 +101,7 @@ const getSimilarityRating = (similarity) => {
 
 .rating {
   font-size: 16px;
-  color: #64748b;
+  color: var(--apple-slate-sub);
   margin-top: 4px;
 }
 
@@ -114,9 +114,9 @@ const getSimilarityRating = (similarity) => {
 .stat-item {
   text-align: center;
   padding: 17px;
-  background: #fafafc;
+  background: var(--apple-surface-pearl);
   border-radius: 11px;
-  border: 1px solid #f0f0f0;
+  border: 1px solid var(--apple-divider-soft);
   flex: 1;
   margin: 0 8px;
 }
@@ -124,13 +124,13 @@ const getSimilarityRating = (similarity) => {
 .stat-value {
   font-size: 28px;
   font-weight: 600;
-  color: #0066cc;
+  color: var(--apple-primary);
   margin-bottom: 8px;
 }
 
 .stat-label {
   font-size: 14px;
-  color: #64748b;
+  color: var(--apple-slate-sub);
 }
 
 @media (max-width: 768px) {

@@ -304,7 +304,7 @@ onMounted(() => {
 .template-management { padding: 0; }
 .preview-result { padding: 12px; background: #f5f7fa; border-radius: 8px; }
 .preview-title { margin-bottom: 12px; }
-.preview-content .content-box { margin-top: 8px; padding: 12px; background: #fff; border: 1px solid var(--apple-hairline); border-radius: 4px; white-space: pre-wrap; line-height: 1.6; }
+.preview-content .content-box { margin-top: 8px; padding: 12px; background: var(--apple-canvas); border: 1px solid var(--apple-hairline); border-radius: 4px; white-space: pre-wrap; line-height: 1.6; }
 
 /* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
 .template-management { font-family: var(--apple-font-text); }

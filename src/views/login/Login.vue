@@ -263,7 +263,7 @@ const handleForgotPassword = () => {
   flex-direction: column;
   justify-content: space-between;
   padding: 48px;
-  background: #272729;
+  background: var(--apple-surface-tile-1);
   overflow: hidden;
 }
 

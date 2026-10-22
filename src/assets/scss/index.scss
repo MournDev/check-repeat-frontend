@@ -87,7 +87,7 @@ a {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #b0b0b5;
+  background: var(--apple-scrollbar-thumb-hover);
 }
 
 // ── Responsive ────────────────────────────────────────────

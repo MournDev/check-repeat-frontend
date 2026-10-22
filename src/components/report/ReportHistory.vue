@@ -69,11 +69,11 @@ const exportHistoryReport = (record) => {
   border-radius: 12px;
   margin-bottom: 20px;
   transition: border-color 0.2s ease;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--apple-hairline);
 }
 
 .history-item:hover {
-  border-color: #0066cc;
+  border-color: var(--apple-primary);
 }
 
 .version-info {
@@ -90,7 +90,7 @@ const exportHistoryReport = (record) => {
 }
 
 .change-description {
-  color: #64748b;
+  color: var(--apple-slate-sub);
   margin-bottom: 16px;
   line-height: 1.6;
   font-size: 14px;

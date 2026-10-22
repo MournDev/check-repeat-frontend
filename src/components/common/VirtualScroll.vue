@@ -114,7 +114,7 @@ onUnmounted(() => {
   position: relative;
   border: 1px solid var(--apple-hairline);
   border-radius: 4px;
-  background-color: #fff;
+  background-color: var(--apple-canvas);
 }
 
 .virtual-scroll-content {

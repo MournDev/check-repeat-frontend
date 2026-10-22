@@ -66,7 +66,7 @@ const viewComparison = (source) => {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .report-similar-sources {
   padding: 20px;
 }
@@ -76,12 +76,12 @@ const viewComparison = (source) => {
   border-radius: 18px;
   padding: 24px;
   margin-bottom: 24px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--apple-hairline);
   transition: border-color 0.2s ease;
 }
 
 .source-item:hover {
-  border-color: #0066cc;
+  border-color: var(--apple-primary);
 }
 
 .source-header {
@@ -107,7 +107,7 @@ const viewComparison = (source) => {
   display: flex;
   gap: 24px;
   margin-bottom: 20px;
-  color: #64748b;
+  color: var(--apple-slate-sub);
   font-size: 14px;
 }
 
@@ -128,16 +128,16 @@ const viewComparison = (source) => {
 }
 
 .paragraph-item {
-  background: #ffffff;
+  background: var(--apple-canvas);
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 16px;
-  border-left: 3px solid #0066cc;
+  border-left: 3px solid var(--apple-primary);
   transition: background-color 0.15s ease;
 }
 
 .paragraph-item:hover {
-  background-color: #f5f5f7;
+  background-color: var(--apple-canvas-parchment);
 }
 
 .source-text,

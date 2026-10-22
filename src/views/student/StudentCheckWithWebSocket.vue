@@ -931,7 +931,7 @@ onUnmounted(() => {
     .repeated-fragments {
       margin-top: 8px;
       padding: 8px;
-      background-color: #fff1f0;
+      background-color: var(--apple-danger-bg);
       border-radius: 11px;
     }
   }
