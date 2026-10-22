@@ -72,11 +72,8 @@
           </button>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item v-if="userStore.role !== 'SUPER_ADMIN'" @click="goToProfile">
-                <el-icon><User /></el-icon><span>个人中心</span>
-              </el-dropdown-item>
               <el-dropdown-item v-if="userStore.role !== 'SUPER_ADMIN'" @click="goToSettings">
-                <el-icon><Setting /></el-icon><span>账号设置</span>
+                <el-icon><Setting /></el-icon><span>个人设置</span>
               </el-dropdown-item>
               <el-dropdown-item :divided="userStore.role !== 'SUPER_ADMIN'" @click="handleLogout">
                 <el-icon><SwitchButton /></el-icon><span>退出登录</span>
@@ -181,7 +178,7 @@ import { buildMenus, buildTopNav, SECTION_LABELS } from '@/utils/menu'
 import { asyncRoutes, ROLE_HOME } from '@/router'
 
 import {
-  User, Setting, SwitchButton, ArrowDown,
+  Setting, SwitchButton, ArrowDown,
   Bell, Menu, Close, Tools,
   CircleCheckFilled, InfoFilled, WarningFilled, CircleCloseFilled, Document, ChatDotRound
 } from '@element-plus/icons-vue'
@@ -370,11 +367,6 @@ const settingsPath = computed(() => {
   if (r === 'teacher') return '/teacher/profile'
   return `/${r}/settings`
 })
-
-const goToProfile = () => {
-  router.push(settingsPath.value)
-  if (isMobile.value) sidebarVisible.value = false
-}
 
 const goToSettings = () => {
   router.push(settingsPath.value)
