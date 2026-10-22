@@ -13,15 +13,6 @@
           </svg>
           <span class="brand-name">{{ systemName }}</span>
         </div>
-        <nav class="global-nav-links">
-          <!-- 顶栏导航用 router-link：可键盘聚焦、可中键新开，与侧边栏同一可访问性约定 -->
-          <router-link
-            v-for="item in topNavItems"
-            :key="item.path"
-            :to="item.path"
-            :class="['nav-link', { active: activeTopNav === item.path }]"
-          >{{ item.label }}</router-link>
-        </nav>
       </div>
       <div class="global-nav-right">
         <!-- Notifications -->
@@ -110,14 +101,27 @@
           <!-- 菜单项从路由表（asyncRoutes 的 meta.menu）按角色派生，见 src/utils/menu.js -->
           <div class="sidebar-section">
             <div class="sidebar-section-label">{{ sidebarMenu.label }}</div>
-            <template v-for="item in sidebarMenu.items" :key="item.path">
-              <div v-if="item.groupLabel" class="sidebar-sub-label">{{ item.groupLabel }}</div>
-              <div v-if="item.spacer" class="sidebar-spacer"></div>
-              <router-link :to="item.path" :class="['sidebar-item', { active: activeMenu === item.path }]">
-                <el-icon v-if="item.icon"><component :is="item.icon" /></el-icon>
-                <span>{{ item.label }}</span>
-                <el-badge v-if="item.badge === 'chat' && chatUnread > 0" :value="chatUnread" :max="99" class="sidebar-item-badge" />
-              </router-link>
+            <template v-for="(group, index) in sidebarMenu.groups" :key="group.key || `plain-${index}`">
+              <button
+                v-if="group.label"
+                type="button"
+                class="sidebar-group-toggle"
+                :aria-expanded="isGroupOpen(group)"
+                @click="toggleGroup(group.key)"
+              >
+                <span>{{ group.label }}</span>
+                <el-icon :class="['sidebar-group-chevron', { open: isGroupOpen(group) }]"><ArrowDown /></el-icon>
+              </button>
+              <div v-if="!group.label || isGroupOpen(group)" class="sidebar-group-items">
+                <template v-for="item in group.items" :key="item.path">
+                  <div v-if="item.spacer" class="sidebar-spacer"></div>
+                  <router-link :to="item.path" :class="['sidebar-item', { active: activeMenu === item.path }]">
+                    <el-icon v-if="item.icon"><component :is="item.icon" /></el-icon>
+                    <span>{{ item.label }}</span>
+                    <el-badge v-if="item.badge === 'chat' && chatUnread > 0" :value="chatUnread" :max="99" class="sidebar-item-badge" />
+                  </router-link>
+                </template>
+              </div>
             </template>
           </div>
         </nav>
@@ -174,7 +178,7 @@ import { getMessageList, markAsRead } from '@/api/user.js'
 import { useMessageStore } from '@/stores/message'
 import { useMessageWebSocket } from '@/composables/useMessageWebSocket'
 import { subscribeTopic } from '@/utils/stompClient'
-import { buildMenus, buildTopNav, SECTION_LABELS } from '@/utils/menu'
+import { buildMenus, SECTION_LABELS } from '@/utils/menu'
 import { asyncRoutes, ROLE_HOME } from '@/router'
 
 import {
@@ -264,10 +268,12 @@ const sidebarMenu = computed(() => buildMenus(asyncRoutes, userStore.role))
 // 高亮用「最长前缀」匹配：详情页（/student/check-history/:paperId 等）
 // 能点亮所属列表项；同族路径（/admin/paper-assignment 与其 /manual 等子项）
 // 只亮最精确的一条，不会双高亮。前缀集合直接取派生菜单项的 path，不再手写数组。
+const menuItems = computed(() => sidebarMenu.value.groups.flatMap(group => group.items))
+
 const activeMenu = computed(() => {
   const path = route.path
   let best = ''
-  for (const item of sidebarMenu.value.items) {
+  for (const item of menuItems.value) {
     const base = item.path
     const aliasHit = (item.activeMatch || []).some(
       alias => path === alias || path.startsWith(`${alias}/`)
@@ -278,6 +284,30 @@ const activeMenu = computed(() => {
   }
   return best
 })
+
+// 分组折叠：一级入口收敛为分组标题，默认只展开当前页面所在分组。
+const expandedGroups = ref([])
+
+const activeGroupKey = computed(() => {
+  const group = sidebarMenu.value.groups.find(
+    g => g.items.some(item => item.path === activeMenu.value)
+  )
+  return group?.key || ''
+})
+
+const isGroupOpen = (group) => !group.label || expandedGroups.value.includes(group.key)
+
+const toggleGroup = (key) => {
+  expandedGroups.value = expandedGroups.value.includes(key)
+    ? expandedGroups.value.filter(k => k !== key)
+    : [...expandedGroups.value, key]
+}
+
+watch(activeGroupKey, (key) => {
+  if (key && !expandedGroups.value.includes(key)) {
+    expandedGroups.value = [...expandedGroups.value, key]
+  }
+}, { immediate: true })
 
 const displayUserName = computed(() => {
   if (userStore.userInfo?.realName) return userStore.userInfo.realName
@@ -295,23 +325,6 @@ const currentUserId = computed(() => userStore.userInfo.userId || userStore.user
 const getRoleName = computed(() => {
   const roleMap = { STUDENT: '学生', TEACHER: '指导教师', ADMIN: '管理员', SUPER_ADMIN: '超级管理员' }
   return roleMap[userStore.role] || '用户'
-})
-
-// Top nav：与侧边栏同一事实源，从路由 meta.menu.top 派生（见 src/utils/menu.js）。
-const topNavItems = computed(() => buildTopNav(asyncRoutes, userStore.role))
-
-// 顶栏高亮：对每项的 match 前缀（exact 时精确）做匹配，多命中取最长前缀——
-// 与侧边栏 activeMenu 同一约定，详情页点亮所属顶栏项。
-const activeTopNav = computed(() => {
-  const path = route.path
-  let best = null
-  for (const item of topNavItems.value) {
-    for (const m of item.match) {
-      const hit = item.exact ? path === m : (path === m || path.startsWith(m))
-      if (hit && (!best || m.length > best.len)) best = { path: item.path, len: m.length }
-    }
-  }
-  return best?.path || ''
 })
 
 // 面包屑直接读路由的 meta.title —— 文案只有路由这一处出处。
@@ -548,28 +561,6 @@ onUnmounted(() => {
   white-space: nowrap;
 }
 
-.global-nav-links {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.nav-link {
-  padding: 6px 14px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 400;
-  letter-spacing: -0.12px;
-  color: #cccccc;
-  cursor: pointer;
-  transition: color 0.2s ease, background-color 0.2s ease;
-  text-decoration: none;
-  white-space: nowrap;
-
-  &:hover { color: #ffffff; background: rgba(255, 255, 255, 0.08); }
-  &.active { color: #2997ff; }
-}
-
 .global-nav-right {
   display: flex;
   align-items: center;
@@ -716,12 +707,36 @@ onUnmounted(() => {
   text-transform: uppercase;
 }
 
-.sidebar-sub-label {
+.sidebar-group-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px 12px 4px;
+  border: none;
+  background: transparent;
   font-size: 11px;
   font-weight: 600;
-  color: #7a7a7a;
-  padding: 16px 12px 4px;
   letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #7a7a7a;
+  cursor: pointer;
+
+  &:hover { color: #cccccc; }
+}
+
+.sidebar-group-chevron {
+  font-size: 12px;
+  transition: transform 0.2s ease;
+
+  &.open { transform: rotate(180deg); }
+}
+
+.sidebar-group-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
 }
 
 .sidebar-item {
@@ -892,7 +907,6 @@ onUnmounted(() => {
 // ── Responsive: Tablet (≤833px) ───────────────────────────
 @media (max-width: 833px) {
   .nav-menu-toggle { display: flex; }
-  .global-nav-links { display: none; }
   .nav-user-name { display: none; }
 
   .sidebar {
@@ -953,18 +967,6 @@ onUnmounted(() => {
   letter-spacing: 0;
 }
 
-.nav-link {
-  padding: 6px var(--apple-spacing-sm);
-  border-radius: var(--apple-rounded-sm);
-  font-size: var(--apple-fs-nav-link);
-  letter-spacing: var(--apple-ls-nav-link);
-  color: var(--apple-body-muted);
-
-  &:hover { color: var(--apple-body-on-dark); }
-
-  &.active { color: var(--apple-primary-on-dark); font-weight: 600; }
-}
-
 .nav-icon-btn {
   border-radius: var(--apple-rounded-sm);
   color: var(--apple-body-muted);
@@ -1015,7 +1017,7 @@ onUnmounted(() => {
 .sidebar-nav { padding: var(--apple-spacing-xs) var(--apple-spacing-sm); }
 
 .sidebar-section-label,
-.sidebar-sub-label {
+.sidebar-group-toggle {
   font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
 }

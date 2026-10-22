@@ -79,7 +79,7 @@ export const asyncRoutes = [
         path: "student",
         name: "StudentDashboard",
         component: () => import("@/views/student/Dashboard.vue"),
-        meta: { roles: ["STUDENT"], title: "论文工作台", menu: { icon: "DataAnalysis", label: "论文工作台", group: "论文", order: 1, top: { order: 1, label: "工作台" } } },
+        meta: { roles: ["STUDENT"], title: "论文工作台", menu: { icon: "DataAnalysis", label: "论文工作台", group: "论文", order: 1 } },
       },
       {
         path: "admin",
@@ -87,7 +87,7 @@ export const asyncRoutes = [
         component: () => import("@/views/admin/Dashboard.vue"),
         // roles 是 ADMIN+SUPER_ADMIN（超管超集），但菜单里只给 ADMIN 显示：
         // 超管的概览入口是 /super-admin「系统概览」，运营数据归业务管理员。
-        meta: { roles: ["ADMIN", "SUPER_ADMIN"], title: "运营概览", menu: { icon: "DataBoard", label: "运营概览", roles: ["ADMIN"], group: "概览", order: 1, top: { order: 1, label: "工作台" } } },
+        meta: { roles: ["ADMIN", "SUPER_ADMIN"], title: "运营概览", menu: { icon: "DataBoard", label: "运营概览", roles: ["ADMIN"], group: "概览", order: 1 } },
       },
     ],
   },
@@ -119,7 +119,7 @@ export const asyncRoutes = [
       { path: "paper-submit", name: "PaperSubmit", component: () => import("@/views/student/PaperSubmit.vue"), meta: { title: "论文提交", menu: { icon: "UploadFilled", group: "论文", order: 2 } } },
       // 详情/监控/报告页从列表跳入，不是导航目标，menu.hidden 仅作文档标注
       { path: "paper-details", name: "PaperDetail", component: () => import("@/views/student/PaperDetail.vue"), meta: { title: "论文详情", menu: { hidden: true } } },
-      { path: "my-papers", name: "MyPapers", component: () => import("@/views/student/MyPapers.vue"), meta: { title: "我的论文", menu: { icon: "FolderOpened", group: "论文", order: 3, top: { order: 2, label: "论文管理", match: ["/student/paper", "/student/my-papers"] } } } },
+      { path: "my-papers", name: "MyPapers", component: () => import("@/views/student/MyPapers.vue"), meta: { title: "我的论文", menu: { icon: "FolderOpened", group: "论文", order: 3 } } },
       // order 3.5 有意插在我的论文(3)与导师互动(4)之间
       { path: "my-defense", name: "MyDefense", component: () => import("@/views/student/MyDefense.vue"), meta: { title: "我的答辩", menu: { icon: "Trophy", group: "论文", order: 3.5 } } },
       // order 3.6 有意插在我的答辩(3.5)与导师互动(4)之间（P6a 导师评价）
@@ -132,7 +132,7 @@ export const asyncRoutes = [
       { path: "plagiarism-report/:paperId", name: "PlagiarismReport", component: () => import("@/views/student/PlagiarismReport.vue"), meta: { title: "查重报告", menu: { hidden: true } } },
       { path: "check-history", name: "CheckHistoryList", component: () => import("@/views/student/CheckHistoryList.vue"), meta: { title: "查重历史", menu: { icon: "Histogram", group: "查重管理", order: 7 } } },
       { path: "check-history/:paperId", name: "CheckHistory", component: () => import("@/views/student/CheckHistory.vue"), meta: { title: "查重历史详情", menu: { hidden: true } } },
-      { path: "student-check-with-websocket", name: "StudentCheckWithWebSocket", component: () => import("@/views/student/StudentCheckWithWebSocket.vue"), meta: { title: "查重任务", menu: { icon: "Document", label: "查重任务", group: "查重管理", order: 6, top: { order: 3, label: "查重任务", match: ["/student/check", "/student/student-check"] } } } },
+      { path: "student-check-with-websocket", name: "StudentCheckWithWebSocket", component: () => import("@/views/student/StudentCheckWithWebSocket.vue"), meta: { title: "查重任务", menu: { icon: "Document", label: "查重任务", group: "查重管理", order: 6 } } },
       { path: "academic-integrity", name: "AcademicIntegrity", component: () => import("@/views/student/AcademicIntegrity.vue"), meta: { title: "学术诚信", menu: { icon: "Notebook", group: "查重管理", order: 8 } } },
       // P5 句级检测明细（从任务列表/详情跳入，非导航目标）
       { path: "sentence-detail/:taskId", name: "SentenceDetail", component: () => import("@/views/student/SentenceDetail.vue"), meta: { title: "句级检测明细", menu: { hidden: true } } },
@@ -143,8 +143,8 @@ export const asyncRoutes = [
     component: () => import("@/components/layout/MainLayout.vue"),
     meta: { requiresAuth: true, roles: ["TEACHER"], title: "教师" },
     children: [
-      { path: "", name: "TeacherDashboard", component: () => import("@/views/teacher/Dashboard.vue"), meta: { title: "审核工作台", menu: { icon: "DataBoard", label: "审核工作台", group: "工作台", order: 1, top: { order: 1, label: "工作台", exact: true } } } },
-      { path: "student-list", name: "StudentList", component: () => import("@/views/teacher/StudentList.vue"), meta: { title: "学生管理", menu: { icon: "UserFilled", group: "学生管理", order: 5, top: { order: 3, label: "学生管理", match: ["/teacher/student"] } } } },
+      { path: "", name: "TeacherDashboard", component: () => import("@/views/teacher/Dashboard.vue"), meta: { title: "审核工作台", menu: { icon: "DataBoard", label: "审核工作台", group: "工作台", order: 1 } } },
+      { path: "student-list", name: "StudentList", component: () => import("@/views/teacher/StudentList.vue"), meta: { title: "学生管理", menu: { icon: "UserFilled", group: "学生管理", order: 5 } } },
       // PaperReview 容器仅承载「审核记录」；待审核论文已统一到 review-workbench
       { path: "paper-review", name: "PaperReview", component: () => import("@/views/teacher/PaperReview.vue"), redirect: "/teacher/review-workbench", meta: { title: "论文审核", menu: { hidden: true } }, children: [
         { path: "audit-records", name: "AuditRecords", component: () => import("@/views/teacher/AuditRecords.vue"), meta: { title: "审核记录", menu: { icon: "Histogram", group: "论文管理", order: 4 } } }
@@ -155,7 +155,7 @@ export const asyncRoutes = [
       // order 7 插在学生分组(6)与学生评价汇总(8)之间（P5 指导进度看板）
       { path: "guidance-progress", name: "TeacherGuidanceProgress", component: () => import("@/views/teacher/GuidanceProgress.vue"), meta: { title: "指导进度看板", menu: { icon: "Odometer", group: "学生管理", order: 7 } } },
       // 待审核论文统一入口（原 paper-review/pending 已下线）
-      { path: "review-workbench", name: "TeacherReviewWorkbench", component: () => import("@/views/teacher/ReviewWorkbench.vue"), meta: { title: "待审核论文", menu: { icon: "Clock", label: "待审核论文", group: "论文管理", order: 3, top: { order: 2, label: "论文审核", match: ["/teacher/paper-review", "/teacher/review-workbench"] } } } },
+      { path: "review-workbench", name: "TeacherReviewWorkbench", component: () => import("@/views/teacher/ReviewWorkbench.vue"), meta: { title: "待审核论文", menu: { icon: "Clock", label: "待审核论文", group: "论文管理", order: 3 } } },
       // order 8 排在与学生相关的最后一项（学生评价汇总）
       { path: "advisor-eval-summary", name: "AdvisorEvalSummary", component: () => import("@/views/teacher/AdvisorEvalSummary.vue"), meta: { title: "学生评价汇总", menu: { icon: "Star", group: "学生管理", order: 8 } } },
       { path: "profile", name: "TeacherProfile", component: () => import("@/views/teacher/Profile.vue"), meta: { title: "个人设置", menu: { icon: "Setting", label: "个人设置", group: "设置与支持", order: 11, spacer: true } } },
@@ -175,19 +175,19 @@ export const asyncRoutes = [
     children: [
       // 论文业务管理只进 ADMIN 菜单。menu.roles 仅控菜单露出，路由 roles 仍含
       // SUPER_ADMIN（超管可 URL 直达）；缺了这层会继承父路由双角色而泄漏进超管菜单
-      { path: "user-management", name: "UserManagement", component: () => import("@/views/admin/UserManagement.vue"), meta: { title: "用户管理", menu: { icon: "UserFilled", roles: ["SUPER_ADMIN"], group: "用户与权限", order: 1, top: { order: 1, label: "用户管理", match: ["/admin/user"] } } } },
+      { path: "user-management", name: "UserManagement", component: () => import("@/views/admin/UserManagement.vue"), meta: { title: "用户管理", menu: { icon: "UserFilled", roles: ["SUPER_ADMIN"], group: "用户与权限", order: 1 } } },
       // 论文分配四页合一：容器挂 Tabs，菜单只露出「论文分配」一项，子页 URL 不变
-      { path: "paper-assignment", name: "PaperAssignmentCenter", component: () => import("@/views/admin/PaperAssignmentCenter.vue"), meta: { title: "论文分配", menu: { roles: ["ADMIN"], icon: "Connection", group: "论文管理", order: 5, top: { order: 3, label: "论文分配" } } }, children: [
+      { path: "paper-assignment", name: "PaperAssignmentCenter", component: () => import("@/views/admin/PaperAssignmentCenter.vue"), meta: { title: "论文分配", menu: { roles: ["ADMIN"], icon: "Connection", group: "论文管理", order: 5 } }, children: [
         { path: "", name: "PaperAssignment", component: () => import("@/views/admin/PaperAssignment.vue"), meta: { title: "分配总览" } },
         { path: "manual", name: "ManualPaperAssignment", component: () => import("@/views/admin/ManualPaperAssignment.vue"), meta: { title: "手动分配" } },
         { path: "auto", name: "AutoPaperAssignment", component: () => import("@/views/admin/AutoPaperAssignment.vue"), meta: { title: "自动分配" } },
         { path: "history", name: "PaperAssignmentHistory", component: () => import("@/views/admin/PaperAssignmentHistory.vue"), meta: { title: "分配记录" } },
       ]},
-      { path: "system-config", name: "SystemConfig", component: () => import("@/views/admin/SystemConfig.vue"), meta: { title: "系统配置", menu: { icon: "Tools", roles: ["SUPER_ADMIN"], group: "系统运维", order: 4, top: { order: 3, label: "系统配置" } } } },
-      { path: "log-center", name: "LogCenter", component: () => import("@/views/admin/LogCenter.vue"), meta: { title: "日志中心", menu: { icon: "Document", ADMIN: { group: "系统管理", order: 11 }, SUPER_ADMIN: { group: "监控与日志", order: 9, top: { order: 4, label: "日志中心" } } } } },
+      { path: "system-config", name: "SystemConfig", component: () => import("@/views/admin/SystemConfig.vue"), meta: { title: "系统配置", menu: { icon: "Tools", roles: ["SUPER_ADMIN"], group: "系统运维", order: 4 } } },
+      { path: "log-center", name: "LogCenter", component: () => import("@/views/admin/LogCenter.vue"), meta: { title: "日志中心", menu: { icon: "Document", ADMIN: { group: "系统管理", order: 11 }, SUPER_ADMIN: { group: "监控与日志", order: 9 } } } },
       { path: "settings", name: "AdminSettings", component: () => import("@/views/admin/Settings.vue"), meta: { title: "个人设置", menu: { icon: "Setting", roles: ["ADMIN"], group: "设置", order: 12, spacer: true } } },
       { path: "school-overview", name: "SchoolOverview", component: () => import("@/views/admin/SchoolOverview.vue"), meta: { title: "全校概览", menu: { icon: "DataAnalysis", label: "全校概览", group: "概览", order: 2 } } },
-      { path: "paper-library", name: "PaperLibrary", component: () => import("@/views/admin/PaperLibrary.vue"), meta: { title: "论文库管理", menu: { roles: ["ADMIN"], icon: "Files", label: "论文库", group: "论文管理", order: 3, top: { order: 2, label: "论文管理" } } } },
+      { path: "paper-library", name: "PaperLibrary", component: () => import("@/views/admin/PaperLibrary.vue"), meta: { title: "论文库管理", menu: { roles: ["ADMIN"], icon: "Files", label: "论文库", group: "论文管理", order: 3 } } },
       { path: "defense-batches", name: "DefenseBatches", component: () => import("@/views/admin/DefenseBatches.vue"), meta: { title: "答辩批次管理", menu: { roles: ["ADMIN"], icon: "Calendar", label: "答辩批次", group: "论文管理", order: 4 } } },
       { path: "defense-batches/:id", name: "DefenseBatchDetail", component: () => import("@/views/admin/DefenseBatchDetail.vue"), meta: { title: "批次详情", menu: { hidden: true } } },
       // 数据报表三页合一：容器挂 Tabs，菜单只露出「数据报表」一项
@@ -222,7 +222,7 @@ export const asyncRoutes = [
     component: () => import("@/components/layout/MainLayout.vue"),
     meta: { requiresAuth: true, roles: ["SUPER_ADMIN"], title: "超级管理员" },
     children: [
-      { path: "", name: "SuperAdminDashboard", component: () => import("@/views/admin/Dashboard.vue"), meta: { title: "系统概览", menu: { icon: "Monitor", group: "概览", order: 3, top: { order: 2, label: "系统概览", exact: true } } } },
+      { path: "", name: "SuperAdminDashboard", component: () => import("@/views/admin/Dashboard.vue"), meta: { title: "系统概览", menu: { icon: "Monitor", group: "概览", order: 3 } } },
       // 系统配置 / 日志中心与 /admin 下是同一组件，这里只保留 URL 兼容跳转，
       // 不再重复注册路由（同一页面两条 URL 会分裂面包屑、高亮与埋点语义）。
       // /admin 的 roles 含 SUPER_ADMIN，超管可直接访问 /admin/*。
