@@ -96,6 +96,18 @@ defineEmits(['page-change', 'size-change'])
   margin-top: var(--app-space-4);
 }
 
+/* 筛选区密度统一：Element 默认 inline 表单项间距 32/18px 偏大，
+   17 个列表页统一收敛为 16/12px；最后一个表单项不留底部空隙。 */
+.list-page__filters :deep(.el-form--inline .el-form-item) {
+  margin-right: var(--app-space-4);
+  margin-bottom: var(--app-space-3);
+}
+
+.list-page__filters :deep(.el-form--inline .el-form-item:last-child) {
+  margin-right: 0;
+  margin-bottom: 0;
+}
+
 @media (max-width: 640px) {
   .list-page__header {
     flex-wrap: wrap;

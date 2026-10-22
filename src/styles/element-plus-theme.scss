@@ -134,9 +134,12 @@
 
 .el-card__body { padding: var(--app-card-padding); }
 
-// ── Table：13px 字号、紧凑行高 ─────────────────────────────
+// ── Table：13px 字号、紧凑行高、统一表头带 ─────────────────
 .el-table {
   --el-table-font-size: var(--app-fs-caption);
+  --el-table-header-bg-color: var(--apple-surface-pearl);
+  --el-table-header-text-color: var(--apple-ink);
+  --el-table-row-hover-bg-color: var(--apple-canvas-parchment);
   font-size: var(--app-fs-caption);
   box-shadow: none !important;
 }
@@ -146,9 +149,18 @@
   padding: var(--app-table-cell-py) 0;
 }
 
+.el-table th.el-table__cell {
+  font-weight: 600;
+}
+
 .el-table .cell {
   padding: 0 var(--app-table-cell-px);
   line-height: var(--app-lh-body);
+}
+
+.el-table__empty-text {
+  font-size: var(--app-fs-caption);
+  color: var(--apple-ink-muted-48);
 }
 
 // ── Dialog：12px 圆角 + 紧凑内边距 ─────────────────────────
