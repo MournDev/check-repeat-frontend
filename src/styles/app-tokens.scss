@@ -1,0 +1,60 @@
+// ============================================================
+// Business Console — Density Tokens (--app-*)
+// ------------------------------------------------------------
+// 与 design-tokens.scss 的分工：
+//   --apple-*  品牌/营销尺度（大字号、大间距、大圆角），用于登录注册、
+//              报告封面等偏展示的界面；
+//   --app-*    业务控制台尺度（紧凑字号、控件高度、表格/卡片内边距），
+//              用于所有登录后的工作台与列表页。
+// 业务页面新增字号、控件高度、组件内边距时一律引用本文件令牌，
+// 不要继续取用 --apple-fs-* / --apple-spacing-* 等展示尺度。
+// ============================================================
+
+:root {
+  // ── Typography（控制台字号阶梯，6 档）────────────────────
+  --app-fs-display: 24px; // 页面内主标题（仪表盘大数字除外）
+  --app-fs-title: 20px; // 区块标题 / 卡片标题
+  --app-fs-heading: 16px; // 小标题 / 弹窗标题
+  --app-fs-body: 14px; // 正文、表格、表单、按钮
+  --app-fs-caption: 13px; // 辅助正文 / 表头
+  --app-fs-meta: 12px; // 元信息、标签、时间
+
+  --app-lh-display: 1.3;
+  --app-lh-heading: 1.4;
+  --app-lh-body: 1.5;
+
+  // ── Control Metrics（控件高度）──────────────────────────
+  --app-control-h-sm: 28px; // 表格内小按钮 / 标签
+  --app-control-h: 32px; // 默认按钮、输入框、下拉
+  --app-control-h-lg: 40px; // 表单主操作 / 登录后页面的强调按钮
+
+  // ── Radius（圆角仅三档）────────────────────────────────
+  --app-radius-xs: 4px; // 标签、徽标
+  --app-radius-sm: 6px; // 按钮、输入框、分页
+  --app-radius-md: 8px; // 下拉、弹窗内小卡片
+  --app-radius-lg: 12px; // 卡片、弹窗、页头卡片
+
+  // ── Spacing（4px 基准）─────────────────────────────────
+  --app-space-1: 4px;
+  --app-space-2: 8px;
+  --app-space-3: 12px;
+  --app-space-4: 16px;
+  --app-space-5: 20px;
+  --app-space-6: 24px;
+  --app-space-8: 32px;
+
+  // ── Layout & Component Density ─────────────────────────
+  --app-page-gutter: 24px; // 内容区左右/上下留白
+  --app-page-gutter-mobile: 12px;
+  --app-card-padding: 16px; // 卡片内边距
+  --app-card-padding-sm: 12px; // 紧凑卡片
+  --app-card-gap: 16px; // 卡片间距
+  --app-table-cell-py: 8px; // 表格单元格上下内边距
+  --app-table-cell-px: 12px; // 表格单元格左右内边距
+  --app-form-item-gap: 16px; // 表单项下间距
+  --app-section-gap: 16px; // 页面区块间距
+
+  // ── Navigation ─────────────────────────────────────────
+  --app-subnav-height: 48px;
+  --app-sidebar-item-h: 34px;
+}

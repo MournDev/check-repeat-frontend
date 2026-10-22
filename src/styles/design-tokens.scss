@@ -1,5 +1,10 @@
 // ============================================================
-// Apple Design Language — Design Tokens
+// Apple Design Language — Brand Tokens (--apple-*)
+// ------------------------------------------------------------
+// 本文件是品牌/展示尺度：登录注册、报告封面、营销式大标题等。
+// 登录后的业务控制台（工作台、列表、表单）请使用
+// app-tokens.scss 的 --app-* 密度令牌，不要继续取用这里的
+// --apple-fs-* / --apple-spacing-* / --apple-rounded-*。
 // Reference: DESIGN.md (version: alpha, name: Apple)
 // ============================================================
 

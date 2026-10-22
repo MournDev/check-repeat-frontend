@@ -2,12 +2,12 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
+import 'element-plus/dist/index.css' // Element Plus 默认主题（先加载，后续主题覆盖才能生效）
 import '@/assets/scss/index.scss' // 全局样式入口 (design tokens, Element Plus theme, typography)
 import '@/styles/global-styles.scss' // Apple design utility styles
 import './style.css' // Apple base overrides
 //导入Element Plus
 import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css' // Element Plus样式
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 // 导入权限指令
 import { registerPermissionDirective } from '@/directives/permission'

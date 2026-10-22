@@ -17,21 +17,21 @@ defineProps({
 
 <style scoped>
 .page-header {
-  margin-bottom: 16px;
+  margin-bottom: var(--app-section-gap);
 }
 
 .page-header-desc {
   flex: 1;
   min-width: 0;
   margin: 0;
-  font-size: 0.8125rem;
+  font-size: var(--app-fs-caption);
   color: var(--apple-ink-muted-48);
 }
 
 .page-header-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--app-space-3);
   margin-left: auto;
 }
 </style>

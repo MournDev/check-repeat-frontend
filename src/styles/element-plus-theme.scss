@@ -1,13 +1,16 @@
 // ============================================================
-// Apple Design Language — Element Plus Theme Override
-// Uses Element Plus 2.x CSS custom properties for theming
-// Reference: DESIGN.md Apple design system
+// Element Plus Theme Override（业务控制台密度）
+// ------------------------------------------------------------
+// 颜色来自 design-tokens.scss（--apple-*），字号/高度/圆角/间距
+// 来自 app-tokens.scss（--app-*）。本文件只做映射，不新增尺度值。
+// 加载顺序：main.js 先引入 element-plus/dist/index.css，
+// 再引入 assets/scss/index.scss（本文件），确保覆盖生效。
 // ============================================================
 
 :root {
   // ── Primary Color ───────────────────────────────────────
-  // 主色引用 design-tokens.scss（唯一真源）；light/dark 色阶为
-  // 从 #0066cc 派生的实现细节，无 token 对应，保留字面值。
+  // 主色引用 design-tokens.scss；light/dark 色阶为从 #0066cc
+  // 派生的实现细节，无 token 对应，保留字面值。
   --el-color-primary: var(--apple-primary);
   --el-color-primary-light-1: #1a75d1;
   --el-color-primary-light-2: #3385d6;
@@ -28,18 +31,21 @@
   --el-color-primary-dark-8: #001229;
   --el-color-primary-dark-9: #000814;
 
-  // ── Font ────────────────────────────────────────────────
+  // ── Typography ──────────────────────────────────────────
   --el-font-family: #{'SF Pro Text', 'Inter', system-ui, -apple-system, sans-serif};
-  --el-font-size-base: 17px;
-  --el-font-size-small: 14px;
-  --el-font-size-extra-small: 12px;
-  --el-font-size-large: 18px;
+  --el-font-size-base: var(--app-fs-body);
+  --el-font-size-small: var(--app-fs-caption);
+  --el-font-size-extra-small: var(--app-fs-meta);
+  --el-font-size-large: var(--app-fs-heading);
 
-  // ── Border Radius ───────────────────────────────────────
-  --el-border-radius-base: 8px;
-  --el-border-radius-small: 5px;
+  // ── Metric ──────────────────────────────────────────────
+  --el-component-size: var(--app-control-h);
+  --el-component-size-small: var(--app-control-h-sm);
+  --el-component-size-large: var(--app-control-h-lg);
+  --el-border-radius-base: var(--app-radius-md);
+  --el-border-radius-small: var(--app-radius-sm);
   --el-border-radius-round: 9999px;
-  --el-border-radius-circle: 9999px;
+  --el-border-radius-circle: 100%;
 
   // ── Border Color ────────────────────────────────────────
   --el-border-color: var(--apple-hairline);
@@ -65,112 +71,135 @@
   --el-fill-color-extra-light: #fcfcfd;
   --el-fill-color-blank: var(--apple-canvas);
 
-  // ── Button Component ────────────────────────────────────
-  --el-button-font-size: 17px;
-  --el-button-font-weight: 400;
-  --el-button-border-radius: 9999px;
-  --el-button-padding-vertical: 11px;
-  --el-button-padding-horizontal: 22px;
-  --el-button-active-transform: scale(0.95);
-
-  // ── Input Component ────────────────────────────────────
-  --el-input-font-size: 17px;
-  --el-input-border-radius: 9999px;
-  --el-input-height: 44px;
-  --el-input-focus-border-color: var(--apple-primary-focus);
-
-  // ── Card Component ──────────────────────────────────────
-  --el-card-border-radius: 18px;
-  --el-card-border-color: var(--apple-hairline);
-  --el-card-padding: 24px;
-
-  // ── Table Component ─────────────────────────────────────
-  --el-table-font-size: 14px;
-  --el-table-header-font-size: 14px;
-  --el-table-row-hover-bg-color: var(--apple-canvas-parchment);
-  --el-table-border-color: var(--apple-divider-soft);
-
-  // ── Dialog Component ────────────────────────────────────
-  --el-dialog-border-radius: 18px;
-
-  // ── Menu Component ──────────────────────────────────────
-  --el-menu-font-size: 14px;
-  --el-menu-item-font-size: 14px;
-  --el-menu-hover-bg-color: rgba(0, 102, 204, 0.06);
-
-  // ── Tag Component ───────────────────────────────────────
-  --el-tag-border-radius: 9999px;
-
-  // ── Pagination ──────────────────────────────────────────
-  --el-pagination-font-size: 14px;
-  --el-pagination-button-border-radius: 9999px;
-
   // ── Transition ──────────────────────────────────────────
   --el-transition-duration-fast: 0.15s;
   --el-transition-duration: 0.2s;
   --el-transition-duration-slow: 0.3s;
 }
 
-// ── Button: scale(0.95) active — no translate, no shadow ─
-.el-button:active:not(.el-button--text) {
+// ── Button：控制台尺寸，胶囊形仅在显式 is-round 时保留 ────
+.el-button {
+  font-size: var(--app-fs-body);
+  font-weight: 500;
+  border-radius: var(--app-radius-sm);
+  padding: 7px var(--app-space-4);
+}
+
+.el-button--small {
+  font-size: var(--app-fs-meta);
+  border-radius: var(--app-radius-xs);
+  padding: 5px var(--app-space-3);
+}
+
+.el-button--large {
+  font-size: var(--app-fs-heading);
+  border-radius: var(--app-radius-md);
+  padding: 10px var(--app-space-5);
+}
+
+.el-button.is-round { border-radius: 9999px; padding: 7px var(--app-space-4); }
+.el-button.is-circle { border-radius: 50%; padding: 7px; }
+
+.el-button + .el-button { margin-left: var(--app-space-3); }
+
+.el-button:active:not(.is-text):not(.is-link) {
   transform: scale(0.95) !important;
 }
 
-.el-button:hover:not(.el-button--text) {
+.el-button:hover:not(.is-text):not(.is-link) {
   transform: none;
   box-shadow: none;
 }
 
-// ── Card: hairline border, no shadow ─────────────────────
+// ── Input / Select：去掉胶囊形，统一 32px 高 ───────────────
+.el-input__wrapper,
+.el-input__inner,
+.el-textarea__inner {
+  border-radius: var(--app-radius-sm);
+}
+
+.el-input__inner,
+.el-textarea__inner,
+.el-select__placeholder {
+  font-size: var(--app-fs-body);
+}
+
+// ── Card：12px 圆角 + 16px 内边距 + 无阴影 ────────────────
 .el-card {
+  --el-card-border-radius: var(--app-radius-lg);
+  --el-card-padding: var(--app-card-padding);
+  border-radius: var(--app-radius-lg);
   box-shadow: none !important;
 }
 
-// ── Table: no shadow ─────────────────────────────────────
+.el-card__body { padding: var(--app-card-padding); }
+
+// ── Table：13px 字号、紧凑行高 ─────────────────────────────
 .el-table {
+  --el-table-font-size: var(--app-fs-caption);
+  font-size: var(--app-fs-caption);
   box-shadow: none !important;
 }
 
-// ── Input: pill shape ────────────────────────────────────
-.el-input__wrapper {
-  border-radius: 9999px;
+.el-table th.el-table__cell,
+.el-table td.el-table__cell {
+  padding: var(--app-table-cell-py) 0;
 }
 
-.el-input__inner {
-  border-radius: 9999px;
+.el-table .cell {
+  padding: 0 var(--app-table-cell-px);
+  line-height: var(--app-lh-body);
 }
 
-// ── Tags: pill ───────────────────────────────────────────
-.el-tag {
-  border-radius: 9999px;
-}
-
-// ── Dialog: no heavy shadow ──────────────────────────────
+// ── Dialog：12px 圆角 + 紧凑内边距 ─────────────────────────
 .el-dialog {
+  --el-dialog-border-radius: var(--app-radius-lg);
+  --el-dialog-padding-primary: var(--app-space-4);
+  border-radius: var(--app-radius-lg);
   box-shadow: none;
   border: 1px solid var(--apple-hairline);
 }
 
-// ── Menu: clean style ───────────────────────────────────
-.el-menu {
-  border-right: none !important;
+// ── Menu ─────────────────────────────────────────────────
+.el-menu { border-right: none !important; }
+
+.el-menu-item,
+.el-sub-menu__title {
+  font-size: var(--app-fs-body);
 }
 
-// ── Pagination: pill buttons ─────────────────────────────
-.el-pager li {
-  border-radius: 9999px;
+.el-menu-item { transition: background-color var(--apple-transition-fast); }
+.el-menu-item:hover { transform: none; }
+
+// ── Tag：小圆角标签，保持表格内紧凑 ────────────────────────
+.el-tag {
+  --el-tag-border-radius: var(--app-radius-xs);
+  border-radius: var(--app-radius-xs);
 }
 
-// ── Remove default Element Plus shadow on dropdown ───────
+// ── Pagination ───────────────────────────────────────────
+.el-pagination {
+  --el-pagination-font-size: var(--app-fs-caption);
+  font-size: var(--app-fs-caption);
+}
+
+.el-pager li,
+.el-pagination__item {
+  border-radius: var(--app-radius-sm);
+}
+
+// ── Form：紧凑表单项与标签 ────────────────────────────────
+.el-form-item { margin-bottom: var(--app-form-item-gap); }
+
+.el-form-item__label {
+  font-size: var(--app-fs-caption);
+  font-weight: 600;
+  color: var(--apple-ink);
+}
+
+// ── Popper / Dropdown：hairline，无阴影 ───────────────────
 .el-dropdown__popper,
 .el-popper {
   border: 1px solid var(--apple-hairline);
   box-shadow: none !important;
-}
-
-// ── Form: clean labels ───────────────────────────────────
-.el-form-item__label {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--apple-ink);
 }

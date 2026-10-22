@@ -8,8 +8,8 @@ body {
   font-family: var(--apple-font-text);
   background-color: var(--apple-canvas-parchment);
   color: var(--apple-ink);
-  line-height: 1.47;
-  font-size: 17px;
+  line-height: var(--app-lh-body);
+  font-size: var(--app-fs-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -26,8 +26,8 @@ body {
 .card {
   background: var(--apple-canvas);
   border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-lg);
-  padding: var(--apple-spacing-lg);
+  border-radius: var(--app-radius-lg);
+  padding: var(--app-card-padding);
   transition: border-color var(--apple-transition-normal);
 
   &:hover {
@@ -35,14 +35,14 @@ body {
   }
 }
 
-// ── Button Base: pill, scale active, no shadow hover ─────
+// ── Button Base: console metric, no shadow hover ─────────
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: var(--apple-spacing-xs);
-  padding: var(--apple-spacing-xs) var(--apple-spacing-md);
-  border-radius: 9999px;
-  font-size: 17px;
+  gap: var(--app-space-2);
+  padding: var(--app-space-2) var(--app-space-4);
+  border-radius: var(--app-radius-sm);
+  font-size: var(--app-fs-body);
   font-weight: 400;
   border: none;
   cursor: pointer;
@@ -82,14 +82,14 @@ body {
   }
 }
 
-// ── Input: pill, clean focus ─────────────────────────────
+// ── Input: console metric, clean focus ───────────────────
 .input {
   width: 100%;
-  padding: var(--apple-spacing-xs) var(--apple-spacing-md);
+  padding: var(--app-space-2) var(--app-space-3);
   border: 1px solid var(--apple-hairline);
-  border-radius: 9999px;
-  font-size: 17px;
-  height: 44px;
+  border-radius: var(--app-radius-sm);
+  font-size: var(--app-fs-body);
+  height: var(--app-control-h);
   transition: border-color var(--apple-transition-normal);
 
   &:focus {
@@ -107,19 +107,19 @@ body {
 h1, h2, h3, h4, h5, h6 {
   color: var(--apple-ink);
   font-weight: 600;
-  margin-bottom: var(--apple-spacing-md);
+  margin-bottom: var(--app-space-3);
 }
 
-h1 { font-family: var(--apple-font-display); font-size: 40px; line-height: 1.10; }
-h2 { font-family: var(--apple-font-display); font-size: 34px; line-height: 1.47; letter-spacing: -0.374px; }
-h3 { font-size: 21px; line-height: 1.19; letter-spacing: 0.231px; }
-h4 { font-size: 17px; line-height: 1.24; letter-spacing: -0.374px; }
+h1 { font-family: var(--apple-font-display); font-size: var(--app-fs-display); line-height: var(--app-lh-display); }
+h2 { font-family: var(--apple-font-display); font-size: var(--app-fs-title); line-height: var(--app-lh-heading); }
+h3 { font-size: var(--app-fs-heading); line-height: var(--app-lh-heading); }
+h4 { font-size: var(--app-fs-body); line-height: var(--app-lh-body); }
 
 p {
   color: var(--apple-ink-muted-80);
-  margin-bottom: var(--apple-spacing-md);
-  font-size: 17px;
-  line-height: 1.47;
+  margin-bottom: var(--app-space-3);
+  font-size: var(--app-fs-body);
+  line-height: var(--app-lh-body);
 }
 
 a {
@@ -208,10 +208,10 @@ a {
 .font-bold { font-weight: 700; }
 .font-semibold { font-weight: 600; }
 .font-medium { font-weight: 600; }
-.text-sm { font-size: 14px; }
-.text-xs { font-size: 12px; }
-.text-lg { font-size: 18px; }
-.text-xl { font-size: 21px; }
+.text-sm { font-size: var(--app-fs-caption); }
+.text-xs { font-size: var(--app-fs-meta); }
+.text-lg { font-size: var(--app-fs-heading); }
+.text-xl { font-size: var(--app-fs-title); }
 .mt-sm { margin-top: var(--apple-spacing-xs); }
 .mt-md { margin-top: var(--apple-spacing-md); }
 .mt-lg { margin-top: var(--apple-spacing-lg); }
@@ -231,8 +231,8 @@ a {
   .grid.grid-cols-3,
   .grid.grid-cols-4 { grid-template-columns: repeat(2, 1fr); }
 
-  h1 { font-size: 34px; }
-  h2 { font-size: 28px; }
+  h1 { font-size: var(--app-fs-title); }
+  h2 { font-size: var(--app-fs-heading); }
 }
 
 @media (max-width: 640px) {
@@ -243,19 +243,15 @@ a {
   }
 
   .card {
-    padding: var(--apple-spacing-md);
+    padding: var(--app-card-padding-sm);
   }
 
   h1 {
-    font-size: 28px;
+    font-size: var(--app-fs-display);
   }
 
   h2 {
-    font-size: 24px;
-  }
-
-  body {
-    font-size: 14px;
+    font-size: var(--app-fs-title);
   }
 }
 
@@ -311,7 +307,7 @@ a {
 .el-card.console-card {
   background: var(--apple-surface);
   border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-lg);
+  border-radius: var(--app-radius-lg);
 }
 
 // 页头白卡（两页 header-content 复用）
@@ -320,9 +316,9 @@ a {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: var(--app-space-3);
   background: var(--apple-surface);
   border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-lg);
-  padding: 18px 24px;
+  border-radius: var(--app-radius-lg);
+  padding: var(--app-space-3) var(--app-space-4);
 }

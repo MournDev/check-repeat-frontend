@@ -639,15 +639,15 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 52px;
-  padding: 0 24px;
+  height: var(--app-subnav-height);
+  padding: 0 var(--app-page-gutter);
   background: rgba(245, 245, 247, 0.8);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   flex-shrink: 0;
   position: sticky;
-  top: 44px;
+  top: var(--apple-global-nav-height);
   z-index: 99;
 }
 
@@ -822,7 +822,7 @@ onUnmounted(() => {
 
 .content-inner {
   flex: 1;
-  padding: 32px;
+  padding: var(--app-page-gutter);
 }
 
 // ── Footer (parchment, dense) ────────────────────────────
@@ -905,7 +905,7 @@ onUnmounted(() => {
 
   .sidebar {
     position: fixed;
-    top: 96px; // 44px + 52px
+    top: calc(var(--apple-global-nav-height) + var(--app-subnav-height));
     left: 0;
     bottom: 0;
     z-index: 90;
@@ -922,15 +922,15 @@ onUnmounted(() => {
     display: block;
     position: fixed;
     inset: 0;
-    top: 96px;
+    top: calc(var(--apple-global-nav-height) + var(--app-subnav-height));
     background: rgba(0, 0, 0, 0.3);
     z-index: 89;
   }
 
-  .content-inner { padding: 24px 17px; }
+  .content-inner { padding: var(--app-space-4) var(--app-space-3); }
 
-  .sub-nav { padding: 0 17px; }
-  .global-nav { padding: 0 17px; }
+  .sub-nav { padding: 0 var(--app-space-3); }
+  .global-nav { padding: 0 var(--app-space-3); }
 }
 
 // ── Responsive: Phone (≤640px) ────────────────────────────
@@ -995,15 +995,15 @@ onUnmounted(() => {
 .nav-user-name { font-size: var(--apple-fs-nav-link); }
 
 .sub-nav {
-  height: var(--apple-sub-nav-height);
-  padding: 0 var(--apple-spacing-lg);
+  height: var(--app-subnav-height);
+  padding: 0 var(--app-page-gutter);
   border-bottom: 1px solid var(--apple-hairline-alpha);
 
   .sub-nav-title {
     font-family: var(--apple-font-display);
-    font-size: var(--apple-fs-tagline);
-    line-height: var(--apple-lh-tagline);
-    letter-spacing: var(--apple-ls-tagline);
+    font-size: var(--app-fs-title);
+    line-height: var(--app-lh-heading);
+    letter-spacing: 0;
     color: var(--apple-ink);
   }
 }
@@ -1029,10 +1029,11 @@ onUnmounted(() => {
 }
 
 .sidebar-item {
-  gap: var(--apple-spacing-xs);
-  padding: var(--apple-spacing-xs) var(--apple-spacing-sm);
-  border-radius: var(--apple-rounded-sm);
-  font-size: var(--apple-fs-caption);
+  gap: var(--app-space-2);
+  height: var(--app-sidebar-item-h);
+  padding: 0 var(--app-space-3);
+  border-radius: var(--app-radius-sm);
+  font-size: var(--app-fs-body);
   color: var(--apple-body-muted);
 }
 
@@ -1040,7 +1041,7 @@ onUnmounted(() => {
 
 .maintenance-overlay {
   background: var(--apple-canvas-parchment);
-  padding: var(--apple-spacing-xl);
+  padding: var(--app-page-gutter);
 }
 
 .maintenance-panel {
@@ -1062,10 +1063,10 @@ onUnmounted(() => {
   .el-button { margin-top: var(--apple-spacing-lg); }
 }
 
-.content-inner { padding: var(--apple-spacing-xl); }
+.content-inner { padding: var(--app-page-gutter); }
 
 .app-footer {
-  padding: var(--apple-spacing-xxl) var(--apple-spacing-xl) var(--apple-spacing-lg);
+  padding: var(--app-space-8) var(--app-page-gutter) var(--app-space-4);
   background: var(--apple-canvas-parchment);
   border-top: 1px solid var(--apple-hairline);
 }
@@ -1116,15 +1117,15 @@ onUnmounted(() => {
 }
 
 @media (max-width: 833px) {
-  .content-inner { padding: var(--apple-spacing-lg) var(--apple-spacing-md); }
+  .content-inner { padding: var(--app-space-4) var(--app-space-3); }
   .sub-nav,
-  .global-nav { padding: 0 var(--apple-spacing-md); }
+  .global-nav { padding: 0 var(--app-space-3); }
   .sidebar.sidebar-open { box-shadow: var(--apple-shadow-product); }
 }
 
 @media (max-width: 640px) {
-  .sub-nav-title { font-size: var(--apple-fs-body-strong); }
-  .content-inner { padding: var(--apple-spacing-md) var(--apple-spacing-sm); }
-  .app-footer { padding: var(--apple-spacing-xl) var(--apple-spacing-md) var(--apple-spacing-md); }
+  .sub-nav-title { font-size: var(--app-fs-heading); }
+  .content-inner { padding: var(--app-space-3) var(--app-page-gutter-mobile); }
+  .app-footer { padding: var(--app-space-6) var(--app-space-3) var(--app-space-3); }
 }
 </style>

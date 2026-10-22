@@ -2,18 +2,17 @@
 // Apple Design Language — Global SCSS Entry
 // ============================================================
 
-// 1. Element Plus theme overrides (CSS custom properties)
-// 设计令牌唯一真源是 @/styles/design-tokens.scss（CSS 变量），
-// 本文件与其他样式一律 var() 引用，不再维护 SCSS 变量层。
+// 1. Design Tokens（两层：品牌展示尺度 + 业务控制台密度尺度）
+@use '@/styles/design-tokens.scss';
+@use '@/styles/app-tokens.scss';
+
+// 2. Element Plus theme overrides (CSS custom properties)
+// Element Plus 默认主题由 main.js 先行引入 element-plus/dist/index.css，
+// 本文件在其后加载，保证 --el-* 与组件级覆盖生效。
+// 全部值一律引用上面两层令牌，禁止再写字面值。
 @use '@/styles/element-plus-theme.scss';
 
-// 2. Element Plus chalk theme
-@use 'element-plus/theme-chalk/src/index.scss';
-
-// 3. Apple Design Tokens（唯一真源）
-@use '@/styles/design-tokens.scss';
-
-// 4. Typography system
+// 3. Typography system
 @use '@/styles/typography.scss';
 
 // ── Global Reset ──────────────────────────────────────────
@@ -32,9 +31,9 @@ body {
   font-family: var(--apple-font-text);
   background-color: var(--apple-canvas-parchment);
   color: var(--apple-ink);
-  font-size: var(--apple-fs-body);
-  line-height: 1.47;
-  letter-spacing: -0.374px;
+  font-size: var(--app-fs-body);
+  line-height: var(--app-lh-body);
+  letter-spacing: -0.224px;
 }
 
 // ── Page title ───────────────────────────────────────────
@@ -45,14 +44,14 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 {
   font-family: var(--apple-font-display);
-  font-size: 40px;
-  line-height: 1.10;
+  font-size: var(--app-fs-display);
+  line-height: var(--app-lh-display);
 }
 
 h2 {
-  font-size: 34px;
-  line-height: 1.47;
-  letter-spacing: -0.374px;
+  font-size: var(--app-fs-title);
+  line-height: var(--app-lh-heading);
+  letter-spacing: -0.224px;
 }
 
 // ── Link ──────────────────────────────────────────────────
@@ -93,11 +92,10 @@ a {
 
 // ── Responsive ────────────────────────────────────────────
 @media (max-width: 1068px) {
-  h1 { font-size: 34px; }
+  h1 { font-size: var(--app-fs-title); }
 }
 
 @media (max-width: 640px) {
-  body { font-size: 14px; }
-  h1 { font-size: 28px; }
-  h2 { font-size: 24px; }
+  h1 { font-size: var(--app-fs-display); }
+  h2 { font-size: var(--app-fs-heading); }
 }
