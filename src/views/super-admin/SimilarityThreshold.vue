@@ -672,46 +672,18 @@ watch(
     .threshold-slider {
       display: flex;
       align-items: center;
-      gap: 16px;
-      
+      gap: var(--apple-spacing-md);
+
       .threshold-label {
         font-weight: 400;
         min-width: 60px;
       }
     }
-    
-    .help-text {
-      font-size: 12px;
-      color: var(--apple-info);
-      margin-top: 8px;
-    }
-    
-    .category-thresholds {
-      margin-top: 16px;
-
-      .empty-category-thresholds {
-        padding: 40px 0;
-      }
-
-      // 「全部类型」是占位语义（该行不带类型限定），压低存在感避免被读成一个真实取值
-      .all-types-label {
-        color: var(--apple-info);
-      }
-    }
-  }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.similarity-threshold {
-  .threshold-card {
-    .threshold-slider {
-      gap: var(--apple-spacing-md);
-    }
 
     .help-text {
-      margin-top: var(--apple-spacing-xs);
       font-size: var(--apple-fs-fine-print);
       color: var(--apple-ink-muted-48);
+      margin-top: var(--apple-spacing-xs);
     }
 
     .category-thresholds {
@@ -721,6 +693,7 @@ watch(
         padding: var(--apple-spacing-xl) 0;
       }
 
+      // 「全部类型」是占位语义（该行不带类型限定），压低存在感避免被读成一个真实取值
       .all-types-label {
         color: var(--apple-ink-muted-48);
       }

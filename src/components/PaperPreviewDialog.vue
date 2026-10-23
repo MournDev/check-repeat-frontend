@@ -279,11 +279,11 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   background: var(--apple-surface-pearl);
-  
+
   .loading-text {
-    margin-top: 20px;
+    margin-top: var(--apple-spacing-md);
     color: var(--apple-slate-sub);
-    font-size: 14px;
+    font-size: var(--apple-fs-caption);
   }
 }
 
@@ -295,11 +295,12 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   background: var(--apple-surface-pearl);
-  padding: 48px;
-  
+  padding: var(--apple-spacing-xxl);
+
   .error-detail {
     color: var(--apple-slate-sub);
-    margin: 16px 0;
+    margin: var(--apple-spacing-md) 0;
+    font-size: var(--apple-fs-caption);
     text-align: center;
   }
 }
@@ -307,38 +308,13 @@ onMounted(() => {
 .dialog-footer {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
-  padding: 20px 24px;
-  border-top: 1px solid var(--apple-slate-border);
-  background: var(--apple-surface-pearl);
-
-  :deep(.el-button) {
-    border-radius: 8px;
-  }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.dialog-footer {
   gap: var(--apple-spacing-sm);
   padding: var(--apple-spacing-md) var(--apple-spacing-lg);
   border-top: 1px solid var(--apple-hairline);
+  background: var(--apple-surface-pearl);
 
   :deep(.el-button) {
     border-radius: var(--apple-rounded-sm);
-  }
-}
-
-.loading-placeholder .loading-text {
-  margin-top: var(--apple-spacing-md);
-  font-size: var(--apple-fs-caption);
-}
-
-.error-placeholder {
-  padding: var(--apple-spacing-xxl);
-
-  .error-detail {
-    margin: var(--apple-spacing-md) 0;
-    font-size: var(--apple-fs-caption);
   }
 }
 </style>

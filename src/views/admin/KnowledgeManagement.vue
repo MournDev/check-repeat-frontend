@@ -254,44 +254,29 @@ function statusLabel(s) {
 </script>
 
 <style scoped>
-.knowledge-admin { padding: 4px 0; }
-.page-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 12px; }
-.toolbar-left { display: flex; gap: 12px; align-items: center; }
-.kb-pagination { display: flex; justify-content: center; margin-top: 20px; }
+.knowledge-admin { padding: 4px 0; font-family: var(--apple-font-text); }
+.page-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--apple-spacing-md); gap: var(--apple-spacing-sm); }
+.toolbar-left { display: flex; gap: var(--apple-spacing-sm); align-items: center; }
+.kb-pagination { display: flex; justify-content: center; margin-top: var(--apple-spacing-md); }
 
 .editor-form { padding: 0 4px; }
-.editor-layout { display: flex; gap: 16px; width: 100%; }
+.editor-layout { display: flex; gap: var(--apple-spacing-md); width: 100%; }
 .editor-pane { flex: 1; min-width: 0; }
-.editor-pane :deep(.el-textarea__inner) { font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+.editor-pane :deep(.el-textarea__inner) { font-family: 'JetBrains Mono', monospace; font-size: var(--apple-fs-caption); }
 .preview-pane {
-  flex: 1; min-width: 0; padding: 12px; border: 1px solid var(--apple-hairline);
-  border-radius: 8px; background: var(--apple-surface-pearl); overflow-y: auto; max-height: 440px;
-  font-size: 14px; line-height: 1.7;
+  flex: 1; min-width: 0; padding: var(--apple-spacing-sm); border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-md); background: var(--apple-surface-pearl); overflow-y: auto; max-height: 440px;
+  font-size: var(--apple-fs-caption); line-height: 1.7;
 }
-.preview-pane :deep(h2) { font-size: 16px; margin: 16px 0 8px; }
-.preview-pane :deep(h3) { font-size: 14px; }
-.preview-pane :deep(table) { width: 100%; border-collapse: collapse; }
-.preview-pane :deep(th), .preview-pane :deep(td) { border: 1px solid var(--apple-hairline); padding: 4px 8px; font-size: 13px; }
-.preview-pane :deep(th) { background: var(--apple-divider-soft); }
-.preview-pane :deep(code) { background: var(--apple-hairline); padding: 2px 5px; border-radius: 3px; font-size: 12px; }
-.preview-pane :deep(pre) { background: var(--apple-ink); color: var(--apple-slate-border); padding: 10px; border-radius: 6px; overflow-x: auto; }
-.preview-pane :deep(pre code) { background: none; padding: 0; }
-.preview-pane :deep(blockquote) { border-left: 3px solid var(--apple-primary-on-dark); padding: 4px 12px; margin: 8px 0; background: var(--apple-info-bg); }
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.knowledge-admin { font-family: var(--apple-font-text); }
-.page-toolbar { margin-bottom: var(--apple-spacing-md); gap: var(--apple-spacing-sm); }
-.toolbar-left { gap: var(--apple-spacing-sm); }
-.kb-pagination { margin-top: var(--apple-spacing-md); }
-.editor-layout { gap: var(--apple-spacing-md); }
-.editor-pane :deep(.el-textarea__inner) { font-size: var(--apple-fs-caption); }
-.preview-pane { padding: var(--apple-spacing-sm); border-color: var(--apple-hairline); border-radius: var(--apple-rounded-md); font-size: var(--apple-fs-caption); }
-.preview-pane :deep(h2) { margin: var(--apple-spacing-md) 0 var(--apple-spacing-xs); font-size: var(--apple-fs-body-strong); }
+.preview-pane :deep(h2) { font-size: var(--apple-fs-body-strong); margin: var(--apple-spacing-md) 0 var(--apple-spacing-xs); }
 .preview-pane :deep(h3) { font-size: var(--apple-fs-caption); }
-.preview-pane :deep(th), .preview-pane :deep(td) { padding: var(--apple-spacing-xxs) var(--apple-spacing-xs); font-size: var(--apple-fs-fine-print); }
-.preview-pane :deep(code) { border-radius: var(--apple-rounded-xs); font-size: var(--apple-fs-fine-print); }
-.preview-pane :deep(pre) { border-radius: var(--apple-rounded-sm); }
-.preview-pane :deep(blockquote) { padding: var(--apple-spacing-xxs) var(--apple-spacing-sm); margin: var(--apple-spacing-xs) 0; }
+.preview-pane :deep(table) { width: 100%; border-collapse: collapse; }
+.preview-pane :deep(th), .preview-pane :deep(td) { border: 1px solid var(--apple-hairline); padding: var(--apple-spacing-xxs) var(--apple-spacing-xs); font-size: var(--apple-fs-fine-print); }
+.preview-pane :deep(th) { background: var(--apple-divider-soft); }
+.preview-pane :deep(code) { background: var(--apple-hairline); padding: 2px 5px; border-radius: var(--apple-rounded-xs); font-size: var(--apple-fs-fine-print); }
+.preview-pane :deep(pre) { background: var(--apple-ink); color: var(--apple-slate-border); padding: 10px; border-radius: var(--apple-rounded-sm); overflow-x: auto; }
+.preview-pane :deep(pre code) { background: none; padding: 0; }
+.preview-pane :deep(blockquote) { border-left: 3px solid var(--apple-primary-on-dark); padding: var(--apple-spacing-xxs) var(--apple-spacing-sm); margin: var(--apple-spacing-xs) 0; background: var(--apple-info-bg); }
 
 @media (max-width: 768px) {
   .editor-layout { flex-direction: column; }

@@ -497,41 +497,20 @@ onMounted(() => {
 <style scoped>
 .check-rule-management {
   padding: 0;
-}
-.lib-tag {
-  margin: 2px 4px 2px 0;
-}
-.empty-text {
-  color: #c0c4cc;
-}
-.form-tip {
-  font-size: 12px;
-  color: var(--apple-info);
-  line-height: 1.5;
-  margin-top: 4px;
-}
-.quota-filter {
-  margin-bottom: 8px;
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.check-rule-management {
   font-family: var(--apple-font-text);
 }
-
 .lib-tag {
   margin: var(--apple-spacing-xxs) var(--apple-spacing-xxs) var(--apple-spacing-xxs) 0;
 }
-
 .empty-text {
   color: var(--apple-ink-muted-48);
 }
-
 .form-tip {
-  margin-top: var(--apple-spacing-xxs);
   font-size: var(--apple-fs-fine-print);
+  color: var(--apple-info);
+  line-height: 1.5;
+  margin-top: var(--apple-spacing-xxs);
 }
-
 .quota-filter {
   margin-bottom: var(--apple-spacing-xs);
 }

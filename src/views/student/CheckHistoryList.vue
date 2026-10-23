@@ -294,17 +294,20 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .check-history-list-page {
-  padding: 20px;
+  padding: var(--apple-spacing-lg);
   background-color: var(--apple-canvas-parchment);
+  color: var(--apple-ink);
+  font-family: var(--apple-font-text);
   min-height: 100vh;
 
   .paper-title-cell {
     display: flex;
     align-items: center;
-    gap: 8px;
-    
+    gap: var(--apple-spacing-xs);
+
     .paper-title {
       font-weight: 600;
+      font-size: var(--apple-fs-caption);
       color: var(--apple-ink);
       cursor: pointer;
 
@@ -317,30 +320,6 @@ onMounted(() => {
   .similarity-low { color: var(--apple-rate-low); }
   .similarity-medium { color: var(--apple-rate-medium); }
   .similarity-high { color: var(--apple-rate-high); }
-}
-
-// 响应式设计
-@media (max-width: 768px) {
-  .check-history-list-page {
-    padding: 12px;
-  }
-}
-
-// ── 视觉统一（design-tokens 覆盖层） ────────────────────────
-.check-history-list-page {
-  padding: var(--apple-spacing-lg);
-  background-color: var(--apple-canvas-parchment);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
-
-  .paper-title-cell {
-    gap: var(--apple-spacing-xs);
-
-    .paper-title {
-      font-size: var(--apple-fs-caption);
-      color: var(--apple-ink);
-    }
-  }
 }
 
 @media (max-width: 768px) {

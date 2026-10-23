@@ -376,60 +376,41 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.system-monitoring { padding: 0; }
+.system-monitoring { padding: 0; font-family: var(--apple-font-text); }
 
-.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 16px; }
-.stat-card { display: flex; align-items: center; gap: 16px; padding: 16px; }
-.stat-icon { width: 56px; height: 56px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--apple-surface); flex-shrink: 0; }
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--apple-spacing-md); margin-bottom: var(--apple-spacing-md); }
+.stat-card { display: flex; align-items: center; gap: var(--apple-spacing-md); padding: var(--apple-spacing-md); }
+.stat-icon { width: 56px; height: 56px; border-radius: var(--apple-rounded-lg); display: flex; align-items: center; justify-content: center; color: var(--apple-surface); flex-shrink: 0; }
 .stat-icon.cpu { background: linear-gradient(135deg, var(--apple-primary), #337ecc); }
 .stat-icon.memory { background: linear-gradient(135deg, var(--apple-success), #529b2e); }
 .stat-icon.disk { background: linear-gradient(135deg, var(--apple-warning), #b88230); }
 .stat-icon.db { background: linear-gradient(135deg, #9B59B6, #7d3c98); }
 .stat-info { flex: 1; min-width: 0; }
-.stat-value { font-size: 28px; font-weight: 700; color: var(--apple-ink); line-height: 1.2; }
+.stat-value { font-size: var(--apple-fs-lead); font-weight: 700; color: var(--apple-ink); line-height: 1.2; }
 .stat-value.status-normal { color: var(--apple-success); }
 .stat-value.status-warning { color: var(--apple-warning); }
 .stat-value.status-danger { color: var(--apple-danger); }
-.stat-label { font-size: 13px; color: var(--apple-info); margin: 4px 0 8px; }
+.stat-label { font-size: var(--apple-fs-fine-print); color: var(--apple-info); margin: var(--apple-spacing-xxs) 0 var(--apple-spacing-xs); }
 
-.overview-card { margin-bottom: 16px; }
-.card-title { font-weight: 600; font-size: 15px; }
+.overview-card { margin-bottom: var(--apple-spacing-md); }
+.card-title { font-weight: 600; font-size: var(--apple-fs-caption); font-family: var(--apple-font-display); }
 .card-header { display: flex; justify-content: space-between; align-items: center; }
 
-.charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--apple-spacing-md); margin-bottom: var(--apple-spacing-md); }
 .chart-card { margin-bottom: 0; }
 .chart-container { width: 100%; height: 320px; }
 .chart-container-small { width: 100%; height: 200px; }
 
-.db-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
-.db-metric-item { text-align: center; padding: 12px; background: var(--apple-canvas-parchment); border-radius: 8px; }
-.db-metric-value { font-size: 20px; font-weight: 600; color: var(--apple-ink); }
-.db-metric-label { font-size: 12px; color: var(--apple-info); margin-top: 4px; }
+.db-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--apple-spacing-sm); margin-bottom: var(--apple-spacing-md); }
+.db-metric-item { text-align: center; padding: var(--apple-spacing-sm); background: var(--apple-canvas-parchment); border-radius: var(--apple-rounded-sm); }
+.db-metric-value { font-size: var(--apple-fs-tagline); font-weight: 600; color: var(--apple-ink); }
+.db-metric-label { font-size: var(--apple-fs-fine-print); color: var(--apple-info); margin-top: var(--apple-spacing-xxs); }
 
-.app-metrics { display: flex; flex-direction: column; gap: 16px; }
+.app-metrics { display: flex; flex-direction: column; gap: var(--apple-spacing-md); }
 .app-metric-item { }
-.app-metric-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-.app-metric-label { font-size: 13px; color: var(--apple-ink-muted-80); }
-.app-metric-value { font-size: 16px; font-weight: 600; }
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.system-monitoring { font-family: var(--apple-font-text); }
-.stats-row { gap: var(--apple-spacing-md); margin-bottom: var(--apple-spacing-md); }
-.stat-card { gap: var(--apple-spacing-md); padding: var(--apple-spacing-md); }
-.stat-icon { width: 56px; height: 56px; border-radius: var(--apple-rounded-lg); }
-.stat-value { font-size: var(--apple-fs-lead); }
-.stat-label { margin: var(--apple-spacing-xxs) 0 var(--apple-spacing-xs); font-size: var(--apple-fs-fine-print); }
-.overview-card { margin-bottom: var(--apple-spacing-md); }
-.card-title { font-size: var(--apple-fs-caption); font-family: var(--apple-font-display); }
-.charts-row { gap: var(--apple-spacing-md); margin-bottom: var(--apple-spacing-md); }
-.db-metrics { gap: var(--apple-spacing-sm); margin-bottom: var(--apple-spacing-md); }
-.db-metric-item { padding: var(--apple-spacing-sm); border-radius: var(--apple-rounded-sm); }
-.db-metric-value { font-size: var(--apple-fs-tagline); }
-.db-metric-label { margin-top: var(--apple-spacing-xxs); font-size: var(--apple-fs-fine-print); }
-.app-metrics { gap: var(--apple-spacing-md); }
-.app-metric-row { margin-bottom: var(--apple-spacing-xxs); }
-.app-metric-label { font-size: var(--apple-fs-fine-print); }
-.app-metric-value { font-size: var(--apple-fs-body-strong); }
+.app-metric-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--apple-spacing-xxs); }
+.app-metric-label { font-size: var(--apple-fs-fine-print); color: var(--apple-ink-muted-80); }
+.app-metric-value { font-size: var(--apple-fs-body-strong); font-weight: 600; }
 
 @media (max-width: 768px) {
   .stats-row { grid-template-columns: repeat(2, 1fr); }

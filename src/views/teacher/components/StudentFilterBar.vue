@@ -81,42 +81,6 @@ defineEmits(['update:keyword', 'update:status', 'update:college', 'reset'])
 
 <style scoped>
 .filter-card {
-  margin-bottom: 16px;
-
-  :deep(.el-card__body) {
-    padding: 14px 16px;
-  }
-}
-
-.filter-content {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.filter-search {
-  width: 260px;
-}
-
-.filter-select {
-  width: 160px;
-}
-
-@media (max-width: 768px) {
-  .filter-content {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .filter-search,
-  .filter-select {
-    width: 100%;
-  }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.filter-card {
   margin-bottom: var(--apple-spacing-md);
 
   :deep(.el-card__body) {
@@ -125,7 +89,18 @@ defineEmits(['update:keyword', 'update:status', 'update:college', 'reset'])
 }
 
 .filter-content {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   gap: var(--apple-spacing-sm);
+}
+
+.filter-search {
+  width: 260px;
+}
+
+.filter-select {
+  width: 160px;
 }
 
 .filter-search,
@@ -140,6 +115,16 @@ defineEmits(['update:keyword', 'update:status', 'update:college', 'reset'])
 @media (max-width: 768px) {
   .filter-card {
     margin-bottom: var(--apple-spacing-sm);
+  }
+
+  .filter-content {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-search,
+  .filter-select {
+    width: 100%;
   }
 }
 </style>
