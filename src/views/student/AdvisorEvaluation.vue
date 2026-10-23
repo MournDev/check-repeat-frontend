@@ -299,56 +299,56 @@ onMounted(() => {
 .advisor-evaluation {
   display: flex;
   flex-direction: column;
-  gap: var(--apple-spacing-md);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
+  gap: var(--app-space-4);
+  color: var(--app-color-ink);
+  font-family: var(--app-font-family);
 }
 
 .head-row {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--apple-spacing-md);
+  gap: var(--app-space-4);
 }
 
 .head-title {
-  margin: 0 0 var(--apple-spacing-xs);
-  font-family: var(--apple-font-display);
-  font-size: 1.25rem;
+  margin: 0 0 var(--app-space-2);
+  font-family: var(--app-font-family);
+  font-size: var(--app-fs-title);
   font-weight: 700;
-  line-height: 1.2;
-  color: var(--apple-ink);
+  line-height: var(--app-lh-display);
+  color: var(--app-color-ink);
 }
 
 .head-desc {
   margin: 0;
-  font-size: var(--apple-fs-caption);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-caption);
+  color: var(--app-color-text-muted);
 }
 
 .state-block {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--apple-spacing-sm);
-  padding: var(--apple-spacing-xxl) var(--apple-spacing-lg);
+  gap: var(--app-space-3);
+  padding: var(--app-space-8) var(--app-space-6);
   text-align: center;
 }
 
 .state-icon {
-  color: var(--apple-ink-muted-48);
+  color: var(--app-color-text-muted);
 }
 
 .state-title {
   margin: 0;
-  font-size: var(--apple-fs-body-strong);
+  font-size: var(--app-fs-body);
   font-weight: 600;
 }
 
 .state-reason {
   margin: 0;
-  font-size: var(--apple-fs-caption);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-caption);
+  color: var(--app-color-text-muted);
   max-width: 420px;
 }
 
@@ -356,104 +356,104 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--apple-spacing-sm);
+  gap: var(--app-space-3);
   flex-wrap: wrap;
 
   .card-title {
     display: flex;
     align-items: center;
-    font-family: var(--apple-font-display);
-    font-size: var(--apple-fs-body-strong);
+    font-family: var(--app-font-family);
+    font-size: var(--app-fs-body);
     font-weight: 600;
 
     .el-icon {
-      margin-right: var(--apple-spacing-xs);
-      color: var(--apple-primary);
+      margin-right: var(--app-space-2);
+      color: var(--app-color-primary);
     }
   }
 
   .submit-time {
-    font-size: var(--apple-fs-fine-print);
-    color: var(--apple-ink-muted-48);
+    font-size: var(--app-fs-meta);
+    color: var(--app-color-text-muted);
   }
 }
 
 .readonly-body,
 .form-body {
-  padding: var(--apple-spacing-xs) 0;
+  padding: var(--app-space-2) 0;
 }
 
 .paper-info {
   display: flex;
   flex-direction: column;
-  gap: var(--apple-spacing-xs);
+  gap: var(--app-space-2);
 }
 
 .info-item {
   display: flex;
-  gap: var(--apple-spacing-xs);
-  font-size: var(--apple-fs-caption);
+  gap: var(--app-space-2);
+  font-size: var(--app-fs-caption);
 
   .label {
-    color: var(--apple-ink-muted-48);
+    color: var(--app-color-text-muted);
     flex-shrink: 0;
   }
 
   .value {
-    color: var(--apple-ink);
+    color: var(--app-color-ink);
   }
 }
 
 .score-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: var(--apple-spacing-md);
-  margin: var(--apple-spacing-md) 0;
+  gap: var(--app-space-4);
+  margin: var(--app-space-4) 0;
 }
 
 .score-item {
   .score-label {
-    font-size: var(--apple-fs-fine-print);
-    color: var(--apple-ink-muted-48);
-    margin-bottom: var(--apple-spacing-xs);
+    font-size: var(--app-fs-meta);
+    color: var(--app-color-text-muted);
+    margin-bottom: var(--app-space-2);
   }
 }
 
 .block-label {
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
-  margin-bottom: var(--apple-spacing-xs);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
+  margin-bottom: var(--app-space-2);
 }
 
 .tags-block {
-  margin: var(--apple-spacing-md) 0;
+  margin: var(--app-space-4) 0;
 
   .tag-item {
-    margin-right: var(--apple-spacing-xs);
-    margin-bottom: var(--apple-spacing-xs);
+    margin-right: var(--app-space-2);
+    margin-bottom: var(--app-space-2);
   }
 }
 
 .comment-block {
-  margin: var(--apple-spacing-md) 0;
+  margin: var(--app-space-4) 0;
 
   .comment-text {
     margin: 0;
-    font-size: var(--apple-fs-caption);
+    font-size: var(--app-fs-caption);
     line-height: 1.6;
-    color: var(--apple-ink);
+    color: var(--app-color-ink);
     white-space: pre-wrap;
   }
 }
 
 .readonly-tip {
-  margin-top: var(--apple-spacing-md);
+  margin-top: var(--app-space-4);
 }
 
 .form-tip {
-  margin-left: var(--apple-spacing-sm);
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  margin-left: var(--app-space-3);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 :deep(.el-rate) {
