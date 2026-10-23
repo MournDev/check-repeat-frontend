@@ -331,7 +331,7 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   gap: var(--app-space-3);
-  padding: var(--app-space-8) var(--app-space-6);
+  padding: var(--app-space-12) var(--app-space-6);
   text-align: center;
 }
 

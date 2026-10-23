@@ -293,7 +293,7 @@ onMounted(() => {
       border-radius: var(--app-radius-md);
       margin-bottom: var(--app-space-3);
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all var(--app-transition-normal);
 
       &:last-child {
         margin-bottom: 0;
