@@ -152,20 +152,21 @@ const handleDownload = async () => {
 watch(() => props.paper?.paperId, load, { immediate: true })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .paper-preview-pane {
   display: flex;
   flex-direction: column;
   height: 100%;
   min-height: 0;
   background: var(--apple-canvas-parchment);
+  font-family: var(--apple-font-text);
 }
 
 .preview-toolbar {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 16px;
+  gap: var(--apple-spacing-sm);
+  padding: var(--apple-spacing-xs) var(--apple-spacing-md);
   background: var(--apple-canvas);
   border-bottom: 1px solid var(--apple-hairline);
   flex-shrink: 0;
@@ -174,22 +175,22 @@ watch(() => props.paper?.paperId, load, { immediate: true })
 .preview-heading {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: var(--apple-spacing-xs);
   min-width: 0;
   flex: 1;
 }
 
 .preview-label {
   flex-shrink: 0;
-  padding: 1px 8px;
-  font-size: 0.6875rem;
+  padding: 1px var(--apple-spacing-xs);
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-primary);
   background: var(--apple-info-bg);
   border-radius: var(--apple-rounded-pill);
 }
 
 .preview-title {
-  font-size: 0.8125rem;
+  font-size: var(--apple-fs-caption);
   font-weight: 600;
   color: var(--apple-ink);
   white-space: nowrap;
@@ -207,7 +208,7 @@ watch(() => props.paper?.paperId, load, { immediate: true })
   position: relative;
   flex: 1;
   min-height: 0;
-  padding: 12px;
+  padding: var(--apple-spacing-sm);
 }
 
 .preview-frame {
@@ -225,7 +226,7 @@ watch(() => props.paper?.paperId, load, { immediate: true })
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 32px;
+  padding: var(--apple-spacing-xl);
   text-align: center;
   color: var(--apple-ink-muted-48);
   background: var(--apple-canvas);
@@ -240,92 +241,17 @@ watch(() => props.paper?.paperId, load, { immediate: true })
 }
 
 .preview-fallback h3 {
-  margin: 14px 0 6px;
+  margin: var(--apple-spacing-sm) 0 var(--apple-spacing-xxs);
   max-width: 520px;
-  font-size: 1rem;
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-body-strong);
   color: var(--apple-ink);
 }
 
 .fallback-meta {
   margin: 0;
-  font-size: 0.8125rem;
-  color: var(--apple-ink-muted-48);
-}
-
-.fallback-meta span {
-  margin: 0 4px;
-}
-
-.fallback-tip {
-  margin: 14px 0 0;
-  max-width: 460px;
-  font-size: 0.8125rem;
-  line-height: 1.5;
-  color: var(--apple-ink-muted-48);
-}
-
-.fallback-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 18px;
-}
-
-.preview-empty p {
-  margin: 12px 0 0;
-  font-size: 0.875rem;
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.paper-preview-pane {
-  font-family: var(--apple-font-text);
-}
-
-.preview-toolbar {
-  gap: var(--apple-spacing-sm);
-  padding: var(--apple-spacing-xs) var(--apple-spacing-md);
-}
-
-.preview-heading {
-  gap: var(--apple-spacing-xs);
-}
-
-.preview-label {
-  padding: 1px var(--apple-spacing-xs);
-  font-size: var(--apple-fs-fine-print);
-}
-
-.preview-title {
   font-size: var(--apple-fs-caption);
-}
-
-.preview-body {
-  padding: var(--apple-spacing-sm);
-}
-
-.preview-frame {
-  border-radius: var(--apple-rounded-md);
-}
-
-.preview-fallback,
-.preview-empty {
-  padding: var(--apple-spacing-xl);
-  border-radius: var(--apple-rounded-md);
-}
-
-.fallback-icon,
-.empty-icon {
-  font-size: 40px;
-  color: var(--apple-slate-faint);
-}
-
-.preview-fallback h3 {
-  margin: var(--apple-spacing-sm) 0 var(--apple-spacing-xxs);
-  font-family: var(--apple-font-display);
-  font-size: var(--apple-fs-body-strong);
-}
-
-.fallback-meta {
-  font-size: var(--apple-fs-caption);
+  color: var(--apple-ink-muted-48);
 }
 
 .fallback-meta span {
@@ -334,11 +260,14 @@ watch(() => props.paper?.paperId, load, { immediate: true })
 
 .fallback-tip {
   margin: var(--apple-spacing-sm) 0 0;
+  max-width: 460px;
   font-size: var(--apple-fs-caption);
   line-height: 1.5;
+  color: var(--apple-ink-muted-48);
 }
 
 .fallback-actions {
+  display: flex;
   gap: var(--apple-spacing-xs);
   margin-top: var(--apple-spacing-md);
 }

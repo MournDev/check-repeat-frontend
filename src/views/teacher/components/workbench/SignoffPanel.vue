@@ -207,139 +207,10 @@ const handleSubmit = async () => {
 watch(() => props.paperId, resetForm)
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .signoff-panel {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 14px 0 8px;
-}
-
-.signoff-card {
-  padding: 14px;
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-md);
-  background: var(--apple-surface-pearl);
-}
-
-.signed-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.signed-label {
-  font-size: 0.75rem;
-  color: var(--apple-ink-muted-48);
-}
-
-.signed-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin: 0;
-}
-
-.signed-grid dt,
-.signed-comment dt {
-  font-size: 0.6875rem;
-  color: var(--apple-ink-muted-48);
-}
-
-.signed-grid dd,
-.signed-comment dd {
-  margin: 3px 0 0;
-  font-size: 0.8125rem;
-  color: var(--apple-ink);
-}
-
-.signed-grid dd.score {
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: var(--apple-primary);
-}
-
-.signed-comment {
-  margin-top: 12px;
-  padding-top: 10px;
-  border-top: 1px solid var(--apple-divider-soft);
-}
-
-.signed-comment dd {
-  line-height: 1.6;
-  color: var(--apple-ink-muted-80);
-  white-space: pre-wrap;
-}
-
-.report-summary {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  padding: 10px;
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-sm);
-  background: var(--apple-canvas);
-}
-
-.summary-item span {
-  display: block;
-  font-size: 0.6875rem;
-  color: var(--apple-ink-muted-48);
-}
-
-.summary-item strong {
-  display: block;
-  margin-top: 3px;
-  font-size: 0.875rem;
-  color: var(--apple-ink);
-}
-
-.summary-item strong.time {
-  font-weight: 500;
-  font-size: 0.75rem;
-}
-
-.signoff-form :deep(.el-form-item) {
-  margin-bottom: 16px;
-}
-
-.signoff-form :deep(.el-form-item__label) {
-  padding-bottom: 4px;
-  font-size: 0.75rem;
-  color: var(--apple-ink-muted-48);
-}
-
-.score-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.quick-score {
-  padding: 2px 9px;
-  font-size: 0.75rem;
-  color: var(--apple-primary);
-  background: var(--apple-info-bg);
-  border: 1px solid var(--apple-info-border);
-  border-radius: var(--apple-rounded-pill);
-  cursor: pointer;
-}
-
-.submit-signoff {
-  width: 100%;
-}
-
-.signoff-hint {
-  margin: 0;
-  font-size: 0.6875rem;
-  line-height: 1.5;
-  text-align: center;
-  color: var(--apple-ink-muted-48);
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.signoff-panel {
   gap: var(--apple-spacing-sm);
   padding: var(--apple-spacing-sm) 0 var(--apple-spacing-xs);
   font-family: var(--apple-font-text);
@@ -353,58 +224,86 @@ watch(() => props.paperId, resetForm)
 
 .signoff-card {
   padding: var(--apple-spacing-sm);
+  border: 1px solid var(--apple-hairline);
   border-radius: var(--apple-rounded-md);
+  background: var(--apple-surface-pearl);
 }
 
 .signed-head {
+  display: flex;
+  align-items: center;
   gap: var(--apple-spacing-xs);
   margin-bottom: var(--apple-spacing-sm);
 }
 
 .signed-label {
   font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
 }
 
 .signed-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--apple-spacing-xs);
+  margin: 0;
 }
 
 .signed-grid dt,
 .signed-comment dt {
   font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
 }
 
 .signed-grid dd,
 .signed-comment dd {
   margin: var(--apple-spacing-xxs) 0 0;
   font-size: var(--apple-fs-caption);
+  color: var(--apple-ink);
 }
 
 .signed-grid dd.score {
   font-size: var(--apple-fs-body-strong);
+  font-weight: 700;
+  color: var(--apple-primary);
 }
 
 .signed-comment {
   margin-top: var(--apple-spacing-sm);
   padding-top: var(--apple-spacing-xs);
+  border-top: 1px solid var(--apple-divider-soft);
+}
+
+.signed-comment dd {
+  line-height: 1.6;
+  color: var(--apple-ink-muted-80);
+  white-space: pre-wrap;
 }
 
 .report-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--apple-spacing-xs);
   padding: var(--apple-spacing-xs);
+  border: 1px solid var(--apple-hairline);
   border-radius: var(--apple-rounded-sm);
+  background: var(--apple-canvas);
 }
 
 .summary-item span {
+  display: block;
   font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
 }
 
 .summary-item strong {
+  display: block;
   margin-top: var(--apple-spacing-xxs);
   font-size: var(--apple-fs-caption-strong);
+  color: var(--apple-ink);
 }
 
 .summary-item strong.time {
+  font-weight: 500;
   font-size: var(--apple-fs-fine-print);
 }
 
@@ -415,20 +314,35 @@ watch(() => props.paperId, resetForm)
 .signoff-form :deep(.el-form-item__label) {
   padding-bottom: var(--apple-spacing-xxs);
   font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
 }
 
 .score-row {
+  display: flex;
+  align-items: center;
   gap: var(--apple-spacing-xs);
 }
 
 .quick-score {
   padding: 2px var(--apple-spacing-xs);
   font-size: var(--apple-fs-fine-print);
+  color: var(--apple-primary);
+  background: var(--apple-info-bg);
+  border: 1px solid var(--apple-info-border);
+  border-radius: var(--apple-rounded-pill);
+  cursor: pointer;
+}
+
+.submit-signoff {
+  width: 100%;
 }
 
 .signoff-hint {
+  margin: 0;
   font-size: var(--apple-fs-fine-print);
   line-height: 1.5;
+  text-align: center;
+  color: var(--apple-ink-muted-48);
 }
 
 @media (max-width: 768px) {

@@ -288,16 +288,16 @@ const getStatusText = (status) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
+  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
   background: var(--apple-canvas-parchment);
   border-bottom: 1px solid var(--apple-hairline);
 
   .header-title {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--apple-spacing-xs);
     font-weight: 600;
-    font-size: 1rem;
+    font-size: var(--apple-fs-body-strong);
     color: var(--apple-ink);
 
     .el-icon {
@@ -305,9 +305,9 @@ const getStatusText = (status) => {
     }
 
     .total-count {
-      font-size: 0.875rem;
+      font-size: var(--apple-fs-fine-print);
       color: var(--apple-ink-muted-48);
-      margin-left: 8px;
+      margin-left: var(--apple-spacing-xs);
       font-weight: 400;
     }
   }
@@ -319,7 +319,8 @@ const getStatusText = (status) => {
     color: var(--apple-ink);
     font-weight: 600;
     border-bottom: 1px solid var(--apple-hairline);
-    padding: 12px 16px;
+    padding: var(--apple-spacing-xs) var(--apple-spacing-sm);
+    font-size: var(--apple-fs-caption);
   }
 
   .el-table__row {
@@ -330,9 +331,9 @@ const getStatusText = (status) => {
     }
 
     td.el-table__cell {
-      padding: 12px 16px;
+      padding: var(--apple-spacing-xs) var(--apple-spacing-sm);
       border-bottom: 1px solid var(--apple-divider-soft);
-      font-size: 0.875rem;
+      font-size: var(--apple-fs-caption);
       color: var(--apple-ink);
     }
   }
@@ -359,12 +360,12 @@ const getStatusText = (status) => {
 
   .no-advisor {
     color: var(--apple-ink-muted-48);
-    font-size: 0.8125rem;
+    font-size: var(--apple-fs-fine-print);
   }
 
   .submit-time {
     color: var(--apple-ink-muted-48);
-    font-size: 0.8125rem;
+    font-size: var(--apple-fs-fine-print);
   }
 
   .no-submit {
@@ -379,7 +380,7 @@ const getStatusText = (status) => {
   }
 
   .similarity-value {
-    font-size: 0.8125rem;
+    font-size: var(--apple-fs-fine-print);
     color: var(--apple-ink);
     font-weight: 600;
   }
@@ -387,7 +388,7 @@ const getStatusText = (status) => {
   .action-buttons {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--apple-spacing-xs);
   }
 }
 
@@ -397,8 +398,8 @@ const getStatusText = (status) => {
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 12px;
-  padding: 12px 20px;
+  gap: var(--apple-spacing-sm);
+  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
   border-top: 1px solid var(--apple-hairline);
   background: var(--apple-surface);
 }
@@ -411,9 +412,9 @@ const getStatusText = (status) => {
 }
 
 .batch-bar .batch-summary {
-  font-size: 0.8125rem;
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink);
-  margin-right: 4px;
+  margin-right: var(--apple-spacing-xxs);
 }
 
 .pagination {
@@ -425,8 +426,8 @@ const getStatusText = (status) => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: 48px 0;
+  gap: var(--apple-spacing-xs);
+  padding: var(--apple-spacing-xxl) 0;
   color: var(--apple-ink-muted-48);
 
   .el-icon {
@@ -436,81 +437,6 @@ const getStatusText = (status) => {
 
   p {
     margin: 0;
-    font-size: 0.875rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .table-footer {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .pagination {
-    margin-left: 0;
-    justify-content: center;
-  }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.list-card {
-  border-radius: var(--apple-rounded-lg);
-}
-
-.list-header {
-  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-
-  .header-title {
-    gap: var(--apple-spacing-xs);
-    font-size: var(--apple-fs-body-strong);
-
-    .total-count {
-      margin-left: var(--apple-spacing-xs);
-      font-size: var(--apple-fs-fine-print);
-    }
-  }
-}
-
-:deep(.student-table) {
-  .el-table__header th {
-    padding: var(--apple-spacing-xs) var(--apple-spacing-sm);
-    font-size: var(--apple-fs-caption);
-  }
-
-  .el-table__row td.el-table__cell {
-    padding: var(--apple-spacing-xs) var(--apple-spacing-sm);
-    font-size: var(--apple-fs-caption);
-  }
-
-  .no-advisor,
-  .submit-time {
-    font-size: var(--apple-fs-fine-print);
-  }
-
-  .similarity-value {
-    font-size: var(--apple-fs-fine-print);
-  }
-
-  .action-buttons {
-    gap: var(--apple-spacing-xs);
-  }
-}
-
-.table-footer {
-  gap: var(--apple-spacing-sm);
-  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-}
-
-.batch-bar .batch-summary {
-  margin-right: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
-}
-
-.table-empty {
-  gap: var(--apple-spacing-xs);
-  padding: var(--apple-spacing-xxl) 0;
-
-  p {
     font-size: var(--apple-fs-caption);
   }
 }
@@ -521,7 +447,14 @@ const getStatusText = (status) => {
   }
 
   .table-footer {
+    flex-direction: column;
+    align-items: stretch;
     padding: var(--apple-spacing-sm);
+  }
+
+  .pagination {
+    margin-left: 0;
+    justify-content: center;
   }
 }
 </style>

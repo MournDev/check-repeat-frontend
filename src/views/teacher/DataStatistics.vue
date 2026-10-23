@@ -476,148 +476,72 @@ onMounted(async () => {
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 .teacher-dashboard {
   .stats-row {
-    margin-bottom: 20px;
-    
+    margin-bottom: var(--apple-spacing-md);
+
     .stat-card {
       .stat-content {
         display: flex;
         align-items: center;
-        
+
         .stat-icon-wrapper {
           display: flex;
           align-items: center;
           justify-content: center;
           width: 56px;
           height: 56px;
-          border-radius: 18px;
-          margin-right: 16px;
+          border-radius: var(--apple-rounded-lg);
+          margin-right: var(--apple-spacing-md);
         }
-        
+
         .stat-info {
           .stat-number {
-            font-size: 28px;
+            font-family: var(--apple-font-display);
+            font-size: var(--apple-fs-lead);
             font-weight: 700;
             color: var(--apple-ink);
             line-height: 1;
           }
-          
+
           .stat-label {
-            font-size: 17px;
+            margin: var(--apple-spacing-xs) 0 var(--apple-spacing-xxs);
+            font-size: var(--apple-fs-caption);
             color: var(--apple-ink-muted-48);
-            margin: 8px 0 4px 0;
           }
-          
+
           .stat-trend {
-            font-size: 12px;
-            
+            font-size: var(--apple-fs-fine-print);
+
             &.trend-up {
               color: var(--apple-success);
             }
-            
+
             &.trend-down {
               color: var(--apple-danger);
             }
-            
+
             &.trend-flat {
               color: var(--apple-ink-muted-48);
             }
-            
+
             .trend-icon {
-              margin-right: 4px;
+              margin-right: var(--apple-spacing-xxs);
             }
           }
         }
       }
     }
   }
-  
-  .charts-row {
-    margin-bottom: 20px;
-    
-    .chart-card {
-      .card-header {
-        display: flex;
-        align-items: center;
-        font-weight: 600;
-        
-        .el-icon {
-          margin-right: 8px;
-        }
-      }
-      
-      .chart-container {
-        padding: 16px 0;
-      }
-    }
-  }
-  
-  .data-table-card {
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      
-      .header-left {
-        display: flex;
-        align-items: center;
-        font-weight: 600;
-        
-        .el-icon {
-          margin-right: 8px;
-        }
-      }
-    }
-    
-    .detail-table {
-      margin-top: 16px;
-    }
-  }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.teacher-dashboard {
-  .stats-row {
-    margin-bottom: var(--apple-spacing-md);
-
-    .stat-card .stat-content {
-      .stat-icon-wrapper {
-        margin-right: var(--apple-spacing-md);
-        border-radius: var(--apple-rounded-lg);
-      }
-
-      .stat-info {
-        .stat-number {
-          font-family: var(--apple-font-display);
-          font-size: var(--apple-fs-lead);
-          font-weight: 700;
-          line-height: 1;
-        }
-
-        .stat-label {
-          margin: var(--apple-spacing-xs) 0 var(--apple-spacing-xxs);
-          font-size: var(--apple-fs-caption);
-          color: var(--apple-ink-muted-48);
-        }
-
-        .stat-trend {
-          font-size: var(--apple-fs-fine-print);
-
-          .trend-icon {
-            margin-right: var(--apple-spacing-xxs);
-          }
-        }
-      }
-    }
-  }
 
   .charts-row {
     margin-bottom: var(--apple-spacing-md);
 
     .chart-card {
       .card-header {
+        display: flex;
+        align-items: center;
         gap: var(--apple-spacing-xs);
         font-family: var(--apple-font-display);
         font-size: var(--apple-fs-body-strong);
@@ -635,14 +559,22 @@ onMounted(async () => {
   }
 
   .data-table-card {
-    .card-header .header-left {
-      gap: var(--apple-spacing-xs);
-      font-family: var(--apple-font-display);
-      font-size: var(--apple-fs-body-strong);
-      font-weight: 600;
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
 
-      .el-icon {
-        margin-right: 0;
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: var(--apple-spacing-xs);
+        font-family: var(--apple-font-display);
+        font-size: var(--apple-fs-body-strong);
+        font-weight: 600;
+
+        .el-icon {
+          margin-right: 0;
+        }
       }
     }
 

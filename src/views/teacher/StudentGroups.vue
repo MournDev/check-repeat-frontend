@@ -402,126 +402,18 @@ onMounted(() => {
   .groups-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-    gap: 20px;
-    
+    gap: var(--apple-spacing-md);
+
     .group-card {
       .group-header {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        margin-bottom: 16px;
-        
-        .group-info {
-          flex: 1;
-          
-          .group-name {
-            margin: 0 0 8px 0;
-            font-size: 18px;
-            font-weight: 400;
-          }
-          
-          .group-meta {
-            display: flex;
-            gap: 16px;
-            font-size: 12px;
-            color: var(--apple-info);
-          }
-        }
-        
-        .group-actions {
-          display: flex;
-          gap: 8px;
-        }
-      }
-      
-      .group-students {
-        margin-bottom: 16px;
-        
-        .students-list {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 8px;
-          
-          .student-tag {
-            margin-bottom: 8px;
-          }
-        }
-        
-        .empty-students {
-          padding: 20px 0;
-        }
-      }
-      
-      .group-footer {
-        display: flex;
-        gap: 8px;
-        justify-content: flex-end;
-      }
-    }
-    
-    .empty-groups {
-      grid-column: 1 / -1;
-      padding: 60px 0;
-      text-align: center;
-    }
-  }
-  
-  .add-students-content {
-    .search-box {
-      margin-bottom: 20px;
-    }
-    
-    .students-selector {
-      max-height: 400px;
-      overflow-y: auto;
-      margin-bottom: 20px;
-      
-      .student-checkbox {
-        display: block;
-        margin-bottom: 12px;
-        padding: 12px;
-        border: 1px solid var(--apple-hairline);
-        border-radius: 8px;
-        cursor: pointer;
-        transition: border-color 0.2s ease;
-        
-        &:hover {
-          border-color: var(--apple-primary);
-          background-color: var(--apple-canvas-parchment);
-        }
-        
-        .student-info {
-          .student-name {
-            font-weight: 400;
-            margin-bottom: 4px;
-          }
-          
-          .student-details {
-            font-size: 12px;
-            color: var(--apple-info);
-          }
-        }
-      }
-    }
-    
-    .selected-count {
-      font-size: 17px;
-      color: var(--apple-ink-muted-80);
-      margin-bottom: 20px;
-    }
-  }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.student-groups {
-  .groups-list {
-    gap: var(--apple-spacing-md);
-
-    .group-card {
-      .group-header {
         margin-bottom: var(--apple-spacing-md);
 
         .group-info {
+          flex: 1;
+
           .group-name {
             margin: 0 0 var(--apple-spacing-xs);
             font-family: var(--apple-font-display);
@@ -530,6 +422,7 @@ onMounted(() => {
           }
 
           .group-meta {
+            display: flex;
             gap: var(--apple-spacing-md);
             font-size: var(--apple-fs-fine-print);
             color: var(--apple-ink-muted-48);
@@ -537,6 +430,7 @@ onMounted(() => {
         }
 
         .group-actions {
+          display: flex;
           gap: var(--apple-spacing-xs);
         }
       }
@@ -545,6 +439,8 @@ onMounted(() => {
         margin-bottom: var(--apple-spacing-md);
 
         .students-list {
+          display: flex;
+          flex-wrap: wrap;
           gap: var(--apple-spacing-xs);
 
           .student-tag {
@@ -558,12 +454,16 @@ onMounted(() => {
       }
 
       .group-footer {
+        display: flex;
         gap: var(--apple-spacing-xs);
+        justify-content: flex-end;
       }
     }
 
     .empty-groups {
+      grid-column: 1 / -1;
       padding: var(--apple-spacing-xxl) 0;
+      text-align: center;
     }
   }
 
@@ -578,18 +478,28 @@ onMounted(() => {
     }
 
     .students-selector {
+      max-height: 400px;
+      overflow-y: auto;
       margin-bottom: var(--apple-spacing-md);
 
       .student-checkbox {
+        display: block;
         margin-bottom: var(--apple-spacing-sm);
         padding: var(--apple-spacing-sm);
+        border: 1px solid var(--apple-hairline);
         border-radius: var(--apple-rounded-sm);
+        cursor: pointer;
         transition: border-color var(--apple-transition-normal);
+
+        &:hover {
+          border-color: var(--apple-primary);
+          background-color: var(--apple-canvas-parchment);
+        }
 
         .student-info {
           .student-name {
-            margin-bottom: var(--apple-spacing-xxs);
             font-weight: 500;
+            margin-bottom: var(--apple-spacing-xxs);
           }
 
           .student-details {
@@ -601,9 +511,9 @@ onMounted(() => {
     }
 
     .selected-count {
-      margin-bottom: var(--apple-spacing-md);
       font-size: var(--apple-fs-caption);
       color: var(--apple-ink-muted-80);
+      margin-bottom: var(--apple-spacing-md);
     }
   }
 }

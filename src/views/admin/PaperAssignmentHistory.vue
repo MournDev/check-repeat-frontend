@@ -743,30 +743,31 @@ onMounted(() => {
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 .assignment-history {
   padding: 0;
+  font-family: var(--apple-font-text);
 }
 
 .stats-cards {
-  margin-bottom: 1.5rem;
-  
+  margin-bottom: var(--apple-spacing-lg);
+
   .stat-card {
     border: none;
-    border-radius: 18px;
-    
+    border-radius: var(--apple-rounded-lg);
+
     .stat-content {
       display: flex;
       align-items: center;
-      
+
       .stat-icon {
         display: flex;
         align-items: center;
         justify-content: center;
         width: 48px;
         height: 48px;
-        border-radius: 18px;
-        margin-right: 1rem;
+        border-radius: var(--apple-rounded-lg);
+        margin-right: var(--apple-spacing-md);
 
         &.bg-primary {
           background: var(--apple-primary);
@@ -783,25 +784,25 @@ onMounted(() => {
         &.bg-info {
           background: #5ac8fa;
         }
-        
+
         .el-icon {
           color: white;
           font-size: 1.5rem;
         }
       }
-      
+
       .stat-info {
         .stat-value {
-          font-size: 1.75rem;
+          font-size: var(--apple-fs-lead);
           font-weight: 700;
           color: var(--apple-ink);
           line-height: 1;
         }
 
         .stat-label {
-          font-size: 0.875rem;
+          font-size: var(--apple-fs-fine-print);
           color: var(--apple-ink-secondary);
-          margin-top: 0.25rem;
+          margin-top: var(--apple-spacing-xxs);
         }
       }
     }
@@ -810,32 +811,33 @@ onMounted(() => {
 
 .record-detail {
   .detail-section {
-    margin: 1.5rem 0;
+    margin: var(--apple-spacing-lg) 0;
 
     h3 {
-      margin: 0 0 1rem 0;
+      margin: 0 0 var(--apple-spacing-sm) 0;
       color: var(--apple-ink);
-      font-size: 1.1rem;
+      font-size: var(--apple-fs-tagline);
+      font-family: var(--apple-font-display);
     }
 
     .reason,
     .notes {
       line-height: 1.6;
       color: var(--apple-ink-secondary);
-      padding: 0.75rem;
+      padding: var(--apple-spacing-sm);
       background-color: var(--apple-canvas-parchment);
-      border-radius: 8px;
+      border-radius: var(--apple-rounded-sm);
     }
   }
 }
 
 .original-info {
-  padding: 0.75rem;
+  padding: var(--apple-spacing-sm);
   background-color: var(--apple-canvas-parchment);
-  border-radius: 8px;
+  border-radius: var(--apple-rounded-sm);
 
   div {
-    margin-bottom: 0.25rem;
+    margin-bottom: var(--apple-spacing-xxs);
 
     &:last-child {
       margin-bottom: 0;
@@ -846,92 +848,21 @@ onMounted(() => {
 .teacher-option {
   .teacher-name {
     font-weight: 600;
-    margin-right: 0.5rem;
+    margin-right: var(--apple-spacing-xs);
   }
 
   .teacher-detail {
-    font-size: 0.875rem;
+    font-size: var(--apple-fs-fine-print);
     color: var(--apple-ink-secondary);
-    margin-top: 0.25rem;
+    margin-top: var(--apple-spacing-xxs);
   }
 }
 
 @media (max-width: 768px) {
   .stats-cards {
     .el-col {
-      margin-bottom: 0.75rem;
+      margin-bottom: var(--apple-spacing-sm);
     }
-  }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.assignment-history {
-  font-family: var(--apple-font-text);
-}
-
-.stats-cards {
-  margin-bottom: var(--apple-spacing-lg);
-
-  .stat-card {
-    border-radius: var(--apple-rounded-lg);
-
-    .stat-content .stat-icon {
-      margin-right: var(--apple-spacing-md);
-      border-radius: var(--apple-rounded-lg);
-    }
-
-    .stat-info {
-      .stat-value {
-        font-size: var(--apple-fs-lead);
-      }
-
-      .stat-label {
-        margin-top: var(--apple-spacing-xxs);
-        font-size: var(--apple-fs-fine-print);
-      }
-    }
-  }
-}
-
-.record-detail .detail-section {
-  margin: var(--apple-spacing-lg) 0;
-
-  h3 {
-    margin-bottom: var(--apple-spacing-sm);
-    font-size: var(--apple-fs-tagline);
-    font-family: var(--apple-font-display);
-  }
-
-  .reason,
-  .notes {
-    padding: var(--apple-spacing-sm);
-    border-radius: var(--apple-rounded-sm);
-  }
-}
-
-.original-info {
-  padding: var(--apple-spacing-sm);
-  border-radius: var(--apple-rounded-sm);
-
-  div {
-    margin-bottom: var(--apple-spacing-xxs);
-  }
-}
-
-.teacher-option {
-  .teacher-name {
-    margin-right: var(--apple-spacing-xs);
-  }
-
-  .teacher-detail {
-    margin-top: var(--apple-spacing-xxs);
-    font-size: var(--apple-fs-fine-print);
-  }
-}
-
-@media (max-width: 768px) {
-  .stats-cards .el-col {
-    margin-bottom: var(--apple-spacing-sm);
   }
 }
 </style>
