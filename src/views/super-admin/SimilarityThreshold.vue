@@ -672,7 +672,7 @@ watch(
     .threshold-slider {
       display: flex;
       align-items: center;
-      gap: var(--apple-spacing-md);
+      gap: var(--app-space-4);
 
       .threshold-label {
         font-weight: 400;
@@ -681,21 +681,21 @@ watch(
     }
 
     .help-text {
-      font-size: var(--apple-fs-fine-print);
-      color: var(--apple-ink-muted-48);
-      margin-top: var(--apple-spacing-xs);
+      font-size: var(--app-fs-meta);
+      color: var(--app-color-text-muted);
+      margin-top: var(--app-space-2);
     }
 
     .category-thresholds {
-      margin-top: var(--apple-spacing-md);
+      margin-top: var(--app-space-4);
 
       .empty-category-thresholds {
-        padding: var(--apple-spacing-xl) 0;
+        padding: var(--app-space-8) 0;
       }
 
       // 「全部类型」是占位语义（该行不带类型限定），压低存在感避免被读成一个真实取值
       .all-types-label {
-        color: var(--apple-ink-muted-48);
+        color: var(--app-color-text-muted);
       }
     }
   }

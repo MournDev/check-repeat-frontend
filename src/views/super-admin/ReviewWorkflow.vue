@@ -299,40 +299,40 @@ onMounted(() => {
 .review-workflow {
   .workflow-card {
     .workflow-steps {
-      margin-top: 16px;
+      margin-top: var(--app-space-4);
 
       .steps-container {
-        margin-top: 16px;
+        margin-top: var(--app-space-4);
 
         .step-item {
-          border: 1px solid var(--apple-hairline);
-          border-radius: var(--apple-rounded-md);
-          padding: var(--apple-spacing-md);
-          margin-bottom: var(--apple-spacing-md);
+          border: 1px solid var(--app-color-border);
+          border-radius: var(--app-radius-md);
+          padding: var(--app-space-4);
+          margin-bottom: var(--app-space-4);
 
           .step-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: var(--apple-spacing-sm);
-            margin-bottom: var(--apple-spacing-md);
+            gap: var(--app-space-3);
+            margin-bottom: var(--app-space-4);
 
             .step-info {
               display: flex;
               align-items: center;
-              gap: var(--apple-spacing-sm);
+              gap: var(--app-space-3);
               flex: 1;
 
               .step-number {
                 width: 24px;
                 height: 24px;
-                background-color: var(--apple-primary);
+                background-color: var(--app-color-primary);
                 color: white;
                 border-radius: 50%;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                font-size: var(--apple-fs-body-strong);
+                font-size: var(--app-fs-body);
                 font-weight: 400;
               }
 
@@ -343,7 +343,7 @@ onMounted(() => {
 
             .step-actions {
               display: flex;
-              gap: var(--apple-spacing-xs);
+              gap: var(--app-space-2);
             }
           }
 
@@ -351,19 +351,19 @@ onMounted(() => {
             margin-left: 36px;
 
             .step-form-item {
-              margin-bottom: var(--apple-spacing-sm);
+              margin-bottom: var(--app-space-3);
             }
 
             .unit {
-              margin-left: var(--apple-spacing-xs);
-              color: var(--apple-ink-muted-80);
+              margin-left: var(--app-space-2);
+              color: var(--app-color-text);
             }
           }
         }
       }
 
       .empty-steps {
-        padding: var(--apple-spacing-xl) 0;
+        padding: var(--app-space-8) 0;
       }
     }
   }

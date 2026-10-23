@@ -515,31 +515,31 @@ defineExpose({ save: saveProfile })
 
 <style lang="scss" scoped>
 .profile-content {
-  .el-card { border-radius: var(--apple-rounded-lg); border: 1px solid var(--apple-hairline); margin-bottom: var(--apple-spacing-lg);
-    :deep(.el-card__header) { padding: var(--apple-spacing-sm) var(--apple-spacing-md); border-bottom: 1px solid var(--apple-divider-soft); }
+  .el-card { border-radius: var(--app-radius-lg); border: 1px solid var(--app-color-border); margin-bottom: var(--app-space-6);
+    :deep(.el-card__header) { padding: var(--app-space-3) var(--app-space-4); border-bottom: 1px solid var(--app-color-divider); }
     :deep(.el-card__body) { padding: 1.25rem; }
   }
   .card-header { display: flex; justify-content: space-between; align-items: center;
-    .card-title { display: flex; align-items: center; font-weight: 600; color: var(--apple-ink); .el-icon { margin-right: 0.5rem; color: var(--apple-primary); } }
+    .card-title { display: flex; align-items: center; font-weight: 600; color: var(--app-color-ink); .el-icon { margin-right: 0.5rem; color: var(--app-color-primary); } }
   }
 }
 .profile-overview { text-align: center;
   .avatar-section { margin-bottom: 1.5rem; .avatar-actions { margin-top: 0.75rem; } }
   .user-details {
-    .user-name { margin: 0 0 0.5rem; color: var(--apple-ink); font-size: 1.25rem; }
-    .detail-item { display: flex; align-items: center; justify-content: flex-start; margin: 0.75rem 0; color: var(--apple-ink-secondary);
-      .el-icon { margin-right: 0.5rem; color: var(--apple-primary); width: 16px; }
+    .user-name { margin: 0 0 var(--app-space-2); color: var(--app-color-ink); font-size: var(--app-fs-title); }
+    .detail-item { display: flex; align-items: center; justify-content: flex-start; margin: 0.75rem 0; color: var(--app-color-text-secondary);
+      .el-icon { margin-right: 0.5rem; color: var(--app-color-primary); width: 16px; }
       span { margin-right: 0.5rem; min-width: 60px; text-align: right; }
-      strong { color: var(--apple-ink); }
+      strong { color: var(--app-color-ink); }
     }
   }
 }
 .security-items .security-item {
-  display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid var(--apple-divider-soft);
+  display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid var(--app-color-divider);
   &:last-child { border-bottom: none; }
   .security-info { display: flex; align-items: center;
-    .el-icon { margin-right: 0.75rem; color: var(--apple-primary); font-size: 1.25rem; }
-    .security-details { .security-title { font-weight: 600; color: var(--apple-ink); margin-bottom: 0.25rem; } .security-desc { font-size: var(--apple-fs-caption); color: var(--apple-ink-secondary); } }
+    .el-icon { margin-right: var(--app-space-3); color: var(--app-color-primary); font-size: var(--app-fs-title); }
+    .security-details { .security-title { font-weight: 600; color: var(--app-color-ink); margin-bottom: 0.25rem; } .security-desc { font-size: var(--app-fs-caption); color: var(--app-color-text-secondary); } }
   }
 }
 .form-actions { display: flex; gap: 0.75rem; }
@@ -549,7 +549,7 @@ defineExpose({ save: saveProfile })
 }
 .code-input { display: flex; align-items: center; .el-input { flex: 1; } .el-button { margin-left: 10px; white-space: nowrap; } }
 .table-footer { margin-top: 12px; display: flex; justify-content: space-between; align-items: center; }
-.page-size-selector { color: var(--apple-ink-secondary); }
+.page-size-selector { color: var(--app-color-text-secondary); }
 
 @media (max-width: 768px) {
   .security-item { flex-direction: column; align-items: flex-start !important; gap: 12px; }

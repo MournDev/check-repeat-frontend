@@ -409,70 +409,70 @@ defineExpose({ save: saveSettings })
 .main-content {
   max-width: 1200px; margin: 0 auto;
   .section-card {
-    margin-bottom: var(--apple-spacing-md); border-radius: var(--apple-rounded-lg); border: 1px solid var(--apple-hairline);
-    :deep(.el-card__header) { padding: var(--apple-spacing-sm) var(--apple-spacing-md); border-bottom: 1px solid var(--apple-hairline); }
-    :deep(.el-card__body) { padding: var(--apple-spacing-md); }
+    margin-bottom: var(--app-space-4); border-radius: var(--app-radius-lg); border: 1px solid var(--app-color-border);
+    :deep(.el-card__header) { padding: var(--app-space-3) var(--app-space-4); border-bottom: 1px solid var(--app-color-border); }
+    :deep(.el-card__body) { padding: var(--app-space-4); }
   }
-  .section-header { display: flex; align-items: center; gap: var(--apple-spacing-xs); font-family: var(--apple-font-display); font-size: var(--apple-fs-body-strong); font-weight: 600; color: var(--apple-ink); .el-icon { color: var(--apple-primary); } }
+  .section-header { display: flex; align-items: center; gap: var(--app-space-2); font-family: var(--app-font-family); font-size: var(--app-fs-body); font-weight: 600; color: var(--app-color-ink); .el-icon { color: var(--app-color-primary); } }
 }
 .role-TEACHER .section-card {
-  border-color: var(--apple-hairline);
-  &:hover { border-color: var(--apple-ink-secondary); }
-  :deep(.el-card__header) { border-bottom-color: var(--apple-hairline); }
+  border-color: var(--app-color-border);
+  &:hover { border-color: var(--app-color-text-secondary); }
+  :deep(.el-card__header) { border-bottom-color: var(--app-color-border); }
 }
 
 // 研究方向里「已失效」的旧值提示（迁移遗留短码，保存后会被清除）
 .legacy-tip {
-  margin-top: var(--apple-spacing-xxs); font-size: var(--apple-fs-fine-print); line-height: 1.8; color: var(--apple-info);
-  .legacy-tag { margin-right: var(--apple-spacing-xxs); }
+  margin-top: var(--app-space-1); font-size: var(--app-fs-meta); line-height: 1.8; color: var(--app-color-info);
+  .legacy-tag { margin-right: var(--app-space-1); }
 }
 
 // Profile section
 .profile-section {
-  display: flex; gap: var(--apple-spacing-lg); align-items: flex-start;
-  .avatar-upload .avatar-preview { text-align: center; .avatar-actions { display: flex; justify-content: center; gap: var(--apple-spacing-xs); margin-top: var(--apple-spacing-sm); } }
-  .settings-form { flex: 1; :deep(.el-form-item__label) { font-weight: 400; color: var(--apple-ink-secondary); } }
+  display: flex; gap: var(--app-space-6); align-items: flex-start;
+  .avatar-upload .avatar-preview { text-align: center; .avatar-actions { display: flex; justify-content: center; gap: var(--app-space-2); margin-top: var(--app-space-3); } }
+  .settings-form { flex: 1; :deep(.el-form-item__label) { font-weight: 400; color: var(--app-color-text-secondary); } }
 }
 .role-ADMIN .profile-section .avatar-upload { width: 220px; }
-.role-TEACHER .profile-section .avatar-upload { display: flex; justify-content: center; margin-bottom: var(--apple-spacing-lg); width: 100%; }
+.role-TEACHER .profile-section .avatar-upload { display: flex; justify-content: center; margin-bottom: var(--app-space-6); width: 100%; }
 // 教师端意图是「头像居上、表单居下」纵向布局，但 .profile-section 是 display:flex 默认横向
 // 不换行——avatar-upload width:100% 后表单被挤成窄条。补齐 column 方向使纵向布局真正生效
-.role-TEACHER .profile-section { flex-direction: column; align-items: center; margin-bottom: var(--apple-spacing-lg);
+.role-TEACHER .profile-section { flex-direction: column; align-items: center; margin-bottom: var(--app-space-6);
   .settings-form { width: 100%; }
 }
 
 // Security section
 .security-section .security-item {
-  display: flex; justify-content: space-between; align-items: center; padding: var(--apple-spacing-sm) 0; border-bottom: 1px solid var(--apple-divider-soft);
+  display: flex; justify-content: space-between; align-items: center; padding: var(--app-space-3) 0; border-bottom: 1px solid var(--app-color-divider);
   &:last-child { border-bottom: none; }
-  .security-info { .security-title { font-weight: 400; color: var(--apple-ink); margin-bottom: var(--apple-spacing-xxs); } .security-desc { font-size: var(--apple-fs-fine-print); color: var(--apple-ink-secondary); } }
+  .security-info { .security-title { font-weight: 400; color: var(--app-color-ink); margin-bottom: var(--app-space-1); } .security-desc { font-size: var(--app-fs-meta); color: var(--app-color-text-secondary); } }
 }
-.role-TEACHER .security-section .security-item { border-bottom-color: var(--apple-slate-border); }
+.role-TEACHER .security-section .security-item { border-bottom-color: var(--app-color-border-soft); }
 
 // Notification section
 .notification-section .notification-item {
-  display: flex; justify-content: space-between; align-items: center; padding: var(--apple-spacing-sm) 0; border-bottom: 1px solid var(--apple-divider-soft);
+  display: flex; justify-content: space-between; align-items: center; padding: var(--app-space-3) 0; border-bottom: 1px solid var(--app-color-divider);
   &:last-child { border-bottom: none; }
-  .notification-info { .notification-title { font-weight: 400; color: var(--apple-ink); margin-bottom: var(--apple-spacing-xxs); } .notification-desc { font-size: var(--apple-fs-fine-print); color: var(--apple-ink-secondary); } }
+  .notification-info { .notification-title { font-weight: 400; color: var(--app-color-ink); margin-bottom: var(--app-space-1); } .notification-desc { font-size: var(--app-fs-meta); color: var(--app-color-text-secondary); } }
 }
-.role-TEACHER .notification-section .notification-item { border-bottom-color: var(--apple-slate-border); }
+.role-TEACHER .notification-section .notification-item { border-bottom-color: var(--app-color-border-soft); }
 
 // Preference section (Admin)
 .preference-section .preference-item {
-  padding: var(--apple-spacing-sm) 0; border-bottom: 1px solid var(--apple-divider-soft); display: flex; align-items: center; justify-content: space-between;
+  padding: var(--app-space-3) 0; border-bottom: 1px solid var(--app-color-divider); display: flex; align-items: center; justify-content: space-between;
   &:last-child { border-bottom: none; }
-  .preference-label { font-weight: 400; color: var(--apple-ink); flex: 1 1 55%; }
+  .preference-label { font-weight: 400; color: var(--app-color-ink); flex: 1 1 55%; }
   :deep(.el-slider), :deep(.el-select) { flex: 0 0 45%; max-width: 260px; }
 }
 // Preference section (Teacher)
 .role-TEACHER .preference-section .preference-item {
-  padding: var(--apple-spacing-md) 0; border-bottom-color: var(--apple-slate-border); display: block;
-  .preference-label { margin-bottom: var(--apple-spacing-sm); }
+  padding: var(--app-space-4) 0; border-bottom-color: var(--app-color-border-soft); display: block;
+  .preference-label { margin-bottom: var(--app-space-3); }
 }
 
 @media (max-width: 768px) {
   .settings-form :deep(.el-col-12) { width: 100%; }
-  .security-item, .notification-item { flex-direction: column; align-items: flex-start !important; gap: var(--apple-spacing-sm); }
+  .security-item, .notification-item { flex-direction: column; align-items: flex-start !important; gap: var(--app-space-3); }
   .profile-section { flex-direction: column; }
 }
 </style>

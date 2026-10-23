@@ -21,53 +21,53 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: var(--apple-canvas-parchment);
+  background: var(--app-color-fill);
   text-align: center;
-  font-family: var(--apple-font-text);
-  padding: var(--apple-spacing-lg);
+  font-family: var(--app-font-family);
+  padding: var(--app-space-6);
 }
 
 .not-found-content {
-  background: var(--apple-surface);
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-lg);
-  padding: var(--apple-spacing-xxl);
-  transition: all 0.2s ease;
+  background: var(--app-color-card-bg);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  padding: var(--app-space-12);
+  transition: all var(--app-transition-normal);
   max-width: 500px;
   width: 100%;
 
   &:hover {
-    border-color: var(--apple-slate-border-strong);
+    border-color: var(--app-color-border-strong);
   }
 
   h1 {
     font-size: 120px;
     margin: 0;
-    color: var(--apple-primary);
+    color: var(--app-color-primary);
     font-weight: 700;
   }
 
   h2 {
-    margin: var(--apple-spacing-md) 0;
-    font-size: var(--apple-fs-lead-airy);
-    font-family: var(--apple-font-display);
-    color: var(--apple-ink);
+    margin: var(--app-space-4) 0;
+    font-size: var(--app-fs-display);
+    font-family: var(--app-font-family);
+    color: var(--app-color-ink);
     font-weight: 600;
   }
 
   p {
-    color: var(--apple-ink-muted-48);
-    margin-bottom: var(--apple-spacing-xl);
-    font-size: var(--apple-fs-body-strong);
+    color: var(--app-color-text-muted);
+    margin-bottom: var(--app-space-8);
+    font-size: var(--app-fs-body);
     line-height: 1.5;
   }
 
   .el-button {
-    border-radius: var(--apple-rounded-sm);
-    transition: all 0.2s ease;
-    border: 1px solid var(--apple-slate-border);
-    padding: var(--apple-spacing-xs) var(--apple-spacing-lg);
-    font-size: var(--apple-fs-caption);
+    border-radius: var(--app-radius-sm);
+    transition: all var(--app-transition-normal);
+    border: 1px solid var(--app-color-border-soft);
+    padding: var(--app-space-2) var(--app-space-6);
+    font-size: var(--app-fs-caption);
 
     &:hover {
       filter: brightness(0.95);
@@ -75,14 +75,14 @@
 
     &:active {
       transform: scale(0.95);
-      transition: transform 0.15s ease;
+      transition: transform var(--app-transition-fast);
     }
   }
 }
 
 @media (max-width: 768px) {
   .not-found-content {
-    padding: var(--apple-spacing-lg);
+    padding: var(--app-space-6);
 
     h1 {
       font-size: 80px;

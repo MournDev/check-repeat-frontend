@@ -40,7 +40,7 @@ function saveSettings() { panelRef.value?.save() }
 
 @media (max-width: 768px) {
   .user-settings:not(.role-student) {
-    padding: var(--apple-spacing-sm);
+    padding: var(--app-space-3);
   }
 }
 </style>
