@@ -19,6 +19,7 @@
   --app-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; // 日志时间等需等宽对齐的文本
 
   --app-fs-display: 24px; // 页面内主标题（仪表盘大数字除外）
+  --app-fs-metric: 34px; // 报告/仪表盘核心数据（总相似比等"门面数字"，不参与密度压缩）
   --app-fs-title: 20px; // 区块标题 / 卡片标题
   --app-fs-heading: 16px; // 小标题 / 弹窗标题
   --app-fs-body: 14px; // 正文、表格、表单、按钮

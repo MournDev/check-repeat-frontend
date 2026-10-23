@@ -186,10 +186,10 @@ p {
 .text-xl { font-size: var(--app-fs-title); }
 
 // ── 重复率等级（与 utils/similarity.js 的 className 对应）──
-.similarity-low { color: var(--apple-rate-low); }
-.similarity-medium { color: var(--apple-rate-medium); }
-.similarity-high { color: var(--apple-rate-high); }
-.similarity-unknown { color: var(--apple-rate-unknown); }
+.similarity-low { color: var(--app-color-rate-low); }
+.similarity-medium { color: var(--app-color-rate-medium); }
+.similarity-high { color: var(--app-color-rate-high); }
+.similarity-unknown { color: var(--app-color-rate-unknown); }
 
 // ── 键盘焦点：统一可见环（仅键盘导航触发，鼠标点击不显示）────
 a:focus-visible,
