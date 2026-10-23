@@ -231,41 +231,40 @@ onMounted(() => {
 .sentence-detail-page {
 
   .error-result {
-    background: var(--apple-surface);
-    border: 1px solid var(--apple-hairline);
-    border-radius: var(--apple-rounded-lg);
+    background: var(--app-color-card-bg);
+    border: 1px solid var(--app-color-border);
+    border-radius: var(--app-radius-lg);
   }
 
   .metrics-card {
-    margin-bottom: var(--apple-spacing-lg);
-    border-radius: var(--apple-rounded-lg);
+    margin-bottom: var(--app-space-6);
+    border-radius: var(--app-radius-lg);
 
     .metrics-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: var(--apple-spacing-lg);
+      gap: var(--app-space-6);
 
       .metric-block {
         .metric-label {
-          font-size: var(--apple-fs-fine-print);
-          color: var(--apple-ink-muted-48);
-          margin-bottom: var(--apple-spacing-xs);
+          font-size: var(--app-fs-meta);
+          color: var(--app-color-text-muted);
+          margin-bottom: var(--app-space-2);
           font-weight: 600;
           text-transform: none;
           letter-spacing: 0;
         }
 
         .metric-value {
-          font-family: var(--apple-font-display);
-          font-size: var(--apple-fs-tagline);
+          font-family: var(--app-font-family);
+          font-size: var(--app-fs-title);
           font-weight: 600;
-          color: var(--apple-ink);
+          color: var(--app-color-ink);
 
           &.primary {
-            font-size: var(--apple-fs-display-md);
-            line-height: var(--apple-lh-display-md);
-            letter-spacing: var(--apple-ls-display-md);
-            color: var(--apple-primary);
+            font-size: var(--app-fs-display);
+            line-height: var(--app-lh-display);
+            color: var(--app-color-primary);
           }
         }
       }
@@ -273,39 +272,39 @@ onMounted(() => {
   }
 
   .sources-card {
-    margin-bottom: var(--apple-spacing-lg);
+    margin-bottom: var(--app-space-6);
 
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-family: var(--apple-font-display);
-      font-size: var(--apple-fs-body-strong);
+      font-family: var(--app-font-family);
+      font-size: var(--app-fs-body);
       font-weight: 600;
-      color: var(--apple-ink);
+      color: var(--app-color-ink);
     }
 
     .source-item {
       display: flex;
       align-items: center;
-      gap: var(--apple-spacing-md);
-      padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-      border: 1px solid var(--apple-hairline);
-      border-radius: var(--apple-rounded-md);
-      margin-bottom: var(--apple-spacing-sm);
+      gap: var(--app-space-4);
+      padding: var(--app-space-3) var(--app-space-4);
+      border: 1px solid var(--app-color-border);
+      border-radius: var(--app-radius-md);
+      margin-bottom: var(--app-space-3);
       cursor: pointer;
-      transition: all var(--apple-transition-normal);
+      transition: all 0.2s ease;
 
       &:last-child {
         margin-bottom: 0;
       }
 
       &:hover {
-        border-color: var(--apple-primary);
+        border-color: var(--app-color-primary);
       }
 
       &.active {
-        border-color: var(--apple-primary);
+        border-color: var(--app-color-primary);
         background: rgba(0, 102, 204, 0.04);
       }
 
@@ -315,24 +314,24 @@ onMounted(() => {
 
         .source-title {
           font-weight: 600;
-          color: var(--apple-ink);
-          font-size: var(--apple-fs-caption);
+          color: var(--app-color-ink);
+          font-size: var(--app-fs-caption);
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
         }
 
         .source-meta {
-          font-size: var(--apple-fs-fine-print);
-          color: var(--apple-ink-muted-48);
-          margin-top: var(--apple-spacing-xxs);
+          font-size: var(--app-fs-meta);
+          color: var(--app-color-text-muted);
+          margin-top: var(--app-space-1);
         }
       }
 
       .source-share {
         display: flex;
         align-items: center;
-        gap: var(--apple-spacing-sm);
+        gap: var(--app-space-3);
         width: 220px;
         flex-shrink: 0;
 
@@ -341,9 +340,9 @@ onMounted(() => {
         }
 
         .share-text {
-          font-size: var(--apple-fs-caption);
+          font-size: var(--app-fs-caption);
           font-weight: 600;
-          color: var(--apple-ink);
+          color: var(--app-color-ink);
           min-width: 48px;
           text-align: right;
         }
@@ -356,24 +355,24 @@ onMounted(() => {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-family: var(--apple-font-display);
-      font-size: var(--apple-fs-body-strong);
+      font-family: var(--app-font-family);
+      font-size: var(--app-fs-body);
       font-weight: 600;
-      color: var(--apple-ink);
+      color: var(--app-color-ink);
 
       .item-count {
-        font-size: var(--apple-fs-fine-print);
-        color: var(--apple-ink-muted-48);
+        font-size: var(--app-fs-meta);
+        color: var(--app-color-text-muted);
         font-weight: 400;
       }
     }
 
     .sentence-list {
       .sentence-item {
-        padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-        border: 1px solid var(--apple-hairline);
-        border-radius: var(--apple-rounded-md);
-        margin-bottom: var(--apple-spacing-sm);
+        padding: var(--app-space-3) var(--app-space-4);
+        border: 1px solid var(--app-color-border);
+        border-radius: var(--app-radius-md);
+        margin-bottom: var(--app-space-3);
 
         &:last-child {
           margin-bottom: 0;
@@ -382,40 +381,40 @@ onMounted(() => {
         .sentence-head {
           display: flex;
           align-items: center;
-          gap: var(--apple-spacing-xs);
-          margin-bottom: var(--apple-spacing-xs);
+          gap: var(--app-space-2);
+          margin-bottom: var(--app-space-2);
 
           .sentence-index {
-            font-size: var(--apple-fs-fine-print);
+            font-size: var(--app-fs-meta);
             font-weight: 600;
-            color: var(--apple-ink-muted-48);
+            color: var(--app-color-text-muted);
           }
 
           // 普通命中分档：≥80 深红 / 50-80 浅红
           :deep(.sim-tag-high) {
-            background: var(--apple-danger);
-            border-color: var(--apple-danger);
-            color: var(--apple-on-primary);
+            background: var(--app-color-danger);
+            border-color: var(--app-color-danger);
+            color: var(--app-color-on-primary);
           }
 
           :deep(.sim-tag-mid) {
-            background: var(--apple-danger-bg);
-            border-color: var(--apple-danger-bg);
-            color: var(--apple-danger);
+            background: var(--app-color-danger-bg);
+            border-color: var(--app-color-danger-bg);
+            color: var(--app-color-danger);
           }
         }
 
         .sentence-text {
-          color: var(--apple-ink);
-          font-size: var(--apple-fs-caption);
+          color: var(--app-color-ink);
+          font-size: var(--app-fs-caption);
           line-height: 1.6;
           word-break: break-word;
         }
 
         .sentence-source {
-          margin-top: var(--apple-spacing-xs);
-          font-size: var(--apple-fs-fine-print);
-          color: var(--apple-ink-muted-48);
+          margin-top: var(--app-space-2);
+          font-size: var(--app-fs-meta);
+          color: var(--app-color-text-muted);
         }
       }
     }
@@ -424,13 +423,13 @@ onMounted(() => {
 
 @media (max-width: 768px) {
   .sentence-detail-page {
-    padding: var(--apple-spacing-sm);
+    padding: var(--app-space-3);
 
     .sources-card {
       .source-item {
         flex-direction: column;
         align-items: stretch;
-        gap: var(--apple-spacing-sm);
+        gap: var(--app-space-3);
 
         .source-share {
           width: 100%;
