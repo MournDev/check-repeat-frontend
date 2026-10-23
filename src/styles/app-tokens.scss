@@ -85,6 +85,8 @@
   --app-color-on-primary: var(--apple-on-primary);
   // 主色 RGB 分量，供 rgba(var(--app-color-primary-rgb), 0.08) 这类半透明底色使用
   --app-color-primary-rgb: 0, 102, 204;
+  // 白色 RGB 分量，供 rgba(var(--app-color-white-rgb), 0.7) 这类半透明遮罩使用
+  --app-color-white-rgb: 255, 255, 255;
 
   // 文字（按信息层级从强到弱）
   --app-color-ink: var(--apple-ink);                          // 标题/主数据
