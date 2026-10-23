@@ -64,24 +64,6 @@ const handleTabChange = (tab) => {
   }
 }
 
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-:deep(.el-tabs) {
-  margin-bottom: var(--app-space-6);
-
-  .el-tabs__header {
-    margin-bottom: var(--app-space-6);
-
-    .el-tabs__nav {
-      border-bottom-color: var(--app-color-border);
-
-      .el-tabs__item {
-        padding: var(--app-space-3) var(--app-space-4);
-        margin-right: var(--app-space-6);
-        font-size: var(--app-fs-caption);
-      }
-    }
-  }
-}
 
 @media (max-width: 768px) {
   :deep(.el-tabs) {

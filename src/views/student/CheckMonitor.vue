@@ -689,7 +689,6 @@ onUnmounted(() => {
             align-items: center;
             justify-content: center;
             margin-bottom: var(--app-space-2);
-            transition: all var(--app-transition-slow);
           }
 
           .stage-info {

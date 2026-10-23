@@ -520,7 +520,6 @@ onMounted(() => {
 
 .stat-card {
   border-radius: var(--app-radius-lg);
-  transition: all 0.3s ease;
 }
 
 .stat-card:hover {

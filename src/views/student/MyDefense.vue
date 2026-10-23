@@ -1,18 +1,14 @@
 <template>
   <div class="my-defense">
     <!-- 页头 -->
-    <el-card class="console-card console-page-head-card" shadow="never">
-      <div class="head-row">
-        <div class="head-text">
-          <h2 class="head-title">我的答辩</h2>
-          <p class="head-desc">查看我被安排的中期/终期答辩安排：批次会议信息、答辩顺序与结论成绩（如已出）。</p>
-        </div>
+    <PageHeader description="查看我被安排的中期/终期答辩安排：批次会议信息、答辩顺序与结论成绩（如已出）。">
+      <template #actions>
         <el-radio-group v-model="batchType" @change="fetchList">
           <el-radio-button value="">全部</el-radio-button>
           <el-radio-button v-for="o in batchTypeOpts" :key="o.value" :value="o.value">{{ o.label }}</el-radio-button>
         </el-radio-group>
-      </div>
-    </el-card>
+      </template>
+    </PageHeader>
 
     <!-- 安排列表 -->
     <el-card class="console-card" shadow="never" v-loading="loading">
@@ -94,6 +90,7 @@ import {
   DICT_RESULT
 } from '@/utils/defenseDict'
 import { formatDateTime } from '@/utils/dataType.js'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 const loading = ref(false)
 const list = ref([])
@@ -142,27 +139,6 @@ onMounted(() => {
   color: var(--app-color-ink);
 }
 
-.head-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--app-space-3);
-  flex-wrap: wrap;
-}
-
-.head-title {
-  margin: 0 0 var(--app-space-1);
-  font-size: var(--app-fs-title);
-  font-weight: 700;
-  line-height: var(--app-lh-display);
-  color: var(--app-color-ink);
-}
-
-.head-desc {
-  margin: 0;
-  font-size: var(--app-fs-caption);
-  color: var(--app-color-text-muted);
-}
 
 .sep {
   margin: 0 var(--app-space-1);

@@ -595,7 +595,6 @@ onMounted(() => {
   background: var(--app-color-fill-light);
   border: 1px solid var(--app-color-border);
   border-radius: var(--app-radius-lg);
-  transition: all var(--app-transition-normal);
 
   :deep(.el-card__header) {
     padding: var(--app-space-3) var(--app-space-4);
@@ -620,7 +619,6 @@ onMounted(() => {
   border: 1px solid var(--app-color-border);
   border-radius: var(--app-radius-lg);
   border-top: 3px solid var(--app-color-primary);
-  transition: all var(--app-transition-normal);
 
   :deep(.el-card__header) {
     padding: var(--app-space-4) var(--app-space-4) var(--app-space-3);

@@ -1084,7 +1084,6 @@ onMounted(() => {
     display: flex;
     padding: var(--app-space-3) var(--app-space-4);
     cursor: pointer;
-    transition: all var(--app-transition-normal);
     position: relative;
     border-bottom: 1px solid var(--app-color-divider);
     

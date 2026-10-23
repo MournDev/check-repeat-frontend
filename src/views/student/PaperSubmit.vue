@@ -799,7 +799,6 @@ const resetForm = () => {
       font-size: var(--app-fs-body);
       font-weight: 600;
       margin-bottom: var(--app-space-3);
-      transition: all var(--app-transition-normal);
     }
     
     .step-content {
@@ -807,7 +806,6 @@ const resetForm = () => {
         font-size: var(--app-fs-caption);
         font-weight: 600;
         color: var(--app-color-text-muted);
-        transition: all var(--app-transition-normal);
       }
     }
     

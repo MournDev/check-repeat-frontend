@@ -1402,7 +1402,6 @@ const batchDelete = async () => {
         font-size: var(--app-fs-meta);
         font-weight: 600;
         cursor: pointer;
-        transition: all var(--app-transition-normal);
       }
       
       .primary-button {
