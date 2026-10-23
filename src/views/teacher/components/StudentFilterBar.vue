@@ -79,7 +79,7 @@ defineProps({
 defineEmits(['update:keyword', 'update:status', 'update:college', 'reset'])
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .filter-card {
   margin-bottom: var(--apple-spacing-md);
 
