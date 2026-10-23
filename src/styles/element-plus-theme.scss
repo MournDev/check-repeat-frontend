@@ -102,8 +102,14 @@
 
 .el-button + .el-button { margin-left: var(--app-space-3); }
 
-.el-button:active:not(.is-text):not(.is-link) {
-  transform: scale(0.95) !important;
+// 控制台按钮不做按下缩放：表格行内小按钮缩放会造成行高视觉抖动，
+// 且该效果原本是展示型页面的交互语言。
+// 注意：style.css 有通用的 `button:active { transform: scale(0.95) }`，
+// el-button 渲染的就是原生 button，这里必须显式中和一次，
+// 否则删掉 !important 规则后缩放会由那条通用规则接管（该规则留待
+// 全局样式合并阶段再统一清理）。
+.el-button:active {
+  transform: none;
 }
 
 .el-button:hover:not(.is-text):not(.is-link) {
@@ -167,6 +173,28 @@
 .el-dialog {
   --el-dialog-border-radius: var(--app-radius-lg);
   --el-dialog-padding-primary: var(--app-space-4);
+  border-radius: var(--app-radius-lg);
+  box-shadow: none;
+  border: 1px solid var(--apple-hairline);
+}
+
+// ── 浮层（MessageBox / Notification）：与卡片同一套语言 ──────
+// Element 默认给这两类浮层挂了 el-box-shadow / el-box-shadow-light
+// （0 12px 32px + 0 8px 20px 之类的多层深色投影），而卡片与 Dialog
+// 已经扁平化；不覆盖会出现「白卡无阴影、弹窗厚阴影」的分裂。
+// 变量必须写在组件自身类上：Element 在 .el-message-box /
+// .el-notification 内部声明了同名变量，写在 :root 会被就地覆盖。
+.el-message-box {
+  --el-messagebox-border-radius: var(--app-radius-lg);
+  --el-messagebox-box-shadow: none;
+  border-radius: var(--app-radius-lg);
+  box-shadow: none;
+  border: 1px solid var(--apple-hairline);
+}
+
+.el-notification {
+  --el-notification-radius: var(--app-radius-lg);
+  --el-notification-shadow: none;
   border-radius: var(--app-radius-lg);
   box-shadow: none;
   border: 1px solid var(--apple-hairline);
