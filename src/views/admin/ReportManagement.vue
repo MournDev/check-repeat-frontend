@@ -528,7 +528,7 @@ onMounted(() => {
 
 .stat-card:active {
   transform: scale(0.95);
-  transition: transform 0.15s ease;
+  transition: transform var(--app-transition-fast);
 }
 
 .stat-item {

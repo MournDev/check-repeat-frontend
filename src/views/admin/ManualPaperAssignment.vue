@@ -943,7 +943,7 @@ onMounted(() => {
     padding: var(--app-space-4);
     border-bottom: 1px solid var(--app-color-divider);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: border-color var(--app-transition-slow), background-color var(--app-transition-slow);
     
     &:hover {
       background-color: var(--app-color-fill);

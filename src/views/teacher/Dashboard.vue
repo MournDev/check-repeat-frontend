@@ -1359,7 +1359,7 @@ onMounted(() => {
       align-items: center;
       padding: var(--app-space-3);
       border-bottom: 1px solid var(--app-color-border);
-      transition: background-color 0.2s ease;
+      transition: background-color var(--app-transition-normal);
 
       &:hover {
         background-color: var(--app-color-fill);
@@ -1564,7 +1564,7 @@ onMounted(() => {
     border-radius: 11px;
     font-size: var(--app-fs-caption);
     font-weight: 400;
-    transition: border-color 0.2s ease;
+    transition: border-color var(--app-transition-normal);
 
     &:active {
       transform: scale(0.985);

@@ -901,7 +901,7 @@ const resetForm = () => {
   padding: var(--app-space-8);
   background: var(--app-color-fill-light);
   text-align: center;
-  transition: all var(--app-transition-normal);
+  transition: border-color var(--app-transition-normal), background-color var(--app-transition-normal);
   
   &:hover {
     border-color: var(--app-color-primary);

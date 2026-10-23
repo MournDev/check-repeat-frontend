@@ -1222,7 +1222,7 @@ const batchDelete = async () => {
     border: 1px solid var(--app-color-border);
     border-radius: var(--app-radius-lg);
     padding: var(--app-space-6);
-    transition: all var(--app-transition-normal);
+    transition: border-color var(--app-transition-normal), background-color var(--app-transition-normal);
     
     &:hover {
       border-color: var(--app-color-border);
@@ -1252,7 +1252,7 @@ const batchDelete = async () => {
           border-radius: var(--app-radius-md);
           font-size: var(--app-fs-caption);
           color: var(--app-color-ink);
-          transition: all var(--app-transition-normal);
+          transition: border-color var(--app-transition-normal), background-color var(--app-transition-normal);
           
           &:hover {
             border-color: var(--app-color-text-muted);
@@ -1329,7 +1329,7 @@ const batchDelete = async () => {
           font-size: var(--app-fs-caption);
           font-weight: 600;
           cursor: pointer;
-          transition: all var(--app-transition-normal);
+          transition: background-color var(--app-transition-normal), border-color var(--app-transition-normal), color var(--app-transition-normal);
           
           &:hover {
             background: var(--app-color-primary-hover);
@@ -1348,7 +1348,7 @@ const batchDelete = async () => {
           font-size: var(--app-fs-caption);
           font-weight: 600;
           cursor: pointer;
-          transition: all var(--app-transition-normal);
+          transition: background-color var(--app-transition-normal), border-color var(--app-transition-normal), color var(--app-transition-normal);
           
           &:hover {
             border-color: var(--app-color-border);
@@ -1467,7 +1467,7 @@ const batchDelete = async () => {
       border: 1px solid var(--app-color-border);
       border-radius: var(--app-radius-md);
       margin-bottom: var(--app-space-3);
-      transition: all var(--app-transition-normal);
+      transition: border-color var(--app-transition-normal), background-color var(--app-transition-normal);
       display: flex;
       gap: var(--app-space-4);
       background: var(--app-color-card-bg);
@@ -1536,7 +1536,7 @@ const batchDelete = async () => {
             font-size: var(--app-fs-meta);
             font-weight: 500;
             cursor: pointer;
-            transition: all var(--app-transition-normal);
+            transition: background-color var(--app-transition-normal), border-color var(--app-transition-normal), color var(--app-transition-normal);
             
             &:hover {
               background: var(--app-color-fill);
@@ -1774,7 +1774,7 @@ const batchDelete = async () => {
                     color: var(--app-color-text-secondary);
                     font-size: var(--app-fs-meta);
                     cursor: pointer;
-                    transition: all var(--app-transition-normal);
+                    transition: background-color var(--app-transition-normal), border-color var(--app-transition-normal), color var(--app-transition-normal);
                     
                     &:hover {
                       color: var(--app-color-ink);
@@ -1805,7 +1805,7 @@ const batchDelete = async () => {
           font-size: var(--app-fs-meta);
           font-weight: 500;
           cursor: pointer;
-          transition: all var(--app-transition-normal);
+          transition: background-color var(--app-transition-normal), border-color var(--app-transition-normal), color var(--app-transition-normal);
           
           &:hover {
             color: var(--app-color-ink);
@@ -1858,7 +1858,7 @@ const batchDelete = async () => {
         font-size: var(--app-fs-caption);
         font-weight: 600;
         cursor: pointer;
-        transition: all var(--app-transition-normal);
+        transition: background-color var(--app-transition-normal), border-color var(--app-transition-normal), color var(--app-transition-normal);
         
         &:hover {
           background: var(--app-color-primary-hover);
@@ -1963,7 +1963,7 @@ const batchDelete = async () => {
         border-radius: var(--app-radius-md);
         margin-bottom: var(--app-space-2);
         background: var(--app-color-card-bg);
-        transition: all var(--app-transition-normal);
+        transition: border-color var(--app-transition-normal), background-color var(--app-transition-normal);
         
         &:hover {
           border-color: var(--app-color-text-muted);
@@ -1995,7 +1995,7 @@ const batchDelete = async () => {
           color: var(--app-color-text-secondary);
           font-size: var(--app-fs-meta);
           cursor: pointer;
-          transition: all var(--app-transition-normal);
+          transition: background-color var(--app-transition-normal), border-color var(--app-transition-normal), color var(--app-transition-normal);
           
           &:hover {
             border-color: var(--app-color-text-muted);

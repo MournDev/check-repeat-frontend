@@ -902,7 +902,7 @@ onMounted(async () => {
     font-size: var(--app-fs-caption);
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background-color var(--app-transition-normal), border-color var(--app-transition-normal), color var(--app-transition-normal);
 
     &:hover {
       border-color: var(--app-color-border);
@@ -923,7 +923,7 @@ onMounted(async () => {
     font-size: var(--app-fs-caption);
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background-color var(--app-transition-normal), border-color var(--app-transition-normal), color var(--app-transition-normal);
 
     &:hover {
       border-color: var(--app-color-border);
@@ -939,7 +939,7 @@ onMounted(async () => {
     border-radius: var(--app-radius-lg);
     padding: var(--app-space-6);
     margin-bottom: var(--app-space-6);
-    transition: all 0.2s ease;
+    transition: border-color var(--app-transition-normal), background-color var(--app-transition-normal);
     
     &:hover {
       border-color: var(--app-color-border);
@@ -993,7 +993,7 @@ onMounted(async () => {
     border-radius: var(--app-radius-lg);
     padding: var(--app-space-6);
     margin-bottom: var(--app-space-6);
-    transition: all 0.2s ease;
+    transition: border-color var(--app-transition-normal), background-color var(--app-transition-normal);
     
     &:hover {
       border-color: var(--app-color-border);
@@ -1035,7 +1035,7 @@ onMounted(async () => {
             font-weight: 500;
             color: var(--app-color-text-secondary);
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: background-color var(--app-transition-normal), border-color var(--app-transition-normal), color var(--app-transition-normal), box-shadow var(--app-transition-normal);
             
             &.active {
               background: var(--app-color-card-bg);
@@ -1120,7 +1120,7 @@ onMounted(async () => {
     border-radius: var(--app-radius-lg);
     padding: var(--app-space-6);
     margin-bottom: var(--app-space-6);
-    transition: all 0.2s ease;
+    transition: border-color var(--app-transition-normal), background-color var(--app-transition-normal);
     
     &:hover {
       border-color: var(--app-color-border);
@@ -1155,7 +1155,7 @@ onMounted(async () => {
         font-size: var(--app-fs-caption);
         font-weight: 500;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: background-color var(--app-transition-normal), border-color var(--app-transition-normal), color var(--app-transition-normal);
         
         &:hover {
           color: var(--app-color-primary-hover);
@@ -1237,7 +1237,7 @@ onMounted(async () => {
               background: var(--app-color-card-bg);
               border: 1px solid var(--app-color-border);
               border-radius: var(--app-radius-md);
-              transition: all 0.2s ease;
+              transition: border-color var(--app-transition-normal), background-color var(--app-transition-normal);
               
               &:hover {
                 border-color: var(--app-color-border);
@@ -1428,7 +1428,7 @@ onMounted(async () => {
         border-radius: var(--app-radius-md);
         padding: var(--app-space-4);
         margin-bottom: var(--app-space-3);
-        transition: all 0.2s ease;
+        transition: border-color var(--app-transition-normal), background-color var(--app-transition-normal);
         
         &:hover {
           border-color: var(--app-color-border);
@@ -1482,7 +1482,7 @@ onMounted(async () => {
               .progress-bar {
                 height: 100%;
                 border-radius: var(--app-radius-pill);
-                transition: width 0.3s ease;
+                transition: width var(--app-transition-slow);
                 
                 &.excellent { background: var(--app-color-success); }
                 &.good { background: var(--app-color-primary); }
@@ -1514,7 +1514,7 @@ onMounted(async () => {
       border: 1px solid var(--app-color-border);
       border-radius: var(--app-radius-lg);
       padding: var(--app-space-4);
-      transition: all 0.2s ease;
+      transition: border-color var(--app-transition-normal), background-color var(--app-transition-normal);
       
       &:hover {
         border-color: var(--app-color-border);

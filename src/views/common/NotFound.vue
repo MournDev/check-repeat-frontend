@@ -32,7 +32,7 @@
   border: 1px solid var(--app-color-border);
   border-radius: var(--app-radius-lg);
   padding: var(--app-space-12);
-  transition: all var(--app-transition-normal);
+  transition: border-color var(--app-transition-normal), background-color var(--app-transition-normal);
   max-width: 500px;
   width: 100%;
 
@@ -64,7 +64,7 @@
 
   .el-button {
     border-radius: var(--app-radius-sm);
-    transition: all var(--app-transition-normal);
+    transition: background-color var(--app-transition-normal), border-color var(--app-transition-normal), color var(--app-transition-normal);
     border: 1px solid var(--app-color-border-soft);
     padding: var(--app-space-2) var(--app-space-6);
     font-size: var(--app-fs-caption);

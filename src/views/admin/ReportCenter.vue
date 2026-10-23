@@ -44,7 +44,7 @@ const handleTabChange = (tab) => {
         color: var(--app-color-text-muted);
         padding: var(--app-space-3) var(--app-space-4);
         margin-right: var(--app-space-6);
-        transition: border-color 0.2s ease;
+        transition: border-color var(--app-transition-normal);
 
         &:hover {
           color: var(--app-color-ink);

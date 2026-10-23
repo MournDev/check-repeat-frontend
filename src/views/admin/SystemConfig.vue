@@ -482,7 +482,7 @@ onMounted(() => {
   background: var(--app-color-card-bg);
   border: 1px solid var(--app-color-border);
   border-radius: var(--app-radius-lg);
-  transition: all var(--app-transition-normal);
+  transition: border-color var(--app-transition-normal), background-color var(--app-transition-normal);
   
   &:hover {
     border-color: var(--app-color-border-strong);
@@ -509,7 +509,7 @@ onMounted(() => {
   background: var(--app-color-card-bg);
   border: 1px solid var(--app-color-border);
   border-radius: var(--app-radius-lg);
-  transition: all var(--app-transition-normal);
+  transition: border-color var(--app-transition-normal), background-color var(--app-transition-normal);
   
   &:hover {
     border-color: var(--app-color-border-strong);
@@ -546,7 +546,7 @@ onMounted(() => {
           :deep(.el-input__wrapper) {
             border-radius: var(--app-radius-md);
             border: 1px solid var(--app-color-border);
-            transition: all var(--app-transition-normal);
+            transition: border-color var(--app-transition-normal);
             
             &:hover {
               border-color: var(--app-color-border-strong);
@@ -556,7 +556,7 @@ onMounted(() => {
           :deep(.el-select__wrapper) {
             border-radius: var(--app-radius-md);
             border: 1px solid var(--app-color-border);
-            transition: all var(--app-transition-normal);
+            transition: border-color var(--app-transition-normal);
             
             &:hover {
               border-color: var(--app-color-border-strong);
@@ -566,7 +566,7 @@ onMounted(() => {
         
         .el-button {
           border-radius: 8px;
-          transition: all var(--app-transition-normal);
+          transition: background-color var(--app-transition-normal), border-color var(--app-transition-normal), color var(--app-transition-normal);
           border: 1px solid var(--app-color-border-strong);
           
           &:hover {

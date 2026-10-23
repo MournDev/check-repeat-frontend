@@ -1193,7 +1193,7 @@ onMounted(() => {
 
     .el-tag {
       cursor: pointer;
-      transition: all var(--app-transition-slow);
+      transition: border-color var(--app-transition-slow);
       border-width: 1.5px;
 
       &:hover {
@@ -1446,7 +1446,7 @@ onMounted(() => {
         text-align: center;
         padding: var(--app-space-1);
         border-radius: var(--app-radius-sm);
-        transition: all var(--app-transition-normal);
+        transition: background-color var(--app-transition-normal), transform var(--app-transition-normal);
         
         &:hover {
           background: var(--app-color-border-soft);

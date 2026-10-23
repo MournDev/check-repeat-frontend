@@ -930,7 +930,7 @@ onUnmounted(() => {
           border-radius: var(--app-radius-md);
           margin-bottom: var(--app-space-3);
           cursor: pointer;
-          transition: all var(--app-transition-slow);
+          transition: border-color var(--app-transition-slow), background-color var(--app-transition-slow);
           
           &:hover {
             background: var(--app-color-fill);

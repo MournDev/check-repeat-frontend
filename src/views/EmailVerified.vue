@@ -121,7 +121,7 @@ onMounted(() => {
   border: 1px solid var(--apple-hairline);
   border-radius: var(--apple-rounded-lg);
   padding: var(--apple-spacing-xxl);
-  transition: all 0.2s ease;
+  transition: border-color var(--app-transition-normal), background-color var(--app-transition-normal);
 
   :deep(.el-result) {
     .el-result__title {
@@ -141,7 +141,7 @@ onMounted(() => {
 
       .el-button {
         border-radius: var(--apple-rounded-sm);
-        transition: all 0.2s ease;
+        transition: background-color var(--app-transition-normal), border-color var(--app-transition-normal), color var(--app-transition-normal);
         border: 1px solid var(--apple-slate-border);
         padding: var(--apple-spacing-xs) var(--apple-spacing-lg);
         font-size: var(--apple-fs-caption);
@@ -153,7 +153,7 @@ onMounted(() => {
 
         &:active {
           transform: scale(0.95);
-          transition: transform 0.15s ease;
+          transition: transform var(--app-transition-fast);
         }
       }
     }

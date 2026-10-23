@@ -501,7 +501,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: var(--app-space-4);
-  transition: all var(--app-transition-normal);
+  transition: border-color var(--app-transition-normal), background-color var(--app-transition-normal);
   
   &:hover {
     border-color: var(--app-color-border-strong);
@@ -509,7 +509,7 @@ onMounted(() => {
 
   &:active {
     transform: scale(0.95);
-    transition: transform 0.15s ease;
+    transition: transform var(--app-transition-fast);
   }
 
   .stat-icon {
@@ -579,7 +579,7 @@ onMounted(() => {
   border-radius: var(--app-radius-lg);
   padding: var(--app-space-6);
   margin-bottom: var(--app-space-6);
-  transition: all var(--app-transition-normal);
+  transition: border-color var(--app-transition-normal), background-color var(--app-transition-normal);
   
   &:hover {
     border-color: var(--app-color-border-strong);
@@ -620,7 +620,7 @@ onMounted(() => {
     padding: var(--app-space-4);
     background: var(--app-color-fill);
     border-radius: var(--app-radius-sm);
-    transition: all var(--app-transition-normal);
+    transition: border-color var(--app-transition-normal), background-color var(--app-transition-normal);
     
     &:hover {
       background: var(--app-color-fill);
