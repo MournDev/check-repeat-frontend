@@ -95,6 +95,8 @@
   // PPT 文件标识色（无品牌令牌对应，业务专用）
   --app-color-purple: #722ed1;
   --app-color-purple-rgb: 114, 46, 209;
+  // 黑色 RGB 分量，供 rgba(var(--app-color-shadow-rgb), 0.06) 这类极浅投影使用
+  --app-color-shadow-rgb: 0, 0, 0;
 
   // 文字（按信息层级从强到弱）
   --app-color-ink: var(--apple-ink);                          // 标题/主数据

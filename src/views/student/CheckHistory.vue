@@ -340,7 +340,7 @@ import {
 
 import { getCheckHistory, getSimilarityTrend, compareVersionHistory } from '@/api/student'
 import { getPaperSimilarityTrend } from '@/api/p5'
-import { getSimilarityColor } from '@/utils/similarity.js'
+import { getSimilarityColor, getSimilarityLevel } from '@/utils/similarity.js'
 import { formatDateTime, formatPercent } from '@/utils/dataType.js'
 import { useChart } from '@/composables/useChart'
 import PageHeader from '@/components/common/PageHeader.vue'
@@ -389,11 +389,11 @@ const stats = ref({
 })
 
 // 计算属性
-const getCurrentSimilarityClass = computed(() => (similarity) => {
-  if (similarity < 20) return 'excellent'
-  if (similarity < 40) return 'good'
-  return 'warning'
-})
+// 重复率分档统一走 utils/similarity.js，本页仅保留既有配色类名：
+// low→excellent(绿) / medium→warning(橙) / high→danger(红) / unknown→good(蓝，中性)
+const SIMILARITY_TONE = { unknown: 'good', low: 'excellent', medium: 'warning', high: 'danger' }
+
+const getCurrentSimilarityClass = computed(() => (similarity) => SIMILARITY_TONE[getSimilarityLevel(similarity)])
 
 // 方法
 const goBack = () => {
@@ -799,12 +799,7 @@ const getRatingText = (rating) => {
   return textMap[rating] || '未知'
 }
 
-const getSimilarityClass = (similarity) => {
-  if (similarity < 15) return 'excellent'
-  if (similarity < 30) return 'good'
-  if (similarity < 50) return 'warning'
-  return 'danger'
-}
+const getSimilarityClass = (similarity) => SIMILARITY_TONE[getSimilarityLevel(similarity)]
 
 const getImprovementClass = (improvement) => {
   if (improvement == null) return 'unchanged'
@@ -900,19 +895,19 @@ onMounted(async () => {
     align-items: center;
     gap: 6px;
     padding: 7px 14px;
-    border: 1px solid var(--apple-hairline);
-    border-radius: var(--apple-rounded-md);
-    background: var(--apple-surface);
-    color: var(--apple-ink-secondary);
-    font-size: var(--apple-fs-caption);
+    border: 1px solid var(--app-color-border);
+    border-radius: var(--app-radius-md);
+    background: var(--app-color-card-bg);
+    color: var(--app-color-text-secondary);
+    font-size: var(--app-fs-caption);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
 
     &:hover {
-      border-color: var(--apple-hairline);
-      background: var(--apple-canvas-parchment);
-      color: var(--apple-ink);
+      border-color: var(--app-color-border);
+      background: var(--app-color-fill);
+      color: var(--app-color-ink);
     }
   }
 
@@ -921,70 +916,70 @@ onMounted(async () => {
     align-items: center;
     gap: 6px;
     padding: 7px 14px;
-    border: 1px solid var(--apple-hairline);
-    border-radius: var(--apple-rounded-md);
-    background: var(--apple-surface);
-    color: var(--apple-ink-secondary);
-    font-size: var(--apple-fs-caption);
+    border: 1px solid var(--app-color-border);
+    border-radius: var(--app-radius-md);
+    background: var(--app-color-card-bg);
+    color: var(--app-color-text-secondary);
+    font-size: var(--app-fs-caption);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
 
     &:hover {
-      border-color: var(--apple-hairline);
-      background: var(--apple-canvas-parchment);
-      color: var(--apple-ink);
+      border-color: var(--app-color-border);
+      background: var(--app-color-fill);
+      color: var(--app-color-ink);
     }
   }
 
   // 论文信息卡片
   .paper-info-card {
-    background: var(--apple-surface);
-    border: 1px solid var(--apple-hairline);
-    border-radius: var(--apple-rounded-lg);
-    padding: var(--apple-spacing-lg);
-    margin-bottom: var(--apple-spacing-lg);
+    background: var(--app-color-card-bg);
+    border: 1px solid var(--app-color-border);
+    border-radius: var(--app-radius-lg);
+    padding: var(--app-space-6);
+    margin-bottom: var(--app-space-6);
     transition: all 0.2s ease;
     
     &:hover {
-      border-color: var(--apple-hairline);
+      border-color: var(--app-color-border);
     }
     
     .paper-header {
       .paper-title {
-        font-family: var(--apple-font-display);
-        font-size: var(--apple-fs-lead-airy);
+        font-family: var(--app-font-family);
+        font-size: var(--app-fs-display);
         font-weight: 600;
-        color: var(--apple-ink);
-        margin-bottom: var(--apple-spacing-md);
+        color: var(--app-color-ink);
+        margin-bottom: var(--app-space-4);
         line-height: 1.25;
       }
       
       .paper-stats {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: var(--apple-spacing-lg);
+        gap: var(--app-space-6);
         
         .stat-item {
           .stat-label {
-            font-size: var(--apple-fs-fine-print);
-            color: var(--apple-ink-muted-48);
-            margin-bottom: var(--apple-spacing-xxs);
+            font-size: var(--app-fs-meta);
+            color: var(--app-color-text-muted);
+            margin-bottom: var(--app-space-1);
             font-weight: 500;
             text-transform: none;
             letter-spacing: 0;
           }
           
           .stat-value {
-            font-family: var(--apple-font-display);
-            font-size: var(--apple-fs-tagline);
+            font-family: var(--app-font-family);
+            font-size: var(--app-fs-title);
             font-weight: 600;
-            color: var(--apple-ink);
+            color: var(--app-color-ink);
             
-            &.excellent { color: var(--apple-success); }
-            &.good { color: var(--apple-primary); }
-            &.warning { color: var(--apple-warning); }
-            &.lowest { color: var(--apple-success); }
+            &.excellent { color: var(--app-color-success); }
+            &.good { color: var(--app-color-primary); }
+            &.warning { color: var(--app-color-warning); }
+            &.lowest { color: var(--app-color-success); }
           }
         }
       }
@@ -993,34 +988,34 @@ onMounted(async () => {
 
   // 趋势卡片
   .trend-card {
-    background: var(--apple-surface);
-    border: 1px solid var(--apple-hairline);
-    border-radius: var(--apple-rounded-lg);
-    padding: var(--apple-spacing-lg);
-    margin-bottom: var(--apple-spacing-lg);
+    background: var(--app-color-card-bg);
+    border: 1px solid var(--app-color-border);
+    border-radius: var(--app-radius-lg);
+    padding: var(--app-space-6);
+    margin-bottom: var(--app-space-6);
     transition: all 0.2s ease;
     
     &:hover {
-      border-color: var(--apple-hairline);
+      border-color: var(--app-color-border);
     }
     
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: var(--apple-spacing-md);
+      margin-bottom: var(--app-space-4);
       
       .card-title {
         display: flex;
         align-items: center;
         gap: 8px;
-        font-family: var(--apple-font-display);
-        font-size: var(--apple-fs-body-strong);
+        font-family: var(--app-font-family);
+        font-size: var(--app-fs-body);
         font-weight: 600;
-        color: var(--apple-ink);
+        color: var(--app-color-ink);
         
         .el-icon {
-          color: var(--apple-ink-muted-48);
+          color: var(--app-color-text-muted);
         }
       }
       
@@ -1028,28 +1023,28 @@ onMounted(async () => {
         .radio-group {
           display: flex;
           gap: 2px;
-          background: var(--apple-divider-soft);
-          border: 1px solid var(--apple-hairline);
-          border-radius: var(--apple-rounded-sm);
+          background: var(--app-color-divider);
+          border: 1px solid var(--app-color-border);
+          border-radius: var(--app-radius-sm);
           padding: 3px;
           
           .radio-button {
             padding: 5px 12px;
-            border-radius: var(--apple-rounded-xs);
-            font-size: var(--apple-fs-fine-print);
+            border-radius: var(--app-radius-xs);
+            font-size: var(--app-fs-meta);
             font-weight: 500;
-            color: var(--apple-ink-secondary);
+            color: var(--app-color-text-secondary);
             cursor: pointer;
             transition: all 0.2s ease;
             
             &.active {
-              background: var(--apple-surface);
-              color: var(--apple-ink);
-              box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+              background: var(--app-color-card-bg);
+              color: var(--app-color-ink);
+              box-shadow: 0 1px 2px rgba(var(--app-color-shadow-rgb), 0.06);
             }
             
             &:hover:not(.active) {
-              color: var(--apple-ink);
+              color: var(--app-color-ink);
             }
           }
         }
@@ -1059,13 +1054,13 @@ onMounted(async () => {
     .trend-chart-container {
       display: grid;
       grid-template-columns: 1fr 280px;
-      gap: var(--apple-spacing-lg);
+      gap: var(--app-space-6);
       
       .chart-wrapper {
-        background: var(--apple-surface);
-        border: 1px solid var(--apple-divider-soft);
-        border-radius: var(--apple-rounded-md);
-        padding: var(--apple-spacing-md);
+        background: var(--app-color-card-bg);
+        border: 1px solid var(--app-color-divider);
+        border-radius: var(--app-radius-md);
+        padding: var(--app-space-4);
         min-height: 400px;
         display: flex;
         align-items: center;
@@ -1075,28 +1070,28 @@ onMounted(async () => {
       .trend-summary {
         display: flex;
         flex-direction: column;
-        gap: var(--apple-spacing-md);
+        gap: var(--app-space-4);
         
         .summary-item {
           .summary-label {
-            font-size: var(--apple-fs-fine-print);
-            color: var(--apple-ink-muted-48);
-            margin-bottom: var(--apple-spacing-xxs);
+            font-size: var(--app-fs-meta);
+            color: var(--app-color-text-muted);
+            margin-bottom: var(--app-space-1);
             font-weight: 500;
             text-transform: none;
             letter-spacing: 0;
           }
           
           .summary-value {
-            font-family: var(--apple-font-display);
-            font-size: var(--apple-fs-tagline);
+            font-family: var(--app-font-family);
+            font-size: var(--app-fs-title);
             font-weight: 600;
             
-            &.decreasing { color: var(--apple-success); }
-            &.increasing { color: var(--apple-danger); }
-            &.stable { color: var(--apple-ink-muted-48); }
-            &.improvement { color: var(--apple-success); }
-            &.best { color: var(--apple-primary); }
+            &.decreasing { color: var(--app-color-success); }
+            &.increasing { color: var(--app-color-danger); }
+            &.stable { color: var(--app-color-text-muted); }
+            &.improvement { color: var(--app-color-success); }
+            &.best { color: var(--app-color-primary); }
           }
         }
       }
@@ -1113,41 +1108,41 @@ onMounted(async () => {
     .trend-empty {
       padding: 64px 0;
       text-align: center;
-      color: var(--apple-ink-muted-48);
-      font-size: var(--apple-fs-caption);
+      color: var(--app-color-text-muted);
+      font-size: var(--app-fs-caption);
     }
   }
 
   // 历史卡片
   .history-card {
-    background: var(--apple-surface);
-    border: 1px solid var(--apple-hairline);
-    border-radius: var(--apple-rounded-lg);
-    padding: var(--apple-spacing-lg);
-    margin-bottom: var(--apple-spacing-lg);
+    background: var(--app-color-card-bg);
+    border: 1px solid var(--app-color-border);
+    border-radius: var(--app-radius-lg);
+    padding: var(--app-space-6);
+    margin-bottom: var(--app-space-6);
     transition: all 0.2s ease;
     
     &:hover {
-      border-color: var(--apple-hairline);
+      border-color: var(--app-color-border);
     }
     
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: var(--apple-spacing-md);
+      margin-bottom: var(--app-space-4);
       
       .card-title {
         display: flex;
         align-items: center;
         gap: 8px;
-        font-family: var(--apple-font-display);
-        font-size: var(--apple-fs-body-strong);
+        font-family: var(--app-font-family);
+        font-size: var(--app-fs-body);
         font-weight: 600;
-        color: var(--apple-ink);
+        color: var(--app-color-ink);
         
         .el-icon {
-          color: var(--apple-ink-muted-48);
+          color: var(--app-color-text-muted);
         }
       }
       
@@ -1155,17 +1150,17 @@ onMounted(async () => {
         padding: 6px 10px;
         background: transparent;
         border: none;
-        border-radius: var(--apple-rounded-sm);
-        color: var(--apple-primary);
-        font-size: var(--apple-fs-caption);
+        border-radius: var(--app-radius-sm);
+        color: var(--app-color-primary);
+        font-size: var(--app-fs-caption);
         font-weight: 500;
         cursor: pointer;
         transition: all 0.2s ease;
         
         &:hover {
-          color: var(--apple-primary-hover);
-          background: var(--apple-info-bg);
-          border-radius: var(--apple-rounded-sm);
+          color: var(--app-color-primary-hover);
+          background: var(--app-color-info-bg);
+          border-radius: var(--app-radius-sm);
         }
       }
     }
@@ -1182,7 +1177,7 @@ onMounted(async () => {
           top: 0;
           bottom: 0;
           width: 2px;
-          background: var(--apple-hairline);
+          background: var(--app-color-border);
         }
         
         .timeline-item {
@@ -1200,23 +1195,23 @@ onMounted(async () => {
             width: 16px;
             height: 16px;
             border-radius: 50%;
-            background: var(--apple-slate-border-strong);
-            border: 2px solid var(--apple-surface);
+            background: var(--app-color-border-strong);
+            border: 2px solid var(--app-color-card-bg);
 
             &.success {
-              background: var(--apple-success);
+              background: var(--app-color-success);
             }
             &.primary {
-              background: var(--apple-primary);
+              background: var(--app-color-primary);
             }
             &.warning {
-              background: var(--apple-warning);
+              background: var(--app-color-warning);
             }
             &.danger {
-              background: var(--apple-danger);
+              background: var(--app-color-danger);
             }
             &.info {
-              background: var(--apple-slate-sub);
+              background: var(--app-color-text-muted);
             }
           }
           
@@ -1226,26 +1221,26 @@ onMounted(async () => {
             top: 20px;
             bottom: -32px;
             width: 2px;
-            background: var(--apple-hairline);
+            background: var(--app-color-border);
           }
           
           .timeline-content {
             .timeline-timestamp {
               margin-bottom: 6px;
-              font-size: var(--apple-fs-fine-print);
+              font-size: var(--app-fs-meta);
               font-weight: 500;
-              color: var(--apple-ink-muted-48);
+              color: var(--app-color-text-muted);
             }
             
             .history-record {
-              padding: var(--apple-spacing-md);
-              background: var(--apple-surface);
-              border: 1px solid var(--apple-hairline);
-              border-radius: var(--apple-rounded-md);
+              padding: var(--app-space-4);
+              background: var(--app-color-card-bg);
+              border: 1px solid var(--app-color-border);
+              border-radius: var(--app-radius-md);
               transition: all 0.2s ease;
               
               &:hover {
-                border-color: var(--apple-hairline);
+                border-color: var(--app-color-border);
               }
 
               &:active {
@@ -1253,8 +1248,8 @@ onMounted(async () => {
               }
 
               &.current-version {
-                border-color: var(--apple-primary);
-                background: var(--apple-info-bg);
+                border-color: var(--app-color-primary);
+                background: var(--app-color-info-bg);
               }
               
               .record-header {
@@ -1266,45 +1261,45 @@ onMounted(async () => {
                 .version-info {
                   display: flex;
                   align-items: center;
-                  gap: var(--apple-spacing-xs);
+                  gap: var(--app-space-2);
                   flex-wrap: wrap;
 
                   :deep(.el-tag) {
-                    border-radius: var(--apple-rounded-pill);
-                    font-size: var(--apple-fs-fine-print);
+                    border-radius: var(--app-radius-pill);
+                    font-size: var(--app-fs-meta);
                     font-weight: 600;
                   }
                   
                   .similarity-badge {
                     padding: 3px 10px;
-                    border-radius: var(--apple-rounded-pill);
+                    border-radius: var(--app-radius-pill);
                     font-weight: 600;
-                    font-size: var(--apple-fs-fine-print);
+                    font-size: var(--app-fs-meta);
                     
-                    &.excellent { background: var(--apple-success-bg); color: var(--apple-success); }
-                    &.good { background: var(--apple-info-bg); color: var(--apple-primary); }
-                    &.warning { background: var(--apple-warning-bg); color: var(--apple-warning); }
-                    &.danger { background: var(--apple-danger-bg); color: var(--apple-danger); }
+                    &.excellent { background: var(--app-color-success-bg); color: var(--app-color-success); }
+                    &.good { background: var(--app-color-info-bg); color: var(--app-color-primary); }
+                    &.warning { background: var(--app-color-warning-bg); color: var(--app-color-warning); }
+                    &.danger { background: var(--app-color-danger-bg); color: var(--app-color-danger); }
                   }
                   
                 }
                 
                 .record-actions {
                   display: flex;
-                  gap: var(--apple-spacing-xxs);
+                  gap: var(--app-space-1);
                 }
               }
               
               .record-content {
                 .p5-metric-row {
                   display: flex;
-                  gap: var(--apple-spacing-md);
-                  margin-bottom: var(--apple-spacing-sm);
+                  gap: var(--app-space-4);
+                  margin-bottom: var(--app-space-3);
 
                   .p5-metric-item {
-                    font-size: var(--apple-fs-fine-print);
+                    font-size: var(--app-fs-meta);
                     font-weight: 500;
-                    color: var(--apple-ink-muted-48);
+                    color: var(--app-color-text-muted);
                   }
                 }
 
@@ -1312,34 +1307,34 @@ onMounted(async () => {
                   display: flex;
                   align-items: flex-start;
                   gap: 8px;
-                  margin-bottom: var(--apple-spacing-sm);
-                  color: var(--apple-ink-secondary);
+                  margin-bottom: var(--app-space-3);
+                  color: var(--app-color-text-secondary);
                   line-height: 1.5;
-                  font-size: var(--apple-fs-caption);
+                  font-size: var(--app-fs-caption);
                   
                   .el-icon {
                     margin-top: 3px;
-                    color: var(--apple-primary);
+                    color: var(--app-color-primary);
                   }
                 }
                 
                 .improvement-info {
                   display: flex;
                   align-items: center;
-                  gap: var(--apple-spacing-xs);
-                  margin-bottom: var(--apple-spacing-sm);
-                  color: var(--apple-ink-muted-48);
-                  font-size: var(--apple-fs-caption);
+                  gap: var(--app-space-2);
+                  margin-bottom: var(--app-space-3);
+                  color: var(--app-color-text-muted);
+                  font-size: var(--app-fs-caption);
                   
                   .improvement-badge {
                     padding: 3px 10px;
-                    border-radius: var(--apple-rounded-pill);
+                    border-radius: var(--app-radius-pill);
                     font-weight: 600;
-                    font-size: var(--apple-fs-fine-print);
+                    font-size: var(--app-fs-meta);
                     
-                    &.improved { background: var(--apple-success-bg); color: var(--apple-success); }
-                    &.regressed { background: var(--apple-danger-bg); color: var(--apple-danger); }
-                    &.unchanged { background: var(--apple-divider-soft); color: var(--apple-ink-muted-48); }
+                    &.improved { background: var(--app-color-success-bg); color: var(--app-color-success); }
+                    &.regressed { background: var(--app-color-danger-bg); color: var(--app-color-danger); }
+                    &.unchanged { background: var(--app-color-divider); color: var(--app-color-text-muted); }
                   }
                 }
                 
@@ -1348,24 +1343,24 @@ onMounted(async () => {
                     display: flex;
                     justify-content: space-between;
                     padding: 6px 0;
-                    border-bottom: 1px solid var(--apple-divider-soft);
+                    border-bottom: 1px solid var(--app-color-divider);
                     
                     &:last-child {
                       border-bottom: none;
                     }
                     
                     .section-name {
-                      color: var(--apple-ink-secondary);
-                      font-size: var(--apple-fs-caption);
+                      color: var(--app-color-text-secondary);
+                      font-size: var(--app-fs-caption);
                     }
                     
                     .change-value {
                       font-weight: 600;
-                      font-size: var(--apple-fs-caption);
+                      font-size: var(--app-fs-caption);
                       
-                      &.decreased { color: var(--apple-success); }
-                      &.increased { color: var(--apple-danger); }
-                      &.unchanged { color: var(--apple-ink-muted-48); }
+                      &.decreased { color: var(--app-color-success); }
+                      &.increased { color: var(--app-color-danger); }
+                      &.unchanged { color: var(--app-color-text-muted); }
                     }
                   }
                 }
@@ -1383,83 +1378,83 @@ onMounted(async () => {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: var(--apple-spacing-lg);
-      padding-bottom: var(--apple-spacing-md);
-      border-bottom: 1px solid var(--apple-divider-soft);
+      margin-bottom: var(--app-space-6);
+      padding-bottom: var(--app-space-4);
+      border-bottom: 1px solid var(--app-color-divider);
       
       .version-tags {
         display: flex;
         align-items: center;
-        gap: var(--apple-spacing-sm);
+        gap: var(--app-space-3);
         
         .version-tag {
           padding: 3px 12px;
-          border-radius: var(--apple-rounded-pill);
-          font-size: var(--apple-fs-caption);
+          border-radius: var(--app-radius-pill);
+          font-size: var(--app-fs-caption);
           font-weight: 600;
           
           &.old {
-            background: var(--apple-divider-soft);
-            color: var(--apple-ink-secondary);
+            background: var(--app-color-divider);
+            color: var(--app-color-text-secondary);
           }
           &.current {
-            background: var(--apple-primary);
-            color: var(--apple-on-primary);
+            background: var(--app-color-primary);
+            color: var(--app-color-on-primary);
           }
         }
         
         .vs {
-          font-size: var(--apple-fs-fine-print);
+          font-size: var(--app-fs-meta);
           font-weight: 600;
-          color: var(--apple-ink-muted-48);
+          color: var(--app-color-text-muted);
         }
       }
       
       .overall-change {
-        font-family: var(--apple-font-display);
-        font-size: var(--apple-fs-body-strong);
+        font-family: var(--app-font-family);
+        font-size: var(--app-fs-body);
         font-weight: 600;
         
-        &.improved { color: var(--apple-success); }
-        &.regressed { color: var(--apple-danger); }
-        &.unchanged { color: var(--apple-ink-muted-48); }
+        &.improved { color: var(--app-color-success); }
+        &.regressed { color: var(--app-color-danger); }
+        &.unchanged { color: var(--app-color-text-muted); }
       }
     }
     
     .compare-sections {
       .section-compare-card {
-        background: var(--apple-surface);
-        border: 1px solid var(--apple-hairline);
-        border-radius: var(--apple-rounded-md);
-        padding: var(--apple-spacing-md);
-        margin-bottom: var(--apple-spacing-sm);
+        background: var(--app-color-card-bg);
+        border: 1px solid var(--app-color-border);
+        border-radius: var(--app-radius-md);
+        padding: var(--app-space-4);
+        margin-bottom: var(--app-space-3);
         transition: all 0.2s ease;
         
         &:hover {
-          border-color: var(--apple-hairline);
+          border-color: var(--app-color-border);
         }
 
         .section-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: var(--apple-spacing-sm);
+          margin-bottom: var(--app-space-3);
           
           .section-name {
             font-weight: 600;
-            color: var(--apple-ink);
-            font-size: var(--apple-fs-caption);
+            color: var(--app-color-ink);
+            font-size: var(--app-fs-caption);
           }
           
           .change-tag {
             padding: 3px 10px;
-            border-radius: var(--apple-rounded-pill);
-            font-size: var(--apple-fs-fine-print);
+            border-radius: var(--app-radius-pill);
+            font-size: var(--app-fs-meta);
             font-weight: 600;
             
-            &.success { background: var(--apple-success-bg); color: var(--apple-success); }
-            &.danger { background: var(--apple-danger-bg); color: var(--apple-danger); }
-            &.info { background: var(--apple-divider-soft); color: var(--apple-ink-muted-48); }
+            &.success { background: var(--app-color-success-bg); color: var(--app-color-success); }
+            &.danger { background: var(--app-color-danger-bg); color: var(--app-color-danger); }
+            &.info { background: var(--app-color-divider); color: var(--app-color-text-muted); }
           }
         }
         
@@ -1467,40 +1462,40 @@ onMounted(async () => {
           .similarity-item {
             display: flex;
             align-items: center;
-            gap: var(--apple-spacing-sm);
-            margin-bottom: var(--apple-spacing-xs);
+            gap: var(--app-space-3);
+            margin-bottom: var(--app-space-2);
             
             .version-label {
               width: 60px;
-              font-size: var(--apple-fs-fine-print);
-              color: var(--apple-ink-muted-48);
+              font-size: var(--app-fs-meta);
+              color: var(--app-color-text-muted);
               font-weight: 500;
             }
             
             .progress-container {
               flex: 1;
               height: 6px;
-              background: var(--apple-divider-soft);
-              border-radius: var(--apple-rounded-pill);
+              background: var(--app-color-divider);
+              border-radius: var(--app-radius-pill);
               overflow: hidden;
               
               .progress-bar {
                 height: 100%;
-                border-radius: var(--apple-rounded-pill);
+                border-radius: var(--app-radius-pill);
                 transition: width 0.3s ease;
                 
-                &.excellent { background: var(--apple-success); }
-                &.good { background: var(--apple-primary); }
-                &.warning { background: var(--apple-warning); }
-                &.danger { background: var(--apple-danger); }
+                &.excellent { background: var(--app-color-success); }
+                &.good { background: var(--app-color-primary); }
+                &.warning { background: var(--app-color-warning); }
+                &.danger { background: var(--app-color-danger); }
               }
             }
             
             .similarity-value {
               min-width: 50px;
               font-weight: 600;
-              color: var(--apple-ink);
-              font-size: var(--apple-fs-caption);
+              color: var(--app-color-ink);
+              font-size: var(--app-fs-caption);
             }
           }
         }
@@ -1512,17 +1507,17 @@ onMounted(async () => {
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: var(--apple-spacing-sm);
+    gap: var(--app-space-3);
     
     .stat-card {
-      background: var(--apple-surface);
-      border: 1px solid var(--apple-hairline);
-      border-radius: var(--apple-rounded-lg);
-      padding: var(--apple-spacing-md);
+      background: var(--app-color-card-bg);
+      border: 1px solid var(--app-color-border);
+      border-radius: var(--app-radius-lg);
+      padding: var(--app-space-4);
       transition: all 0.2s ease;
       
       &:hover {
-        border-color: var(--apple-hairline);
+        border-color: var(--app-color-border);
       }
 
       &:active {
@@ -1532,12 +1527,12 @@ onMounted(async () => {
       .stat-content {
         display: flex;
         align-items: center;
-        gap: var(--apple-spacing-sm);
+        gap: var(--app-space-3);
         
         .stat-icon {
           width: 44px;
           height: 44px;
-          border-radius: var(--apple-rounded-md);
+          border-radius: var(--app-radius-md);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -1545,32 +1540,32 @@ onMounted(async () => {
           flex-shrink: 0;
           
           &.improvement-icon {
-            background: var(--apple-success-bg);
-            color: var(--apple-success);
+            background: var(--app-color-success-bg);
+            color: var(--app-color-success);
           }
           &.average-icon {
-            background: var(--apple-info-bg);
-            color: var(--apple-primary);
+            background: var(--app-color-info-bg);
+            color: var(--app-color-primary);
           }
           &.speed-icon {
-            background: var(--apple-warning-bg);
-            color: var(--apple-warning);
+            background: var(--app-color-warning-bg);
+            color: var(--app-color-warning);
           }
         }
         
         .stat-info {
           .stat-number {
-            font-family: var(--apple-font-display);
-            font-size: var(--apple-fs-lead-airy);
+            font-family: var(--app-font-family);
+            font-size: var(--app-fs-display);
             font-weight: 600;
-            color: var(--apple-ink);
+            color: var(--app-color-ink);
             line-height: 1.2;
             margin-bottom: 2px;
           }
           
           .stat-label {
-            font-size: var(--apple-fs-fine-print);
-            color: var(--apple-ink-muted-48);
+            font-size: var(--app-fs-meta);
+            color: var(--app-color-text-muted);
             font-weight: 500;
           }
         }
@@ -1599,14 +1594,14 @@ onMounted(async () => {
 
 @media (max-width: 768px) {
   .check-history-page {
-    padding: var(--apple-spacing-sm);
+    padding: var(--app-space-3);
 
     .paper-info-card {
-      padding: var(--apple-spacing-md);
+      padding: var(--app-space-4);
       
       .paper-header {
         .paper-title {
-          font-size: var(--apple-fs-tagline);
+          font-size: var(--app-fs-title);
         }
       }
       
@@ -1617,7 +1612,7 @@ onMounted(async () => {
     }
     
     .trend-card {
-      padding: var(--apple-spacing-md);
+      padding: var(--app-space-4);
       
       .trend-chart-container {
         gap: 16px;
@@ -1630,7 +1625,7 @@ onMounted(async () => {
     }
     
     .history-card {
-      padding: var(--apple-spacing-md);
+      padding: var(--app-space-4);
       
       .timeline-container {
         .timeline {
@@ -1646,7 +1641,7 @@ onMounted(async () => {
             }
             
             .history-record {
-              padding: var(--apple-spacing-sm);
+              padding: var(--app-space-3);
               
               .record-header {
                 flex-direction: column;
@@ -1668,7 +1663,7 @@ onMounted(async () => {
       grid-template-columns: 1fr;
       
       .stat-card {
-        padding: var(--apple-spacing-md);
+        padding: var(--app-space-4);
       }
     }
   }
