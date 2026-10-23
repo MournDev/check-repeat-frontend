@@ -16,6 +16,7 @@
   // ── Typography（控制台字号阶梯，6 档）────────────────────
   // 业务页写字体族一律用 --app-font-family，禁止直接写 --apple-font-* 或字面量
   --app-font-family: var(--apple-font-text);
+  --app-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; // 日志时间等需等宽对齐的文本
 
   --app-fs-display: 24px; // 页面内主标题（仪表盘大数字除外）
   --app-fs-title: 20px; // 区块标题 / 卡片标题
@@ -48,6 +49,8 @@
   --app-space-5: 20px;
   --app-space-6: 24px;
   --app-space-8: 32px;
+  --app-space-10: 40px;
+  --app-space-12: 48px; // 空状态等需要"空旷感"的留白，不得压缩成 32px
 
   // ── Layout & Component Density ─────────────────────────
   --app-page-gutter: 24px; // 内容区左右/上下留白
@@ -60,6 +63,11 @@
   --app-table-cell-px: 12px; // 表格单元格左右内边距
   --app-form-item-gap: 16px; // 表单项下间距
   --app-section-gap: 16px; // 页面区块间距
+
+  // ── Transition（业务页过渡时长唯一出处）────────────────
+  --app-transition-fast: 0.15s ease; // 文字/描边色反馈
+  --app-transition-normal: 0.2s ease; // 常规 hover / 状态切换
+  --app-transition-slow: 0.3s ease; // 展开收起、进度条宽度
 
   // ── Navigation ─────────────────────────────────────────
   --app-subnav-height: 48px;
@@ -75,6 +83,8 @@
   --app-color-primary-hover: var(--apple-primary-active);
   --app-color-primary-on-dark: var(--apple-primary-on-dark);
   --app-color-on-primary: var(--apple-on-primary);
+  // 主色 RGB 分量，供 rgba(var(--app-color-primary-rgb), 0.08) 这类半透明底色使用
+  --app-color-primary-rgb: 0, 102, 204;
 
   // 文字（按信息层级从强到弱）
   --app-color-ink: var(--apple-ink);                          // 标题/主数据
