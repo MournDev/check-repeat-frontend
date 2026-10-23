@@ -147,7 +147,7 @@
     >
       <div class="completion-content">
         <div class="completion-icon">
-          <el-icon color="var(--apple-success)" size="48"><SuccessFilled /></el-icon>
+          <el-icon color="var(--app-color-success)" size="48"><SuccessFilled /></el-icon>
         </div>
         <p>论文查重检测已完成！</p>
         <p>总相似比: <strong>{{ formatPercent(finalSimilarity) }}</strong></p>
@@ -178,6 +178,7 @@ import {
 import { getCheckTaskDetail } from '@/api/student'
 import { useCheckProgress } from '@/composables/useCheckProgress'
 import { formatDateTime, formatPercent } from '@/utils/dataType.js'
+import { getCheckStatusMessage, normalizeCheckStatus } from '@/utils/checkStatus.js'
 import PageHeader from '@/components/common/PageHeader.vue'
 
 const route = useRoute()
@@ -185,7 +186,7 @@ const router = useRouter()
 
 // 响应式数据
 const currentStatus = ref({
-  status: 'processing',
+  status: 'checking',
   currentStage: 'internal_check',
   overallProgress: 0,
   stageProgress: 0,
@@ -264,9 +265,9 @@ const elapsedTime = computed(() => {
 
 const getProgressColor = computed(() => {
   const progress = currentStatus.value.overallProgress
-  if (progress < 30) return '#34c759'
-  if (progress < 70) return '#ff9500'
-  return '#ff3b30'
+  if (progress < 30) return 'var(--app-color-success)'
+  if (progress < 70) return 'var(--app-color-warning)'
+  return 'var(--app-color-danger)'
 })
 
 // 方法
@@ -349,38 +350,30 @@ const updateStatus = (data, { announce = false } = {}) => {
   }
 }
 
-const getStatusMessage = (status) => {
-  const messages = {
-    'pending': '准备开始查重检测...',
-    'processing': '正在进行查重检测...',
-    'completed': '查重检测已完成',
-    'failed': '查重检测失败',
-    'cancelled': '查重检测已取消'
-  }
-  return messages[status] || '未知状态'
-}
+// 状态文案统一由 utils/checkStatus.js 提供（SSOT），本页不再维护第二套状态词表
+const getStatusMessage = (status) => getCheckStatusMessage(status)
 
 const getStatusColor = (status) => {
   const colors = {
-    'pending': '#86868b',
-    'processing': '#0066cc',
-    'completed': '#34c759',
-    'failed': '#ff3b30',
-    'cancelled': '#ff9500'
+    pending: 'var(--app-color-info)',
+    checking: 'var(--app-color-primary)',
+    completed: 'var(--app-color-success)',
+    failure: 'var(--app-color-danger)',
+    cancelled: 'var(--app-color-warning)'
   }
-  return colors[status] || '#86868b'
+  return colors[normalizeCheckStatus(status)] || 'var(--app-color-info)'
 }
 
 const getStatusIcon = (status) => {
   // 值为组件对象（非字符串名）：全局图标注册已移除，字符串无法解析
   const icons = {
-    'pending': Clock,
-    'processing': Loading,
-    'completed': SuccessFilled,
-    'failed': CircleClose,
-    'cancelled': Warning
+    pending: Clock,
+    checking: Loading,
+    completed: SuccessFilled,
+    failure: CircleClose,
+    cancelled: Warning
   }
-  return icons[status] || InfoFilled
+  return icons[normalizeCheckStatus(status)] || InfoFilled
 }
 
 const getProgressTagType = (progress) => {
@@ -575,10 +568,10 @@ onUnmounted(() => {
   .progress-card,
   .log-card,
   .estimate-card {
-    margin-bottom: var(--apple-spacing-md);
-    background: var(--apple-surface);
-    border: 1px solid var(--apple-hairline);
-    border-radius: var(--apple-rounded-lg);
+    margin-bottom: var(--app-space-4);
+    background: var(--app-color-card-bg);
+    border: 1px solid var(--app-color-border);
+    border-radius: var(--app-radius-lg);
 
     &:last-child {
       margin-bottom: 0;
@@ -589,37 +582,37 @@ onUnmounted(() => {
     .current-status {
       display: flex;
       align-items: center;
-      gap: var(--apple-spacing-md);
-      
+      gap: var(--app-space-4);
+
       .status-icon {
-        padding: var(--apple-spacing-md);
-        background: var(--apple-primary);
-        border-radius: var(--apple-rounded-lg);
-        color: var(--apple-on-primary);
+        padding: var(--app-space-4);
+        background: var(--app-color-primary);
+        border-radius: var(--app-radius-lg);
+        color: var(--app-color-on-primary);
       }
-      
+
       .status-content {
         flex: 1;
-        
+
         .status-message {
-          margin: 0 0 var(--apple-spacing-xs);
-          font-family: var(--apple-font-display);
-          font-size: var(--apple-fs-tagline);
+          margin: 0 0 var(--app-space-2);
+          font-family: var(--app-font-family);
+          font-size: var(--app-fs-title);
           font-weight: 600;
-          color: var(--apple-ink);
+          color: var(--app-color-ink);
         }
-        
+
         .status-details {
           display: flex;
-          gap: var(--apple-spacing-lg);
-          color: var(--apple-ink-muted-48);
-          font-size: var(--apple-fs-caption);
+          gap: var(--app-space-6);
+          color: var(--app-color-text-muted);
+          font-size: var(--app-fs-caption);
         }
       }
-      
+
       .refresh-button {
         .el-button {
-          border: 1px solid var(--apple-hairline);
+          border: 1px solid var(--app-color-border);
         }
       }
     }
@@ -629,88 +622,89 @@ onUnmounted(() => {
     .card-header {
       display: flex;
       align-items: center;
-      gap: var(--apple-spacing-xs);
-      font-family: var(--apple-font-display);
-      font-size: var(--apple-fs-body-strong);
+      gap: var(--app-space-2);
+      font-family: var(--app-font-family);
+      font-size: var(--app-fs-body);
       font-weight: 600;
-      color: var(--apple-ink);
-      
+      color: var(--app-color-ink);
+
       .el-tag {
         margin-left: auto;
       }
     }
-    
+
     .overall-progress {
       .progress-stages {
         display: flex;
         justify-content: space-between;
-        margin-top: var(--apple-spacing-xl);
+        margin-top: var(--app-space-8);
         position: relative;
-        
+
         &::before {
           content: '';
           position: absolute;
+          // 连接线对齐 40px 圆点的中线（组件几何，非间距令牌）
           top: 20px;
           left: 40px;
           right: 40px;
           height: 2px;
-          background: var(--apple-divider-soft);
+          background: var(--app-color-divider);
           z-index: 1;
         }
-        
+
         .stage-item {
           display: flex;
           flex-direction: column;
           align-items: center;
           z-index: 2;
           width: 80px;
-          
+
           &.completed {
             .stage-icon {
-              background: var(--apple-success);
-              color: var(--apple-on-primary);
+              background: var(--app-color-success);
+              color: var(--app-color-on-primary);
             }
           }
-          
+
           &.current {
             .stage-icon {
-              background: var(--apple-primary);
-              color: var(--apple-on-primary);
+              background: var(--app-color-primary);
+              color: var(--app-color-on-primary);
               animation: pulse 2s infinite;
             }
           }
-          
+
           &.pending {
             .stage-icon {
-              background: var(--apple-hairline);
-              color: var(--apple-ink-muted-48);
+              background: var(--app-color-border);
+              color: var(--app-color-text-muted);
             }
           }
-          
+
           .stage-icon {
             width: 40px;
             height: 40px;
-            border-radius: var(--apple-rounded-full);
+            border-radius: var(--app-radius-pill);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: var(--apple-spacing-xs);
-            transition: all var(--apple-transition-slow);
+            margin-bottom: var(--app-space-2);
+            transition: all var(--app-transition-slow);
           }
-          
+
           .stage-info {
             text-align: center;
-            
+
             .stage-name {
-              font-size: var(--apple-fs-fine-print);
-              color: var(--apple-ink-muted-48);
-              margin-bottom: var(--apple-spacing-xxs);
+              font-size: var(--app-fs-meta);
+              color: var(--app-color-text-muted);
+              margin-bottom: var(--app-space-1);
             }
-            
+
             .stage-progress, .stage-duration {
-              font-size: var(--apple-fs-fine-print);
+              font-size: var(--app-fs-meta);
               font-weight: 600;
-              color: var(--apple-primary);
+              color: var(--app-color-primary);
             }
           }
         }
@@ -722,76 +716,76 @@ onUnmounted(() => {
     .card-header {
       display: flex;
       align-items: center;
-      gap: var(--apple-spacing-xs);
-      font-family: var(--apple-font-display);
-      font-size: var(--apple-fs-body-strong);
+      gap: var(--app-space-2);
+      font-family: var(--app-font-family);
+      font-size: var(--app-fs-body);
       font-weight: 600;
-      color: var(--apple-ink);
-      
+      color: var(--app-color-ink);
+
       .el-button {
         margin-left: auto;
-        color: var(--apple-ink-muted-48);
-        
+        color: var(--app-color-text-muted);
+
         .el-icon {
-          margin-right: 4px;
+          margin-right: var(--app-space-1);
         }
       }
     }
-    
+
     .log-container {
       max-height: 300px;
       overflow-y: auto;
-      background: var(--apple-canvas-parchment);
-      border-radius: var(--apple-rounded-md);
-      padding: var(--apple-spacing-md);
-      
+      background: var(--app-color-fill);
+      border-radius: var(--app-radius-md);
+      padding: var(--app-space-4);
+
       .log-item {
         display: flex;
-        gap: var(--apple-spacing-sm);
-        padding: var(--apple-spacing-xs) 0;
-        border-bottom: 1px solid var(--apple-divider-soft);
-        
+        gap: var(--app-space-3);
+        padding: var(--app-space-2) 0;
+        border-bottom: 1px solid var(--app-color-divider);
+
         &:last-child {
           border-bottom: none;
         }
-        
+
         &.log-info {
-          color: var(--apple-primary);
+          color: var(--app-color-primary);
         }
-        
+
         &.log-warning {
-          color: var(--apple-warning);
+          color: var(--app-color-warning);
         }
-        
+
         &.log-error {
-          color: var(--apple-danger);
+          color: var(--app-color-danger);
         }
-        
+
         &.log-success {
-          color: var(--apple-success);
+          color: var(--app-color-success);
         }
-        
+
         .log-time {
-          font-family: monospace;
-          font-size: var(--apple-fs-fine-print);
+          font-family: var(--app-font-mono);
+          font-size: var(--app-fs-meta);
           min-width: 80px;
         }
-        
+
         .log-content {
           flex: 1;
-          font-size: var(--apple-fs-caption);
+          font-size: var(--app-fs-caption);
           line-height: 1.4;
         }
       }
-      
+
       .no-logs {
         text-align: center;
-        padding: var(--apple-spacing-xl) 0;
-        color: var(--apple-ink-muted-48);
-        
+        padding: var(--app-space-8) 0;
+        color: var(--app-color-text-muted);
+
         .el-icon {
-          font-size: var(--apple-fs-tagline);
-          margin-bottom: var(--apple-spacing-xs);
+          font-size: var(--app-fs-title);
+          margin-bottom: var(--app-space-2);
         }
       }
     }
@@ -801,31 +795,31 @@ onUnmounted(() => {
     .card-header {
       display: flex;
       align-items: center;
-      gap: var(--apple-spacing-xs);
-      font-family: var(--apple-font-display);
-      font-size: var(--apple-fs-body-strong);
+      gap: var(--app-space-2);
+      font-family: var(--app-font-family);
+      font-size: var(--app-fs-body);
       font-weight: 600;
-      color: var(--apple-ink);
+      color: var(--app-color-ink);
     }
-    
+
     .estimate-content {
       display: flex;
       justify-content: space-around;
-      
+
       .estimate-item {
         text-align: center;
-        
+
         .estimate-label {
-          font-size: var(--apple-fs-caption);
-          color: var(--apple-ink-muted-48);
-          margin-bottom: var(--apple-spacing-xs);
+          font-size: var(--app-fs-caption);
+          color: var(--app-color-text-muted);
+          margin-bottom: var(--app-space-2);
         }
-        
+
         .estimate-value {
-          font-family: var(--apple-font-display);
-          font-size: var(--apple-fs-body-strong);
+          font-family: var(--app-font-family);
+          font-size: var(--app-fs-body);
           font-weight: 600;
-          color: var(--apple-primary);
+          color: var(--app-color-primary);
         }
       }
     }
@@ -833,19 +827,19 @@ onUnmounted(() => {
 
   .completion-content {
     text-align: center;
-    padding: var(--apple-spacing-md) 0;
-    
+    padding: var(--app-space-4) 0;
+
     .completion-icon {
-      margin-bottom: var(--apple-spacing-md);
+      margin-bottom: var(--app-space-4);
     }
-    
+
     p {
-      margin: var(--apple-spacing-xs) 0;
-      color: var(--apple-ink-muted-48);
-      
+      margin: var(--app-space-2) 0;
+      color: var(--app-color-text-muted);
+
       strong {
-        color: var(--apple-ink);
-        font-size: var(--apple-fs-body-strong);
+        color: var(--app-color-ink);
+        font-size: var(--app-fs-body);
       }
     }
   }
@@ -855,59 +849,59 @@ onUnmounted(() => {
 @keyframes pulse {
   0% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(0, 102, 204, 0.7);
+    box-shadow: 0 0 0 0 rgba(var(--app-color-primary-rgb), 0.7);
   }
   70% {
     transform: scale(1.05);
-    box-shadow: 0 0 0 10px rgba(0, 102, 204, 0);
+    box-shadow: 0 0 0 10px rgba(var(--app-color-primary-rgb), 0);
   }
   100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(0, 102, 204, 0);
+    box-shadow: 0 0 0 0 rgba(var(--app-color-primary-rgb), 0);
   }
 }
 
 // 响应式设计
 @media (max-width: 768px) {
   .check-monitor-page {
-    padding: var(--apple-spacing-sm);
-    
+    padding: var(--app-space-3);
+
     .current-status {
       flex-direction: column;
       text-align: center;
-      gap: var(--apple-spacing-md);
-      
+      gap: var(--app-space-4);
+
       .status-content {
         .status-details {
           flex-direction: column;
-          gap: var(--apple-spacing-xs);
+          gap: var(--app-space-2);
         }
       }
     }
-    
+
     .progress-stages {
       flex-direction: column;
-      gap: var(--apple-spacing-md);
-      margin-top: var(--apple-spacing-lg);
-      
+      gap: var(--app-space-4);
+      margin-top: var(--app-space-6);
+
       &::before {
         display: none;
       }
-      
+
       .stage-item {
         flex-direction: row;
         width: 100%;
-        gap: var(--apple-spacing-sm);
-        
+        gap: var(--app-space-3);
+
         .stage-info {
           text-align: left;
         }
       }
     }
-    
+
     .estimate-content {
       flex-direction: column;
-      gap: var(--apple-spacing-md);
+      gap: var(--app-space-4);
     }
   }
 }
