@@ -2,17 +2,9 @@
 // Apple Design Language — Global Utility Styles
 // 颜色/间距/动效一律 var() 引用 design-tokens.scss（唯一真源），
 // 本文件不再定义变量（2026-10-17 三源并一源，原旧 Tailwind 变量段已废）。
+// 基础元素（body / a / h1-h6）的排版由 assets/scss/index.scss 统一承担，
+// 本文件只放工具类与组件级公共样式，不要再重复声明。
 // ============================================================
-
-body {
-  font-family: var(--apple-font-text);
-  background-color: var(--apple-canvas-parchment);
-  color: var(--apple-ink);
-  line-height: var(--app-lh-body);
-  font-size: var(--app-fs-body);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
 
 // ── Container ─────────────────────────────────────────────
 .container {
@@ -103,32 +95,12 @@ body {
   }
 }
 
-// ── Headings ──────────────────────────────────────────────
-h1, h2, h3, h4, h5, h6 {
-  color: var(--apple-ink);
-  font-weight: 600;
-  margin-bottom: var(--app-space-3);
-}
-
-h1 { font-family: var(--apple-font-display); font-size: var(--app-fs-display); line-height: var(--app-lh-display); }
-h2 { font-family: var(--apple-font-display); font-size: var(--app-fs-title); line-height: var(--app-lh-heading); }
-h3 { font-size: var(--app-fs-heading); line-height: var(--app-lh-heading); }
-h4 { font-size: var(--app-fs-body); line-height: var(--app-lh-body); }
-
+// ── Paragraph ─────────────────────────────────────────────
 p {
   color: var(--apple-ink-muted-80);
   margin-bottom: var(--app-space-3);
   font-size: var(--app-fs-body);
   line-height: var(--app-lh-body);
-}
-
-a {
-  color: var(--apple-primary);
-  text-decoration: none;
-
-  &:hover {
-    color: var(--apple-primary-active);
-  }
 }
 
 // ── Tag / Chip: pill shape ───────────────────────────────

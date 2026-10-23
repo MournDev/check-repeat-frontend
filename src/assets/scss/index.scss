@@ -33,13 +33,16 @@ body {
   color: var(--apple-ink);
   font-size: var(--app-fs-body);
   line-height: var(--app-lh-body);
-  letter-spacing: -0.224px;
+  min-width: 320px;
+  min-height: 100vh;
 }
 
 // ── Page title ───────────────────────────────────────────
+// 基础元素排版唯一出口：global-styles.scss 与 style.css 不再重复定义
 h1, h2, h3, h4, h5, h6 {
   color: var(--apple-ink);
   font-weight: 600;
+  margin-bottom: var(--app-space-3);
 }
 
 h1 {
@@ -51,7 +54,16 @@ h1 {
 h2 {
   font-size: var(--app-fs-title);
   line-height: var(--app-lh-heading);
-  letter-spacing: -0.224px;
+}
+
+h3 {
+  font-size: var(--app-fs-heading);
+  line-height: var(--app-lh-heading);
+}
+
+h4 {
+  font-size: var(--app-fs-body);
+  line-height: var(--app-lh-body);
 }
 
 // ── Link ──────────────────────────────────────────────────
