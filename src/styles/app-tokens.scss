@@ -4,10 +4,12 @@
 // 与 design-tokens.scss 的分工：
 //   --apple-*  品牌/营销尺度（大字号、大间距、大圆角），用于登录注册、
 //              报告封面等偏展示的界面；
-//   --app-*    业务控制台尺度（紧凑字号、控件高度、表格/卡片内边距），
+//   --app-*    业务控制台尺度（紧凑字号、控件高度、颜色语义、表格/卡片内边距），
 //              用于所有登录后的工作台与列表页。
 // 业务页面新增字号、控件高度、组件内边距时一律引用本文件令牌，
 // 不要继续取用 --apple-fs-* / --apple-spacing-* 等展示尺度。
+// 颜色统一引用本文件的 --app-color-*（值映射自 design-tokens.scss 的
+// --apple-*，保证换肤时只有一处真源），不要再在业务页直接写颜色字面量。
 // ============================================================
 
 :root {
@@ -59,4 +61,57 @@
   --app-subnav-height: 48px;
   --app-sidebar-width: 240px;
   --app-sidebar-item-h: 34px;
+
+  // ── Color（颜色别名层）──────────────────────────────────
+  // 值一律映射 design-tokens.scss 的 --apple-*，此处不新增品牌色。
+  // 业务页只读 --app-color-*；--apple-* 仅限登录/注册等展示型页面。
+
+  // 主色
+  --app-color-primary: var(--apple-primary);
+  --app-color-primary-hover: var(--apple-primary-active);
+  --app-color-primary-on-dark: var(--apple-primary-on-dark);
+  --app-color-on-primary: var(--apple-on-primary);
+
+  // 文字（按信息层级从强到弱）
+  --app-color-ink: var(--apple-ink);                          // 标题/主数据
+  --app-color-text: var(--apple-ink-muted-80);                // 正文/表格
+  --app-color-text-secondary: var(--apple-ink-secondary);     // 次级说明（≥14px 使用）
+  --app-color-text-muted: var(--apple-ink-muted-48);          // 弱提示/占位说明
+  --app-color-text-placeholder: var(--apple-body-muted);      // 表单 placeholder
+  --app-color-text-on-dark: var(--apple-body-muted);          // 深色导航上的文字
+
+  // 背景与容器
+  --app-color-page-bg: #eef1f5;                               // 业务页底色（比 #f5f5f7 深一档，给白卡留出分层）
+  --app-color-card-bg: var(--apple-canvas);                   // 卡片/表格/弹窗内容底
+  --app-color-fill: var(--apple-canvas-parchment);            // 表头底、hover 行、内嵌块
+  --app-color-fill-light: var(--apple-surface-pearl);         // 更浅一级的填充
+  --app-color-nav-bg: var(--apple-surface-tile-1);            // 顶栏/侧边栏深色底
+  --app-color-nav-text: var(--apple-body-muted);              // 深色底正文
+  --app-color-nav-text-muted: var(--apple-slate-faint);       // 深色底分组标签（原 #7a7a7a 对比度不足）
+
+  // 描边与分隔
+  --app-color-border: var(--apple-hairline);                  // 卡片/组件 1px 描边
+  --app-color-border-strong: var(--apple-surface-chip-translucent);
+  --app-color-border-soft: var(--apple-slate-border);         // 浅灰蓝描边（卡片/区块）
+  --app-color-divider: var(--apple-divider-soft);
+
+  // 语义色及其浅底/描边（Alert、示例块、状态标签）
+  --app-color-success: var(--apple-success);
+  --app-color-warning: var(--apple-warning);
+  --app-color-danger: var(--apple-danger);
+  --app-color-info: var(--apple-info);
+  --app-color-success-bg: var(--apple-success-bg);
+  --app-color-warning-bg: var(--apple-warning-bg);
+  --app-color-danger-bg: var(--apple-danger-bg);
+  --app-color-info-bg: var(--apple-info-bg);
+  --app-color-success-border: var(--apple-success-border);
+  --app-color-warning-border: var(--apple-warning-border);
+  --app-color-danger-border: var(--apple-danger-border);
+  --app-color-info-border: var(--apple-info-border);
+
+  // 重复率等级（与 utils/similarity.js 的 low/medium/high/unknown 一一对应）
+  --app-color-rate-low: var(--apple-rate-low);
+  --app-color-rate-medium: var(--apple-rate-medium);
+  --app-color-rate-high: var(--apple-rate-high);
+  --app-color-rate-unknown: var(--apple-rate-unknown);
 }

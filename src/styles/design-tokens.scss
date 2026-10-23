@@ -51,10 +51,11 @@
   --apple-rounded-full: 9999px;
 
   // ── Spacing ─────────────────────────────────────────────
+  // 严格 4px 栅格；业务页请改用 app-tokens.scss 的 --app-space-*。
   --apple-spacing-xxs: 4px;
   --apple-spacing-xs: 8px;
   --apple-spacing-sm: 12px;
-  --apple-spacing-md: 17px;
+  --apple-spacing-md: 16px;
   --apple-spacing-lg: 24px;
   --apple-spacing-xl: 32px;
   --apple-spacing-xxl: 48px;
