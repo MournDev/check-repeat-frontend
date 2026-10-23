@@ -72,8 +72,9 @@ watch(() => props.paperId, load, { immediate: true })
 
 <style scoped>
 .review-history-panel {
-  padding: 14px 0 8px;
+  padding: var(--apple-spacing-sm) 0 var(--apple-spacing-xs);
   min-height: 200px;
+  font-family: var(--apple-font-text);
 }
 
 .history-empty {
@@ -92,19 +93,19 @@ watch(() => props.paperId, load, { immediate: true })
 }
 
 .history-empty p {
-  margin: 12px 0 4px;
-  font-size: 0.875rem;
+  margin: var(--apple-spacing-sm) 0 var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-caption);
   color: var(--apple-ink);
 }
 
 .history-empty span {
-  font-size: 0.6875rem;
+  font-size: var(--apple-fs-fine-print);
 }
 
 .history-list {
   position: relative;
   margin: 0;
-  padding: 0 0 0 16px;
+  padding: 0 0 0 var(--apple-spacing-md);
   list-style: none;
 }
 
@@ -120,7 +121,7 @@ watch(() => props.paperId, load, { immediate: true })
 
 .history-item {
   position: relative;
-  margin-bottom: 14px;
+  margin-bottom: var(--apple-spacing-sm);
 }
 
 .history-item:last-child {
@@ -152,7 +153,7 @@ watch(() => props.paperId, load, { immediate: true })
 }
 
 .history-card {
-  padding: 10px 12px;
+  padding: var(--apple-spacing-xs) var(--apple-spacing-sm);
   border: 1px solid var(--apple-hairline);
   border-radius: var(--apple-rounded-sm);
   background: var(--apple-canvas);
@@ -162,12 +163,12 @@ watch(() => props.paperId, load, { immediate: true })
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: var(--apple-spacing-xs);
 }
 
 .status-tag {
-  padding: 0 7px;
-  font-size: 0.6875rem;
+  padding: 0 var(--apple-spacing-xs);
+  font-size: var(--apple-fs-fine-print);
   line-height: 18px;
   border-radius: var(--apple-rounded-xs);
   color: var(--apple-ink-muted-48);
@@ -190,78 +191,24 @@ watch(() => props.paperId, load, { immediate: true })
 }
 
 .history-time {
-  font-size: 0.6875rem;
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
 }
 
 .history-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 12px;
-  margin-top: 6px;
-  font-size: 0.6875rem;
-  color: var(--apple-ink-muted-48);
-}
-
-.history-opinion {
-  margin: 6px 0 0;
-  font-size: 0.75rem;
-  line-height: 1.6;
-  color: var(--apple-ink-muted-80);
-  white-space: pre-wrap;
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.review-history-panel {
-  padding: var(--apple-spacing-sm) 0 var(--apple-spacing-xs);
-  font-family: var(--apple-font-text);
-}
-
-.history-empty p {
-  margin: var(--apple-spacing-sm) 0 var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-caption);
-}
-
-.history-empty span {
-  font-size: var(--apple-fs-fine-print);
-}
-
-.history-list {
-  padding: 0 0 0 var(--apple-spacing-md);
-}
-
-.history-item {
-  margin-bottom: var(--apple-spacing-sm);
-}
-
-.history-card {
-  padding: var(--apple-spacing-xs) var(--apple-spacing-sm);
-  border-radius: var(--apple-rounded-sm);
-}
-
-.history-head {
-  gap: var(--apple-spacing-xs);
-}
-
-.status-tag {
-  padding: 0 var(--apple-spacing-xs);
-  font-size: var(--apple-fs-fine-print);
-  line-height: 18px;
-}
-
-.history-time {
-  font-size: var(--apple-fs-fine-print);
-}
-
-.history-meta {
   gap: var(--apple-spacing-xxs) var(--apple-spacing-sm);
   margin-top: var(--apple-spacing-xxs);
   font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
 }
 
 .history-opinion {
   margin: var(--apple-spacing-xxs) 0 0;
   font-size: var(--apple-fs-fine-print);
   line-height: 1.6;
+  color: var(--apple-ink-muted-80);
+  white-space: pre-wrap;
 }
 </style>

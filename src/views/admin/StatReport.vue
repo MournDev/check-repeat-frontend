@@ -287,7 +287,7 @@ onMounted(() => {
 .stat-report {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--apple-spacing-md);
   color: var(--apple-ink);
   font-family: var(--apple-font-text);
 }
@@ -296,18 +296,19 @@ onMounted(() => {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--apple-spacing-md);
 }
 
 .head-title {
-  margin: 0 0 6px;
-  font-size: 1.25rem;
+  margin: 0 0 var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-tagline);
   font-weight: 600;
+  font-family: var(--apple-font-display);
 }
 
 .head-desc {
   margin: 0;
-  font-size: 0.8125rem;
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
 }
 
@@ -315,7 +316,7 @@ onMounted(() => {
   margin-bottom: 0;
 
   :deep(.el-card__header) {
-    padding: 1rem 1.25rem;
+    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
 
     .card-header {
       display: flex;
@@ -325,9 +326,11 @@ onMounted(() => {
         display: flex;
         align-items: center;
         font-weight: 600;
+        font-size: var(--apple-fs-body-strong);
+        font-family: var(--apple-font-display);
 
         .el-icon {
-          margin-right: 0.5rem;
+          margin-right: var(--apple-spacing-xs);
           color: var(--apple-primary);
         }
       }
@@ -351,44 +354,6 @@ onMounted(() => {
   .el-col {
     margin-bottom: 16px;
   }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.stat-report {
-  gap: var(--apple-spacing-md);
-}
-
-.head-row {
-  gap: var(--apple-spacing-md);
-}
-
-.head-title {
-  margin-bottom: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-tagline);
-  font-family: var(--apple-font-display);
-}
-
-.head-desc {
-  font-size: var(--apple-fs-fine-print);
-}
-
-.chart-card {
-  :deep(.el-card__header) {
-    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-  }
-
-  .card-header .card-title {
-    font-size: var(--apple-fs-body-strong);
-    font-family: var(--apple-font-display);
-
-    .el-icon {
-      margin-right: var(--apple-spacing-xs);
-    }
-  }
-}
-
-.chart-body {
-  min-height: 200px;
 }
 
 @media (max-width: 768px) {

@@ -455,14 +455,14 @@ onMounted(() => {
 
 .filter-actions {
   display: flex;
-  gap: 12px;
-  padding-top: 4px;
+  gap: var(--apple-spacing-sm);
+  padding-top: var(--apple-spacing-xxs);
 }
 
 .student-info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--apple-spacing-xxs);
 }
 
 .student-name {
@@ -473,8 +473,8 @@ onMounted(() => {
 .student-meta {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 12px;
+  gap: var(--apple-spacing-xs);
+  font-size: var(--apple-fs-fine-print);
 }
 
 .college {
@@ -484,7 +484,7 @@ onMounted(() => {
 .paper-info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--apple-spacing-xxs);
 }
 
 .paper-title {
@@ -496,21 +496,21 @@ onMounted(() => {
 .paper-meta {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 12px;
+  gap: var(--apple-spacing-sm);
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
 }
 
 .version {
   background-color: var(--apple-canvas-parchment);
-  padding: 2px 6px;
+  padding: 2px var(--apple-spacing-xxs);
   border-radius: var(--apple-rounded-xs);
 }
 
 .similarity-cell {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--apple-spacing-xs);
 }
 
 .similarity-progress {
@@ -521,7 +521,7 @@ onMounted(() => {
 .similarity-value {
   min-width: 45px;
   text-align: right;
-  font-size: 17px;
+  font-size: var(--apple-fs-body-strong);
   font-weight: 400;
 }
 
@@ -537,23 +537,24 @@ onMounted(() => {
 
 .action-buttons {
   display: flex;
-  gap: 8px;
+  gap: var(--apple-spacing-xs);
   align-items: center;
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
   .teacher-review {
-    padding: 12px;
+    padding: var(--apple-spacing-sm);
   }
-  
+
   .filter-actions {
     flex-wrap: wrap;
+    gap: var(--apple-spacing-xs);
   }
-  
+
   .action-buttons {
     flex-direction: column;
-    gap: 4px;
+    gap: var(--apple-spacing-xxs);
   }
 }
 
@@ -562,68 +563,17 @@ onMounted(() => {
   .paper-meta {
     flex-direction: column;
     align-items: flex-start;
-    gap: 4px;
+    gap: var(--apple-spacing-xxs);
   }
-  
+
   .similarity-cell {
     flex-direction: column;
     align-items: flex-start;
-    gap: 4px;
+    gap: var(--apple-spacing-xxs);
   }
-  
+
   .similarity-progress {
     width: 100%;
-  }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.teacher-review {
-  font-family: var(--apple-font-text);
-}
-
-.filter-actions {
-  gap: var(--apple-spacing-sm);
-  padding-top: var(--apple-spacing-xxs);
-}
-
-.student-info,
-.paper-info {
-  gap: var(--apple-spacing-xxs);
-}
-
-.student-meta {
-  gap: var(--apple-spacing-xs);
-  font-size: var(--apple-fs-fine-print);
-}
-
-.paper-meta {
-  gap: var(--apple-spacing-sm);
-  font-size: var(--apple-fs-fine-print);
-}
-
-.version {
-  padding: 2px var(--apple-spacing-xxs);
-}
-
-.similarity-cell {
-  gap: var(--apple-spacing-xs);
-}
-
-.similarity-value {
-  font-size: var(--apple-fs-body-strong);
-}
-
-.action-buttons {
-  gap: var(--apple-spacing-xs);
-}
-
-@media (max-width: 768px) {
-  .filter-actions {
-    gap: var(--apple-spacing-xs);
-  }
-
-  .action-buttons {
-    gap: var(--apple-spacing-xxs);
   }
 }
 </style>

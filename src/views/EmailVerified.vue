@@ -107,9 +107,9 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--apple-canvas-parchment); /* Slate-50 */
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  padding: 24px;
+  background: var(--apple-canvas-parchment);
+  font-family: var(--apple-font-text);
+  padding: var(--apple-spacing-lg);
 }
 
 .loading-container,
@@ -118,38 +118,35 @@ onMounted(() => {
   width: 100%;
   max-width: 500px;
   background: var(--apple-surface);
-  border: 1px solid var(--apple-slate-border);
-  border-radius: 18px;
-  padding: 48px;
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-lg);
+  padding: var(--apple-spacing-xxl);
   transition: all 0.2s ease;
 
-  &:hover {
-    border-color: var(--apple-slate-border-strong);
-  }
-  
   :deep(.el-result) {
     .el-result__title {
-      color: var(--apple-slate-ink); /* Slate-900 */
+      color: var(--apple-ink);
+      font-family: var(--apple-font-display);
       font-weight: 600;
     }
-    
+
     .el-result__subtitle {
-      color: var(--apple-slate-sub); /* Slate-500 */
-      font-size: 1rem;
+      color: var(--apple-ink-muted-48);
+      font-size: var(--apple-fs-caption);
       line-height: 1.5;
     }
-    
+
     .el-result__extra {
-      margin-top: 32px;
-      
+      margin-top: var(--apple-spacing-xl);
+
       .el-button {
-        border-radius: 8px;
+        border-radius: var(--apple-rounded-sm);
         transition: all 0.2s ease;
         border: 1px solid var(--apple-slate-border);
-        padding: 10px 24px;
-        font-size: 1rem;
-        margin: 0 8px;
-        
+        padding: var(--apple-spacing-xs) var(--apple-spacing-lg);
+        font-size: var(--apple-fs-caption);
+        margin: 0 var(--apple-spacing-xs);
+
         &:hover {
           filter: brightness(0.95);
         }
@@ -158,47 +155,6 @@ onMounted(() => {
           transform: scale(0.95);
           transition: transform 0.15s ease;
         }
-      }
-  }
-}
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.verify-email-page {
-  padding: var(--apple-spacing-lg);
-  font-family: var(--apple-font-text);
-}
-
-.loading-container,
-.success-container,
-.error-container {
-  padding: var(--apple-spacing-xxl);
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-lg);
-
-  &:hover {
-    border-color: var(--apple-hairline);
-  }
-
-  :deep(.el-result) {
-    .el-result__title {
-      font-family: var(--apple-font-display);
-      color: var(--apple-ink);
-    }
-
-    .el-result__subtitle {
-      font-size: var(--apple-fs-caption);
-      color: var(--apple-ink-muted-48);
-    }
-
-    .el-result__extra {
-      margin-top: var(--apple-spacing-xl);
-
-      .el-button {
-        margin: 0 var(--apple-spacing-xs);
-        padding: var(--apple-spacing-xs) var(--apple-spacing-lg);
-        border-radius: var(--apple-rounded-sm);
-        font-size: var(--apple-fs-caption);
       }
     }
   }

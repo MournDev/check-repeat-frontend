@@ -378,7 +378,7 @@ onMounted(async () => {
 .defense-batches {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--apple-spacing-md);
   color: var(--apple-ink);
   font-family: var(--apple-font-text);
 }
@@ -387,25 +387,26 @@ onMounted(async () => {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--apple-spacing-md);
 }
 
 .head-title {
-  margin: 0 0 6px;
-  font-size: 1.25rem;
+  margin: 0 0 var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-tagline);
   font-weight: 600;
+  font-family: var(--apple-font-display);
 }
 
 .head-desc {
   margin: 0;
-  font-size: 0.8125rem;
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
 }
 
 .filter-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--apple-spacing-sm);
   flex-wrap: wrap;
 }
 
@@ -422,7 +423,7 @@ onMounted(async () => {
 }
 
 .loc-cell {
-  margin-right: 8px;
+  margin-right: var(--apple-spacing-xs);
 }
 
 .mode-tag {
@@ -430,7 +431,7 @@ onMounted(async () => {
 }
 
 .sep {
-  margin: 0 6px;
+  margin: 0 var(--apple-spacing-xxs);
   color: var(--apple-divider-soft);
 }
 
@@ -441,55 +442,15 @@ onMounted(async () => {
 .pager-row {
   display: flex;
   justify-content: flex-end;
-  margin-top: 16px;
-}
-
-.form-tip {
-  width: 100%;
-  margin-top: 4px;
-  font-size: 0.75rem;
-  line-height: 1.5;
-  color: var(--apple-ink-muted-48);
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.defense-batches {
-  gap: var(--apple-spacing-md);
-}
-
-.head-row {
-  gap: var(--apple-spacing-md);
-}
-
-.head-title {
-  margin-bottom: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-tagline);
-  font-family: var(--apple-font-display);
-}
-
-.head-desc {
-  font-size: var(--apple-fs-fine-print);
-}
-
-.filter-row {
-  gap: var(--apple-spacing-sm);
-}
-
-.loc-cell {
-  margin-right: var(--apple-spacing-xs);
-}
-
-.sep {
-  margin: 0 var(--apple-spacing-xxs);
-}
-
-.pager-row {
   margin-top: var(--apple-spacing-md);
 }
 
 .form-tip {
+  width: 100%;
   margin-top: var(--apple-spacing-xxs);
   font-size: var(--apple-fs-fine-print);
+  line-height: 1.5;
+  color: var(--apple-ink-muted-48);
 }
 
 @media (max-width: 768px) {

@@ -189,14 +189,14 @@ onMounted(() => {
 .guidance-progress {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--apple-spacing-md);
   color: var(--apple-ink);
   font-family: var(--apple-font-text);
 }
 
 .stats-row {
   display: flex;
-  gap: 16px;
+  gap: var(--apple-spacing-md);
   flex-wrap: wrap;
 }
 
@@ -210,20 +210,21 @@ onMounted(() => {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: var(--apple-spacing-xs);
   }
 }
 
 .total-value {
-  font-size: 2.5rem;
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-display-lg);
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1;
   color: var(--apple-primary);
   font-variant-numeric: tabular-nums;
 }
 
 .total-label {
-  font-size: 0.8125rem;
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
 }
 
@@ -241,13 +242,14 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: var(--apple-spacing-sm);
 }
 
 .section-title {
-  font-size: 0.9375rem;
+  margin-bottom: var(--apple-spacing-xs);
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-body-strong);
   font-weight: 600;
-  margin-bottom: 8px;
 }
 
 .section-head .section-title {
@@ -255,7 +257,7 @@ onMounted(() => {
 }
 
 .muted {
-  font-size: 0.75rem;
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
 }
 
@@ -278,54 +280,7 @@ onMounted(() => {
   .total-card {
     width: 100%;
   }
-}
 
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.guidance-progress {
-  gap: var(--apple-spacing-md);
-}
-
-.stats-row {
-  gap: var(--apple-spacing-md);
-}
-
-.total-card :deep(.el-card__body) {
-  gap: var(--apple-spacing-xs);
-}
-
-.total-value {
-  font-family: var(--apple-font-display);
-  font-size: var(--apple-fs-display-lg);
-  font-weight: 700;
-  line-height: 1;
-}
-
-.total-label {
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
-}
-
-.section-head {
-  margin-bottom: var(--apple-spacing-sm);
-}
-
-.section-title {
-  margin-bottom: var(--apple-spacing-xs);
-  font-family: var(--apple-font-display);
-  font-size: var(--apple-fs-body-strong);
-  font-weight: 600;
-}
-
-.section-head .section-title {
-  margin-bottom: 0;
-}
-
-.muted {
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
-}
-
-@media (max-width: 768px) {
   .stats-row {
     flex-direction: column;
   }

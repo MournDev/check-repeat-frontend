@@ -300,28 +300,29 @@ onMounted(() => {
   .workflow-card {
     .workflow-steps {
       margin-top: 16px;
-      
+
       .steps-container {
         margin-top: 16px;
-        
+
         .step-item {
           border: 1px solid var(--apple-hairline);
-          border-radius: 11px;
-          padding: 16px;
-          margin-bottom: 16px;
-          
+          border-radius: var(--apple-rounded-md);
+          padding: var(--apple-spacing-md);
+          margin-bottom: var(--apple-spacing-md);
+
           .step-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
-            
+            gap: var(--apple-spacing-sm);
+            margin-bottom: var(--apple-spacing-md);
+
             .step-info {
               display: flex;
               align-items: center;
-              gap: 12px;
+              gap: var(--apple-spacing-sm);
               flex: 1;
-              
+
               .step-number {
                 width: 24px;
                 height: 24px;
@@ -331,84 +332,38 @@ onMounted(() => {
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                font-size: 17px;
+                font-size: var(--apple-fs-body-strong);
                 font-weight: 400;
               }
-              
+
               .el-input {
                 flex: 1;
               }
             }
-            
+
             .step-actions {
               display: flex;
-              gap: 8px;
-            }
-          }
-          
-          .step-content {
-            margin-left: 36px;
-            
-            .step-form-item {
-              margin-bottom: 12px;
-            }
-            
-            .unit {
-              margin-left: 8px;
-              color: var(--apple-ink-muted-80);
-            }
-          }
-        }
-      }
-      
-      .empty-steps {
-        padding: 40px 0;
-      }
-    }
-  }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.review-workflow {
-  .workflow-card {
-    .workflow-steps {
-      .steps-container {
-        .step-item {
-          padding: var(--apple-spacing-md);
-          margin-bottom: var(--apple-spacing-md);
-          border-radius: var(--apple-rounded-md);
-
-          .step-header {
-            gap: var(--apple-spacing-sm);
-            margin-bottom: var(--apple-spacing-md);
-
-            .step-info {
-              gap: var(--apple-spacing-sm);
-
-              .step-number {
-                font-size: var(--apple-fs-body-strong);
-              }
-            }
-
-            .step-actions {
               gap: var(--apple-spacing-xs);
             }
           }
 
           .step-content {
+            margin-left: 36px;
+
             .step-form-item {
               margin-bottom: var(--apple-spacing-sm);
             }
 
             .unit {
               margin-left: var(--apple-spacing-xs);
+              color: var(--apple-ink-muted-80);
             }
           }
         }
+      }
 
-        .empty-steps {
-          padding: var(--apple-spacing-xl) 0;
-        }
+      .empty-steps {
+        padding: var(--apple-spacing-xl) 0;
       }
     }
   }
