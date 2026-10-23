@@ -157,7 +157,7 @@
                     <span v-if="paper.priority" :class="'tag ' + (paper.priority === 'urgent' ? 'danger' : paper.priority === 'high' ? 'warning' : 'info')">
                       {{ paper.priority === 'urgent' ? '紧急' : paper.priority === 'high' ? '高' : '普通' }}
                     </span>
-                    <span v-if="paper.similarity" :class="'tag ' + (paper.similarity > 30 ? 'danger' : paper.similarity > 15 ? 'warning' : 'success')">
+                    <span v-if="paper.similarity" :class="'tag ' + getSimilarityTagType(paper.similarity)">
                       {{ formatPercent(paper.similarity) }}相似
                     </span>
                   </div>
@@ -444,6 +444,7 @@ import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { ElMessage } from 'element-plus'
 import { getPaperStatusText, getPaperStatusType, formatPercent, formatDate, formatDateTime } from '@/utils/dataType'
+import { getSimilarityTagType } from '@/utils/similarity.js'
 
 // API 接口导入
 import {
@@ -725,14 +726,14 @@ const renderStatusChart = () => {
       borderColor: '#0066cc',
       borderWidth: 1,
       textStyle: {
-        color: 'var(--apple-ink)'
+        color: 'var(--app-color-ink)'
       }
     },
     legend: {
       orient: 'vertical',
       left: 'left',
       textStyle: {
-        color: 'var(--apple-ink)'
+        color: 'var(--app-color-ink)'
       }
     },
     series: [
@@ -750,7 +751,7 @@ const renderStatusChart = () => {
             show: true,
             fontSize: '16',
             fontWeight: 'bold',
-            color: 'var(--apple-ink)'
+            color: 'var(--app-color-ink)'
           },
           itemStyle: {
             shadowBlur: 10,
@@ -818,26 +819,26 @@ onMounted(() => {
 
 // 欢迎区域
 .welcome-section {
-  margin-bottom: var(--apple-spacing-xl);
+  margin-bottom: var(--app-space-8);
   
   .welcome-content {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: var(--apple-spacing-lg);
+    margin-bottom: var(--app-space-6);
     
     .welcome-left {
 
       .welcome-subtitle {
-        font-size: var(--apple-fs-body);
-        color: var(--apple-ink-muted-48);
+        font-size: var(--app-fs-body);
+        color: var(--app-color-text-muted);
         margin: 0;
       }
     }
     
     .welcome-actions {
       display: flex;
-      gap: var(--apple-spacing-sm);
+      gap: var(--app-space-3);
     }
   }
   
@@ -845,25 +846,25 @@ onMounted(() => {
   .today-stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: var(--apple-spacing-md);
-    padding: var(--apple-spacing-lg);
-    background: var(--apple-canvas);
-    border: 1px solid var(--apple-hairline);
-    border-radius: var(--apple-rounded-lg);
+    gap: var(--app-space-4);
+    padding: var(--app-space-6);
+    background: var(--app-color-card-bg);
+    border: 1px solid var(--app-color-border);
+    border-radius: var(--app-radius-lg);
 
     .today-stat-item {
       text-align: center;
 
       .stat-value {
-        font-size: var(--apple-fs-tagline);
+        font-size: var(--app-fs-title);
         font-weight: 700;
-        color: var(--apple-ink);
-        margin-bottom: var(--apple-spacing-xs);
+        color: var(--app-color-ink);
+        margin-bottom: var(--app-space-2);
       }
 
       .stat-label {
-        font-size: var(--apple-fs-caption);
-        color: var(--apple-ink-muted-48);
+        font-size: var(--app-fs-caption);
+        color: var(--app-color-text-muted);
       }
     }
   }
@@ -873,8 +874,8 @@ onMounted(() => {
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--apple-spacing-md);
-  margin-bottom: var(--apple-spacing-xl);
+  gap: var(--app-space-4);
+  margin-bottom: var(--app-space-8);
 
   @media (max-width: 1200px) {
     grid-template-columns: repeat(2, 1fr);
@@ -885,17 +886,17 @@ onMounted(() => {
 }
 
 .stat-card {
-  background: var(--apple-canvas);
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-lg);
-  padding: var(--apple-spacing-lg);
+  background: var(--app-color-card-bg);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  padding: var(--app-space-6);
   display: flex;
   align-items: center;
-  gap: var(--apple-spacing-md);
-  transition: border-color var(--apple-transition-normal);
+  gap: var(--app-space-4);
+  transition: border-color var(--app-transition-normal);
 
   &:hover {
-    border-color: var(--apple-hairline-alpha);
+    border-color: var(--app-color-border);
   }
   &:active {
     transform: scale(0.985);
@@ -904,31 +905,31 @@ onMounted(() => {
   .stat-icon {
     width: 48px;
     height: 48px;
-    border-radius: var(--apple-rounded-lg);
+    border-radius: var(--app-radius-lg);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: var(--apple-fs-tagline);
+    font-size: var(--app-fs-title);
     flex-shrink: 0;
     
     &.student-icon {
-      background: var(--apple-info-bg);
-      color: var(--apple-primary);
+      background: var(--app-color-info-bg);
+      color: var(--app-color-primary);
     }
     
     &.pending-icon {
-      background: var(--apple-warning-bg);
-      color: var(--apple-warning);
+      background: var(--app-color-warning-bg);
+      color: var(--app-color-warning);
     }
     
     &.reviewed-icon {
-      background: var(--apple-success-bg);
-      color: var(--apple-success);
+      background: var(--app-color-success-bg);
+      color: var(--app-color-success);
     }
     
     &.rate-icon {
-      background: var(--apple-info-bg);
-      color: var(--apple-primary);
+      background: var(--app-color-info-bg);
+      color: var(--app-color-primary);
     }
   }
   
@@ -936,61 +937,61 @@ onMounted(() => {
     flex: 1;
 
     .stat-value {
-      font-size: var(--apple-fs-lead);
+      font-size: var(--app-fs-metric);
       font-weight: 700;
-      color: var(--apple-ink);
+      color: var(--app-color-ink);
       line-height: 1.2;
-      margin-bottom: var(--apple-spacing-xs);
+      margin-bottom: var(--app-space-2);
     }
 
     .stat-label {
-      font-size: var(--apple-fs-caption);
-      color: var(--apple-ink-muted-48);
+      font-size: var(--app-fs-caption);
+      color: var(--app-color-text-muted);
     }
   }
 
   .stat-trend {
     display: flex;
     align-items: center;
-    gap: var(--apple-spacing-sm);
-    font-size: var(--apple-fs-caption);
+    gap: var(--app-space-3);
+    font-size: var(--app-fs-caption);
     font-weight: 400;
 
     &.positive {
-      color: var(--apple-success);
+      color: var(--app-color-success);
     }
 
     &.negative {
-      color: var(--apple-danger);
+      color: var(--app-color-danger);
     }
 
     .el-icon {
-      font-size: var(--apple-fs-caption-strong);
+      font-size: var(--app-fs-caption);
     }
   }
 }
 
 // 通用区域样式
 .section {
-  margin-bottom: var(--apple-spacing-xl);
+  margin-bottom: var(--app-space-8);
   
   .section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: var(--apple-spacing-md);
+    margin-bottom: var(--app-space-4);
     
     .section-title {
       display: flex;
       align-items: center;
-      gap: var(--apple-spacing-xs);
-      font-family: var(--apple-font-display);
-      font-size: var(--apple-fs-body-strong);
+      gap: var(--app-space-2);
+      font-family: var(--app-font-family);
+      font-size: var(--app-fs-body);
       font-weight: 600;
-      color: var(--apple-ink);
+      color: var(--app-color-ink);
       
       .el-icon {
-        color: var(--apple-ink-muted-48);
+        color: var(--app-color-text-muted);
       }
     }
   }
@@ -999,42 +1000,42 @@ onMounted(() => {
 // 待办事项
 .todo-list {
   display: grid;
-  gap: var(--apple-spacing-md);
+  gap: var(--app-space-4);
 
   .todo-item {
     display: flex;
     align-items: center;
-    padding: var(--apple-spacing-md);
-    background: var(--apple-canvas);
-    border: 1px solid var(--apple-hairline);
-    border-radius: var(--apple-rounded-lg);
-    transition: border-color var(--apple-transition-normal);
+    padding: var(--app-space-4);
+    background: var(--app-color-card-bg);
+    border: 1px solid var(--app-color-border);
+    border-radius: var(--app-radius-lg);
+    transition: border-color var(--app-transition-normal);
 
     &:hover {
-      border-color: var(--apple-hairline-alpha);
+      border-color: var(--app-color-border);
     }
 
     &.high {
-      background: var(--apple-danger-bg);
-      border-color: var(--apple-danger-bg);
+      background: var(--app-color-danger-bg);
+      border-color: var(--app-color-danger-bg);
     }
 
     &.medium {
-      background: var(--apple-warning-bg);
-      border-color: var(--apple-warning-bg);
+      background: var(--app-color-warning-bg);
+      border-color: var(--app-color-warning-bg);
     }
 
     &.low {
-      background: var(--apple-success-bg);
-      border-color: var(--apple-success-border);
+      background: var(--app-color-success-bg);
+      border-color: var(--app-color-success-border);
     }
     
     .todo-icon {
-      margin-right: var(--apple-spacing-md);
+      margin-right: var(--app-space-4);
 
       .el-icon {
-        font-size: var(--apple-fs-tagline);
-        color: var(--apple-ink-muted-48);
+        font-size: var(--app-fs-title);
+        color: var(--app-color-text-muted);
       }
     }
 
@@ -1043,13 +1044,13 @@ onMounted(() => {
 
       .todo-title {
         font-weight: 600;
-        color: var(--apple-ink);
-        margin-bottom: var(--apple-spacing-xs);
+        color: var(--app-color-ink);
+        margin-bottom: var(--app-space-2);
       }
 
       .todo-desc {
-        font-size: var(--apple-fs-caption);
-        color: var(--apple-ink-muted-48);
+        font-size: var(--app-fs-caption);
+        color: var(--app-color-text-muted);
       }
     }
 
@@ -1057,34 +1058,34 @@ onMounted(() => {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: var(--apple-spacing-sm);
+      gap: var(--app-space-3);
 
       .priority-badge {
-        padding: var(--apple-spacing-xxs) var(--apple-spacing-sm);
-        border-radius: var(--apple-rounded-pill);
-        font-size: var(--apple-fs-fine-print);
+        padding: var(--app-space-1) var(--app-space-3);
+        border-radius: var(--app-radius-pill);
+        font-size: var(--app-fs-meta);
         font-weight: 400;
 
         &.high {
-          background: var(--apple-danger-bg);
-          color: var(--apple-danger);
+          background: var(--app-color-danger-bg);
+          color: var(--app-color-danger);
         }
 
         &.medium {
-          background: var(--apple-warning-bg);
-          color: var(--apple-warning);
+          background: var(--app-color-warning-bg);
+          color: var(--app-color-warning);
         }
 
         &.low {
-          background: var(--apple-success-bg);
-          color: var(--apple-success);
+          background: var(--app-color-success-bg);
+          color: var(--app-color-success);
         }
       }
 
       .todo-count {
-        font-size: var(--apple-fs-caption);
+        font-size: var(--app-fs-caption);
         font-weight: 600;
-        color: var(--apple-ink-muted-48);
+        color: var(--app-color-text-muted);
       }
     }
   }
@@ -1094,7 +1095,7 @@ onMounted(() => {
 .main-content {
   display: grid;
   grid-template-columns: 1fr 300px;
-  gap: var(--apple-spacing-lg);
+  gap: var(--app-space-6);
 
   @media (max-width: 1400px) {
     grid-template-columns: 1fr 280px;
@@ -1106,44 +1107,44 @@ onMounted(() => {
 
 // 通用卡片样式
 .card {
-  background: var(--apple-canvas);
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-lg);
-  padding: var(--apple-spacing-xl);
-  margin-bottom: var(--apple-spacing-xl);
-  transition: border-color var(--apple-transition-normal);
+  background: var(--app-color-card-bg);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  padding: var(--app-space-8);
+  margin-bottom: var(--app-space-8);
+  transition: border-color var(--app-transition-normal);
 
   &:hover {
-    border-color: var(--apple-hairline-alpha);
+    border-color: var(--app-color-border);
   }
   
   .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: var(--apple-spacing-lg);
+    margin-bottom: var(--app-space-6);
 
     .card-title {
       display: flex;
       align-items: center;
-      gap: var(--apple-spacing-sm);
-      font-size: var(--apple-fs-tagline);
+      gap: var(--app-space-3);
+      font-size: var(--app-fs-title);
       font-weight: 600;
-      color: var(--apple-ink);
+      color: var(--app-color-ink);
 
       .el-icon {
-        color: var(--apple-ink-muted-48);
+        color: var(--app-color-text-muted);
       }
 
       .badge {
-        padding: 2px 8px;
-        border-radius: var(--apple-rounded-pill);
-        font-size: var(--apple-fs-fine-print);
+        padding: 2px var(--app-space-2);
+        border-radius: var(--app-radius-pill);
+        font-size: var(--app-fs-meta);
         font-weight: 400;
 
         &.danger {
-          background: var(--apple-danger-bg);
-          color: var(--apple-danger);
+          background: var(--app-color-danger-bg);
+          color: var(--app-color-danger);
         }
       }
     }
@@ -1156,15 +1157,15 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    padding: var(--apple-spacing-lg);
-    background: var(--apple-canvas);
-    border: 1px solid var(--apple-hairline);
-    border-radius: var(--apple-rounded-lg);
-    margin-bottom: var(--apple-spacing-md);
-    transition: border-color var(--apple-transition-normal);
+    padding: var(--app-space-6);
+    background: var(--app-color-card-bg);
+    border: 1px solid var(--app-color-border);
+    border-radius: var(--app-radius-lg);
+    margin-bottom: var(--app-space-4);
+    transition: border-color var(--app-transition-normal);
 
     &:hover {
-      border-color: var(--apple-hairline-alpha);
+      border-color: var(--app-color-border);
     }
 
     &:last-child {
@@ -1172,68 +1173,68 @@ onMounted(() => {
     }
 
     &.urgent {
-      background: var(--apple-danger-bg);
-      border-color: var(--apple-danger-bg);
+      background: var(--app-color-danger-bg);
+      border-color: var(--app-color-danger-bg);
     }
 
     &.high {
-      background: var(--apple-warning-bg);
-      border-color: var(--apple-warning-bg);
+      background: var(--app-color-warning-bg);
+      border-color: var(--app-color-warning-bg);
     }
 
     &.normal {
-      background: var(--apple-success-bg);
-      border-color: var(--apple-success-border);
+      background: var(--app-color-success-bg);
+      border-color: var(--app-color-success-border);
     }
     
     .paper-info {
       flex: 1;
-      margin-right: 20px;
+      margin-right: var(--app-space-5);
       
       .paper-header {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        margin-bottom: 16px;
+        margin-bottom: var(--app-space-4);
         
         .paper-title {
           margin: 0;
-          color: var(--apple-ink);
-          font-size: 1.125rem;
+          color: var(--app-color-ink);
+          font-size: var(--app-fs-heading);
           font-weight: 600;
           flex: 1;
-          margin-right: 16px;
+          margin-right: var(--app-space-4);
           line-height: 1.4;
         }
         
         .paper-tags {
           display: flex;
-          gap: 8px;
+          gap: var(--app-space-2);
           
           .tag {
-            padding: 4px 12px;
+            padding: var(--app-space-1) var(--app-space-3);
             border-radius: 18px;
-            font-size: 0.75rem;
+            font-size: var(--app-fs-meta);
             font-weight: 400;
             
             &.warning {
-              background: var(--apple-warning-bg);
-              color: var(--apple-warning);
+              background: var(--app-color-warning-bg);
+              color: var(--app-color-warning);
             }
             
             &.danger {
-              background: var(--apple-danger-bg);
-              color: var(--apple-danger);
+              background: var(--app-color-danger-bg);
+              color: var(--app-color-danger);
             }
             
             &.info {
-              background: var(--apple-info-bg);
-              color: var(--apple-primary);
+              background: var(--app-color-info-bg);
+              color: var(--app-color-primary);
             }
             
             &.success {
-              background: var(--apple-success-bg);
-              color: var(--apple-success);
+              background: var(--app-color-success-bg);
+              color: var(--app-color-success);
             }
           }
         }
@@ -1242,10 +1243,10 @@ onMounted(() => {
       .paper-meta {
         display: flex;
         flex-wrap: wrap;
-        gap: 16px;
-        font-size: var(--apple-fs-caption);
-        color: var(--apple-ink-muted-48);
-        margin-bottom: 16px;
+        gap: var(--app-space-4);
+        font-size: var(--app-fs-caption);
+        color: var(--app-color-text-muted);
+        margin-bottom: var(--app-space-4);
         
         .meta-item {
           display: flex;
@@ -1253,17 +1254,17 @@ onMounted(() => {
           gap: 6px;
           
           .el-icon {
-            font-size: 17px;
-            color: var(--apple-ink-muted-48);
+            font-size: var(--app-fs-heading);
+            color: var(--app-color-text-muted);
           }
         }
       }
       
       .paper-details {
         display: flex;
-        gap: 16px;
-        font-size: var(--apple-fs-caption);
-        color: var(--apple-ink-muted-48);
+        gap: var(--app-space-4);
+        font-size: var(--app-fs-caption);
+        color: var(--app-color-text-muted);
         
         .college {
           font-weight: 400;
@@ -1275,8 +1276,8 @@ onMounted(() => {
           gap: 6px;
           
           .el-icon {
-            font-size: 17px;
-            color: var(--apple-ink-muted-48);
+            font-size: var(--app-fs-heading);
+            color: var(--app-color-text-muted);
           }
         }
       }
@@ -1285,7 +1286,7 @@ onMounted(() => {
     .paper-actions {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: var(--app-space-3);
       flex-shrink: 0;
 
       @media (max-width: 768px) {
@@ -1297,26 +1298,26 @@ onMounted(() => {
 
 // 空状态
 .empty-state {
-  padding: 40px 0;
+  padding: var(--app-space-10) 0;
   text-align: center;
   
   .empty-icon {
     font-size: 48px;
-    color: var(--apple-ink-muted-48);
-    margin-bottom: 16px;
+    color: var(--app-color-text-muted);
+    margin-bottom: var(--app-space-4);
   }
   
   h4 {
-    margin: 0 0 8px 0;
-    font-size: 1.125rem;
+    margin: 0 0 var(--app-space-2) 0;
+    font-size: var(--app-fs-heading);
     font-weight: 600;
-    color: var(--apple-ink);
+    color: var(--app-color-ink);
   }
   
   p {
     margin: 0;
-    color: var(--apple-ink-muted-48);
-    font-size: 0.875rem;
+    color: var(--app-color-text-muted);
+    font-size: var(--app-fs-caption);
   }
 }
 
@@ -1324,7 +1325,7 @@ onMounted(() => {
 .charts-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
+  gap: var(--app-space-6);
   
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -1334,10 +1335,10 @@ onMounted(() => {
 .chart-card {
   
   .chart-title {
-    font-size: 1rem;
+    font-size: var(--app-fs-heading);
     font-weight: 600;
-    color: var(--apple-ink);
-    margin-bottom: 16px;
+    color: var(--app-color-ink);
+    margin-bottom: var(--app-space-4);
   }
   
   .chart-container {
@@ -1347,7 +1348,7 @@ onMounted(() => {
   .echarts-container {
     width: 100%;
     height: 300px;
-    margin-bottom: 16px;
+    margin-bottom: var(--app-space-4);
   }
   
   .status-details {
@@ -1356,13 +1357,13 @@ onMounted(() => {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px;
-      border-bottom: 1px solid var(--apple-hairline);
+      padding: var(--app-space-3);
+      border-bottom: 1px solid var(--app-color-border);
       transition: background-color 0.2s ease;
 
       &:hover {
-        background-color: var(--apple-canvas-parchment);
-        border-radius: var(--apple-rounded-lg);
+        background-color: var(--app-color-fill);
+        border-radius: var(--app-radius-lg);
       }
       
       &:last-child {
@@ -1372,7 +1373,7 @@ onMounted(() => {
       .status-info {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: var(--app-space-2);
         
         .status-color {
           width: 12px;
@@ -1382,28 +1383,28 @@ onMounted(() => {
         }
         
         .status-name {
-          color: var(--apple-ink);
-          font-size: 0.875rem;
+          color: var(--app-color-ink);
+          font-size: var(--app-fs-caption);
           font-weight: 400;
         }
       }
       
       .status-metrics {
         display: flex;
-        gap: 16px;
+        gap: var(--app-space-4);
         align-items: center;
         
         .status-count {
-          color: var(--apple-ink);
+          color: var(--app-color-ink);
           font-weight: 600;
-          font-size: 0.875rem;
+          font-size: var(--app-fs-caption);
         }
         
         .status-percentage {
-          color: var(--apple-ink-muted-48);
-          font-size: 0.75rem;
-          background-color: var(--apple-canvas-parchment);
-          padding: 4px 12px;
+          color: var(--app-color-text-muted);
+          font-size: var(--app-fs-meta);
+          background-color: var(--app-color-fill);
+          padding: var(--app-space-1) var(--app-space-3);
           border-radius: 18px;
         }
       }
@@ -1413,8 +1414,8 @@ onMounted(() => {
   .bar-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
+    gap: var(--app-space-3);
+    margin-bottom: var(--app-space-3);
     
     &:last-child {
       margin-bottom: 0;
@@ -1422,21 +1423,21 @@ onMounted(() => {
     
     .bar-label {
       min-width: 100px;
-      font-size: 0.875rem;
-      color: var(--apple-ink);
+      font-size: var(--app-fs-caption);
+      color: var(--app-color-ink);
       font-weight: 400;
     }
     
     .bar-container {
       flex: 1;
       height: 6px;
-      background: var(--apple-hairline);
+      background: var(--app-color-border);
       border-radius: 8px;
       overflow: hidden;
       
       .bar-fill {
         height: 100%;
-        background: var(--apple-primary);
+        background: var(--app-color-primary);
         border-radius: 8px;
         transition: width 0.5s ease;
       }
@@ -1444,33 +1445,33 @@ onMounted(() => {
     
     .bar-value {
       min-width: 40px;
-      font-size: 0.875rem;
+      font-size: var(--app-fs-caption);
       font-weight: 600;
-      color: var(--apple-ink);
+      color: var(--app-color-ink);
       text-align: right;
     }
   }
   
   .empty-chart {
-    padding: 40px 0;
+    padding: var(--app-space-10) 0;
     text-align: center;
     
     .empty-icon {
       font-size: 48px;
-      color: var(--apple-ink-muted-48);
-      margin-bottom: 16px;
+      color: var(--app-color-text-muted);
+      margin-bottom: var(--app-space-4);
     }
     
     .empty-text {
-      font-size: 1rem;
+      font-size: var(--app-fs-heading);
       font-weight: 600;
-      color: var(--apple-ink);
-      margin-bottom: 8px;
+      color: var(--app-color-ink);
+      margin-bottom: var(--app-space-2);
     }
     
     .empty-subtext {
-      font-size: 0.875rem;
-      color: var(--apple-ink-muted-48);
+      font-size: var(--app-fs-caption);
+      color: var(--app-color-text-muted);
     }
   }
 }
@@ -1478,7 +1479,7 @@ onMounted(() => {
 // 学生状态统计
 .students-stats {
   .status-item {
-    margin-bottom: 20px;
+    margin-bottom: var(--app-space-5);
     
     &:last-child {
       margin-bottom: 0;
@@ -1488,29 +1489,29 @@ onMounted(() => {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: var(--app-space-3);
       
       .status-value {
-        font-size: 1.25rem;
+        font-size: var(--app-fs-title);
         font-weight: 700;
-        color: var(--apple-ink);
+        color: var(--app-color-ink);
       }
       
       .status-label {
-        font-size: var(--apple-fs-caption);
-        color: var(--apple-ink-muted-48);
+        font-size: var(--app-fs-caption);
+        color: var(--app-color-text-muted);
       }
       
       .status-percentage {
-        font-size: 0.875rem;
+        font-size: var(--app-fs-caption);
         font-weight: 600;
-        color: var(--apple-ink);
+        color: var(--app-color-ink);
       }
     }
     
     .progress-bar {
       height: 6px;
-      background: var(--apple-hairline);
+      background: var(--app-color-border);
       border-radius: 8px;
       overflow: hidden;
       
@@ -1520,29 +1521,29 @@ onMounted(() => {
         transition: width 0.5s ease;
         
         &.warning {
-          background: var(--apple-warning);
+          background: var(--app-color-warning);
         }
         
         &.success {
-          background: var(--apple-success);
+          background: var(--app-color-success);
         }
         
         &.danger {
-          background: var(--apple-danger);
+          background: var(--app-color-danger);
         }
         
         &:not(.warning):not(.success):not(.danger) {
-          background: var(--apple-primary);
+          background: var(--app-color-primary);
         }
       }
     }
     
     .empty-progress {
       height: 6px;
-      background: var(--apple-hairline);
+      background: var(--app-color-border);
       border-radius: 8px;
-      font-size: 0.75rem;
-      color: var(--apple-ink-muted-48);
+      font-size: var(--app-fs-meta);
+      color: var(--app-color-text-muted);
       text-align: center;
       line-height: 6px;
     }
@@ -1553,15 +1554,15 @@ onMounted(() => {
 .action-buttons {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: var(--app-space-3);
 
   .action-button {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 12px 16px;
+    gap: var(--app-space-2);
+    padding: var(--app-space-3) var(--app-space-4);
     border-radius: 11px;
-    font-size: 0.875rem;
+    font-size: var(--app-fs-caption);
     font-weight: 400;
     transition: border-color 0.2s ease;
 
@@ -1570,28 +1571,28 @@ onMounted(() => {
     }
     
     &.primary {
-      background: var(--apple-primary);
-      color: var(--apple-on-primary);
+      background: var(--app-color-primary);
+      color: var(--app-color-on-primary);
       border: none;
       
       &:hover {
-        background: var(--apple-primary-active);
+        background: var(--app-color-primary-hover);
       }
     }
     
     &:not(.primary) {
-      background: var(--apple-canvas-parchment);
-      color: var(--apple-ink);
-      border: 1px solid var(--apple-hairline);
+      background: var(--app-color-fill);
+      color: var(--app-color-ink);
+      border: 1px solid var(--app-color-border);
       
       &:hover {
-        background: var(--apple-canvas-parchment);
-        border-color: var(--apple-hairline);
+        background: var(--app-color-fill);
+        border-color: var(--app-color-border);
       }
     }
     
     .el-icon {
-      font-size: 16px;
+      font-size: var(--app-fs-heading);
     }
   }
 }
@@ -1599,25 +1600,25 @@ onMounted(() => {
 // 审核效率
 .efficiency-stats {
   display: grid;
-  gap: 16px;
+  gap: var(--app-space-4);
   
   .efficiency-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px;
-    background: var(--apple-canvas-parchment);
+    padding: var(--app-space-4);
+    background: var(--app-color-fill);
     border-radius: 11px;
     
     .efficiency-label {
-      font-size: 0.875rem;
-      color: var(--apple-ink-muted-48);
+      font-size: var(--app-fs-caption);
+      color: var(--app-color-text-muted);
     }
     
     .efficiency-value {
-      font-size: 1.125rem;
+      font-size: var(--app-fs-heading);
       font-weight: 700;
-      color: var(--apple-ink);
+      color: var(--app-color-ink);
     }
   }
 }
@@ -1626,19 +1627,19 @@ onMounted(() => {
 .primary-button {
   display: inline-flex;
   align-items: center;
-  gap: var(--apple-spacing-sm);
-  padding: 10px var(--apple-spacing-md);
-  border-radius: var(--apple-rounded-pill);
-  background: var(--apple-primary);
-  color: var(--apple-on-primary);
-  font-size: var(--apple-fs-caption);
+  gap: var(--app-space-3);
+  padding: 10px var(--app-space-4);
+  border-radius: var(--app-radius-pill);
+  background: var(--app-color-primary);
+  color: var(--app-color-on-primary);
+  font-size: var(--app-fs-caption);
   font-weight: 400;
   border: none;
   cursor: pointer;
-  transition: background-color var(--apple-transition-normal);
+  transition: background-color var(--app-transition-normal);
 
   &:hover {
-    background: var(--apple-primary-dark-2);
+    background: var(--app-color-primary-hover);
   }
 
   &:active {
@@ -1646,11 +1647,11 @@ onMounted(() => {
   }
 
   .el-icon {
-    font-size: var(--apple-fs-caption-strong);
+    font-size: var(--app-fs-caption);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--apple-primary-focus);
+    outline: 2px solid var(--app-color-primary);
     outline-offset: 2px;
   }
 }
@@ -1658,19 +1659,19 @@ onMounted(() => {
 .secondary-button {
   display: inline-flex;
   align-items: center;
-  gap: var(--apple-spacing-sm);
-  padding: 10px var(--apple-spacing-md);
-  border-radius: var(--apple-rounded-pill);
-  background: var(--apple-canvas-parchment);
-  color: var(--apple-ink);
-  font-size: var(--apple-fs-caption);
+  gap: var(--app-space-3);
+  padding: 10px var(--app-space-4);
+  border-radius: var(--app-radius-pill);
+  background: var(--app-color-fill);
+  color: var(--app-color-ink);
+  font-size: var(--app-fs-caption);
   font-weight: 400;
-  border: 1px solid var(--apple-hairline);
+  border: 1px solid var(--app-color-border);
   cursor: pointer;
-  transition: border-color var(--apple-transition-normal);
+  transition: border-color var(--app-transition-normal);
 
   &:hover {
-    border-color: var(--apple-surface-chip-translucent);
+    border-color: var(--app-color-border-strong);
   }
 
   &:active {
@@ -1678,11 +1679,11 @@ onMounted(() => {
   }
 
   .el-icon {
-    font-size: var(--apple-fs-caption-strong);
+    font-size: var(--app-fs-caption);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--apple-primary-focus);
+    outline: 2px solid var(--app-color-primary);
     outline-offset: 2px;
   }
 }
@@ -1690,28 +1691,28 @@ onMounted(() => {
 .text-button {
   display: inline-flex;
   align-items: center;
-  gap: var(--apple-spacing-xs);
-  padding: 6px 12px;
-  border-radius: var(--apple-rounded-sm);
+  gap: var(--app-space-2);
+  padding: 6px var(--app-space-3);
+  border-radius: var(--app-radius-sm);
   background: transparent;
-  color: var(--apple-ink-muted-48);
-  font-size: var(--apple-fs-fine-print);
+  color: var(--app-color-text-muted);
+  font-size: var(--app-fs-meta);
   font-weight: 400;
   border: none;
   cursor: pointer;
-  transition: background-color var(--apple-transition-normal);
+  transition: background-color var(--app-transition-normal);
 
   &:hover {
-    background: var(--apple-canvas-parchment);
-    color: var(--apple-ink);
+    background: var(--app-color-fill);
+    color: var(--app-color-ink);
   }
 
   .el-icon {
-    font-size: var(--apple-fs-body);
+    font-size: var(--app-fs-body);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--apple-primary-focus);
+    outline: 2px solid var(--app-color-primary);
     outline-offset: 2px;
   }
 }
@@ -1719,13 +1720,13 @@ onMounted(() => {
 // 响应式设计
 @media (max-width: 768px) {
   .teacher-dashboard {
-    padding: var(--apple-spacing-md);
+    padding: var(--app-space-4);
   }
   
   .welcome-content {
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--apple-spacing-sm);
+    gap: var(--app-space-3);
   }
   
   .welcome-actions {
@@ -1739,7 +1740,7 @@ onMounted(() => {
   }
 
   .section-title {
-    font-size: var(--apple-fs-caption-strong);
+    font-size: var(--app-fs-caption);
   }
   
   .today-stats {
@@ -1754,7 +1755,7 @@ onMounted(() => {
       width: 100%;
       flex-direction: row;
       justify-content: flex-end;
-      margin-top: 16px;
+      margin-top: var(--app-space-4);
     }
   }
   
@@ -1773,7 +1774,7 @@ onMounted(() => {
   }
   
   .card {
-    padding: 20px;
+    padding: var(--app-space-5);
   }
 }
 </style>
