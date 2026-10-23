@@ -919,19 +919,23 @@ const getAllocationStatusTagType = (allocationStatus) => {
   return map[allocationStatus] || 'info'
 }
 
-const getSimilarityTrendClass = (similarity) => {
-  if (!similarity) return 'neutral'
-  if (similarity < 15) return 'positive'
-  if (similarity < 30) return 'warning'
-  return 'negative'
+// 重复率分档统一走 utils/similarity.js，本页只保留展示类名与文案
+const SIMILARITY_TREND_TONE = {
+  unknown: 'neutral',
+  low: 'positive',
+  medium: 'warning',
+  high: 'negative'
+}
+const SIMILARITY_TREND_TEXT = {
+  unknown: '稳定',
+  low: '优秀',
+  medium: '良好',
+  high: '需关注'
 }
 
-const getSimilarityTrend = (similarity) => {
-  if (!similarity) return '稳定'
-  if (similarity < 15) return '优秀'
-  if (similarity < 30) return '良好'
-  return '需关注'
-}
+const getSimilarityTrendClass = (similarity) => SIMILARITY_TREND_TONE[getSimilarityLevel(similarity)]
+
+const getSimilarityTrend = (similarity) => SIMILARITY_TREND_TEXT[getSimilarityLevel(similarity)]
 
 // 相似度字段兼容：后端详情接口用 similarityRate/checkRate，列表接口用 similarity
 // checkRate 可能是小数(0.23)或整数(23)，统一转为整数百分比
@@ -1313,28 +1317,28 @@ const renderComparisonChart = () => {
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--apple-spacing-sm);
-  margin-bottom: var(--apple-spacing-lg);
+  gap: var(--app-space-3);
+  margin-bottom: var(--app-space-6);
 }
 
 .kpi-card {
   display: flex;
   flex-direction: column;
-  gap: var(--apple-spacing-xxs);
-  padding: var(--apple-spacing-md) var(--apple-spacing-lg);
-  background: var(--apple-surface);
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-lg);
+  gap: var(--app-space-1);
+  padding: var(--app-space-4) var(--app-space-6);
+  background: var(--app-color-card-bg);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
 }
 
 .kpi-label {
-  font-size: var(--apple-fs-caption);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-caption);
+  color: var(--app-color-text-muted);
 }
 
 .kpi-value {
-  font-family: var(--apple-font-display);
-  font-size: var(--apple-fs-display-md);
+  font-family: var(--app-font-family);
+  font-size: var(--app-fs-metric);
   font-weight: 600;
   line-height: 1.1;
   font-variant-numeric: tabular-nums;
@@ -1344,7 +1348,7 @@ const renderComparisonChart = () => {
 .dashboard-main {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-  gap: var(--apple-spacing-lg);
+  gap: var(--app-space-6);
   align-items: start;
 }
 
@@ -1352,72 +1356,72 @@ const renderComparisonChart = () => {
 .dashboard-aside {
   display: flex;
   flex-direction: column;
-  gap: var(--apple-spacing-lg);
+  gap: var(--app-space-6);
   min-width: 0;
 }
 
 // ── 卡片 ────────────────────────────────────────────────────
 .dash-card {
-  background: var(--apple-surface);
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-lg);
-  padding: var(--apple-spacing-lg);
+  background: var(--app-color-card-bg);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  padding: var(--app-space-6);
 }
 
 .dash-card-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--apple-spacing-sm);
-  margin-bottom: var(--apple-spacing-md);
+  gap: var(--app-space-3);
+  margin-bottom: var(--app-space-4);
 }
 
 .dash-card-title {
   display: flex;
   align-items: center;
-  gap: var(--apple-spacing-xs);
-  font-family: var(--apple-font-display);
-  font-size: var(--apple-fs-body-strong);
+  gap: var(--app-space-2);
+  font-family: var(--app-font-family);
+  font-size: var(--app-fs-body);
   font-weight: 600;
-  color: var(--apple-ink);
+  color: var(--app-color-ink);
 }
 
 .dash-card-title .el-icon {
-  color: var(--apple-ink-muted-48);
+  color: var(--app-color-text-muted);
 }
 
 .dash-card-hint {
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-secondary);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-secondary);
 }
 
 .card-empty {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--apple-spacing-xs);
-  padding: var(--apple-spacing-xl) var(--apple-spacing-lg);
-  color: var(--apple-ink-muted-48);
+  gap: var(--app-space-2);
+  padding: var(--app-space-8) var(--app-space-6);
+  color: var(--app-color-text-muted);
   text-align: center;
 
   p {
     margin: 0;
-    font-size: var(--apple-fs-caption);
+    font-size: var(--app-fs-caption);
   }
 
   &.compact {
-    padding: var(--apple-spacing-lg) var(--apple-spacing-sm);
+    padding: var(--app-space-6) var(--app-space-3);
   }
 }
 
 .card-empty .empty-icon {
   font-size: 28px;
-  color: var(--apple-ink-secondary);
+  color: var(--app-color-text-secondary);
 }
 
 .empty-hint {
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-secondary);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-secondary);
 }
 
 // ── 当前论文 ────────────────────────────────────────────────
@@ -1425,73 +1429,73 @@ const renderComparisonChart = () => {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--apple-spacing-sm);
-  margin-bottom: var(--apple-spacing-sm);
+  gap: var(--app-space-3);
+  margin-bottom: var(--app-space-3);
 }
 
 .paper-title {
   margin: 0;
-  font-family: var(--apple-font-display);
-  font-size: var(--apple-fs-lead-airy);
+  font-family: var(--app-font-family);
+  font-size: var(--app-fs-display);
   font-weight: 600;
   line-height: 1.3;
-  color: var(--apple-ink);
+  color: var(--app-color-ink);
   word-break: break-word;
 }
 
 .status-badge {
   flex-shrink: 0;
   padding: 3px 10px;
-  border-radius: var(--apple-rounded-pill);
-  font-size: var(--apple-fs-fine-print);
+  border-radius: var(--app-radius-pill);
+  font-size: var(--app-fs-meta);
   font-weight: 500;
   white-space: nowrap;
 }
 
 .status-primary {
-  color: var(--apple-primary);
-  background: var(--apple-info-bg);
+  color: var(--app-color-primary);
+  background: var(--app-color-info-bg);
 }
 
 .status-success {
-  color: var(--apple-success);
-  background: var(--apple-success-bg);
+  color: var(--app-color-success);
+  background: var(--app-color-success-bg);
 }
 
 .status-warning {
-  color: var(--apple-warning);
-  background: var(--apple-warning-bg);
+  color: var(--app-color-warning);
+  background: var(--app-color-warning-bg);
 }
 
 .status-danger {
-  color: var(--apple-danger);
-  background: var(--apple-danger-bg);
+  color: var(--app-color-danger);
+  background: var(--app-color-danger-bg);
 }
 
 .status-info {
-  color: var(--apple-ink-muted-48);
-  background: var(--apple-canvas-parchment);
+  color: var(--app-color-text-muted);
+  background: var(--app-color-fill);
 }
 
 .paper-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--apple-spacing-xs) var(--apple-spacing-lg);
-  margin-bottom: var(--apple-spacing-md);
+  gap: var(--app-space-2) var(--app-space-6);
+  margin-bottom: var(--app-space-4);
 }
 
 .meta-item {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: var(--apple-fs-caption);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-caption);
+  color: var(--app-color-text-muted);
 }
 
 .paper-similarity {
-  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-  background: var(--apple-canvas-parchment);
-  border-radius: var(--apple-rounded-md);
+  padding: var(--app-space-3) var(--app-space-4);
+  background: var(--app-color-fill);
+  border-radius: var(--app-radius-md);
 }
 
 .similarity-top {
@@ -1502,74 +1506,74 @@ const renderComparisonChart = () => {
 }
 
 .similarity-label {
-  font-size: var(--apple-fs-caption);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-caption);
+  color: var(--app-color-text-muted);
 }
 
 .similarity-value {
-  font-family: var(--apple-font-display);
-  font-size: var(--apple-fs-tagline);
+  font-family: var(--app-font-family);
+  font-size: var(--app-fs-title);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 
-  &.status-success { color: var(--apple-success); }
-  &.status-warning { color: var(--apple-warning); }
-  &.status-danger { color: var(--apple-danger); }
-  &.status-info { color: var(--apple-ink-secondary); }
+  &.status-success { color: var(--app-color-success); }
+  &.status-warning { color: var(--app-color-warning); }
+  &.status-danger { color: var(--app-color-danger); }
+  &.status-info { color: var(--app-color-text-secondary); }
 }
 
 .similarity-track {
   height: 6px;
-  border-radius: var(--apple-rounded-pill);
-  background: var(--apple-hairline);
+  border-radius: var(--app-radius-pill);
+  background: var(--app-color-border);
   overflow: hidden;
 }
 
 .similarity-fill {
   height: 100%;
-  border-radius: var(--apple-rounded-pill);
-  transition: width var(--apple-transition-slow);
+  border-radius: var(--app-radius-pill);
+  transition: width var(--app-transition-slow);
 
-  &.similarity-low { background: var(--apple-rate-low); }
-  &.similarity-medium { background: var(--apple-rate-medium); }
-  &.similarity-high { background: var(--apple-rate-high); }
-  &.similarity-neutral { background: var(--apple-hairline); }
+  &.similarity-low { background: var(--app-color-rate-low); }
+  &.similarity-medium { background: var(--app-color-rate-medium); }
+  &.similarity-high { background: var(--app-color-rate-high); }
+  &.similarity-neutral { background: var(--app-color-border); }
 }
 
 .similarity-note {
   margin: 6px 0 0;
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-secondary);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-secondary);
 }
 
 .paper-feedback {
-  margin-top: var(--apple-spacing-md);
-  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-  background: var(--apple-info-bg);
-  border-radius: var(--apple-rounded-md);
+  margin-top: var(--app-space-4);
+  padding: var(--app-space-3) var(--app-space-4);
+  background: var(--app-color-info-bg);
+  border-radius: var(--app-radius-md);
 }
 
 .feedback-title {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 4px;
-  font-size: var(--apple-fs-fine-print);
+  margin-bottom: var(--app-space-1);
+  font-size: var(--app-fs-meta);
   font-weight: 600;
-  color: var(--apple-primary);
+  color: var(--app-color-primary);
 }
 
 .feedback-text {
   margin: 0;
-  font-size: var(--apple-fs-caption);
-  line-height: var(--apple-lh-caption);
-  color: var(--apple-ink);
+  font-size: var(--app-fs-caption);
+  line-height: var(--app-lh-body);
+  color: var(--app-color-ink);
 }
 
 .paper-actions {
   display: flex;
   justify-content: flex-end;
-  margin-top: var(--apple-spacing-md);
+  margin-top: var(--app-space-4);
 }
 
 // ── 待办 ────────────────────────────────────────────────────
@@ -1580,9 +1584,9 @@ const renderComparisonChart = () => {
 .todo-item {
   display: flex;
   align-items: flex-start;
-  gap: var(--apple-spacing-sm);
-  padding: var(--apple-spacing-sm) 0;
-  border-bottom: 1px solid var(--apple-divider-soft);
+  gap: var(--app-space-3);
+  padding: var(--app-space-3) 0;
+  border-bottom: 1px solid var(--app-color-divider);
 
   &:last-child {
     border-bottom: none;
@@ -1590,7 +1594,7 @@ const renderComparisonChart = () => {
 
   &.is-done .todo-title {
     text-decoration: line-through;
-    color: var(--apple-ink-muted-48);
+    color: var(--app-color-text-muted);
   }
 }
 
@@ -1599,11 +1603,11 @@ const renderComparisonChart = () => {
   width: 8px;
   height: 8px;
   margin-top: 7px;
-  border-radius: var(--apple-rounded-full);
+  border-radius: var(--app-radius-pill);
 
-  &.priority-high { background: var(--apple-danger); }
-  &.priority-normal { background: var(--apple-warning); }
-  &.priority-low { background: var(--apple-info); }
+  &.priority-high { background: var(--app-color-danger); }
+  &.priority-normal { background: var(--app-color-warning); }
+  &.priority-low { background: var(--app-color-info); }
 }
 
 .todo-main {
@@ -1612,15 +1616,15 @@ const renderComparisonChart = () => {
 }
 
 .todo-title {
-  font-size: var(--apple-fs-caption);
+  font-size: var(--app-fs-caption);
   font-weight: 500;
-  color: var(--apple-ink);
+  color: var(--app-color-ink);
 }
 
 .todo-desc {
   margin-top: 2px;
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-secondary);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-secondary);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -1628,8 +1632,8 @@ const renderComparisonChart = () => {
 
 .todo-due {
   flex-shrink: 0;
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
   font-variant-numeric: tabular-nums;
 }
 
@@ -1637,7 +1641,7 @@ const renderComparisonChart = () => {
 .progress-steps {
   display: flex;
   flex-direction: column;
-  gap: var(--apple-spacing-sm);
+  gap: var(--app-space-3);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1646,7 +1650,7 @@ const renderComparisonChart = () => {
 .progress-step {
   display: flex;
   align-items: flex-start;
-  gap: var(--apple-spacing-sm);
+  gap: var(--app-space-3);
   opacity: 0.55;
 }
 
@@ -1662,62 +1666,62 @@ const renderComparisonChart = () => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--apple-rounded-full);
-  background: var(--apple-canvas-parchment);
-  color: var(--apple-ink-muted-48);
-  font-size: var(--apple-fs-fine-print);
+  border-radius: var(--app-radius-pill);
+  background: var(--app-color-fill);
+  color: var(--app-color-text-muted);
+  font-size: var(--app-fs-meta);
   font-weight: 600;
 }
 
 .step-done .step-index {
-  background: var(--apple-success-bg);
-  color: var(--apple-success);
+  background: var(--app-color-success-bg);
+  color: var(--app-color-success);
 }
 
 .step-current .step-index {
-  background: var(--apple-primary);
-  color: var(--apple-on-primary);
+  background: var(--app-color-primary);
+  color: var(--app-color-on-primary);
 }
 
 .step-title {
-  font-size: var(--apple-fs-caption);
+  font-size: var(--app-fs-caption);
   font-weight: 500;
 }
 
 .step-desc {
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-secondary);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-secondary);
 }
 
 .progress-summary {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--apple-spacing-sm) var(--apple-spacing-lg);
-  margin-top: var(--apple-spacing-md);
-  padding-top: var(--apple-spacing-sm);
-  border-top: 1px solid var(--apple-divider-soft);
+  gap: var(--app-space-3) var(--app-space-6);
+  margin-top: var(--app-space-4);
+  padding-top: var(--app-space-3);
+  border-top: 1px solid var(--app-color-divider);
 }
 
 .summary-item {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 // ── 图表 ────────────────────────────────────────────────────
 .charts-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--apple-spacing-md);
+  gap: var(--app-space-4);
 }
 
 .chart-card {
   min-width: 0;
 
   &.full-width {
-    margin-top: var(--apple-spacing-md);
+    margin-top: var(--app-space-4);
   }
 }
 
@@ -1725,9 +1729,9 @@ const renderComparisonChart = () => {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: var(--apple-spacing-xs);
-  font-size: var(--apple-fs-caption);
-  color: var(--apple-ink-muted-48);
+  margin-bottom: var(--app-space-2);
+  font-size: var(--app-fs-caption);
+  color: var(--app-color-text-muted);
 }
 
 .chart-container {
@@ -1745,17 +1749,17 @@ const renderComparisonChart = () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--apple-spacing-xs);
+  gap: var(--app-space-2);
   height: 280px;
-  color: var(--apple-ink-muted-48);
-  font-size: var(--apple-fs-fine-print);
-  background: var(--apple-canvas-parchment);
-  border-radius: var(--apple-rounded-md);
+  color: var(--app-color-text-muted);
+  font-size: var(--app-fs-meta);
+  background: var(--app-color-fill);
+  border-radius: var(--app-radius-md);
 }
 
 .chart-empty .empty-icon {
   font-size: 24px;
-  color: var(--apple-ink-secondary);
+  color: var(--app-color-text-secondary);
 }
 
 // ── 时间节点 ────────────────────────────────────────────────
@@ -1770,9 +1774,9 @@ const renderComparisonChart = () => {
 .deadline-item {
   display: flex;
   align-items: center;
-  gap: var(--apple-spacing-sm);
-  padding: var(--apple-spacing-sm) 0;
-  border-bottom: 1px solid var(--apple-divider-soft);
+  gap: var(--app-space-3);
+  padding: var(--app-space-3) 0;
+  border-bottom: 1px solid var(--app-color-divider);
 
   &:last-child {
     border-bottom: none;
@@ -1786,9 +1790,9 @@ const renderComparisonChart = () => {
   justify-content: center;
   width: 30px;
   height: 30px;
-  border-radius: var(--apple-rounded-sm);
-  background: var(--apple-canvas-parchment);
-  color: var(--apple-primary);
+  border-radius: var(--app-radius-sm);
+  background: var(--app-color-fill);
+  color: var(--app-color-primary);
 }
 
 .deadline-text {
@@ -1800,42 +1804,42 @@ const renderComparisonChart = () => {
 }
 
 .deadline-label {
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 .deadline-date {
-  font-size: var(--apple-fs-caption);
+  font-size: var(--app-fs-caption);
   font-weight: 500;
-  color: var(--apple-ink);
+  color: var(--app-color-ink);
   font-variant-numeric: tabular-nums;
 }
 
 .countdown-badge {
   flex-shrink: 0;
-  padding: 2px 8px;
-  border-radius: var(--apple-rounded-pill);
-  font-size: var(--apple-fs-fine-print);
+  padding: 2px var(--app-space-2);
+  border-radius: var(--app-radius-pill);
+  font-size: var(--app-fs-meta);
   white-space: nowrap;
 
   &.success {
-    color: var(--apple-success);
-    background: var(--apple-success-bg);
+    color: var(--app-color-success);
+    background: var(--app-color-success-bg);
   }
 
   &.warning {
-    color: var(--apple-warning);
-    background: var(--apple-warning-bg);
+    color: var(--app-color-warning);
+    background: var(--app-color-warning-bg);
   }
 
   &.danger {
-    color: var(--apple-danger);
-    background: var(--apple-danger-bg);
+    color: var(--app-color-danger);
+    background: var(--app-color-danger-bg);
   }
 
   &.goal {
-    color: var(--apple-primary);
-    background: var(--apple-info-bg);
+    color: var(--app-color-primary);
+    background: var(--app-color-info-bg);
   }
 }
 
@@ -1843,13 +1847,13 @@ const renderComparisonChart = () => {
 .advisor-profile {
   display: flex;
   flex-direction: column;
-  gap: var(--apple-spacing-sm);
+  gap: var(--app-space-3);
 }
 
 .advisor-avatar-section {
   display: flex;
   align-items: center;
-  gap: var(--apple-spacing-sm);
+  gap: var(--app-space-3);
 }
 
 .advisor-avatar {
@@ -1858,84 +1862,84 @@ const renderComparisonChart = () => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--apple-rounded-full);
-  background-color: var(--apple-canvas-parchment);
+  border-radius: var(--app-radius-pill);
+  background-color: var(--app-color-fill);
   background-size: cover;
   background-position: center;
-  font-size: var(--apple-fs-body-strong);
+  font-size: var(--app-fs-body);
   font-weight: 600;
-  color: var(--apple-primary);
+  color: var(--app-color-primary);
 }
 
 .advisor-status {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 .status-indicator {
   width: 7px;
   height: 7px;
-  border-radius: var(--apple-rounded-full);
-  background: var(--apple-ink-secondary);
+  border-radius: var(--app-radius-pill);
+  background: var(--app-color-text-secondary);
 
-  &.online { background: var(--apple-success); }
-  &.offline { background: var(--apple-ink-secondary); }
-  &.unknown { background: var(--apple-hairline); }
+  &.online { background: var(--app-color-success); }
+  &.offline { background: var(--app-color-text-secondary); }
+  &.unknown { background: var(--app-color-border); }
 }
 
 .advisor-name {
   margin: 0;
-  font-family: var(--apple-font-display);
-  font-size: var(--apple-fs-body-strong);
+  font-family: var(--app-font-family);
+  font-size: var(--app-fs-body);
   font-weight: 600;
 }
 
 .advisor-title {
   margin: 2px 0 0;
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 .advisor-expertise {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: var(--apple-spacing-xs);
+  margin-top: var(--app-space-2);
 }
 
 .expertise-tag {
-  padding: 2px 8px;
-  border-radius: var(--apple-rounded-pill);
-  background: var(--apple-canvas-parchment);
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  padding: 2px var(--app-space-2);
+  border-radius: var(--app-radius-pill);
+  background: var(--app-color-fill);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 .advisor-contact {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin-top: var(--apple-spacing-sm);
+  margin-top: var(--app-space-3);
 }
 
 .contact-item {
   display: flex;
   align-items: center;
-  gap: var(--apple-spacing-xs);
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  gap: var(--app-space-2);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
   word-break: break-all;
 }
 
 .advisor-stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--apple-spacing-xs);
-  padding-top: var(--apple-spacing-sm);
-  border-top: 1px solid var(--apple-divider-soft);
+  gap: var(--app-space-2);
+  padding-top: var(--app-space-3);
+  border-top: 1px solid var(--app-color-divider);
 }
 
 .advisor-stat {
@@ -1943,15 +1947,15 @@ const renderComparisonChart = () => {
 }
 
 .advisor-stat .stat-number {
-  font-family: var(--apple-font-display);
-  font-size: var(--apple-fs-body-strong);
+  font-family: var(--app-font-family);
+  font-size: var(--app-fs-body);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
 
 .advisor-stat .stat-label {
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 // ── 通知 ────────────────────────────────────────────────────
@@ -1961,8 +1965,8 @@ const renderComparisonChart = () => {
 }
 
 .notification-item {
-  padding: var(--apple-spacing-sm) 0;
-  border-bottom: 1px solid var(--apple-divider-soft);
+  padding: var(--app-space-3) 0;
+  border-bottom: 1px solid var(--app-color-divider);
 
   &:last-child {
     border-bottom: none;
@@ -1970,16 +1974,16 @@ const renderComparisonChart = () => {
 }
 
 .notification-title {
-  font-size: var(--apple-fs-caption);
+  font-size: var(--app-fs-caption);
   font-weight: 500;
-  color: var(--apple-ink);
+  color: var(--app-color-ink);
 }
 
 .notification-content {
   margin-top: 2px;
-  font-size: var(--apple-fs-fine-print);
+  font-size: var(--app-fs-meta);
   line-height: 1.5;
-  color: var(--apple-ink-secondary);
+  color: var(--app-color-text-secondary);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -1987,9 +1991,9 @@ const renderComparisonChart = () => {
 }
 
 .notification-time {
-  margin-top: 4px;
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  margin-top: var(--app-space-1);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
   font-variant-numeric: tabular-nums;
 }
 
@@ -2002,7 +2006,7 @@ const renderComparisonChart = () => {
 
 @media (max-width: 768px) {
   .dashboard-page {
-    padding: var(--apple-spacing-sm);
+    padding: var(--app-space-3);
   }
 
   .kpi-grid {
