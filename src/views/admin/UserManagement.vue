@@ -815,39 +815,22 @@ const rowKey = (row) => {
 <style lang="scss" scoped>
 .user-management {
   min-height: 100vh;
-  background: var(--apple-canvas-parchment); // Slate-50
-  color: var(--apple-ink); // Slate-900
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  padding: 24px;
+  background: var(--apple-canvas-parchment);
+  color: var(--apple-ink);
+  font-family: var(--apple-font-text);
+  padding: var(--apple-spacing-lg);
 }
 
 .unassigned {
-  color: var(--apple-danger); // Red-500
+  color: var(--apple-danger);
   font-style: italic;
 }
 
 .self-edit-tip {
-  font-size: 12px;
-  color: var(--apple-ink-secondary); // Slate-500
-  line-height: 1.6;
-  margin-top: 4px;
-}
-
-@media (max-width: 768px) {
-  .user-management {
-    padding: 16px;
-  }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.user-management {
-  padding: var(--apple-spacing-lg);
-  font-family: var(--apple-font-text);
-}
-
-.self-edit-tip {
-  margin-top: var(--apple-spacing-xxs);
   font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-secondary);
+  line-height: 1.6;
+  margin-top: var(--apple-spacing-xxs);
 }
 
 @media (max-width: 768px) {

@@ -248,11 +248,6 @@ onMounted(() => {
 <style scoped>
 .compare-lib-management {
   padding: 0;
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.compare-lib-management {
   font-family: var(--apple-font-text);
 }
-
 </style>

@@ -503,7 +503,7 @@ onMounted(() => {
 }
 
 .fm-file-name {
-  font-size: 15px;
+  font-size: var(--apple-fs-caption);
   font-weight: 500;
   color: var(--apple-ink);
   overflow: hidden;
@@ -515,29 +515,21 @@ onMounted(() => {
 .fm-file-meta {
   display: flex;
   gap: var(--apple-spacing-sm);
-  font-size: 12px;
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
   margin-bottom: 4px;
 }
 
 .fm-file-time {
-  font-size: 12px;
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
 }
 
 .fm-file-actions {
   display: flex;
-  gap: 4px;
+  gap: var(--apple-spacing-xxs);
   margin-top: var(--apple-spacing-sm);
   padding-top: var(--apple-spacing-sm);
   border-top: 1px solid var(--apple-hairline);
 }
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.fm-file-name { font-size: var(--apple-fs-caption); }
-
-.fm-file-meta,
-.fm-file-time { font-size: var(--apple-fs-fine-print); }
-
-.fm-file-actions { gap: var(--apple-spacing-xxs); }
 </style>
