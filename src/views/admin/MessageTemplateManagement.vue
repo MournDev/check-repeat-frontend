@@ -297,8 +297,8 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.template-management { padding: 0; font-family: var(--apple-font-text); }
-.preview-result { padding: var(--apple-spacing-sm); background: var(--apple-canvas-parchment); border-radius: var(--apple-rounded-md); }
-.preview-title { margin-bottom: var(--apple-spacing-sm); }
-.preview-content .content-box { margin-top: var(--apple-spacing-xs); padding: var(--apple-spacing-sm); background: var(--apple-surface); border: 1px solid var(--apple-hairline); border-radius: var(--apple-rounded-xs); white-space: pre-wrap; line-height: 1.6; }
+.template-management { padding: 0; font-family: var(--app-font-family); }
+.preview-result { padding: var(--app-space-3); background: var(--app-color-fill); border-radius: var(--app-radius-md); }
+.preview-title { margin-bottom: var(--app-space-3); }
+.preview-content .content-box { margin-top: var(--app-space-2); padding: var(--app-space-3); background: var(--app-color-card-bg); border: 1px solid var(--app-color-border); border-radius: var(--app-radius-xs); white-space: pre-wrap; line-height: 1.6; }
 </style>

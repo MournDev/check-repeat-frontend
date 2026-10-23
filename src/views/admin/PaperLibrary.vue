@@ -1217,15 +1217,15 @@ onMounted(async () => {
 <style lang="scss" scoped>
 .paper-library {
   padding: 0;
-  font-family: var(--apple-font-text);
+  font-family: var(--app-font-family);
 }
 
 .stats-cards {
-  margin-bottom: var(--apple-spacing-lg);
+  margin-bottom: var(--app-space-6);
 
   .stat-card {
     border: none;
-    border-radius: var(--apple-rounded-lg);
+    border-radius: var(--app-radius-lg);
 
     .stat-content {
       display: flex;
@@ -1237,23 +1237,23 @@ onMounted(async () => {
         justify-content: center;
         width: 48px;
         height: 48px;
-        border-radius: var(--apple-rounded-lg);
-        margin-right: var(--apple-spacing-md);
+        border-radius: var(--app-radius-lg);
+        margin-right: var(--app-space-4);
 
         &.bg-primary {
-          background: var(--apple-primary);
+          background: var(--app-color-primary);
         }
 
         &.bg-success {
-          background: var(--apple-success);
+          background: var(--app-color-success);
         }
 
         &.bg-warning {
-          background: var(--apple-warning);
+          background: var(--app-color-warning);
         }
 
         &.bg-info {
-          background: #5ac8fa;
+          background: var(--app-color-primary);
         }
 
         .el-icon {
@@ -1264,16 +1264,16 @@ onMounted(async () => {
 
       .stat-info {
         .stat-value {
-          font-size: var(--apple-fs-lead);
+          font-size: var(--app-fs-metric);
           font-weight: 700;
-          color: var(--apple-ink);
+          color: var(--app-color-ink);
           line-height: 1;
         }
 
         .stat-label {
-          font-size: var(--apple-fs-fine-print);
-          color: var(--apple-ink-secondary);
-          margin-top: var(--apple-spacing-xxs);
+          font-size: var(--app-fs-meta);
+          color: var(--app-color-text-secondary);
+          margin-top: var(--app-space-1);
         }
       }
     }
@@ -1281,11 +1281,11 @@ onMounted(async () => {
 }
 
 .table-card {
-  border-radius: var(--apple-rounded-lg);
+  border-radius: var(--app-radius-lg);
 
   :deep(.el-card__header) {
-    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-    border-bottom: 1px solid var(--apple-hairline);
+    padding: var(--app-space-3) var(--app-space-4);
+    border-bottom: 1px solid var(--app-color-border);
 
     .card-header {
       display: flex;
@@ -1295,20 +1295,20 @@ onMounted(async () => {
       .card-title {
         display: flex;
         align-items: center;
-        font-family: var(--apple-font-display);
-        font-size: var(--apple-fs-body-strong);
+        font-family: var(--app-font-family);
+        font-size: var(--app-fs-body);
         font-weight: 600;
-        color: var(--apple-ink);
+        color: var(--app-color-ink);
 
         .el-icon {
-          margin-right: var(--apple-spacing-xs);
-          color: var(--apple-primary);
+          margin-right: var(--app-space-2);
+          color: var(--app-color-primary);
         }
       }
 
       .table-actions {
         display: flex;
-        gap: var(--apple-spacing-sm);
+        gap: var(--app-space-3);
       }
     }
   }
@@ -1320,21 +1320,21 @@ onMounted(async () => {
 
 .paper-title {
   font-weight: 600;
-  color: var(--apple-ink);
-  margin-bottom: var(--apple-spacing-xs);
+  color: var(--app-color-ink);
+  margin-bottom: var(--app-space-2);
 }
 
 .paper-keyword {
   .el-tag {
-    margin-right: var(--apple-spacing-xxs);
-    margin-bottom: var(--apple-spacing-xxs);
+    margin-right: var(--app-space-1);
+    margin-bottom: var(--app-space-1);
   }
 }
 
 .paper-abstract {
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-secondary);
-  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-secondary);
+  margin-top: var(--app-space-1);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -1347,61 +1347,61 @@ onMounted(async () => {
 .paper-keywords {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--apple-spacing-xxs);
-  margin-top: var(--apple-spacing-xxs);
+  gap: var(--app-space-1);
+  margin-top: var(--app-space-1);
 
   .el-tag {
-    margin-right: var(--apple-spacing-xxs);
-    margin-bottom: var(--apple-spacing-xxs);
-    padding: 2px var(--apple-spacing-xs);
-    background: var(--apple-canvas-parchment);
-    color: var(--apple-ink);
-    border-radius: var(--apple-rounded-sm);
-    font-size: var(--apple-fs-fine-print);
+    margin-right: var(--app-space-1);
+    margin-bottom: var(--app-space-1);
+    padding: 2px var(--app-space-2);
+    background: var(--app-color-fill);
+    color: var(--app-color-ink);
+    border-radius: var(--app-radius-sm);
+    font-size: var(--app-fs-meta);
     line-height: 20px;
   }
 }
 
 .check-time {
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-secondary);
-  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-secondary);
+  margin-top: var(--app-space-1);
 }
 
 .paper-detail {
   .section {
-    margin: var(--apple-spacing-lg) 0;
+    margin: var(--app-space-6) 0;
 
     h3 {
-      margin: 0 0 var(--apple-spacing-sm) 0;
-      color: var(--apple-ink);
-      font-family: var(--apple-font-display);
-      font-size: var(--apple-fs-tagline);
+      margin: 0 0 var(--app-space-3) 0;
+      color: var(--app-color-ink);
+      font-family: var(--app-font-family);
+      font-size: var(--app-fs-title);
     }
 
     .paper-keyword {
       .el-tag {
-        margin-right: var(--apple-spacing-xs);
-        margin-bottom: var(--apple-spacing-xs);
+        margin-right: var(--app-space-2);
+        margin-bottom: var(--app-space-2);
       }
     }
 
     .summary {
       line-height: 1.6;
-      color: var(--apple-ink-secondary);
+      color: var(--app-color-text-secondary);
       text-align: justify;
     }
 
     .check-details {
-      margin-top: var(--apple-spacing-sm);
+      margin-top: var(--app-space-3);
 
       ul {
-        margin: var(--apple-spacing-xs) 0;
-        padding-left: var(--apple-spacing-lg);
+        margin: var(--app-space-2) 0;
+        padding-left: var(--app-space-6);
 
         li {
-          margin-bottom: var(--apple-spacing-xxs);
-          color: var(--apple-ink-secondary);
+          margin-bottom: var(--app-space-1);
+          color: var(--app-color-text-secondary);
         }
       }
     }
@@ -1411,7 +1411,7 @@ onMounted(async () => {
 @media (max-width: 768px) {
   .stats-cards {
     .el-col {
-      margin-bottom: var(--apple-spacing-sm);
+      margin-bottom: var(--app-space-3);
     }
   }
 
@@ -1420,7 +1420,7 @@ onMounted(async () => {
 
     :deep(.el-table) {
       .el-table__cell {
-        padding: 8px 0;
+        padding: var(--app-space-2) 0;
       }
     }
   }

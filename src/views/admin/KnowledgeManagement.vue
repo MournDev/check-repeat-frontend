@@ -153,7 +153,7 @@ const categories = ref([])
 const form = ref({ title: '', content: '', summary: '', categoryId: null, tags: '', status: 'DRAFT' })
 
 const previewHtml = computed(() => {
-  if (!form.value.content) return '<p style="color:var(--apple-slate-faint)">预览区域</p>'
+  if (!form.value.content) return '<p style="color:var(--app-color-text-secondary)">预览区域</p>'
   return renderMarkdown(form.value.content)
 })
 
@@ -254,29 +254,29 @@ function statusLabel(s) {
 </script>
 
 <style scoped>
-.knowledge-admin { padding: 4px 0; font-family: var(--apple-font-text); }
-.page-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--apple-spacing-md); gap: var(--apple-spacing-sm); }
-.toolbar-left { display: flex; gap: var(--apple-spacing-sm); align-items: center; }
-.kb-pagination { display: flex; justify-content: center; margin-top: var(--apple-spacing-md); }
+.knowledge-admin { padding: 4px 0; font-family: var(--app-font-family); }
+.page-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--app-space-4); gap: var(--app-space-3); }
+.toolbar-left { display: flex; gap: var(--app-space-3); align-items: center; }
+.kb-pagination { display: flex; justify-content: center; margin-top: var(--app-space-4); }
 
 .editor-form { padding: 0 4px; }
-.editor-layout { display: flex; gap: var(--apple-spacing-md); width: 100%; }
+.editor-layout { display: flex; gap: var(--app-space-4); width: 100%; }
 .editor-pane { flex: 1; min-width: 0; }
-.editor-pane :deep(.el-textarea__inner) { font-family: 'JetBrains Mono', monospace; font-size: var(--apple-fs-caption); }
+.editor-pane :deep(.el-textarea__inner) { font-family: 'JetBrains Mono', monospace; font-size: var(--app-fs-caption); }
 .preview-pane {
-  flex: 1; min-width: 0; padding: var(--apple-spacing-sm); border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-md); background: var(--apple-surface-pearl); overflow-y: auto; max-height: 440px;
-  font-size: var(--apple-fs-caption); line-height: 1.7;
+  flex: 1; min-width: 0; padding: var(--app-space-3); border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-md); background: var(--app-color-fill-light); overflow-y: auto; max-height: 440px;
+  font-size: var(--app-fs-caption); line-height: 1.7;
 }
-.preview-pane :deep(h2) { font-size: var(--apple-fs-body-strong); margin: var(--apple-spacing-md) 0 var(--apple-spacing-xs); }
-.preview-pane :deep(h3) { font-size: var(--apple-fs-caption); }
+.preview-pane :deep(h2) { font-size: var(--app-fs-body); margin: var(--app-space-4) 0 var(--app-space-2); }
+.preview-pane :deep(h3) { font-size: var(--app-fs-caption); }
 .preview-pane :deep(table) { width: 100%; border-collapse: collapse; }
-.preview-pane :deep(th), .preview-pane :deep(td) { border: 1px solid var(--apple-hairline); padding: var(--apple-spacing-xxs) var(--apple-spacing-xs); font-size: var(--apple-fs-fine-print); }
-.preview-pane :deep(th) { background: var(--apple-divider-soft); }
-.preview-pane :deep(code) { background: var(--apple-hairline); padding: 2px 5px; border-radius: var(--apple-rounded-xs); font-size: var(--apple-fs-fine-print); }
-.preview-pane :deep(pre) { background: var(--apple-ink); color: var(--apple-slate-border); padding: 10px; border-radius: var(--apple-rounded-sm); overflow-x: auto; }
+.preview-pane :deep(th), .preview-pane :deep(td) { border: 1px solid var(--app-color-border); padding: var(--app-space-1) var(--app-space-2); font-size: var(--app-fs-meta); }
+.preview-pane :deep(th) { background: var(--app-color-divider); }
+.preview-pane :deep(code) { background: var(--app-color-border); padding: 2px 5px; border-radius: var(--app-radius-xs); font-size: var(--app-fs-meta); }
+.preview-pane :deep(pre) { background: var(--app-color-ink); color: var(--app-color-border-soft); padding: 10px; border-radius: var(--app-radius-sm); overflow-x: auto; }
 .preview-pane :deep(pre code) { background: none; padding: 0; }
-.preview-pane :deep(blockquote) { border-left: 3px solid var(--apple-primary-on-dark); padding: var(--apple-spacing-xxs) var(--apple-spacing-sm); margin: var(--apple-spacing-xs) 0; background: var(--apple-info-bg); }
+.preview-pane :deep(blockquote) { border-left: 3px solid var(--app-color-primary-on-dark); padding: var(--app-space-1) var(--app-space-3); margin: var(--app-space-2) 0; background: var(--app-color-info-bg); }
 
 @media (max-width: 768px) {
   .editor-layout { flex-direction: column; }

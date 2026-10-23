@@ -941,14 +941,14 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.log-center { padding: 0; font-family: var(--apple-font-text); }
+.log-center { padding: 0; font-family: var(--app-font-family); }
 
 .log-tabs {
   :deep(.el-tabs__content) { padding: 0; }
   .tab-header {
     .header-filters {
       display: flex;
-      gap: var(--apple-spacing-sm);
+      gap: var(--app-space-3);
       align-items: center;
       flex-wrap: wrap;
     }
@@ -959,34 +959,34 @@ onMounted(() => {
   :deep(.el-descriptions__label) { width: 100px; }
 }
 
-.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--apple-spacing-md); margin-bottom: var(--apple-spacing-md); }
-.stat-card { text-align: center; padding: var(--apple-spacing-xs) 0; }
-.stat-value { font-size: var(--apple-fs-lead); font-weight: 700; color: var(--apple-ink); }
-.stat-value.success { color: var(--apple-success); }
-.stat-value.danger { color: var(--apple-danger); }
-.stat-value.primary { color: var(--apple-primary); }
-.stat-label { font-size: var(--apple-fs-fine-print); color: var(--apple-info); margin-top: var(--apple-spacing-xxs); }
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--app-space-4); margin-bottom: var(--app-space-4); }
+.stat-card { text-align: center; padding: var(--app-space-2) 0; }
+.stat-value { font-size: var(--app-fs-metric); font-weight: 700; color: var(--app-color-ink); }
+.stat-value.success { color: var(--app-color-success); }
+.stat-value.danger { color: var(--app-color-danger); }
+.stat-value.primary { color: var(--app-color-primary); }
+.stat-label { font-size: var(--app-fs-meta); color: var(--app-color-info); margin-top: var(--app-space-1); }
 
-.charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--apple-spacing-md); margin-bottom: var(--apple-spacing-md); }
+.charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--app-space-4); margin-bottom: var(--app-space-4); }
 .chart-card { margin-bottom: 0; }
 .card-header { display: flex; justify-content: space-between; align-items: center; }
-.card-title { font-weight: 600; font-size: var(--apple-fs-caption); font-family: var(--apple-font-display); }
-.percent-text { font-size: var(--apple-fs-fine-print); color: var(--apple-info); margin-left: var(--apple-spacing-xs); }
+.card-title { font-weight: 600; font-size: var(--app-fs-caption); font-family: var(--app-font-family); }
+.percent-text { font-size: var(--app-fs-meta); color: var(--app-color-info); margin-left: var(--app-space-2); }
 
-.module-card { margin-bottom: var(--apple-spacing-md); }
+.module-card { margin-bottom: var(--app-space-4); }
 .chart-container { width: 100%; height: 300px; }
 
 // P5 审计汇总区（仅超管渲染）
-.summary-section { margin-bottom: var(--apple-spacing-md); }
-.summary-filter-card { margin-bottom: var(--apple-spacing-md); }
-.summary-filter-row { display: flex; align-items: center; gap: var(--apple-spacing-sm); flex-wrap: wrap; }
-.summary-tip { font-size: var(--apple-fs-fine-print); color: var(--apple-info); }
-.summary-charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--apple-spacing-md); }
+.summary-section { margin-bottom: var(--app-space-4); }
+.summary-filter-card { margin-bottom: var(--app-space-4); }
+.summary-filter-row { display: flex; align-items: center; gap: var(--app-space-3); flex-wrap: wrap; }
+.summary-tip { font-size: var(--app-fs-meta); color: var(--app-color-info); }
+.summary-charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--app-space-4); }
 .summary-chart-card { margin-bottom: 0; }
 .summary-chart { width: 100%; height: 300px; }
 
-.table-footer { display: flex; align-items: center; gap: var(--apple-spacing-sm); padding: var(--apple-spacing-sm) 0; border-top: 1px solid var(--apple-hairline); margin-top: var(--apple-spacing-sm); }
-.selected-count { font-size: var(--apple-fs-fine-print); color: var(--apple-ink-muted-80); }
+.table-footer { display: flex; align-items: center; gap: var(--app-space-3); padding: var(--app-space-3) 0; border-top: 1px solid var(--app-color-border); margin-top: var(--app-space-3); }
+.selected-count { font-size: var(--app-fs-meta); color: var(--app-color-text); }
 
 @media (max-width: 768px) {
   .stats-row { grid-template-columns: repeat(2, 1fr); }
@@ -994,7 +994,7 @@ onMounted(() => {
   .log-tabs .tab-header .header-filters {
     flex-direction: column;
     align-items: stretch;
-    gap: var(--apple-spacing-xs);
+    gap: var(--app-space-2);
     .el-date-editor, .el-select, .el-input, .el-button { width: 100% !important; }
   }
   .summary-charts-row { grid-template-columns: 1fr; }

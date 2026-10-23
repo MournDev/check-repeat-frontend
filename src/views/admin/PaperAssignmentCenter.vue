@@ -32,32 +32,32 @@ const handleTabChange = (tab) => {
 <style lang="scss" scoped>
 
 :deep(.el-tabs) {
-  margin-bottom: 24px;
+  margin-bottom: var(--app-space-6);
 
   .el-tabs__header {
-    margin-bottom: 24px;
+    margin-bottom: var(--app-space-6);
 
     .el-tabs__nav {
-      border-bottom: 1px solid var(--apple-surface-chip-translucent);
+      border-bottom: 1px solid var(--app-color-border-strong);
 
       .el-tabs__item {
-        font-size: 0.875rem;
+        font-size: var(--app-fs-caption);
         font-weight: 400;
-        color: var(--apple-ink-muted-48);
-        padding: 12px 16px;
-        margin-right: 24px;
+        color: var(--app-color-text-muted);
+        padding: var(--app-space-3) var(--app-space-4);
+        margin-right: var(--app-space-6);
         transition: border-color 0.2s ease;
 
         &:hover {
-          color: var(--apple-ink);
+          color: var(--app-color-ink);
         }
 
         &.is-active {
-          color: var(--apple-primary);
+          color: var(--app-color-primary);
           font-weight: 600;
 
           &::after {
-            background-color: var(--apple-primary);
+            background-color: var(--app-color-primary);
             height: 2px;
           }
         }
@@ -68,18 +68,18 @@ const handleTabChange = (tab) => {
 
 /* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
 :deep(.el-tabs) {
-  margin-bottom: var(--apple-spacing-lg);
+  margin-bottom: var(--app-space-6);
 
   .el-tabs__header {
-    margin-bottom: var(--apple-spacing-lg);
+    margin-bottom: var(--app-space-6);
 
     .el-tabs__nav {
-      border-bottom-color: var(--apple-hairline);
+      border-bottom-color: var(--app-color-border);
 
       .el-tabs__item {
-        padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-        margin-right: var(--apple-spacing-lg);
-        font-size: var(--apple-fs-caption);
+        padding: var(--app-space-3) var(--app-space-4);
+        margin-right: var(--app-space-6);
+        font-size: var(--app-fs-caption);
       }
     }
   }
@@ -88,11 +88,11 @@ const handleTabChange = (tab) => {
 @media (max-width: 768px) {
   :deep(.el-tabs) {
     .el-tabs__header {
-      margin-bottom: var(--apple-spacing-md);
+      margin-bottom: var(--app-space-4);
 
       .el-tabs__nav .el-tabs__item {
-        margin-right: var(--apple-spacing-md);
-        padding: var(--apple-spacing-sm) var(--apple-spacing-xs);
+        margin-right: var(--app-space-4);
+        padding: var(--app-space-3) var(--app-space-2);
       }
     }
   }

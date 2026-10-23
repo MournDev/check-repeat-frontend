@@ -287,36 +287,36 @@ onMounted(() => {
 .stat-report {
   display: flex;
   flex-direction: column;
-  gap: var(--apple-spacing-md);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
+  gap: var(--app-space-4);
+  color: var(--app-color-ink);
+  font-family: var(--app-font-family);
 }
 
 .head-row {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--apple-spacing-md);
+  gap: var(--app-space-4);
 }
 
 .head-title {
-  margin: 0 0 var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-tagline);
+  margin: 0 0 var(--app-space-1);
+  font-size: var(--app-fs-title);
   font-weight: 600;
-  font-family: var(--apple-font-display);
+  font-family: var(--app-font-family);
 }
 
 .head-desc {
   margin: 0;
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 .chart-card {
   margin-bottom: 0;
 
   :deep(.el-card__header) {
-    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+    padding: var(--app-space-3) var(--app-space-4);
 
     .card-header {
       display: flex;
@@ -326,12 +326,12 @@ onMounted(() => {
         display: flex;
         align-items: center;
         font-weight: 600;
-        font-size: var(--apple-fs-body-strong);
-        font-family: var(--apple-font-display);
+        font-size: var(--app-fs-body);
+        font-family: var(--app-font-family);
 
         .el-icon {
-          margin-right: var(--apple-spacing-xs);
-          color: var(--apple-primary);
+          margin-right: var(--app-space-2);
+          color: var(--app-color-primary);
         }
       }
     }
@@ -352,7 +352,7 @@ onMounted(() => {
 
 @media (max-width: 992px) {
   .el-col {
-    margin-bottom: 16px;
+    margin-bottom: var(--app-space-4);
   }
 }
 

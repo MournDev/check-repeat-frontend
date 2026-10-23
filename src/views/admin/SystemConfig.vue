@@ -474,18 +474,18 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .config-alert {
-  margin-bottom: var(--apple-spacing-md);
+  margin-bottom: var(--app-space-4);
 }
 
 .nav-card {
-  margin-bottom: var(--apple-spacing-lg);
-  background: var(--apple-surface);
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-lg);
-  transition: all 0.2s ease;
+  margin-bottom: var(--app-space-6);
+  background: var(--app-color-card-bg);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  transition: all var(--app-transition-normal);
   
   &:hover {
-    border-color: var(--apple-surface-chip-translucent);
+    border-color: var(--app-color-border-strong);
   }
   
   :deep(.el-card__body) {
@@ -498,7 +498,7 @@ onMounted(() => {
       
       &:hover {
         .el-step__title {
-          color: var(--apple-primary); // Blue-500
+          color: var(--app-color-primary); // Blue-500
         }
       }
     }
@@ -506,36 +506,36 @@ onMounted(() => {
 }
 
 .config-card {
-  background: var(--apple-surface);
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-lg);
-  transition: all 0.2s ease;
+  background: var(--app-color-card-bg);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  transition: all var(--app-transition-normal);
   
   &:hover {
-    border-color: var(--apple-surface-chip-translucent);
+    border-color: var(--app-color-border-strong);
   }
   
   :deep(.el-card__body) {
-    padding: var(--apple-spacing-lg);
+    padding: var(--app-space-6);
   }
   
   .config-tab {
     .tab-title {
-      margin: 0 0 var(--apple-spacing-lg) 0;
-      font-family: var(--apple-font-display);
-      font-size: var(--apple-fs-tagline);
-      color: var(--apple-ink); // Slate-900
-      padding-bottom: var(--apple-spacing-sm);
-      border-bottom: 1px solid var(--apple-hairline);
+      margin: 0 0 var(--app-space-6) 0;
+      font-family: var(--app-font-family);
+      font-size: var(--app-fs-title);
+      color: var(--app-color-ink); // Slate-900
+      padding-bottom: var(--app-space-3);
+      border-bottom: 1px solid var(--app-color-border);
     }
     
     .config-form {
       :deep(.el-form-item) {
-        margin-bottom: var(--apple-spacing-md);
+        margin-bottom: var(--app-space-4);
         
         .el-form-item__label {
           font-weight: 400;
-          color: var(--apple-ink-secondary); // Slate-500
+          color: var(--app-color-text-secondary); // Slate-500
         }
         
         .el-input,
@@ -544,86 +544,86 @@ onMounted(() => {
           width: 100%;
           
           :deep(.el-input__wrapper) {
-            border-radius: var(--apple-rounded-md);
-            border: 1px solid var(--apple-hairline);
-            transition: all 0.2s ease;
+            border-radius: var(--app-radius-md);
+            border: 1px solid var(--app-color-border);
+            transition: all var(--app-transition-normal);
             
             &:hover {
-              border-color: var(--apple-surface-chip-translucent);
+              border-color: var(--app-color-border-strong);
             }
           }
           
           :deep(.el-select__wrapper) {
-            border-radius: var(--apple-rounded-md);
-            border: 1px solid var(--apple-hairline);
-            transition: all 0.2s ease;
+            border-radius: var(--app-radius-md);
+            border: 1px solid var(--app-color-border);
+            transition: all var(--app-transition-normal);
             
             &:hover {
-              border-color: var(--apple-surface-chip-translucent);
+              border-color: var(--app-color-border-strong);
             }
           }
         }
         
         .el-button {
           border-radius: 8px;
-          transition: all 0.2s ease;
-          border: 1px solid var(--apple-surface-chip-translucent);
+          transition: all var(--app-transition-normal);
+          border: 1px solid var(--app-color-border-strong);
           
           &:hover {
-            border-color: var(--apple-ink-secondary);
+            border-color: var(--app-color-text-secondary);
           }
         }
       }
       
       .form-tip {
-        font-size: var(--apple-fs-fine-print);
-        color: var(--apple-ink-secondary); // Slate-400
-        margin-top: var(--apple-spacing-xxs);
+        font-size: var(--app-fs-meta);
+        color: var(--app-color-text-secondary); // Slate-400
+        margin-top: var(--app-space-1);
         line-height: 1.4;
       }
       
       .unit {
-        margin-left: var(--apple-spacing-xs);
-        color: var(--apple-ink-secondary); // Slate-400
-        font-size: var(--apple-fs-fine-print);
+        margin-left: var(--app-space-2);
+        color: var(--app-color-text-secondary); // Slate-400
+        font-size: var(--app-fs-meta);
       }
     }
   }
 }
 
 .help-card {
-  background: var(--apple-surface-pearl);
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-lg);
-  transition: all 0.2s ease;
+  background: var(--app-color-fill-light);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  transition: all var(--app-transition-normal);
 
   :deep(.el-card__header) {
-    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-    border-bottom: 1px solid var(--apple-hairline);
+    padding: var(--app-space-3) var(--app-space-4);
+    border-bottom: 1px solid var(--app-color-border);
     background: transparent;
 
     .card-header .card-title {
       font-weight: 600;
-      font-size: var(--apple-fs-caption);
-      color: #6e6e73;
-      .el-icon { margin-right: var(--apple-spacing-xxs); color: var(--apple-ink-secondary); }
+      font-size: var(--app-fs-caption);
+      color: var(--app-color-text-muted);
+      .el-icon { margin-right: var(--app-space-1); color: var(--app-color-text-secondary); }
     }
   }
 
   :deep(.el-card__body) {
-    padding: var(--apple-spacing-md);
+    padding: var(--app-space-4);
   }
 }
 
 .backup-card {
-  background: var(--apple-surface);
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-lg);
-  border-top: 3px solid var(--apple-primary);
-  transition: all 0.2s ease;
+  background: var(--app-color-card-bg);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  border-top: 3px solid var(--app-color-primary);
+  transition: all var(--app-transition-normal);
 
   :deep(.el-card__header) {
-    padding: var(--apple-spacing-md) var(--apple-spacing-md) var(--apple-spacing-sm);
+    padding: var(--app-space-4) var(--app-space-4) var(--app-space-3);
     border-bottom: none;
     background: transparent;
 
@@ -631,49 +631,49 @@ onMounted(() => {
       display: flex;
       align-items: center;
       font-weight: 600;
-      font-size: var(--apple-fs-body-strong);
-      color: var(--apple-ink);
-      .el-icon { margin-right: var(--apple-spacing-xs); color: var(--apple-primary); }
+      font-size: var(--app-fs-body);
+      color: var(--app-color-ink);
+      .el-icon { margin-right: var(--app-space-2); color: var(--app-color-primary); }
     }
   }
 
   :deep(.el-card__body) {
-    padding: 0 var(--apple-spacing-md) var(--apple-spacing-md);
+    padding: 0 var(--app-space-4) var(--app-space-4);
   }
 }
 
 .config-help {
   .help-content {
     h4 {
-      margin: 0 0 var(--apple-spacing-xs) 0;
-      color: #6e6e73;
-      font-size: var(--apple-fs-caption);
+      margin: 0 0 var(--app-space-2) 0;
+      color: var(--app-color-text-muted);
+      font-size: var(--app-fs-caption);
     }
     ul {
-      padding-left: 18px;
+      padding-left: 1var(--app-space-2);
       margin: 0;
       li {
-        margin-bottom: var(--apple-spacing-xxs);
+        margin-bottom: var(--app-space-1);
         line-height: 1.5;
-        font-size: var(--apple-fs-fine-print);
-        color: var(--apple-ink-secondary);
-        strong { color: #515154; }
+        font-size: var(--app-fs-meta);
+        color: var(--app-color-text-secondary);
+        strong { color: var(--app-color-text); }
       }
     }
   }
 }
 .backup-settings {
-  margin-bottom: var(--apple-spacing-xs);
+  margin-bottom: var(--app-space-2);
 
   .setting-hint {
-    font-size: var(--apple-fs-fine-print);
-    color: var(--apple-ink-secondary);
+    font-size: var(--app-fs-meta);
+    color: var(--app-color-text-secondary);
   }
 }
 
 .backup-actions {
   display: flex;
-  gap: var(--apple-spacing-sm);
+  gap: var(--app-space-3);
 
   .el-button {
     border-radius: 8px;
@@ -682,19 +682,19 @@ onMounted(() => {
 
 .backup-info {
   p {
-    margin: var(--apple-spacing-xxs) 0;
-    font-size: var(--apple-fs-caption);
-    color: var(--apple-ink-secondary); // Slate-400
+    margin: var(--app-space-1) 0;
+    font-size: var(--app-fs-caption);
+    color: var(--app-color-text-secondary); // Slate-400
   }
 }
 
 .config-tab-container {
-  margin-top: var(--apple-spacing-lg);
+  margin-top: var(--app-space-6);
 }
 
 @media (max-width: 768px) {
   .system-config {
-    padding: var(--apple-spacing-sm);
+    padding: var(--app-space-3);
   }
   
   :deep(.el-row) {
@@ -702,19 +702,19 @@ onMounted(() => {
     
     .el-col {
       width: 100% !important;
-      margin-bottom: var(--apple-spacing-sm);
+      margin-bottom: var(--app-space-3);
     }
   }
   
   .config-card {
     :deep(.el-card__body) {
-      padding: var(--apple-spacing-sm);
+      padding: var(--app-space-3);
     }
   }
   
   .backup-actions {
     .el-button {
-      margin-bottom: 8px;
+      margin-bottom: var(--app-space-2);
     }
   }
 }

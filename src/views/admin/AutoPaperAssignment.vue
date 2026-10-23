@@ -753,19 +753,19 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .auto-assignment {
   padding: 0;
-  font-family: var(--apple-font-text);
+  font-family: var(--app-font-family);
 }
 
 .config-panel {
-  margin-bottom: var(--apple-spacing-lg);
+  margin-bottom: var(--app-space-6);
   
   .algorithm-card,
   .preview-card {
-    border-radius: var(--apple-rounded-lg);
+    border-radius: var(--app-radius-lg);
     
     :deep(.el-card__header) {
-      padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-      border-bottom: 1px solid var(--apple-hairline);
+      padding: var(--app-space-3) var(--app-space-4);
+      border-bottom: 1px solid var(--app-color-border);
       
       .card-header {
         display: flex;
@@ -775,14 +775,14 @@ onUnmounted(() => {
         .card-title {
           display: flex;
           align-items: center;
-          font-family: var(--apple-font-display);
-          font-size: var(--apple-fs-body-strong);
+          font-family: var(--app-font-family);
+          font-size: var(--app-fs-body);
           font-weight: 600;
-          color: var(--apple-ink);
+          color: var(--app-color-ink);
           
           .el-icon {
-            margin-right: var(--apple-spacing-xs);
-            color: var(--apple-primary);
+            margin-right: var(--app-space-2);
+            color: var(--app-color-primary);
           }
         }
       }
@@ -791,7 +791,7 @@ onUnmounted(() => {
   
   .config-form {
     :deep(.el-form-item) {
-      margin-bottom: var(--apple-spacing-lg);
+      margin-bottom: var(--app-space-6);
     }
   }
   
@@ -800,54 +800,54 @@ onUnmounted(() => {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: var(--apple-spacing-sm) 0;
-      border-bottom: 1px solid var(--apple-divider-soft);
+      padding: var(--app-space-3) 0;
+      border-bottom: 1px solid var(--app-color-divider);
       
       &:last-child {
         border-bottom: none;
       }
       
       .preview-label {
-        font-size: var(--apple-fs-fine-print);
-        color: var(--apple-ink-secondary);
+        font-size: var(--app-fs-meta);
+        color: var(--app-color-text-secondary);
       }
       
       .preview-value {
-        font-size: var(--apple-fs-tagline);
+        font-size: var(--app-fs-title);
         font-weight: 600;
-        color: var(--apple-ink);
+        color: var(--app-color-ink);
         
         &.success {
-          color: var(--apple-primary);
+          color: var(--app-color-primary);
         }
         
         &.warning {
-          color: var(--apple-danger);
+          color: var(--app-color-danger);
         }
       }
     }
   }
   
   .weight-distribution {
-    margin-top: var(--apple-spacing-lg);
-    padding-top: var(--apple-spacing-lg);
-    border-top: 1px solid var(--apple-hairline);
+    margin-top: var(--app-space-6);
+    padding-top: var(--app-space-6);
+    border-top: 1px solid var(--app-color-border);
     
     h4 {
-      margin: 0 0 var(--apple-spacing-sm) 0;
-      color: var(--apple-ink);
-      font-size: var(--apple-fs-body-strong);
+      margin: 0 0 var(--app-space-3) 0;
+      color: var(--app-color-ink);
+      font-size: var(--app-fs-body);
     }
     
     .weights {
       .weight-item {
-        margin-bottom: var(--apple-spacing-sm);
+        margin-bottom: var(--app-space-3);
         
         span {
           display: block;
-          margin-bottom: var(--apple-spacing-xs);
-          font-size: var(--apple-fs-fine-print);
-          color: var(--apple-ink-secondary);
+          margin-bottom: var(--app-space-2);
+          font-size: var(--app-fs-meta);
+          color: var(--app-color-text-secondary);
         }
       }
     }
@@ -855,12 +855,12 @@ onUnmounted(() => {
 }
 
 .history-card {
-  border-radius: var(--apple-rounded-lg);
-  margin-bottom: var(--apple-spacing-lg);
+  border-radius: var(--app-radius-lg);
+  margin-bottom: var(--app-space-6);
   
   :deep(.el-card__header) {
-    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-    border-bottom: 1px solid var(--apple-hairline);
+    padding: var(--app-space-3) var(--app-space-4);
+    border-bottom: 1px solid var(--app-color-border);
     
     .card-header {
       display: flex;
@@ -870,14 +870,14 @@ onUnmounted(() => {
       .card-title {
         display: flex;
         align-items: center;
-        font-family: var(--apple-font-display);
-        font-size: var(--apple-fs-body-strong);
+        font-family: var(--app-font-family);
+        font-size: var(--app-fs-body);
         font-weight: 600;
-        color: var(--apple-ink);
+        color: var(--app-color-ink);
         
         .el-icon {
-          margin-right: var(--apple-spacing-xs);
-          color: var(--apple-primary);
+          margin-right: var(--app-space-2);
+          color: var(--app-color-primary);
         }
       }
     }
@@ -886,29 +886,29 @@ onUnmounted(() => {
 
 .progress-content {
   .progress-info {
-    margin-bottom: var(--apple-spacing-lg);
+    margin-bottom: var(--app-space-6);
     
     .current-step {
-      font-size: var(--apple-fs-body-strong);
+      font-size: var(--app-fs-body);
       font-weight: 600;
-      color: var(--apple-ink);
-      margin-bottom: var(--apple-spacing-xs);
+      color: var(--app-color-ink);
+      margin-bottom: var(--app-space-2);
     }
     
     .progress-stats {
-      font-size: var(--apple-fs-fine-print);
-      color: var(--apple-ink-secondary);
+      font-size: var(--app-fs-meta);
+      color: var(--app-color-text-secondary);
     }
   }
   
   .step-details {
-    margin-top: var(--apple-spacing-lg);
-    padding-top: var(--apple-spacing-lg);
-    border-top: 1px solid var(--apple-hairline);
+    margin-top: var(--app-space-6);
+    padding-top: var(--app-space-6);
+    border-top: 1px solid var(--app-color-border);
     
     h4 {
-      margin: 0 0 var(--apple-spacing-sm) 0;
-      color: var(--apple-ink);
+      margin: 0 0 var(--app-space-3) 0;
+      color: var(--app-color-ink);
     }
     
     .details-content {
@@ -918,8 +918,8 @@ onUnmounted(() => {
       .detail-item {
         display: flex;
         align-items: center;
-        padding: var(--apple-spacing-xs) 0;
-        border-bottom: 1px solid var(--apple-divider-soft);
+        padding: var(--app-space-2) 0;
+        border-bottom: 1px solid var(--app-color-divider);
         
         &:last-child {
           border-bottom: none;
@@ -927,17 +927,17 @@ onUnmounted(() => {
         
         .student-name {
           font-weight: 400;
-          color: var(--apple-ink);
+          color: var(--app-color-ink);
           min-width: 80px;
         }
         
         .arrow-icon {
-          margin: 0 var(--apple-spacing-sm);
-          color: var(--apple-ink-secondary);
+          margin: 0 var(--app-space-3);
+          color: var(--app-color-text-secondary);
         }
         
         .teacher-name {
-          color: var(--apple-ink-secondary);
+          color: var(--app-color-text-secondary);
           min-width: 80px;
         }
       }
@@ -947,13 +947,13 @@ onUnmounted(() => {
 
 .execution-detail {
   .detail-section {
-    margin-top: var(--apple-spacing-lg);
+    margin-top: var(--app-space-6);
     
     h3 {
-      margin: 0 0 var(--apple-spacing-sm) 0;
-      color: var(--apple-ink);
-      font-family: var(--apple-font-display);
-      font-size: var(--apple-fs-tagline);
+      margin: 0 0 var(--app-space-3) 0;
+      color: var(--app-color-ink);
+      font-family: var(--app-font-family);
+      font-size: var(--app-fs-title);
     }
   }
 }
@@ -961,13 +961,13 @@ onUnmounted(() => {
 @media (max-width: 768px) {
   .config-panel {
     .el-col {
-      margin-bottom: var(--apple-spacing-sm);
+      margin-bottom: var(--app-space-3);
     }
     
     .weight-distribution {
       .weights {
         .weight-item {
-          margin-bottom: var(--apple-spacing-sm);
+          margin-bottom: var(--app-space-3);
         }
       }
     }

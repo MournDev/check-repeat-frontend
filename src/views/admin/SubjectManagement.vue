@@ -54,8 +54,8 @@
               v-model="row.isEnabled"
               :active-value="1"
               :inactive-value="0"
-              active-color="#34c759"
-              inactive-color="#ff3b30"
+              active-color="var(--app-color-success)"
+              inactive-color="var(--app-color-danger)"
               @change="handleToggleEnabled(row, $event)"
             />
           </template>
@@ -352,10 +352,10 @@ onMounted(() => {
 <style scoped>
 .subject-management {
   padding: 0;
-  font-family: var(--apple-font-text);
+  font-family: var(--app-font-family);
 }
 .table-card {
-  margin-bottom: var(--apple-spacing-md);
+  margin-bottom: var(--app-space-4);
 }
 .card-header {
   display: flex;
@@ -364,34 +364,34 @@ onMounted(() => {
 }
 .card-title {
   font-weight: 600;
-  font-size: var(--apple-fs-caption);
-  font-family: var(--apple-font-display);
+  font-size: var(--app-fs-caption);
+  font-family: var(--app-font-family);
 }
 .header-actions {
   display: flex;
-  gap: var(--apple-spacing-sm);
+  gap: var(--app-space-3);
   align-items: center;
 }
 .code-text {
   font-family: Consolas, Monaco, monospace;
 }
 .ref-zero {
-  color: var(--apple-ink-muted-48);
+  color: var(--app-color-text-muted);
 }
 .form-tip {
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-info);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-info);
   line-height: 1.5;
-  margin-top: var(--apple-spacing-xxs);
+  margin-top: var(--app-space-1);
 }
 
 @media (max-width: 768px) {
   .card-header {
-    gap: var(--apple-spacing-sm);
+    gap: var(--app-space-3);
   }
 
   .header-actions {
-    gap: var(--apple-spacing-xs);
+    gap: var(--app-space-2);
   }
 }
 </style>

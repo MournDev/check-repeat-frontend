@@ -746,15 +746,15 @@ onMounted(() => {
 <style scoped lang="scss">
 .assignment-history {
   padding: 0;
-  font-family: var(--apple-font-text);
+  font-family: var(--app-font-family);
 }
 
 .stats-cards {
-  margin-bottom: var(--apple-spacing-lg);
+  margin-bottom: var(--app-space-6);
 
   .stat-card {
     border: none;
-    border-radius: var(--apple-rounded-lg);
+    border-radius: var(--app-radius-lg);
 
     .stat-content {
       display: flex;
@@ -766,23 +766,23 @@ onMounted(() => {
         justify-content: center;
         width: 48px;
         height: 48px;
-        border-radius: var(--apple-rounded-lg);
-        margin-right: var(--apple-spacing-md);
+        border-radius: var(--app-radius-lg);
+        margin-right: var(--app-space-4);
 
         &.bg-primary {
-          background: var(--apple-primary);
+          background: var(--app-color-primary);
         }
 
         &.bg-success {
-          background: var(--apple-success);
+          background: var(--app-color-success);
         }
 
         &.bg-warning {
-          background: var(--apple-warning);
+          background: var(--app-color-warning);
         }
 
         &.bg-info {
-          background: #5ac8fa;
+          background: var(--app-color-primary);
         }
 
         .el-icon {
@@ -793,16 +793,16 @@ onMounted(() => {
 
       .stat-info {
         .stat-value {
-          font-size: var(--apple-fs-lead);
+          font-size: var(--app-fs-metric);
           font-weight: 700;
-          color: var(--apple-ink);
+          color: var(--app-color-ink);
           line-height: 1;
         }
 
         .stat-label {
-          font-size: var(--apple-fs-fine-print);
-          color: var(--apple-ink-secondary);
-          margin-top: var(--apple-spacing-xxs);
+          font-size: var(--app-fs-meta);
+          color: var(--app-color-text-secondary);
+          margin-top: var(--app-space-1);
         }
       }
     }
@@ -811,33 +811,33 @@ onMounted(() => {
 
 .record-detail {
   .detail-section {
-    margin: var(--apple-spacing-lg) 0;
+    margin: var(--app-space-6) 0;
 
     h3 {
-      margin: 0 0 var(--apple-spacing-sm) 0;
-      color: var(--apple-ink);
-      font-size: var(--apple-fs-tagline);
-      font-family: var(--apple-font-display);
+      margin: 0 0 var(--app-space-3) 0;
+      color: var(--app-color-ink);
+      font-size: var(--app-fs-title);
+      font-family: var(--app-font-family);
     }
 
     .reason,
     .notes {
       line-height: 1.6;
-      color: var(--apple-ink-secondary);
-      padding: var(--apple-spacing-sm);
-      background-color: var(--apple-canvas-parchment);
-      border-radius: var(--apple-rounded-sm);
+      color: var(--app-color-text-secondary);
+      padding: var(--app-space-3);
+      background-color: var(--app-color-fill);
+      border-radius: var(--app-radius-sm);
     }
   }
 }
 
 .original-info {
-  padding: var(--apple-spacing-sm);
-  background-color: var(--apple-canvas-parchment);
-  border-radius: var(--apple-rounded-sm);
+  padding: var(--app-space-3);
+  background-color: var(--app-color-fill);
+  border-radius: var(--app-radius-sm);
 
   div {
-    margin-bottom: var(--apple-spacing-xxs);
+    margin-bottom: var(--app-space-1);
 
     &:last-child {
       margin-bottom: 0;
@@ -848,20 +848,20 @@ onMounted(() => {
 .teacher-option {
   .teacher-name {
     font-weight: 600;
-    margin-right: var(--apple-spacing-xs);
+    margin-right: var(--app-space-2);
   }
 
   .teacher-detail {
-    font-size: var(--apple-fs-fine-print);
-    color: var(--apple-ink-secondary);
-    margin-top: var(--apple-spacing-xxs);
+    font-size: var(--app-fs-meta);
+    color: var(--app-color-text-secondary);
+    margin-top: var(--app-space-1);
   }
 }
 
 @media (max-width: 768px) {
   .stats-cards {
     .el-col {
-      margin-bottom: var(--apple-spacing-sm);
+      margin-bottom: var(--app-space-3);
     }
   }
 }

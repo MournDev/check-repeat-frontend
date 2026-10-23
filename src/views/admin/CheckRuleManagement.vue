@@ -497,21 +497,21 @@ onMounted(() => {
 <style scoped>
 .check-rule-management {
   padding: 0;
-  font-family: var(--apple-font-text);
+  font-family: var(--app-font-family);
 }
 .lib-tag {
-  margin: var(--apple-spacing-xxs) var(--apple-spacing-xxs) var(--apple-spacing-xxs) 0;
+  margin: var(--app-space-1) var(--app-space-1) var(--app-space-1) 0;
 }
 .empty-text {
-  color: var(--apple-ink-muted-48);
+  color: var(--app-color-text-muted);
 }
 .form-tip {
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-info);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-info);
   line-height: 1.5;
-  margin-top: var(--apple-spacing-xxs);
+  margin-top: var(--app-space-1);
 }
 .quota-filter {
-  margin-bottom: var(--apple-spacing-xs);
+  margin-bottom: var(--app-space-2);
 }
 </style>

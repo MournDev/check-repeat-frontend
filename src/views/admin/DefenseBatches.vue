@@ -378,35 +378,35 @@ onMounted(async () => {
 .defense-batches {
   display: flex;
   flex-direction: column;
-  gap: var(--apple-spacing-md);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
+  gap: var(--app-space-4);
+  color: var(--app-color-ink);
+  font-family: var(--app-font-family);
 }
 
 .head-row {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--apple-spacing-md);
+  gap: var(--app-space-4);
 }
 
 .head-title {
-  margin: 0 0 var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-tagline);
+  margin: 0 0 var(--app-space-1);
+  font-size: var(--app-fs-title);
   font-weight: 600;
-  font-family: var(--apple-font-display);
+  font-family: var(--app-font-family);
 }
 
 .head-desc {
   margin: 0;
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 .filter-row {
   display: flex;
   align-items: center;
-  gap: var(--apple-spacing-sm);
+  gap: var(--app-space-3);
   flex-wrap: wrap;
 }
 
@@ -423,7 +423,7 @@ onMounted(async () => {
 }
 
 .loc-cell {
-  margin-right: var(--apple-spacing-xs);
+  margin-right: var(--app-space-2);
 }
 
 .mode-tag {
@@ -431,8 +431,8 @@ onMounted(async () => {
 }
 
 .sep {
-  margin: 0 var(--apple-spacing-xxs);
-  color: var(--apple-divider-soft);
+  margin: 0 var(--app-space-1);
+  color: var(--app-color-divider);
 }
 
 .stat-cell {
@@ -442,15 +442,15 @@ onMounted(async () => {
 .pager-row {
   display: flex;
   justify-content: flex-end;
-  margin-top: var(--apple-spacing-md);
+  margin-top: var(--app-space-4);
 }
 
 .form-tip {
   width: 100%;
-  margin-top: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
+  margin-top: var(--app-space-1);
+  font-size: var(--app-fs-meta);
   line-height: 1.5;
-  color: var(--apple-ink-muted-48);
+  color: var(--app-color-text-muted);
 }
 
 @media (max-width: 768px) {

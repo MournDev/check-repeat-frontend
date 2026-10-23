@@ -34,7 +34,7 @@
               :percentage="Number(stats.completionRate ?? 0)"
               :width="90"
               :stroke-width="8"
-              color="var(--apple-primary)"
+              color="var(--app-color-primary)"
             >
               <span class="rate-text">{{ formatPercent(stats.completionRate) }}</span>
             </el-progress>
@@ -516,41 +516,41 @@ onMounted(() => {
 .advisor-eval-management {
   display: flex;
   flex-direction: column;
-  gap: var(--apple-spacing-md);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
+  gap: var(--app-space-4);
+  color: var(--app-color-ink);
+  font-family: var(--app-font-family);
 }
 
 .head-row {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--apple-spacing-md);
+  gap: var(--app-space-4);
 }
 
 .head-title {
-  margin: 0 0 var(--apple-spacing-xxs);
-  font-family: var(--apple-font-display);
-  font-size: var(--apple-fs-tagline);
+  margin: 0 0 var(--app-space-1);
+  font-family: var(--app-font-family);
+  font-size: var(--app-fs-title);
   font-weight: 600;
 }
 
 .head-desc {
   margin: 0;
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 .period-tip {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  gap: var(--app-space-1);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 
   .el-icon {
-    color: var(--apple-primary);
+    color: var(--app-color-primary);
   }
 
   .period-note {
@@ -562,13 +562,13 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--apple-spacing-xs);
-  padding: var(--apple-spacing-md);
+  gap: var(--app-space-2);
+  padding: var(--app-space-4);
   text-align: center;
 
   .stat-label {
-    font-size: var(--apple-fs-fine-print);
-    color: var(--apple-ink-muted-48);
+    font-size: var(--app-fs-meta);
+    color: var(--app-color-text-muted);
   }
 
   .stat-main {
@@ -577,50 +577,50 @@ onMounted(() => {
   }
 
   .rate-text {
-    font-size: var(--apple-fs-caption);
+    font-size: var(--app-fs-caption);
     font-weight: 600;
-    color: var(--apple-primary);
+    color: var(--app-color-primary);
   }
 
   .stat-value {
-    font-size: var(--apple-fs-display-md);
+    font-size: var(--app-fs-metric);
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     line-height: 1.2;
 
     &.warning-text {
-      color: var(--apple-danger);
+      color: var(--app-color-danger);
     }
   }
 
   .stat-sub {
-    font-size: var(--apple-fs-fine-print);
-    color: var(--apple-ink-muted-48);
+    font-size: var(--app-fs-meta);
+    color: var(--app-color-text-muted);
   }
 }
 
 .card-header {
   display: flex;
   align-items: center;
-  gap: var(--apple-spacing-sm);
+  gap: var(--app-space-3);
   flex-wrap: wrap;
 
   .card-title {
     display: flex;
     align-items: center;
-    font-family: var(--apple-font-display);
-    font-size: var(--apple-fs-body-strong);
+    font-family: var(--app-font-family);
+    font-size: var(--app-fs-body);
     font-weight: 600;
 
     .el-icon {
-      margin-right: var(--apple-spacing-xs);
-      color: var(--apple-primary);
+      margin-right: var(--app-space-2);
+      color: var(--app-color-primary);
     }
   }
 
   .header-tip {
-    font-size: var(--apple-fs-fine-print);
-    color: var(--apple-ink-muted-48);
+    font-size: var(--app-fs-meta);
+    color: var(--app-color-text-muted);
   }
 }
 
@@ -632,8 +632,8 @@ onMounted(() => {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--apple-spacing-sm);
-  margin-bottom: var(--apple-spacing-md);
+  gap: var(--app-space-3);
+  margin-bottom: var(--app-space-4);
 
   .filter-item {
     width: 200px;
@@ -645,39 +645,39 @@ onMounted(() => {
 }
 
 .cell-main {
-  font-size: var(--apple-fs-fine-print);
+  font-size: var(--app-fs-meta);
   font-weight: 600;
-  color: var(--apple-ink);
+  color: var(--app-color-ink);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .cell-sub {
-  margin-top: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  margin-top: var(--app-space-1);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 .score-dims {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--apple-spacing-xxs) var(--apple-spacing-xs);
+  gap: var(--app-space-1) var(--app-space-2);
   justify-content: center;
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 
   .overall {
-    color: var(--apple-ink);
+    color: var(--app-color-ink);
 
     b {
-      color: var(--apple-primary);
+      color: var(--app-color-primary);
     }
   }
 }
 
 .tag-item {
-  margin: var(--apple-spacing-xxs) var(--apple-spacing-xxs) var(--apple-spacing-xxs) 0;
+  margin: var(--app-space-1) var(--app-space-1) var(--app-space-1) 0;
 }
 
 .comment-preview {
@@ -685,30 +685,30 @@ onMounted(() => {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-ink);
   cursor: default;
 }
 
 .comment-full {
   margin: 0;
-  font-size: var(--apple-fs-fine-print);
+  font-size: var(--app-fs-meta);
   line-height: 1.6;
   white-space: pre-wrap;
 }
 
 .muted {
-  color: var(--apple-ink-muted-48);
+  color: var(--app-color-text-muted);
 }
 
 .warn-icon {
-  margin-left: var(--apple-spacing-xxs);
-  color: var(--apple-danger);
+  margin-left: var(--app-space-1);
+  color: var(--app-color-danger);
   vertical-align: middle;
 }
 
 .danger-text {
-  color: var(--apple-danger);
+  color: var(--app-color-danger);
   font-weight: 600;
 }
 
@@ -718,18 +718,18 @@ onMounted(() => {
 }
 
 :deep(.low-score-row) {
-  background: rgba(255, 59, 48, 0.04);
+  background: rgba(var(--app-color-danger-rgb), 0.04);
 }
 
 .table-footer {
   display: flex;
   justify-content: flex-end;
-  margin-top: var(--apple-spacing-md);
+  margin-top: var(--app-space-4);
 }
 
 @media (max-width: 992px) {
   .el-col {
-    margin-bottom: 16px;
+    margin-bottom: var(--app-space-4);
   }
 }
 

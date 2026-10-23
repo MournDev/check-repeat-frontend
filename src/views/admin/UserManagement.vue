@@ -109,8 +109,8 @@
               v-model="row.status"
               :active-value="1"
               :inactive-value="0"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
+              active-color="var(--app-color-success)"
+              inactive-color="var(--app-color-danger)"
               :disabled="!canManage(row)"
               @change="handleStatusChange(row, $event)"
             />
@@ -814,20 +814,20 @@ const rowKey = (row) => {
 
 <style lang="scss" scoped>
 .unassigned {
-  color: var(--apple-danger);
+  color: var(--app-color-danger);
   font-style: italic;
 }
 
 .self-edit-tip {
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-secondary);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-secondary);
   line-height: 1.6;
-  margin-top: var(--apple-spacing-xxs);
+  margin-top: var(--app-space-1);
 }
 
 @media (max-width: 768px) {
   .user-management {
-    padding: var(--apple-spacing-sm);
+    padding: var(--app-space-3);
   }
 }
 </style>

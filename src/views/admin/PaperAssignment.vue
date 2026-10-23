@@ -296,15 +296,15 @@ onMounted(() => {
 <style lang="scss" scoped>
 .paper-assignment {
   padding: 0;
-  font-family: var(--apple-font-text);
+  font-family: var(--app-font-family);
 }
 
 .stats-card {
-  margin-bottom: var(--apple-spacing-lg);
-  border-radius: var(--apple-rounded-lg);
+  margin-bottom: var(--app-space-6);
+  border-radius: var(--app-radius-lg);
 
   :deep(.el-card__body) {
-    padding: var(--apple-spacing-lg);
+    padding: var(--app-space-6);
   }
 }
 
@@ -315,25 +315,25 @@ onMounted(() => {
 
   :deep(.el-statistic) {
     .el-statistic__head {
-      font-size: var(--apple-fs-fine-print);
-      color: var(--apple-ink-secondary);
-      margin-bottom: var(--apple-spacing-xs);
+      font-size: var(--app-fs-meta);
+      color: var(--app-color-text-secondary);
+      margin-bottom: var(--app-space-2);
     }
 
     .el-statistic__content {
-      font-size: var(--apple-fs-lead);
+      font-size: var(--app-fs-metric);
       font-weight: 700;
-      color: var(--apple-ink);
+      color: var(--app-color-ink);
     }
   }
 }
 
 .students-card {
-  border-radius: var(--apple-rounded-lg);
+  border-radius: var(--app-radius-lg);
 
   :deep(.el-card__header) {
-    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-    border-bottom: 1px solid var(--apple-hairline);
+    padding: var(--app-space-3) var(--app-space-4);
+    border-bottom: 1px solid var(--app-color-border);
   }
 
   :deep(.el-card__body) {
@@ -344,7 +344,7 @@ onMounted(() => {
 @media (max-width: 768px) {
   .assignment-stats {
     :deep(.el-row) .el-col {
-      margin-bottom: var(--apple-spacing-sm);
+      margin-bottom: var(--app-space-3);
     }
   }
 }
