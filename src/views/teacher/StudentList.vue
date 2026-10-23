@@ -274,7 +274,7 @@ import {
 } from '@/api/teacher'
 import { useUserStore } from '@/stores/user'
 import { getSimilarityColor } from '@/utils/similarity.js'
-import { formatPercent, formatDate } from '@/utils/dataType.js'
+import { formatPercent, formatDate, getPaperStatusText, getPaperStatusType } from '@/utils/dataType.js'
 import { getPreviewUrl, downloadFileBlob } from '@/utils/filePreview'
 import StudentStats from './components/StudentStats.vue'
 import StudentFilterBar from './components/StudentFilterBar.vue'
@@ -481,29 +481,9 @@ const refreshList = async () => {
 }
 
 // ── 展示工具方法（供 dialog 内部使用） ──────────────────────
-const getStatusType = (status) => {
-  const typeMap = {
-    'not_submitted': 'info',
-    'submitted': 'info',
-    'assigned': 'primary',
-    'auditing': 'warning',
-    'rejected': 'danger',
-    'completed': 'success'
-  }
-  return typeMap[status] || 'info'
-}
-
-const getStatusText = (status) => {
-  const textMap = {
-    'not_submitted': '未提交',
-    'submitted': '已提交',
-    'assigned': '已分配',
-    'auditing': '审核中',
-    'rejected': '需修改',
-    'completed': '已完成'
-  }
-  return textMap[status] || '未知状态'
-}
+// 论文状态文案与标签色统一走 utils/reviewStatus.js（与 DB 字典 paper_status 对齐）
+const getStatusType = (status) => getPaperStatusType(status)
+const getStatusText = (status) => getPaperStatusText(status)
 
 // ── 学生行操作 ──────────────────────────────────────────────
 const handleMessage = (student) => {

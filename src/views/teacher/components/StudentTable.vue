@@ -175,7 +175,7 @@ import {
   List, Refresh, Message, UserFilled, More, Document, Delete
 } from '@element-plus/icons-vue'
 import { getSimilarityColor } from '@/utils/similarity.js'
-import { formatPercent, formatDate } from '@/utils/dataType.js'
+import { formatPercent, formatDate, getPaperStatusText, getPaperStatusType } from '@/utils/dataType.js'
 
 defineProps({
   students: {
@@ -246,30 +246,10 @@ const handleMoreActions = (row, command) => {
   }
 }
 
-// ── 展示工具方法（自包含，纯展示） ──────────────────────────
-const getStatusType = (status) => {
-  const typeMap = {
-    'not_submitted': 'info',
-    'submitted': 'info',
-    'assigned': 'primary',
-    'auditing': 'warning',
-    'rejected': 'danger',
-    'completed': 'success'
-  }
-  return typeMap[status] || 'info'
-}
-
-const getStatusText = (status) => {
-  const textMap = {
-    'not_submitted': '未提交',
-    'submitted': '已提交',
-    'assigned': '已分配',
-    'auditing': '审核中',
-    'rejected': '需修改',
-    'completed': '已完成'
-  }
-  return textMap[status] || '未知状态'
-}
+// ── 展示工具方法 ──────────────────────────────────────────
+// 论文状态文案与标签色统一走 utils/reviewStatus.js（与 DB 字典 paper_status 对齐）
+const getStatusType = (status) => getPaperStatusType(status)
+const getStatusText = (status) => getPaperStatusText(status)
 </script>
 
 <style lang="scss" scoped>
