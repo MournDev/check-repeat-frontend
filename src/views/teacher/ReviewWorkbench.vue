@@ -463,6 +463,7 @@ onBeforeUnmount(() => {
   background: var(--apple-canvas);
   border: 1px solid var(--apple-hairline);
   border-radius: var(--apple-rounded-lg);
+  font-family: var(--apple-font-text);
 }
 
 /* 工作台为满屏三栏，隐藏全局页脚避免页面出现纵向滚动 */
@@ -486,14 +487,14 @@ onBeforeUnmount(() => {
 
 .paper-head {
   flex-shrink: 0;
-  padding: 14px 16px 10px;
+  padding: var(--apple-spacing-sm) var(--apple-spacing-md) var(--apple-spacing-xs);
   border-bottom: 1px solid var(--apple-hairline);
 }
 
 .student-line {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--apple-spacing-xs);
 }
 
 .avatar {
@@ -503,7 +504,7 @@ onBeforeUnmount(() => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.875rem;
+  font-size: var(--apple-fs-fine-print);
   font-weight: 600;
   color: var(--apple-primary);
   background: var(--apple-info-bg);
@@ -517,14 +518,14 @@ onBeforeUnmount(() => {
 
 .student-meta strong {
   display: block;
-  font-size: 0.875rem;
+  font-size: var(--apple-fs-caption);
   color: var(--apple-ink);
 }
 
 .student-meta span {
   display: block;
   margin-top: 1px;
-  font-size: 0.6875rem;
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
   white-space: nowrap;
   overflow: hidden;
@@ -533,8 +534,8 @@ onBeforeUnmount(() => {
 
 .status-flag {
   flex-shrink: 0;
-  padding: 0 7px;
-  font-size: 0.6875rem;
+  padding: 0 var(--apple-spacing-xs);
+  font-size: var(--apple-fs-fine-print);
   line-height: 18px;
   color: var(--apple-ink-muted-48);
   background: var(--apple-canvas-parchment);
@@ -552,8 +553,9 @@ onBeforeUnmount(() => {
 }
 
 .paper-title {
-  margin: 10px 0 0;
-  font-size: 0.9375rem;
+  margin: var(--apple-spacing-xs) 0 0;
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-body-strong);
   line-height: 1.4;
   font-weight: 600;
   color: var(--apple-ink);
@@ -566,24 +568,24 @@ onBeforeUnmount(() => {
 .paper-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 10px;
-  margin-top: 5px;
-  font-size: 0.6875rem;
+  gap: var(--apple-spacing-xxs) var(--apple-spacing-xs);
+  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
 }
 
 .steps {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-top: 12px;
+  gap: var(--apple-spacing-xxs);
+  margin-top: var(--apple-spacing-sm);
 }
 
 .step {
   display: flex;
   align-items: center;
-  gap: 5px;
-  font-size: 0.6875rem;
+  gap: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
   white-space: nowrap;
 }
@@ -594,7 +596,7 @@ onBeforeUnmount(() => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.625rem;
+  font-size: 10px;
   font-weight: 600;
   color: var(--apple-ink-muted-48);
   background: var(--apple-canvas-parchment);
@@ -634,7 +636,7 @@ onBeforeUnmount(() => {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  padding: 0 16px;
+  padding: 0 var(--apple-spacing-md);
 }
 
 .wb-tabs :deep(.el-tabs__header) {
@@ -646,7 +648,7 @@ onBeforeUnmount(() => {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding-right: 4px;
+  padding-right: var(--apple-spacing-xxs);
 }
 
 .wb-tabs :deep(.el-tab-pane) {
@@ -658,8 +660,8 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 12px 16px;
+  gap: var(--apple-spacing-sm);
+  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
   border-top: 1px solid var(--apple-hairline);
   background: var(--apple-canvas);
 }
@@ -667,14 +669,14 @@ onBeforeUnmount(() => {
 .action-note {
   flex: 1;
   min-width: 0;
-  font-size: 0.6875rem;
+  font-size: var(--apple-fs-fine-print);
   line-height: 1.4;
   color: var(--apple-ink-muted-48);
 }
 
 .action-buttons {
   display: flex;
-  gap: 8px;
+  gap: var(--apple-spacing-xs);
   flex-shrink: 0;
 }
 
@@ -688,31 +690,31 @@ onBeforeUnmount(() => {
 .reject-dialog {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--apple-spacing-xs);
 }
 
 .reject-tip {
   margin: 0;
-  font-size: 0.75rem;
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
 }
 
 .template-tip {
-  font-size: 0.75rem;
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
 }
 
 .template-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: var(--apple-spacing-xxs);
   max-height: 96px;
   overflow-y: auto;
 }
 
 .template-chip {
-  padding: 3px 10px;
-  font-size: 0.75rem;
+  padding: 3px var(--apple-spacing-xs);
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-80);
   background: var(--apple-canvas-parchment);
   border: 1px solid var(--apple-hairline);
@@ -757,112 +759,6 @@ onBeforeUnmount(() => {
     border-top: 1px solid var(--apple-hairline);
     min-height: 640px;
   }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.review-workbench {
-  font-family: var(--apple-font-text);
-  border-radius: var(--apple-rounded-lg);
-}
-
-.paper-head {
-  padding: var(--apple-spacing-sm) var(--apple-spacing-md) var(--apple-spacing-xs);
-}
-
-.student-line {
-  gap: var(--apple-spacing-xs);
-}
-
-.avatar {
-  width: 34px;
-  height: 34px;
-  font-size: var(--apple-fs-fine-print);
-}
-
-.student-meta strong {
-  font-size: var(--apple-fs-caption);
-}
-
-.student-meta span {
-  margin-top: 1px;
-  font-size: var(--apple-fs-fine-print);
-}
-
-.status-flag {
-  padding: 0 var(--apple-spacing-xs);
-  font-size: var(--apple-fs-fine-print);
-  line-height: 18px;
-  border-radius: var(--apple-rounded-xs);
-}
-
-.paper-title {
-  margin: var(--apple-spacing-xs) 0 0;
-  font-family: var(--apple-font-display);
-  font-size: var(--apple-fs-body-strong);
-  line-height: 1.4;
-}
-
-.paper-meta {
-  gap: var(--apple-spacing-xxs) var(--apple-spacing-xs);
-  margin-top: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
-}
-
-.steps {
-  gap: var(--apple-spacing-xxs);
-  margin-top: var(--apple-spacing-sm);
-}
-
-.step {
-  gap: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
-}
-
-.step-dot {
-  width: 16px;
-  height: 16px;
-  font-size: 10px;
-}
-
-.wb-tabs {
-  padding: 0 var(--apple-spacing-md);
-}
-
-.wb-tabs :deep(.el-tabs__content) {
-  padding-right: var(--apple-spacing-xxs);
-}
-
-.wb-actions {
-  gap: var(--apple-spacing-sm);
-  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-}
-
-.action-note {
-  font-size: var(--apple-fs-fine-print);
-  line-height: 1.4;
-}
-
-.action-buttons {
-  gap: var(--apple-spacing-xs);
-}
-
-.reject-dialog {
-  gap: var(--apple-spacing-xs);
-}
-
-.reject-tip,
-.template-tip {
-  font-size: var(--apple-fs-fine-print);
-}
-
-.template-chips {
-  gap: var(--apple-spacing-xxs);
-}
-
-.template-chip {
-  padding: 3px var(--apple-spacing-xs);
-  font-size: var(--apple-fs-fine-print);
-  transition: var(--apple-transition-fast);
 }
 
 @media (max-width: 768px) {

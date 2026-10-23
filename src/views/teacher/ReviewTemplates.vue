@@ -477,20 +477,20 @@ onMounted(async () => {
 .review-templates {
   .category-nav {
     :deep(.el-tabs__content) {
-      padding: 20px 0;
+      padding: var(--apple-spacing-md) 0;
     }
     
     .templates-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
+      gap: var(--apple-spacing-md);
       
       .template-card {
         border: 1px solid var(--apple-hairline);
-        border-radius: 11px;
-        padding: 16px;
+        border-radius: var(--apple-rounded-lg);
+        padding: var(--apple-spacing-md);
         cursor: pointer;
-        transition: border-color 0.2s ease;
+        transition: border-color var(--apple-transition-normal);
         
         &:hover {
           border-color: var(--apple-primary);
@@ -501,27 +501,28 @@ onMounted(async () => {
           display: flex;
           justify-content: space-between;
           align-items: flex-start;
-          margin-bottom: 12px;
+          margin-bottom: var(--apple-spacing-sm);
           
           .template-title {
-            font-weight: 400;
-            font-size: 16px;
+            font-family: var(--apple-font-display);
+            font-size: var(--apple-fs-body-strong);
+            font-weight: 600;
             color: var(--apple-ink);
             flex: 1;
-            margin-right: 12px;
+            margin-right: var(--apple-spacing-sm);
           }
           
           .template-actions {
             display: flex;
-            gap: 8px;
+            gap: var(--apple-spacing-xs);
           }
         }
         
         .template-content {
           color: var(--apple-ink-muted-80);
-          line-height: 1.5;
-          margin-bottom: 16px;
-          font-size: 17px;
+          line-height: 1.6;
+          margin-bottom: var(--apple-spacing-md);
+          font-size: var(--apple-fs-caption);
         }
         
         .template-footer {
@@ -532,24 +533,24 @@ onMounted(async () => {
           .template-meta {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: var(--apple-spacing-xs);
             
             .usage-count {
-              font-size: 12px;
-              color: var(--apple-info);
+              font-size: var(--apple-fs-fine-print);
+              color: var(--apple-ink-muted-48);
             }
           }
           
           .template-time {
-            font-size: 12px;
-            color: var(--apple-info);
+            font-size: var(--apple-fs-fine-print);
+            color: var(--apple-ink-muted-48);
           }
         }
       }
       
       .empty-templates {
         grid-column: 1 / -1;
-        padding: 60px 0;
+        padding: var(--apple-spacing-xxl) 0;
         text-align: center;
       }
     }
@@ -557,17 +558,19 @@ onMounted(async () => {
   
   .template-preview {
     .preview-title {
-      font-size: 18px;
-      font-weight: 400;
-      margin-bottom: 12px;
+      font-family: var(--apple-font-display);
+      font-size: var(--apple-fs-body-strong);
+      font-weight: 600;
+      margin-bottom: var(--apple-spacing-sm);
       color: var(--apple-ink);
     }
     
     .preview-category {
-      margin-bottom: 16px;
+      margin-bottom: var(--apple-spacing-md);
     }
     
     .preview-content {
+      font-size: var(--apple-fs-caption);
       line-height: 1.6;
       color: var(--apple-ink-muted-80);
       white-space: pre-wrap;
@@ -576,15 +579,21 @@ onMounted(async () => {
   
   .quick-use-content {
     .search-box {
-      margin-bottom: 20px;
+      margin-bottom: var(--apple-spacing-md);
+
+      :deep(.el-input__wrapper) {
+        border-radius: var(--apple-rounded-md);
+        font-size: var(--apple-fs-caption);
+      }
     }
     
     .section-title {
-      font-size: 16px;
-      font-weight: 400;
-      margin: 20px 0 12px 0;
+      margin: var(--apple-spacing-md) 0 var(--apple-spacing-sm);
+      padding-bottom: var(--apple-spacing-xs);
+      font-family: var(--apple-font-display);
+      font-size: var(--apple-fs-body-strong);
+      font-weight: 600;
       color: var(--apple-ink);
-      padding-bottom: 8px;
       border-bottom: 1px solid var(--apple-hairline);
     }
     
@@ -592,12 +601,12 @@ onMounted(async () => {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px;
+      padding: var(--apple-spacing-sm);
       border: 1px solid var(--apple-hairline);
-      border-radius: 8px;
-      margin-bottom: 8px;
+      border-radius: var(--apple-rounded-sm);
+      margin-bottom: var(--apple-spacing-xs);
       cursor: pointer;
-      transition: border-color 0.2s ease;
+      transition: border-color var(--apple-transition-normal);
 
       &:hover {
         border-color: var(--apple-primary);
@@ -606,18 +615,18 @@ onMounted(async () => {
       
       .template-info {
         flex: 1;
-        margin-right: 12px;
+        margin-right: var(--apple-spacing-sm);
         
         .template-name {
-          font-weight: 400;
-          margin-bottom: 4px;
+          font-weight: 500;
+          margin-bottom: var(--apple-spacing-xxs);
           color: var(--apple-ink);
         }
         
         .template-preview-text {
-          font-size: 12px;
-          color: var(--apple-info);
-          margin-bottom: 4px;
+          font-size: var(--apple-fs-fine-print);
+          color: var(--apple-ink-muted-48);
+          margin-bottom: var(--apple-spacing-xxs);
         }
         
         .template-category {
@@ -628,130 +637,9 @@ onMounted(async () => {
   }
   
   .help-text {
-    font-size: 12px;
-    color: var(--apple-info);
-    margin-top: 4px;
-  }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.review-templates {
-  .category-nav {
-    :deep(.el-tabs__content) {
-      padding: var(--apple-spacing-md) 0;
-    }
-
-    .templates-grid {
-      gap: var(--apple-spacing-md);
-
-      .template-card {
-        padding: var(--apple-spacing-md);
-        border-radius: var(--apple-rounded-lg);
-        transition: border-color var(--apple-transition-normal);
-
-        .template-header {
-          margin-bottom: var(--apple-spacing-sm);
-
-          .template-title {
-            margin-right: var(--apple-spacing-sm);
-            font-family: var(--apple-font-display);
-            font-size: var(--apple-fs-body-strong);
-            font-weight: 600;
-          }
-
-          .template-actions {
-            gap: var(--apple-spacing-xs);
-          }
-        }
-
-        .template-content {
-          margin-bottom: var(--apple-spacing-md);
-          font-size: var(--apple-fs-caption);
-          line-height: 1.6;
-        }
-
-        .template-footer {
-          .template-meta {
-            gap: var(--apple-spacing-xs);
-          }
-
-          .usage-count,
-          .template-time {
-            font-size: var(--apple-fs-fine-print);
-            color: var(--apple-ink-muted-48);
-          }
-        }
-      }
-
-      .empty-templates {
-        padding: var(--apple-spacing-xxl) 0;
-      }
-    }
-  }
-
-  .template-preview {
-    .preview-title {
-      margin-bottom: var(--apple-spacing-sm);
-      font-family: var(--apple-font-display);
-      font-size: var(--apple-fs-body-strong);
-      font-weight: 600;
-    }
-
-    .preview-category {
-      margin-bottom: var(--apple-spacing-md);
-    }
-
-    .preview-content {
-      font-size: var(--apple-fs-caption);
-      line-height: 1.6;
-    }
-  }
-
-  .quick-use-content {
-    .search-box {
-      margin-bottom: var(--apple-spacing-md);
-
-      :deep(.el-input__wrapper) {
-        border-radius: var(--apple-rounded-md);
-        font-size: var(--apple-fs-caption);
-      }
-    }
-
-    .section-title {
-      margin: var(--apple-spacing-md) 0 var(--apple-spacing-sm);
-      padding-bottom: var(--apple-spacing-xs);
-      font-family: var(--apple-font-display);
-      font-size: var(--apple-fs-body-strong);
-      font-weight: 600;
-    }
-
-    .template-item {
-      padding: var(--apple-spacing-sm);
-      margin-bottom: var(--apple-spacing-xs);
-      border-radius: var(--apple-rounded-sm);
-      transition: border-color var(--apple-transition-normal);
-
-      .template-info {
-        margin-right: var(--apple-spacing-sm);
-
-        .template-name {
-          margin-bottom: var(--apple-spacing-xxs);
-          font-weight: 500;
-        }
-
-        .template-preview-text {
-          margin-bottom: var(--apple-spacing-xxs);
-          font-size: var(--apple-fs-fine-print);
-          color: var(--apple-ink-muted-48);
-        }
-      }
-    }
-  }
-
-  .help-text {
-    margin-top: var(--apple-spacing-xxs);
     font-size: var(--apple-fs-fine-print);
     color: var(--apple-ink-muted-48);
+    margin-top: var(--apple-spacing-xxs);
   }
 }
 </style>

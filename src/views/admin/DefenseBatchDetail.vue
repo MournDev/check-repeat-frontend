@@ -535,7 +535,7 @@ onMounted(() => {
 .batch-detail {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--apple-spacing-md);
   color: var(--apple-ink);
   font-family: var(--apple-font-text);
 }
@@ -544,7 +544,7 @@ onMounted(() => {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--apple-spacing-md);
 }
 
 .head-left {
@@ -555,9 +555,10 @@ onMounted(() => {
 .head-title {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 6px 0;
-  font-size: 1.25rem;
+  gap: var(--apple-spacing-xs);
+  margin: var(--apple-spacing-xxs) 0;
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-tagline);
   font-weight: 600;
 }
 
@@ -567,26 +568,26 @@ onMounted(() => {
 
 .head-desc {
   margin: 0;
-  font-size: 0.8125rem;
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
 }
 
 .head-actions {
   display: flex;
-  gap: 10px;
+  gap: var(--apple-spacing-xs);
   flex-shrink: 0;
 }
 
 .stat-strip {
   display: flex;
-  gap: 12px;
-  margin-top: 16px;
+  gap: var(--apple-spacing-sm);
+  margin-top: var(--apple-spacing-md);
   flex-wrap: wrap;
 }
 
 .stat-block {
   min-width: 120px;
-  padding: 12px 16px;
+  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
   border-radius: var(--apple-rounded-md);
   background: var(--apple-canvas);
 }
@@ -596,7 +597,7 @@ onMounted(() => {
 }
 
 .stat-value {
-  font-size: 1.25rem;
+  font-size: var(--apple-fs-tagline);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
@@ -606,14 +607,14 @@ onMounted(() => {
 }
 
 .stat-label {
-  margin-top: 2px;
-  font-size: 0.75rem;
+  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
 }
 
 .remark-line {
-  margin: 12px 0 0;
-  font-size: 0.8125rem;
+  margin: var(--apple-spacing-sm) 0 0;
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
 }
 
@@ -624,20 +625,21 @@ onMounted(() => {
 }
 
 .section-title {
-  font-size: 0.9375rem;
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-caption);
   font-weight: 600;
 }
 
 .members-line {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 12px;
+  gap: var(--apple-spacing-xs);
+  margin-top: var(--apple-spacing-sm);
   flex-wrap: wrap;
 }
 
 .members-label {
-  font-size: 0.8125rem;
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
 }
 
@@ -648,9 +650,9 @@ onMounted(() => {
 .filter-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--apple-spacing-sm);
   flex-wrap: wrap;
-  margin-bottom: 16px;
+  margin-bottom: var(--apple-spacing-md);
 }
 
 .filter-item {
@@ -668,13 +670,13 @@ onMounted(() => {
 .pager-row {
   display: flex;
   justify-content: flex-end;
-  margin-top: 16px;
+  margin-top: var(--apple-spacing-md);
 }
 
 .form-tip {
   width: 100%;
-  margin-top: 4px;
-  font-size: 0.75rem;
+  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
   line-height: 1.5;
   color: var(--apple-ink-muted-48);
 }
@@ -682,113 +684,23 @@ onMounted(() => {
 .enroll-hint {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 10px 14px;
-  margin-bottom: 14px;
+  gap: var(--apple-spacing-xxs);
+  padding: var(--apple-spacing-sm);
+  margin-bottom: var(--apple-spacing-sm);
   border-radius: var(--apple-rounded-md);
   background: color-mix(in srgb, var(--apple-warning) 10%, transparent);
   color: var(--apple-warning);
-  font-size: 0.8125rem;
+  font-size: var(--apple-fs-fine-print);
 }
 
 .enroll-filter {
-  margin-bottom: 12px;
+  margin-bottom: var(--apple-spacing-sm);
 }
 
 .picked-count {
   margin-left: auto;
-  font-size: 0.8125rem;
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.batch-detail {
-  gap: var(--apple-spacing-md);
-}
-
-.head-row {
-  gap: var(--apple-spacing-md);
-}
-
-.head-title {
-  gap: var(--apple-spacing-xs);
-  margin: var(--apple-spacing-xxs) 0;
-  font-size: var(--apple-fs-tagline);
-  font-family: var(--apple-font-display);
-}
-
-.head-desc {
-  font-size: var(--apple-fs-fine-print);
-}
-
-.head-actions {
-  gap: var(--apple-spacing-xs);
-}
-
-.stat-strip {
-  gap: var(--apple-spacing-sm);
-  margin-top: var(--apple-spacing-md);
-}
-
-.stat-block {
-  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-}
-
-.stat-value {
-  font-size: var(--apple-fs-tagline);
-}
-
-.stat-label {
-  margin-top: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
-}
-
-.remark-line {
-  margin: var(--apple-spacing-sm) 0 0;
-  font-size: var(--apple-fs-fine-print);
-}
-
-.section-title {
-  font-size: var(--apple-fs-caption);
-  font-family: var(--apple-font-display);
-}
-
-.members-line {
-  gap: var(--apple-spacing-xs);
-  margin-top: var(--apple-spacing-sm);
-}
-
-.members-label {
-  font-size: var(--apple-fs-fine-print);
-}
-
-.filter-row {
-  gap: var(--apple-spacing-sm);
-  margin-bottom: var(--apple-spacing-md);
-}
-
-.pager-row {
-  margin-top: var(--apple-spacing-md);
-}
-
-.form-tip {
-  margin-top: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
-}
-
-.enroll-hint {
-  gap: var(--apple-spacing-xxs);
-  padding: var(--apple-spacing-sm);
-  margin-bottom: var(--apple-spacing-sm);
-  font-size: var(--apple-fs-fine-print);
-}
-
-.enroll-filter {
-  margin-bottom: var(--apple-spacing-sm);
-}
-
-.picked-count {
-  font-size: var(--apple-fs-fine-print);
 }
 
 @media (max-width: 768px) {

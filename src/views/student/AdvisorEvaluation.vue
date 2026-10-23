@@ -299,7 +299,7 @@ onMounted(() => {
 .advisor-evaluation {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--apple-spacing-md);
   color: var(--apple-ink);
   font-family: var(--apple-font-text);
 }
@@ -308,18 +308,21 @@ onMounted(() => {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--apple-spacing-md);
 }
 
 .head-title {
-  margin: 0 0 6px;
+  margin: 0 0 var(--apple-spacing-xs);
+  font-family: var(--apple-font-display);
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--apple-ink);
 }
 
 .head-desc {
   margin: 0;
-  font-size: 0.8125rem;
+  font-size: var(--apple-fs-caption);
   color: var(--apple-ink-muted-48);
 }
 
@@ -327,8 +330,8 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 48px 24px;
+  gap: var(--apple-spacing-sm);
+  padding: var(--apple-spacing-xxl) var(--apple-spacing-lg);
   text-align: center;
 }
 
@@ -338,13 +341,13 @@ onMounted(() => {
 
 .state-title {
   margin: 0;
-  font-size: 1rem;
+  font-size: var(--apple-fs-body-strong);
   font-weight: 600;
 }
 
 .state-reason {
   margin: 0;
-  font-size: 0.875rem;
+  font-size: var(--apple-fs-caption);
   color: var(--apple-ink-muted-48);
   max-width: 420px;
 }
@@ -353,41 +356,43 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--apple-spacing-sm);
   flex-wrap: wrap;
 
   .card-title {
     display: flex;
     align-items: center;
+    font-family: var(--apple-font-display);
+    font-size: var(--apple-fs-body-strong);
     font-weight: 600;
 
     .el-icon {
-      margin-right: 0.5rem;
+      margin-right: var(--apple-spacing-xs);
       color: var(--apple-primary);
     }
   }
 
   .submit-time {
-    font-size: 0.8125rem;
+    font-size: var(--apple-fs-fine-print);
     color: var(--apple-ink-muted-48);
   }
 }
 
 .readonly-body,
 .form-body {
-  padding: 8px 0;
+  padding: var(--apple-spacing-xs) 0;
 }
 
 .paper-info {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--apple-spacing-xs);
 }
 
 .info-item {
   display: flex;
-  gap: 8px;
-  font-size: 0.875rem;
+  gap: var(--apple-spacing-xs);
+  font-size: var(--apple-fs-caption);
 
   .label {
     color: var(--apple-ink-muted-48);
@@ -402,39 +407,39 @@ onMounted(() => {
 .score-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
-  margin: 16px 0;
+  gap: var(--apple-spacing-md);
+  margin: var(--apple-spacing-md) 0;
 }
 
 .score-item {
   .score-label {
-    font-size: 0.8125rem;
+    font-size: var(--apple-fs-fine-print);
     color: var(--apple-ink-muted-48);
-    margin-bottom: 6px;
+    margin-bottom: var(--apple-spacing-xs);
   }
 }
 
 .block-label {
-  font-size: 0.8125rem;
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
-  margin-bottom: 8px;
+  margin-bottom: var(--apple-spacing-xs);
 }
 
 .tags-block {
-  margin: 16px 0;
+  margin: var(--apple-spacing-md) 0;
 
   .tag-item {
-    margin-right: 8px;
-    margin-bottom: 8px;
+    margin-right: var(--apple-spacing-xs);
+    margin-bottom: var(--apple-spacing-xs);
   }
 }
 
 .comment-block {
-  margin: 16px 0;
+  margin: var(--apple-spacing-md) 0;
 
   .comment-text {
     margin: 0;
-    font-size: 0.875rem;
+    font-size: var(--apple-fs-caption);
     line-height: 1.6;
     color: var(--apple-ink);
     white-space: pre-wrap;
@@ -442,138 +447,16 @@ onMounted(() => {
 }
 
 .readonly-tip {
-  margin-top: 20px;
+  margin-top: var(--apple-spacing-md);
 }
 
 .form-tip {
-  margin-left: 12px;
-  font-size: 0.8125rem;
+  margin-left: var(--apple-spacing-sm);
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
 }
 
 :deep(.el-rate) {
-  height: 24px;
-}
-
-// ── 视觉统一（design-tokens 覆盖层） ────────────────────────
-.advisor-evaluation {
-  gap: var(--apple-spacing-md);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
-
-  .head-row {
-    gap: var(--apple-spacing-md);
-  }
-
-  .head-title {
-    margin: 0 0 var(--apple-spacing-xs);
-    font-family: var(--apple-font-display);
-    font-size: 1.25rem;
-    font-weight: 700;
-    line-height: 1.2;
-    color: var(--apple-ink);
-  }
-
-  .head-desc {
-    font-size: var(--apple-fs-caption);
-    color: var(--apple-ink-muted-48);
-  }
-
-  .state-block {
-    gap: var(--apple-spacing-sm);
-    padding: var(--apple-spacing-xxl) var(--apple-spacing-lg);
-  }
-
-  .state-icon {
-    color: var(--apple-ink-muted-48);
-  }
-
-  .state-title {
-    font-size: var(--apple-fs-body-strong);
-    font-weight: 600;
-  }
-
-  .state-reason {
-    font-size: var(--apple-fs-caption);
-    color: var(--apple-ink-muted-48);
-  }
-
-  .card-header {
-    gap: var(--apple-spacing-sm);
-
-    .card-title {
-      font-family: var(--apple-font-display);
-      font-size: var(--apple-fs-body-strong);
-      font-weight: 600;
-
-      .el-icon {
-        margin-right: var(--apple-spacing-xs);
-      }
-    }
-
-    .submit-time {
-      font-size: var(--apple-fs-fine-print);
-      color: var(--apple-ink-muted-48);
-    }
-  }
-
-  .readonly-body,
-  .form-body {
-    padding: var(--apple-spacing-xs) 0;
-  }
-
-  .paper-info {
-    gap: var(--apple-spacing-xs);
-  }
-
-  .info-item {
-    gap: var(--apple-spacing-xs);
-    font-size: var(--apple-fs-caption);
-
-    .label {
-      color: var(--apple-ink-muted-48);
-    }
-
-    .value {
-      color: var(--apple-ink);
-    }
-  }
-
-  .score-grid {
-    gap: var(--apple-spacing-md);
-    margin: var(--apple-spacing-md) 0;
-  }
-
-  .score-item .score-label,
-  .block-label {
-    margin-bottom: var(--apple-spacing-xs);
-    font-size: var(--apple-fs-fine-print);
-    color: var(--apple-ink-muted-48);
-  }
-
-  .tags-block,
-  .comment-block {
-    margin: var(--apple-spacing-md) 0;
-  }
-
-  .comment-text {
-    font-size: var(--apple-fs-caption);
-    line-height: 1.6;
-    color: var(--apple-ink);
-  }
-
-  .readonly-tip {
-    margin-top: var(--apple-spacing-md);
-  }
-
-  .form-tip {
-    margin-left: var(--apple-spacing-sm);
-    font-size: var(--apple-fs-fine-print);
-    color: var(--apple-ink-muted-48);
-  }
-
-  :deep(.el-rate) {
-    height: 22px;
-  }
+  height: 22px;
 }
 </style>

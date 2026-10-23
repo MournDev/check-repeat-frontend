@@ -516,7 +516,7 @@ onMounted(() => {
 .advisor-eval-management {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--apple-spacing-md);
   color: var(--apple-ink);
   font-family: var(--apple-font-text);
 }
@@ -525,18 +525,19 @@ onMounted(() => {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--apple-spacing-md);
 }
 
 .head-title {
-  margin: 0 0 6px;
-  font-size: 1.25rem;
+  margin: 0 0 var(--apple-spacing-xxs);
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-tagline);
   font-weight: 600;
 }
 
 .head-desc {
   margin: 0;
-  font-size: 0.8125rem;
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
 }
 
@@ -544,8 +545,8 @@ onMounted(() => {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 6px;
-  font-size: 0.75rem;
+  gap: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
 
   .el-icon {
@@ -561,12 +562,12 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 20px 16px;
+  gap: var(--apple-spacing-xs);
+  padding: var(--apple-spacing-md);
   text-align: center;
 
   .stat-label {
-    font-size: 0.8125rem;
+    font-size: var(--apple-fs-fine-print);
     color: var(--apple-ink-muted-48);
   }
 
@@ -576,13 +577,13 @@ onMounted(() => {
   }
 
   .rate-text {
-    font-size: 0.875rem;
+    font-size: var(--apple-fs-caption);
     font-weight: 600;
     color: var(--apple-primary);
   }
 
   .stat-value {
-    font-size: 2rem;
+    font-size: var(--apple-fs-display-md);
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     line-height: 1.2;
@@ -593,7 +594,7 @@ onMounted(() => {
   }
 
   .stat-sub {
-    font-size: 0.75rem;
+    font-size: var(--apple-fs-fine-print);
     color: var(--apple-ink-muted-48);
   }
 }
@@ -601,22 +602,24 @@ onMounted(() => {
 .card-header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--apple-spacing-sm);
   flex-wrap: wrap;
 
   .card-title {
     display: flex;
     align-items: center;
+    font-family: var(--apple-font-display);
+    font-size: var(--apple-fs-body-strong);
     font-weight: 600;
 
     .el-icon {
-      margin-right: 0.5rem;
+      margin-right: var(--apple-spacing-xs);
       color: var(--apple-primary);
     }
   }
 
   .header-tip {
-    font-size: 0.75rem;
+    font-size: var(--apple-fs-fine-print);
     color: var(--apple-ink-muted-48);
   }
 }
@@ -629,8 +632,8 @@ onMounted(() => {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: var(--apple-spacing-sm);
+  margin-bottom: var(--apple-spacing-md);
 
   .filter-item {
     width: 200px;
@@ -642,7 +645,7 @@ onMounted(() => {
 }
 
 .cell-main {
-  font-size: 0.8125rem;
+  font-size: var(--apple-fs-fine-print);
   font-weight: 600;
   color: var(--apple-ink);
   overflow: hidden;
@@ -651,17 +654,17 @@ onMounted(() => {
 }
 
 .cell-sub {
-  font-size: 0.75rem;
+  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
-  margin-top: 2px;
 }
 
 .score-dims {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 10px;
+  gap: var(--apple-spacing-xxs) var(--apple-spacing-xs);
   justify-content: center;
-  font-size: 0.75rem;
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
 
   .overall {
@@ -674,7 +677,7 @@ onMounted(() => {
 }
 
 .tag-item {
-  margin: 2px 4px 2px 0;
+  margin: var(--apple-spacing-xxs) var(--apple-spacing-xxs) var(--apple-spacing-xxs) 0;
 }
 
 .comment-preview {
@@ -682,14 +685,14 @@ onMounted(() => {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  font-size: 0.8125rem;
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink);
   cursor: default;
 }
 
 .comment-full {
   margin: 0;
-  font-size: 0.8125rem;
+  font-size: var(--apple-fs-fine-print);
   line-height: 1.6;
   white-space: pre-wrap;
 }
@@ -699,7 +702,7 @@ onMounted(() => {
 }
 
 .warn-icon {
-  margin-left: 4px;
+  margin-left: var(--apple-spacing-xxs);
   color: var(--apple-danger);
   vertical-align: middle;
 }
@@ -721,105 +724,13 @@ onMounted(() => {
 .table-footer {
   display: flex;
   justify-content: flex-end;
-  margin-top: 16px;
+  margin-top: var(--apple-spacing-md);
 }
 
 @media (max-width: 992px) {
   .el-col {
     margin-bottom: 16px;
   }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.advisor-eval-management {
-  gap: var(--apple-spacing-md);
-}
-
-.head-row {
-  gap: var(--apple-spacing-md);
-}
-
-.head-title {
-  margin-bottom: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-tagline);
-  font-family: var(--apple-font-display);
-}
-
-.head-desc {
-  font-size: var(--apple-fs-fine-print);
-}
-
-.period-tip {
-  gap: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
-}
-
-.stat-card {
-  gap: var(--apple-spacing-xs);
-  padding: var(--apple-spacing-md);
-
-  .stat-label,
-  .stat-sub {
-    font-size: var(--apple-fs-fine-print);
-  }
-
-  .rate-text {
-    font-size: var(--apple-fs-caption);
-  }
-
-  .stat-value {
-    font-size: var(--apple-fs-display-md);
-  }
-}
-
-.card-header {
-  gap: var(--apple-spacing-sm);
-
-  .card-title {
-    font-size: var(--apple-fs-body-strong);
-    font-family: var(--apple-font-display);
-
-    .el-icon {
-      margin-right: var(--apple-spacing-xs);
-    }
-  }
-
-  .header-tip {
-    font-size: var(--apple-fs-fine-print);
-  }
-}
-
-.filter-bar {
-  gap: var(--apple-spacing-sm);
-  margin-bottom: var(--apple-spacing-md);
-}
-
-.cell-main,
-.comment-preview,
-.comment-full {
-  font-size: var(--apple-fs-fine-print);
-}
-
-.cell-sub {
-  margin-top: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
-}
-
-.score-dims {
-  gap: var(--apple-spacing-xxs) var(--apple-spacing-xs);
-  font-size: var(--apple-fs-fine-print);
-}
-
-.tag-item {
-  margin: var(--apple-spacing-xxs) var(--apple-spacing-xxs) var(--apple-spacing-xxs) 0;
-}
-
-.warn-icon {
-  margin-left: var(--apple-spacing-xxs);
-}
-
-.table-footer {
-  margin-top: var(--apple-spacing-md);
 }
 
 @media (max-width: 768px) {

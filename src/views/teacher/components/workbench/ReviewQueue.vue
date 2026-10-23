@@ -139,27 +139,29 @@ watch(() => props.currentId, async () => {
   min-height: 0;
   background: var(--apple-canvas);
   border-right: 1px solid var(--apple-hairline);
+  font-family: var(--apple-font-text);
 }
 
 .queue-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 16px 8px;
+  padding: var(--apple-spacing-md) var(--apple-spacing-md) var(--apple-spacing-xs);
   flex-shrink: 0;
 }
 
 .queue-title {
   display: flex;
   align-items: baseline;
-  gap: 8px;
-  font-size: 0.9375rem;
+  gap: var(--apple-spacing-xs);
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-body-strong);
   font-weight: 600;
   color: var(--apple-ink);
 }
 
 .queue-count {
-  font-size: 0.8125rem;
+  font-size: var(--apple-fs-fine-print);
   font-weight: 500;
   color: var(--apple-primary);
 }
@@ -170,20 +172,25 @@ watch(() => props.currentId, async () => {
 }
 
 .queue-search {
-  padding: 0 16px;
+  padding: 0 var(--apple-spacing-md);
   flex-shrink: 0;
+
+  :deep(.el-input__wrapper) {
+    border-radius: var(--apple-rounded-md);
+    font-size: var(--apple-fs-fine-print);
+  }
 }
 
 .queue-filters {
   display: flex;
-  gap: 6px;
-  padding: 10px 16px 12px;
+  gap: var(--apple-spacing-xxs);
+  padding: var(--apple-spacing-xs) var(--apple-spacing-md) var(--apple-spacing-sm);
   flex-shrink: 0;
 }
 
 .filter-chip {
-  padding: 3px 10px;
-  font-size: 0.75rem;
+  padding: 3px var(--apple-spacing-xs);
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
   background: var(--apple-canvas-parchment);
   border: 1px solid transparent;
@@ -206,16 +213,16 @@ watch(() => props.currentId, async () => {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 0 12px 16px;
+  padding: 0 var(--apple-spacing-sm) var(--apple-spacing-md);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--apple-spacing-xs);
 }
 
 .queue-card {
   display: block;
   width: 100%;
-  padding: 11px 12px;
+  padding: var(--apple-spacing-xs) var(--apple-spacing-sm);
   text-align: left;
   background: var(--apple-canvas);
   border: 1px solid var(--apple-hairline);
@@ -237,19 +244,19 @@ watch(() => props.currentId, async () => {
 .card-top {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--apple-spacing-xxs);
 }
 
 .student-name {
-  font-size: 0.8125rem;
+  font-size: var(--apple-fs-caption);
   font-weight: 600;
   color: var(--apple-ink);
 }
 
 .flag {
   margin-left: auto;
-  padding: 0 6px;
-  font-size: 0.6875rem;
+  padding: 0 var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
   line-height: 16px;
   border-radius: var(--apple-rounded-xs);
 }
@@ -265,8 +272,8 @@ watch(() => props.currentId, async () => {
 }
 
 .card-title {
-  margin-top: 4px;
-  font-size: 0.8125rem;
+  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
   line-height: 1.4;
   color: var(--apple-ink-muted-80);
   display: -webkit-box;
@@ -278,9 +285,9 @@ watch(() => props.currentId, async () => {
 .card-meta {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 6px;
-  font-size: 0.6875rem;
+  gap: var(--apple-spacing-xs);
+  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
 }
 
@@ -291,10 +298,10 @@ watch(() => props.currentId, async () => {
 /* 颜色由 global-styles.scss 的 similarity-* 语义类统一提供 */
 
 .queue-empty {
-  padding: 40px 12px;
+  padding: var(--apple-spacing-xl) var(--apple-spacing-sm);
   text-align: center;
   color: var(--apple-ink-muted-48);
-  font-size: 0.8125rem;
+  font-size: var(--apple-fs-caption);
 }
 
 .empty-icon {
@@ -303,136 +310,37 @@ watch(() => props.currentId, async () => {
 }
 
 .queue-empty p {
-  margin: 8px 0;
+  margin: var(--apple-spacing-xs) 0;
 }
 
 .queue-hint {
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px 16px;
+  gap: var(--apple-spacing-sm);
+  padding: var(--apple-spacing-xs) var(--apple-spacing-md);
   border-top: 1px solid var(--apple-hairline);
-  font-size: 0.6875rem;
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
 }
 
 .queue-hint span {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: var(--apple-spacing-xxs);
 }
 
 .queue-hint kbd {
   min-width: 16px;
   padding: 0 4px;
   font-family: var(--apple-font-text);
-  font-size: 0.625rem;
+  font-size: var(--apple-fs-fine-print);
   line-height: 16px;
   text-align: center;
   color: var(--apple-ink-muted-80);
   background: var(--apple-canvas-parchment);
   border: 1px solid var(--apple-hairline);
   border-radius: var(--apple-rounded-xs);
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.review-queue {
-  font-family: var(--apple-font-text);
-}
-
-.queue-head {
-  padding: var(--apple-spacing-md) var(--apple-spacing-md) var(--apple-spacing-xs);
-}
-
-.queue-title {
-  gap: var(--apple-spacing-xs);
-  font-family: var(--apple-font-display);
-  font-size: var(--apple-fs-body-strong);
-}
-
-.queue-count {
-  font-size: var(--apple-fs-fine-print);
-}
-
-.queue-search {
-  padding: 0 var(--apple-spacing-md);
-
-  :deep(.el-input__wrapper) {
-    border-radius: var(--apple-rounded-md);
-    font-size: var(--apple-fs-fine-print);
-  }
-}
-
-.queue-filters {
-  gap: var(--apple-spacing-xxs);
-  padding: var(--apple-spacing-xs) var(--apple-spacing-md) var(--apple-spacing-sm);
-}
-
-.filter-chip {
-  padding: 3px var(--apple-spacing-xs);
-  font-size: var(--apple-fs-fine-print);
-  transition: var(--apple-transition-fast);
-}
-
-.queue-list {
-  padding: 0 var(--apple-spacing-sm) var(--apple-spacing-md);
-  gap: var(--apple-spacing-xs);
-}
-
-.queue-card {
-  padding: var(--apple-spacing-xs) var(--apple-spacing-sm);
-  border-radius: var(--apple-rounded-md);
-  transition: var(--apple-transition-fast);
-}
-
-.card-top {
-  gap: var(--apple-spacing-xxs);
-}
-
-.student-name {
-  font-size: var(--apple-fs-caption);
-}
-
-.flag {
-  padding: 0 var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
-  line-height: 16px;
-}
-
-.card-title {
-  margin-top: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
-  line-height: 1.4;
-}
-
-.card-meta {
-  gap: var(--apple-spacing-xs);
-  margin-top: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
-}
-
-.queue-empty {
-  padding: var(--apple-spacing-xl) var(--apple-spacing-sm);
-  font-size: var(--apple-fs-caption);
-}
-
-.queue-empty p {
-  margin: var(--apple-spacing-xs) 0;
-}
-
-.queue-hint {
-  gap: var(--apple-spacing-sm);
-  padding: var(--apple-spacing-xs) var(--apple-spacing-md);
-  font-size: var(--apple-fs-fine-print);
-}
-
-.queue-hint span {
-  gap: var(--apple-spacing-xxs);
-}
-
-.queue-hint kbd {
-  font-size: var(--apple-fs-fine-print);
 }
 
 @media (max-width: 768px) {

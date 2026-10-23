@@ -518,7 +518,7 @@ onMounted(() => {
 .defense-workbench {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--apple-spacing-md);
   color: var(--apple-ink);
   font-family: var(--apple-font-text);
 }
@@ -526,10 +526,12 @@ onMounted(() => {
 .head-title {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 0 0 6px;
+  gap: var(--apple-spacing-xs);
+  margin: 0 0 var(--apple-spacing-xxs);
+  font-family: var(--apple-font-display);
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
 .head-desc {
@@ -542,7 +544,7 @@ onMounted(() => {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--apple-spacing-md);
 }
 
 .head-left {
@@ -562,8 +564,8 @@ onMounted(() => {
 
 .progress-text {
   display: block;
-  margin-bottom: 6px;
-  font-size: 0.8125rem;
+  margin-bottom: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
   font-variant-numeric: tabular-nums;
 }
 
@@ -572,19 +574,19 @@ onMounted(() => {
 }
 
 .meeting-desc {
-  margin-top: 16px;
+  margin-top: var(--apple-spacing-md);
 }
 
 .members-line {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 12px;
+  gap: var(--apple-spacing-xs);
+  margin-top: var(--apple-spacing-sm);
   flex-wrap: wrap;
 }
 
 .members-label {
-  font-size: 0.8125rem;
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
 }
 
@@ -599,123 +601,14 @@ onMounted(() => {
 }
 
 .section-title {
-  font-size: 0.9375rem;
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-body-strong);
   font-weight: 600;
 }
 
 .result-filter {
   width: 140px;
-}
 
-.leader-tip {
-  margin-bottom: 16px;
-}
-
-.sep {
-  margin: 0 6px;
-  color: var(--apple-divider-soft);
-}
-
-.mode-tag {
-  margin-left: 8px;
-}
-
-.stu-no {
-  color: var(--apple-ink-muted-48);
-}
-
-.muted {
-  color: var(--apple-ink-muted-48);
-}
-
-.score-paper-info {
-  padding: 12px 16px;
-  margin-bottom: 16px;
-  border-radius: var(--apple-rounded-md);
-  background: var(--apple-canvas-parchment);
-}
-
-.score-paper-title {
-  font-weight: 600;
-}
-
-.score-paper-student {
-  margin-top: 2px;
-  font-size: 0.8125rem;
-  color: var(--apple-ink-muted-48);
-}
-
-.form-tip-inline {
-  margin-left: 12px;
-  font-size: 0.75rem;
-  color: var(--apple-ink-muted-48);
-}
-
-.form-tip {
-  width: 100%;
-  margin-top: 4px;
-  font-size: 0.75rem;
-  line-height: 1.5;
-  color: var(--apple-ink-muted-48);
-}
-
-.upload-area {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.upload-name {
-  max-width: 220px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 0.8125rem;
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.defense-workbench {
-  gap: var(--apple-spacing-md);
-}
-
-.head-title {
-  gap: var(--apple-spacing-xs);
-  margin: 0 0 var(--apple-spacing-xxs);
-  font-family: var(--apple-font-display);
-  font-size: 1.25rem;
-  font-weight: 700;
-  line-height: 1.2;
-}
-
-.head-row {
-  gap: var(--apple-spacing-md);
-}
-
-.progress-text {
-  margin-bottom: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
-}
-
-.meeting-desc {
-  margin-top: var(--apple-spacing-md);
-}
-
-.members-line {
-  gap: var(--apple-spacing-xs);
-  margin-top: var(--apple-spacing-sm);
-}
-
-.members-label {
-  font-size: var(--apple-fs-fine-print);
-}
-
-.section-title {
-  font-family: var(--apple-font-display);
-  font-size: var(--apple-fs-body-strong);
-}
-
-.result-filter {
   :deep(.el-select__wrapper) {
     border-radius: var(--apple-rounded-md);
     font-size: var(--apple-fs-caption);
@@ -728,38 +621,64 @@ onMounted(() => {
 
 .sep {
   margin: 0 var(--apple-spacing-xxs);
+  color: var(--apple-divider-soft);
 }
 
 .mode-tag {
   margin-left: var(--apple-spacing-xs);
 }
 
+.stu-no {
+  color: var(--apple-ink-muted-48);
+}
+
+.muted {
+  color: var(--apple-ink-muted-48);
+}
+
 .score-paper-info {
   padding: var(--apple-spacing-sm) var(--apple-spacing-md);
   margin-bottom: var(--apple-spacing-md);
+  border-radius: var(--apple-rounded-md);
+  background: var(--apple-canvas-parchment);
+}
+
+.score-paper-title {
+  font-weight: 600;
 }
 
 .score-paper-student {
   margin-top: var(--apple-spacing-xxs);
   font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
 }
 
 .form-tip-inline {
   margin-left: var(--apple-spacing-sm);
   font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
 }
 
 .form-tip {
+  width: 100%;
   margin-top: var(--apple-spacing-xxs);
   font-size: var(--apple-fs-fine-print);
   line-height: 1.5;
+  color: var(--apple-ink-muted-48);
 }
 
 .upload-area {
+  display: flex;
+  align-items: center;
   gap: var(--apple-spacing-xs);
+  flex-wrap: wrap;
 }
 
 .upload-name {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: var(--apple-fs-fine-print);
 }
 
