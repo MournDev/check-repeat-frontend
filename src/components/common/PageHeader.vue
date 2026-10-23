@@ -25,7 +25,7 @@ defineProps({
   min-width: 0;
   margin: 0;
   font-size: var(--app-fs-caption);
-  color: var(--apple-ink-muted-48);
+  color: var(--app-color-text-muted);
 }
 
 .page-header-actions {

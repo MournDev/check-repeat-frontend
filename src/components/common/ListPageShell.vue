@@ -75,7 +75,7 @@ defineEmits(['page-change', 'size-change'])
   gap: var(--app-space-2);
   font-size: var(--app-fs-heading);
   font-weight: 600;
-  color: var(--apple-ink);
+  color: var(--app-color-ink);
 }
 
 .list-page__extra {
@@ -87,7 +87,7 @@ defineEmits(['page-change', 'size-change'])
 
 .list-page__total {
   font-size: var(--app-fs-caption);
-  color: var(--apple-ink-muted-48);
+  color: var(--app-color-text-muted);
 }
 
 .list-page__pagination {

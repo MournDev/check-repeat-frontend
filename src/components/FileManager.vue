@@ -332,9 +332,9 @@ onMounted(() => {
   display: flex;
   height: 100%;
   gap: 0;
-  background: var(--apple-surface);
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-xl);
+  background: var(--app-color-card-bg);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
   overflow: hidden;
 }
 
@@ -342,54 +342,54 @@ onMounted(() => {
 .fm-sidebar {
   width: 280px;
   flex-shrink: 0;
-  border-right: 1px solid var(--apple-hairline);
-  background: var(--apple-canvas-parchment);
+  border-right: 1px solid var(--app-color-border);
+  background: var(--app-color-fill);
   display: flex;
   flex-direction: column;
 }
 
 .fm-sidebar-header {
-  padding: var(--apple-spacing-lg);
-  border-bottom: 1px solid var(--apple-hairline);
+  padding: var(--app-space-6);
+  border-bottom: 1px solid var(--app-color-border);
 }
 
 .fm-sidebar-title {
   margin: 0;
-  font-size: 17px;
+  font-size: var(--app-fs-heading);
   font-weight: 600;
-  color: var(--apple-ink);
+  color: var(--app-color-ink);
 }
 
 .fm-session-list {
   flex: 1;
   overflow-y: auto;
-  padding: var(--apple-spacing-sm);
+  padding: var(--app-space-3);
 }
 
 .fm-empty-sessions {
-  padding: var(--apple-spacing-xl) 0;
+  padding: var(--app-space-8) 0;
 }
 
 .fm-session-item {
   display: flex;
   align-items: center;
-  gap: var(--apple-spacing-sm);
-  padding: var(--apple-spacing-sm);
-  border-radius: var(--apple-rounded-lg);
+  gap: var(--app-space-3);
+  padding: var(--app-space-3);
+  border-radius: var(--app-radius-lg);
   cursor: pointer;
   transition: background-color 0.2s ease;
 
   &:hover {
-    background: var(--apple-surface);
+    background: var(--app-color-card-bg);
   }
 
   &.active {
-    background: var(--apple-info-bg);
-    border: 1px solid var(--apple-primary);
+    background: var(--app-color-info-bg);
+    border: 1px solid var(--app-color-primary);
   }
 
   & + & {
-    margin-top: 4px;
+    margin-top: var(--app-space-1);
   }
 }
 
@@ -404,7 +404,7 @@ onMounted(() => {
 .fm-session-name {
   font-size: 15px;
   font-weight: 500;
-  color: var(--apple-ink);
+  color: var(--app-color-ink);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -412,7 +412,7 @@ onMounted(() => {
 
 .fm-session-meta {
   font-size: 12px;
-  color: var(--apple-ink-muted-48);
+  color: var(--app-color-text-muted);
 }
 
 // Main area
@@ -435,9 +435,9 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--apple-spacing-md) var(--apple-spacing-lg);
-  border-bottom: 1px solid var(--apple-hairline);
-  gap: var(--apple-spacing-md);
+  padding: var(--app-space-4) var(--app-space-6);
+  border-bottom: 1px solid var(--app-color-border);
+  gap: var(--app-space-4);
   flex-wrap: wrap;
 }
 
@@ -445,14 +445,14 @@ onMounted(() => {
 .fm-toolbar-right {
   display: flex;
   align-items: center;
-  gap: var(--apple-spacing-sm);
+  gap: var(--app-space-3);
 }
 
 // Files area
 .fm-files-area {
   flex: 1;
   overflow-y: auto;
-  padding: var(--apple-spacing-lg);
+  padding: var(--app-space-6);
 }
 
 .fm-empty-files {
@@ -465,20 +465,20 @@ onMounted(() => {
 .fm-files-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--apple-spacing-md);
+  gap: var(--app-space-4);
 }
 
 .fm-file-card {
   display: flex;
   flex-direction: column;
-  background: var(--apple-canvas-parchment);
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-lg);
-  padding: var(--apple-spacing-lg);
+  background: var(--app-color-fill);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  padding: var(--app-space-6);
   transition: border-color 0.2s ease;
 
   &:hover {
-    border-color: var(--apple-primary);
+    border-color: var(--app-color-primary);
   }
 }
 
@@ -487,13 +487,13 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   height: 80px;
-  margin-bottom: var(--apple-spacing-sm);
-  color: var(--apple-ink-muted-48);
+  margin-bottom: var(--app-space-3);
+  color: var(--app-color-text-muted);
   cursor: pointer;
   transition: color 0.2s ease;
 
   &:hover {
-    color: var(--apple-primary);
+    color: var(--app-color-primary);
   }
 }
 
@@ -503,33 +503,33 @@ onMounted(() => {
 }
 
 .fm-file-name {
-  font-size: var(--apple-fs-caption);
+  font-size: var(--app-fs-caption);
   font-weight: 500;
-  color: var(--apple-ink);
+  color: var(--app-color-ink);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-bottom: 4px;
+  margin-bottom: var(--app-space-1);
 }
 
 .fm-file-meta {
   display: flex;
-  gap: var(--apple-spacing-sm);
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
-  margin-bottom: 4px;
+  gap: var(--app-space-3);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
+  margin-bottom: var(--app-space-1);
 }
 
 .fm-file-time {
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 .fm-file-actions {
   display: flex;
-  gap: var(--apple-spacing-xxs);
-  margin-top: var(--apple-spacing-sm);
-  padding-top: var(--apple-spacing-sm);
-  border-top: 1px solid var(--apple-hairline);
+  gap: var(--app-space-1);
+  margin-top: var(--app-space-3);
+  padding-top: var(--app-space-3);
+  border-top: 1px solid var(--app-color-border);
 }
 </style>

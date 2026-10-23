@@ -121,7 +121,7 @@ const loadPreview = async () => {
   const loadingInstance = ElLoading.service({
     lock: true,
     text: '正在加载预览内容...',
-    background: 'rgba(0, 0, 0, 0.7)'
+    background: 'rgba(var(--app-color-shadow-rgb), 0.7)'
   })
 
   try {
@@ -241,14 +241,14 @@ onMounted(() => {
   overflow: hidden;
   
   :deep(.el-dialog__header) {
-    background: var(--apple-surface-pearl);
-    border-bottom: 1px solid var(--apple-slate-border);
-    padding: 20px 24px;
+    background: var(--app-color-fill-light);
+    border-bottom: 1px solid var(--app-color-border-soft);
+    padding: var(--app-space-5) var(--app-space-6);
     
     .el-dialog__title {
-      font-size: 1.125rem;
+      font-size: var(--app-fs-heading);
       font-weight: 600;
-      color: var(--apple-slate-ink);
+      color: var(--app-color-ink);
     }
   }
   
@@ -278,12 +278,12 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: var(--apple-surface-pearl);
+  background: var(--app-color-fill-light);
 
   .loading-text {
-    margin-top: var(--apple-spacing-md);
-    color: var(--apple-slate-sub);
-    font-size: var(--apple-fs-caption);
+    margin-top: var(--app-space-4);
+    color: var(--app-color-text-muted);
+    font-size: var(--app-fs-caption);
   }
 }
 
@@ -294,13 +294,13 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: var(--apple-surface-pearl);
-  padding: var(--apple-spacing-xxl);
+  background: var(--app-color-fill-light);
+  padding: var(--app-space-12);
 
   .error-detail {
-    color: var(--apple-slate-sub);
-    margin: var(--apple-spacing-md) 0;
-    font-size: var(--apple-fs-caption);
+    color: var(--app-color-text-muted);
+    margin: var(--app-space-4) 0;
+    font-size: var(--app-fs-caption);
     text-align: center;
   }
 }
@@ -308,13 +308,13 @@ onMounted(() => {
 .dialog-footer {
   display: flex;
   justify-content: flex-end;
-  gap: var(--apple-spacing-sm);
-  padding: var(--apple-spacing-md) var(--apple-spacing-lg);
-  border-top: 1px solid var(--apple-hairline);
-  background: var(--apple-surface-pearl);
+  gap: var(--app-space-3);
+  padding: var(--app-space-4) var(--app-space-6);
+  border-top: 1px solid var(--app-color-border);
+  background: var(--app-color-fill-light);
 
   :deep(.el-button) {
-    border-radius: var(--apple-rounded-sm);
+    border-radius: var(--app-radius-sm);
   }
 }
 </style>

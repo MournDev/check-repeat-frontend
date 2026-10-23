@@ -650,7 +650,7 @@ onMounted(() => {
       font-size: var(--app-fs-caption);
     }
     ul {
-      padding-left: 1var(--app-space-2);
+      padding-left: 18px;
       margin: 0;
       li {
         margin-bottom: var(--app-space-1);

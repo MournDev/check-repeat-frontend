@@ -10,8 +10,8 @@
         </button>
         <div class="brand">
           <svg class="brand-mark" width="20" height="20" viewBox="0 0 28 28" fill="none">
-            <path d="M7 14L12 9L17 14L12 19L7 14Z" fill="#2997ff" fill-opacity="0.9"/>
-            <path d="M13 14L18 9L21 12V16L18 19L13 14Z" fill="#ffffff" fill-opacity="0.5"/>
+            <path d="M7 14L12 9L17 14L12 19L7 14Z" fill="var(--app-color-primary-on-dark)" fill-opacity="0.9"/>
+            <path d="M13 14L18 9L21 12V16L18 19L13 14Z" fill="var(--app-color-on-primary)" fill-opacity="0.5"/>
           </svg>
           <span class="brand-name">{{ systemName }}</span>
         </div>
@@ -514,7 +514,7 @@ onUnmounted(() => {
   flex-direction: column;
   height: 100vh;
   background: var(--app-color-page-bg);
-  font-family: var(--apple-font-text);
+  font-family: var(--app-font-family);
 }
 
 // ── Skip link：仅键盘聚焦时出现 ───────────────────────────
@@ -524,13 +524,13 @@ onUnmounted(() => {
   left: var(--app-space-3);
   z-index: 300;
   padding: var(--app-space-2) var(--app-space-3);
-  border: 1px solid var(--apple-hairline);
+  border: 1px solid var(--app-color-border);
   border-radius: var(--app-radius-sm);
-  background: var(--apple-canvas);
-  color: var(--apple-ink);
+  background: var(--app-color-card-bg);
+  color: var(--app-color-ink);
   font-size: var(--app-fs-caption);
   font-weight: 600;
-  transition: top var(--apple-transition-fast);
+  transition: top var(--app-transition-fast);
 
   &:focus { top: var(--app-space-2); }
 }
@@ -540,9 +540,9 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: var(--apple-global-nav-height);
-  padding: 0 var(--apple-spacing-lg);
-  background: var(--apple-surface-black);
+  height: var(--app-global-nav-height);
+  padding: 0 var(--app-space-6);
+  background: var(--app-color-card-bg-black);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -552,15 +552,15 @@ onUnmounted(() => {
 .global-nav-left {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: var(--app-space-6);
 }
 
 .nav-menu-toggle {
   display: none;
   background: none;
   border: none;
-  color: var(--apple-canvas);
-  padding: 4px;
+  color: var(--app-color-card-bg);
+  padding: var(--app-space-1);
   cursor: pointer;
   font-size: 20px;
   &:active { transform: scale(0.95); }
@@ -569,7 +569,7 @@ onUnmounted(() => {
 .brand {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--app-space-2);
 }
 
 .brand-mark {
@@ -578,17 +578,17 @@ onUnmounted(() => {
 
 .brand-name {
   font-family: "SF Pro Text", "Inter", system-ui, sans-serif;
-  font-size: var(--apple-fs-nav-link);
+  font-size: var(--app-fs-meta);
   font-weight: 400;
   letter-spacing: 0;
-  color: var(--apple-canvas);
+  color: var(--app-color-card-bg);
   white-space: nowrap;
 }
 
 .global-nav-right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--app-space-3);
 }
 
 .nav-badge {
@@ -598,8 +598,8 @@ onUnmounted(() => {
 .nav-icon-btn {
   width: 32px;
   height: 32px;
-  border-radius: var(--apple-rounded-sm);
-  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--app-radius-sm);
+  background: rgba(var(--app-color-white-rgb), 0.08);
   border: none;
   color: var(--app-color-nav-text);
   display: flex;
@@ -607,10 +607,10 @@ onUnmounted(() => {
   justify-content: center;
   cursor: pointer;
   padding: 0;
-  font-size: 16px;
+  font-size: var(--app-fs-heading);
   transition: color 0.2s ease, background-color 0.2s ease;
 
-  &:hover { color: var(--apple-body-on-dark); background: rgba(255, 255, 255, 0.15); }
+  &:hover { color: var(--app-color-on-primary); background: rgba(var(--app-color-white-rgb), 0.15); }
   &:active { transform: scale(0.95); }
 }
 
@@ -618,28 +618,28 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 10px 4px 4px;
-  border-radius: var(--apple-rounded-sm);
-  background: rgba(255, 255, 255, 0.08);
+  padding: var(--app-space-1) 10px var(--app-space-1) var(--app-space-1);
+  border-radius: var(--app-radius-sm);
+  background: rgba(var(--app-color-white-rgb), 0.08);
   border: none;
   color: var(--app-color-nav-text);
   cursor: pointer;
-  font-size: var(--apple-fs-nav-link);
+  font-size: var(--app-fs-meta);
   transition: color 0.2s ease, background-color 0.2s ease;
 
-  &:hover { color: var(--apple-body-on-dark); background: rgba(255, 255, 255, 0.15); }
+  &:hover { color: var(--app-color-on-primary); background: rgba(var(--app-color-white-rgb), 0.15); }
   &:active { transform: scale(0.95); }
 }
 
 .nav-avatar {
-  background: var(--apple-primary-on-dark);
-  color: var(--apple-ink);
+  background: var(--app-color-primary-on-dark);
+  color: var(--app-color-ink);
   font-weight: 600;
   font-size: 12px;
-  border-radius: var(--apple-rounded-pill);
+  border-radius: var(--app-radius-pill);
 }
 
-.nav-user-name { font-size: var(--apple-fs-nav-link); white-space: nowrap; }
+.nav-user-name { font-size: var(--app-fs-meta); white-space: nowrap; }
 .nav-chevron { font-size: 10px; margin-left: 2px; }
 
 // ── Sub Nav (48px, 白底，与页面底色分层) ────────────────────
@@ -653,7 +653,7 @@ onUnmounted(() => {
   border-bottom: 1px solid var(--app-color-border);
   flex-shrink: 0;
   position: sticky;
-  top: var(--apple-global-nav-height);
+  top: var(--app-global-nav-height);
   z-index: 99;
 }
 
@@ -681,19 +681,19 @@ onUnmounted(() => {
 
 .sub-nav-breadcrumb {
   :deep(.el-breadcrumb__item) {
-    .el-breadcrumb__inner { color: var(--apple-ink-muted-48) !important; font-size: 11px; }
-    .el-breadcrumb__separator { color: var(--apple-body-muted) !important; }
+    .el-breadcrumb__inner { color: var(--app-color-text-muted) !important; font-size: 11px; }
+    .el-breadcrumb__separator { color: var(--app-color-text-on-dark) !important; }
   }
 }
 
 .sub-nav-title {
   margin: 0;
-  font-family: var(--apple-font-display);
+  font-family: var(--app-font-family);
   font-size: var(--app-fs-title);
   font-weight: 600;
   letter-spacing: 0;
   line-height: var(--app-lh-heading);
-  color: var(--apple-ink);
+  color: var(--app-color-ink);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -701,14 +701,14 @@ onUnmounted(() => {
 
 .role-badge {
   font-family: "SF Pro Text", "Inter", system-ui, sans-serif;
-  font-size: var(--apple-fs-caption);
+  font-size: var(--app-fs-caption);
   font-weight: 400;
   letter-spacing: -0.224px;
-  color: var(--apple-ink-muted-48);
-  padding: 6px 14px;
-  background: var(--apple-surface-pearl);
+  color: var(--app-color-text-muted);
+  padding: 6px 1var(--app-space-1);
+  background: var(--app-color-fill-light);
   border-radius: 11px;
-  border: 1px solid var(--apple-divider-soft);
+  border: 1px solid var(--app-color-divider);
 }
 
 // ── App Body (sidebar + content) ──────────────────────────
@@ -734,19 +734,19 @@ onUnmounted(() => {
 }
 
 .sidebar-nav {
-  padding: var(--apple-spacing-xs) var(--apple-spacing-sm);
+  padding: var(--app-space-2) var(--app-space-3);
   flex: 1;
 }
 
 .sidebar-section { display: flex; flex-direction: column; gap: 1px; }
 
 .sidebar-section-label {
-  font-size: var(--apple-fs-fine-print);
+  font-size: var(--app-fs-meta);
   font-weight: 600;
-  // 原 --apple-ink-muted-48(#7a7a7a) 在 #272729 上仅 3.4:1，低于 AA；
+  // 原 --app-color-text-muted(#7a7a7a) 在 #272729 上仅 3.4:1，低于 AA；
   // 提到 slate-faint 后约 5.7:1。
   color: var(--app-color-nav-text-muted);
-  padding: 12px 12px 4px;
+  padding: var(--app-space-3) var(--app-space-3) var(--app-space-1);
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
@@ -756,11 +756,11 @@ onUnmounted(() => {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  margin-top: 8px;
-  padding: 8px 12px 4px;
+  margin-top: var(--app-space-2);
+  padding: var(--app-space-2) var(--app-space-3) var(--app-space-1);
   border: none;
   background: transparent;
-  font-size: var(--apple-fs-fine-print);
+  font-size: var(--app-fs-meta);
   font-weight: 600;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -798,8 +798,8 @@ onUnmounted(() => {
   text-decoration: none;
   height: var(--app-sidebar-item-h);
 
-  &:hover { background: rgba(255, 255, 255, 0.08); color: var(--apple-canvas); }
-  &.active { background: rgba(255, 255, 255, 0.12); color: var(--apple-canvas); font-weight: 600; }
+  &:hover { background: rgba(var(--app-color-white-rgb), 0.08); color: var(--app-color-card-bg); }
+  &.active { background: rgba(var(--app-color-white-rgb), 0.12); color: var(--app-color-card-bg); font-weight: 600; }
 
   .el-icon { font-size: 18px; flex-shrink: 0; }
   span { white-space: nowrap; }
@@ -811,7 +811,7 @@ onUnmounted(() => {
   }
 }
 
-.sidebar-spacer { height: var(--apple-spacing-md); }
+.sidebar-spacer { height: var(--app-space-4); }
 
 // 深色底上的键盘焦点环用亮蓝，保证对比度
 .sidebar-item:focus-visible,
@@ -819,7 +819,7 @@ onUnmounted(() => {
 .nav-icon-btn:focus-visible,
 .nav-user-btn:focus-visible,
 .nav-menu-toggle:focus-visible {
-  outline: 2px solid var(--apple-primary-on-dark);
+  outline: 2px solid var(--app-color-primary-on-dark);
   outline-offset: 2px;
 }
 
@@ -855,32 +855,32 @@ onUnmounted(() => {
 
   .maintenance-icon {
     font-size: 48px;
-    color: var(--apple-danger);
-    margin-bottom: var(--apple-spacing-md);
+    color: var(--app-color-danger);
+    margin-bottom: var(--app-space-4);
   }
 
   h2 {
-    font-size: var(--apple-fs-tagline);
+    font-size: var(--app-fs-title);
     font-weight: 600;
-    color: var(--apple-ink);
-    margin: 0 0 var(--apple-spacing-sm);
+    color: var(--app-color-ink);
+    margin: 0 0 var(--app-space-3);
   }
 
   .maintenance-notice {
-    font-size: var(--apple-fs-caption);
-    color: var(--apple-ink-muted-80);
+    font-size: var(--app-fs-caption);
+    color: var(--app-color-text);
     white-space: pre-wrap;
     margin: 0;
   }
 
   .maintenance-time {
-    font-size: var(--apple-fs-fine-print);
-    color: var(--apple-ink-secondary);
-    margin: var(--apple-spacing-xs) 0 0;
+    font-size: var(--app-fs-meta);
+    color: var(--app-color-text-secondary);
+    margin: var(--app-space-2) 0 0;
   }
 
   .el-button {
-    margin-top: var(--apple-spacing-lg);
+    margin-top: var(--app-space-6);
   }
 }
 
@@ -895,7 +895,7 @@ onUnmounted(() => {
 // ── Footer (page bg, dense) ──────────────────────────────
 .app-footer {
   background: var(--app-color-page-bg);
-  border-top: 1px solid var(--apple-hairline);
+  border-top: 1px solid var(--app-color-border);
   padding: var(--app-space-8) 0 var(--app-space-4);
   margin-top: auto;
 }
@@ -907,10 +907,9 @@ onUnmounted(() => {
 }
 
 .footer-copy {
-  font-size: var(--apple-fs-fine-print);
+  font-size: var(--app-fs-meta);
   font-weight: 400;
-  letter-spacing: var(--apple-ls-fine-print);
-  color: var(--apple-ink-muted-48);
+  color: var(--app-color-text-muted);
   margin: 0;
 }
 
@@ -925,44 +924,44 @@ onUnmounted(() => {
 .notification-item {
   display: flex;
   align-items: flex-start;
-  gap: var(--apple-spacing-sm);
-  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+  gap: var(--app-space-3);
+  padding: var(--app-space-3) var(--app-space-4);
   cursor: pointer;
   transition: background 0.15s ease;
-  border-bottom: 1px solid var(--apple-divider-soft);
+  border-bottom: 1px solid var(--app-color-divider);
 
-  &:hover { background: var(--apple-canvas-parchment); }
-  &.unread { background: var(--apple-surface-pearl); }
+  &:hover { background: var(--app-color-fill); }
+  &.unread { background: var(--app-color-fill-light); }
 
   .notification-icon {
     width: 32px; height: 32px;
-    border-radius: var(--apple-rounded-sm);
-    background: var(--apple-canvas-parchment);
+    border-radius: var(--app-radius-sm);
+    background: var(--app-color-fill);
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
-    color: var(--apple-primary);
-    font-size: 16px;
+    color: var(--app-color-primary);
+    font-size: var(--app-fs-heading);
   }
 
   .notification-content { flex: 1; min-width: 0; }
 
   .notification-title {
-    font-size: var(--apple-fs-caption); font-weight: 600; color: var(--apple-ink); margin-bottom: var(--apple-spacing-xxs);
+    font-size: var(--app-fs-caption); font-weight: 600; color: var(--app-color-ink); margin-bottom: var(--app-space-1);
   }
 
   .notification-desc {
-    font-size: var(--apple-fs-fine-print); color: var(--apple-ink-muted-48); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    font-size: var(--app-fs-meta); color: var(--app-color-text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
 
-  .notification-time { font-size: var(--apple-fs-fine-print); color: var(--apple-ink-muted-48); margin-top: var(--apple-spacing-xxs); }
+  .notification-time { font-size: var(--app-fs-meta); color: var(--app-color-text-muted); margin-top: var(--app-space-1); }
 }
 
-.empty-notification { padding: var(--apple-spacing-lg); }
+.empty-notification { padding: var(--app-space-6); }
 
 .notification-footer {
-  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+  padding: var(--app-space-3) var(--app-space-4);
   text-align: center;
-  border-top: 1px solid var(--apple-divider-soft);
+  border-top: 1px solid var(--app-color-divider);
 }
 
 // ── Responsive: Tablet (≤833px) ───────────────────────────
@@ -972,7 +971,7 @@ onUnmounted(() => {
 
   .sidebar {
     position: fixed;
-    top: calc(var(--apple-global-nav-height) + var(--app-subnav-height));
+    top: calc(var(--app-global-nav-height) + var(--app-subnav-height));
     left: 0;
     bottom: 0;
     z-index: 90;
@@ -981,7 +980,7 @@ onUnmounted(() => {
 
     &.sidebar-open {
       transform: translateX(0);
-      box-shadow: var(--apple-shadow-product);
+      box-shadow: 0 8px 24px rgba(var(--app-color-shadow-rgb), 0.18);
     }
   }
 
@@ -989,8 +988,8 @@ onUnmounted(() => {
     display: block;
     position: fixed;
     inset: 0;
-    top: calc(var(--apple-global-nav-height) + var(--app-subnav-height));
-    background: rgba(0, 0, 0, 0.3);
+    top: calc(var(--app-global-nav-height) + var(--app-subnav-height));
+    background: rgba(var(--app-color-shadow-rgb), 0.3);
     z-index: 89;
   }
 

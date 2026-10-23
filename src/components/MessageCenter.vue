@@ -550,12 +550,12 @@ const getNotificationIcon = (messageType) => {
 
 const getNotificationColor = (messageType) => {
   const colorMap = {
-    'SUCCESS': '#34c759',
-    'INFO': '#0066cc',
-    'WARNING': '#ff9500',
-    'ERROR': '#ff3b30'
+    'SUCCESS': 'var(--app-color-success)',
+    'INFO': 'var(--app-color-primary)',
+    'WARNING': 'var(--app-color-warning)',
+    'ERROR': 'var(--app-color-danger)'
   }
-  return colorMap[messageType] || '#0066cc'
+  return colorMap[messageType] || 'var(--app-color-primary)'
 }
 
 const getMessageTypeText = (messageType) => {
@@ -886,33 +886,33 @@ watch(
 <style lang="scss" scoped>
 .message-item {
   &.pending {
-    border-left: 4px solid var(--apple-warning);
-    background-color: var(--apple-warning-bg);
+    border-left: 4px solid var(--app-color-warning);
+    background-color: var(--app-color-warning-bg);
   }
 
   .assignment-details {
-    margin: 8px 0;
-    padding: 8px;
-    background: var(--apple-surface-pearl);
+    margin: var(--app-space-2) 0;
+    padding: var(--app-space-2);
+    background: var(--app-color-fill-light);
     border-radius: 4px;
 
     .detail-item {
       display: flex;
       align-items: center;
-      margin-bottom: 4px;
+      margin-bottom: var(--app-space-1);
       font-size: 12px;
 
       .label {
-        color: var(--apple-ink-secondary);
+        color: var(--app-color-text-secondary);
         min-width: 60px;
       }
 
       .value {
-        color: var(--apple-ink);
+        color: var(--app-color-ink);
         flex: 1;
 
         &.deadline {
-          color: var(--apple-danger);
+          color: var(--app-color-danger);
           font-weight: 400;
         }
       }
@@ -923,77 +923,77 @@ watch(
 .dialog-content {
   .paper-info {
     h4 {
-      margin: 0 0 12px 0;
-      color: var(--apple-ink);
+      margin: 0 0 var(--app-space-3) 0;
+      color: var(--app-color-ink);
       font-size: 14px;
     }
 
     .deadline-text {
-      color: var(--apple-danger);
+      color: var(--app-color-danger);
       font-weight: 600;
     }
   }
 }
 
 .message-center {
-  padding: var(--apple-spacing-lg);
-  background: var(--apple-surface);
+  padding: var(--app-space-6);
+  background: var(--app-color-card-bg);
   border-radius: 8px;
   min-height: 600px;
-  font-family: var(--apple-font-text);
+  font-family: var(--app-font-family);
 
   .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--apple-hairline);
+    margin-bottom: var(--app-space-6);
+    padding-bottom: var(--app-space-4);
+    border-bottom: 1px solid var(--app-color-border);
 
     h1 {
       margin: 0;
-      color: var(--apple-ink);
+      color: var(--app-color-ink);
       font-size: 24px;
     }
 
     .header-actions {
       display: flex;
-      gap: 16px;
+      gap: var(--app-space-4);
     }
   }
 
   .stats-info {
-    margin-bottom: 24px;
+    margin-bottom: var(--app-space-6);
 
     .stat-card {
-      background: var(--apple-surface-pearl);
-      padding: 20px;
+      background: var(--app-color-fill-light);
+      padding: var(--app-space-5);
       border-radius: 8px;
       text-align: center;
-      border-left: 4px solid var(--apple-primary);
+      border-left: 4px solid var(--app-color-primary);
 
       &.unread {
-        border-left-color: var(--apple-danger);
+        border-left-color: var(--app-color-danger);
       }
 
       &.read {
-        border-left-color: var(--apple-success);
+        border-left-color: var(--app-color-success);
       }
 
       &.today {
-        border-left-color: var(--apple-warning);
+        border-left-color: var(--app-color-warning);
       }
 
       .stat-number {
         font-size: 28px;
         font-weight: bold;
-        color: var(--apple-ink);
-        margin-bottom: 8px;
+        color: var(--app-color-ink);
+        margin-bottom: var(--app-space-2);
       }
 
       .stat-label {
         font-size: 14px;
-        color: var(--apple-ink-secondary);
+        color: var(--app-color-text-secondary);
       }
     }
   }
@@ -1002,12 +1002,12 @@ watch(
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    gap: 16px;
+    margin-bottom: var(--app-space-5);
+    gap: var(--app-space-4);
 
     .filter-right {
       display: flex;
-      gap: 12px;
+      gap: var(--app-space-3);
     }
   }
 
@@ -1017,31 +1017,31 @@ watch(
     .message-item {
       display: flex;
       align-items: flex-start;
-      padding: 16px;
-      border: 1px solid var(--apple-hairline);
+      padding: var(--app-space-4);
+      border: 1px solid var(--app-color-border);
       border-radius: 8px;
-      margin-bottom: 12px;
+      margin-bottom: var(--app-space-3);
       transition: all 0.3s ease;
       cursor: pointer;
 
       &:hover {
-        border-color: var(--apple-primary);
-        box-shadow: 0 2px 8px rgba(64, 158, 255, 0.1);
+        border-color: var(--app-color-primary);
+        box-shadow: 0 2px 8px rgba(var(--app-color-primary-rgb), 0.1);
       }
 
       &.unread {
-        background-color: var(--apple-info-bg);
-        border-left: 4px solid var(--apple-primary);
+        background-color: var(--app-color-info-bg);
+        border-left: 4px solid var(--app-color-primary);
       }
 
       .message-checkbox {
-        margin-right: 12px;
-        padding-top: 4px;
+        margin-right: var(--app-space-3);
+        padding-top: var(--app-space-1);
       }
 
       .message-icon {
-        margin-right: 12px;
-        padding-top: 4px;
+        margin-right: var(--app-space-3);
+        padding-top: var(--app-space-1);
 
         .el-icon {
           font-size: 20px;
@@ -1055,10 +1055,10 @@ watch(
         .message-title {
           display: flex;
           align-items: center;
-          gap: 8px;
+          gap: var(--app-space-2);
           font-weight: 600;
-          color: var(--apple-ink);
-          margin-bottom: 8px;
+          color: var(--app-color-ink);
+          margin-bottom: var(--app-space-2);
           font-size: 14px;
 
           .title-text {
@@ -1072,28 +1072,28 @@ watch(
         }
 
         .message-desc {
-          color: var(--apple-ink-secondary);
+          color: var(--app-color-text-secondary);
           font-size: 13px;
           line-height: 1.5;
-          margin-bottom: 8px;
+          margin-bottom: var(--app-space-2);
           word-break: break-all;
         }
 
         .message-meta {
           display: flex;
-          gap: 16px;
+          gap: var(--app-space-4);
           font-size: 12px;
-          color: var(--apple-slate-border-strong);
+          color: var(--app-color-border-strong);
 
           .message-sender {
-            color: var(--apple-slate-faint);
+            color: var(--app-color-text-secondary);
           }
         }
       }
 
       .message-actions {
         display: flex;
-        gap: 8px;
+        gap: var(--app-space-2);
         opacity: 0;
         transition: opacity 0.3s ease;
       }
@@ -1107,16 +1107,16 @@ watch(
   .batch-actions {
     position: sticky;
     bottom: 0;
-    background: var(--apple-surface);
-    padding: var(--apple-spacing-md);
-    border-top: 1px solid var(--apple-hairline);
+    background: var(--app-color-card-bg);
+    padding: var(--app-space-4);
+    border-top: 1px solid var(--app-color-border);
     display: flex;
     align-items: center;
-    gap: var(--apple-spacing-md);
-    margin-top: var(--apple-spacing-lg);
+    gap: var(--app-space-4);
+    margin-top: var(--app-space-6);
 
     .selected-count {
-      color: var(--apple-primary);
+      color: var(--app-color-primary);
       font-weight: 600;
     }
   }
@@ -1124,22 +1124,22 @@ watch(
   .pagination {
     display: flex;
     justify-content: center;
-    margin-top: var(--apple-spacing-lg);
+    margin-top: var(--app-space-6);
   }
 
   .empty-message {
-    padding: var(--apple-spacing-xxl) 0;
+    padding: var(--app-space-12) 0;
   }
 }
 
 @media (max-width: 768px) {
   .message-center {
-    padding: var(--apple-spacing-sm);
+    padding: var(--app-space-3);
 
     .header {
       flex-direction: column;
       align-items: flex-start;
-      gap: var(--apple-spacing-sm);
+      gap: var(--app-space-3);
 
       .header-actions {
         width: 100%;
@@ -1149,7 +1149,7 @@ watch(
 
     .stats-info {
       .el-col {
-        margin-bottom: var(--apple-spacing-sm);
+        margin-bottom: var(--app-space-3);
       }
     }
 
@@ -1168,7 +1168,7 @@ watch(
         flex-direction: column;
 
         .el-button {
-          margin-bottom: 4px;
+          margin-bottom: var(--app-space-1);
         }
       }
     }
