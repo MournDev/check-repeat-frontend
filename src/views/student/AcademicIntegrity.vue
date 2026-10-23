@@ -99,7 +99,7 @@
                     <el-row :gutter="20">
                       <el-col :span="12">
                         <div class="comparison-section good">
-                          <h3><el-icon color="var(--apple-success)"><SuccessFilled /></el-icon> 合理引用</h3>
+                          <h3><el-icon color="var(--app-color-success)"><SuccessFilled /></el-icon> 合理引用</h3>
                           <ul>
                             <li>明确标注引用来源</li>
                             <li>用自己的话表述核心观点</li>
@@ -111,7 +111,7 @@
                       </el-col>
                       <el-col :span="12">
                         <div class="comparison-section bad">
-                          <h3><el-icon color="var(--apple-danger)"><CircleClose /></el-icon> 抄袭行为</h3>
+                          <h3><el-icon color="var(--app-color-danger)"><CircleClose /></el-icon> 抄袭行为</h3>
                           <ul>
                             <li>未标注任何引用信息</li>
                             <li>大量复制原文内容</li>
@@ -197,7 +197,7 @@
                   
                   <div class="personal-content">
                     <div class="advice-section high-risk">
-                      <h3><el-icon color="var(--apple-danger)"><Warning /></el-icon> 需要重点关注的章节</h3>
+                      <h3><el-icon color="var(--app-color-danger)"><Warning /></el-icon> 需要重点关注的章节</h3>
                       <div 
                         v-for="(area, index) in personalAdvice.highRiskAreas" 
                         :key="index"
@@ -216,7 +216,7 @@
                     </div>
                     
                     <div class="advice-section good-aspects">
-                      <h3><el-icon color="var(--apple-success)"><SuccessFilled /></el-icon> 表现良好的方面</h3>
+                      <h3><el-icon color="var(--app-color-success)"><SuccessFilled /></el-icon> 表现良好的方面</h3>
                       <div 
                         v-for="(aspect, index) in personalAdvice.goodAspects" 
                         :key="index"
@@ -235,7 +235,7 @@
                     </div>
                     
                     <div class="advice-section general-tips">
-                      <h3><el-icon color="var(--apple-primary)"><InfoFilled /></el-icon> 通用改进建议</h3>
+                      <h3><el-icon color="var(--app-color-primary)"><InfoFilled /></el-icon> 通用改进建议</h3>
                       <div class="tips-list">
                         <div 
                           v-for="(tip, index) in personalAdvice.generalTips" 
@@ -556,13 +556,13 @@ const openResource = async (resource) => {
 
 const getResourceColor = (type) => {
   const colors = {
-    book: '#34c759',
-    online: '#0066cc',
-    video: '#ff9500',
-    document: '#8e8e93',
-    course: '#0066cc'
+    book: 'var(--app-color-success)',
+    online: 'var(--app-color-primary)',
+    video: 'var(--app-color-warning)',
+    document: 'var(--app-color-info)',
+    course: 'var(--app-color-primary)'
   }
-  return colors[type] || '#8e8e93'
+  return colors[type] || 'var(--app-color-info)'
 }
 
 const getResourceIcon = (type) => {
@@ -609,16 +609,16 @@ onUnmounted(() => {
   .sidebar-card,
   .case-card,
   .contact-card {
-    background: var(--apple-surface);
-    border: 1px solid var(--apple-hairline);
-    border-radius: var(--apple-rounded-lg);
+    background: var(--app-color-card-bg);
+    border: 1px solid var(--app-color-border);
+    border-radius: var(--app-radius-lg);
   }
 
   .navigation-card {
     overflow: hidden;
     
     :deep(.el-tabs__content) {
-      padding: var(--apple-spacing-lg) var(--apple-spacing-md);
+      padding: var(--app-space-6) var(--app-space-4);
     }
   }
 
@@ -629,11 +629,11 @@ onUnmounted(() => {
       .card-header {
         display: flex;
         align-items: center;
-        gap: var(--apple-spacing-xs);
-        font-family: var(--apple-font-display);
-        font-size: var(--apple-fs-body-strong);
+        gap: var(--app-space-2);
+        font-family: var(--app-font-family);
+        font-size: var(--app-fs-body);
         font-weight: 600;
-        color: var(--apple-ink);
+        color: var(--app-color-ink);
         
         .el-tag {
           margin-left: auto;
@@ -644,137 +644,137 @@ onUnmounted(() => {
         line-height: 1.6;
         
         .definition-list {
-          padding-left: var(--apple-spacing-md);
-          margin: var(--apple-spacing-sm) 0;
+          padding-left: var(--app-space-4);
+          margin: var(--app-space-3) 0;
           
           li {
-            margin-bottom: var(--apple-spacing-xs);
-            font-size: var(--apple-fs-caption);
-            color: var(--apple-ink-muted-48);
+            margin-bottom: var(--app-space-2);
+            font-size: var(--app-fs-caption);
+            color: var(--app-color-text-muted);
             
             strong {
-              color: var(--apple-ink);
+              color: var(--app-color-ink);
             }
           }
         }
         
         .consequence-box {
-          margin-top: var(--apple-spacing-md);
+          margin-top: var(--app-space-4);
         }
         
         .process-steps {
           .step {
             display: flex;
-            gap: var(--apple-spacing-sm);
-            margin-bottom: var(--apple-spacing-md);
-            padding: var(--apple-spacing-md);
-            background: var(--apple-canvas-parchment);
-            border-radius: var(--apple-rounded-md);
+            gap: var(--app-space-3);
+            margin-bottom: var(--app-space-4);
+            padding: var(--app-space-4);
+            background: var(--app-color-fill);
+            border-radius: var(--app-radius-md);
             
             .step-number {
               width: 32px;
               height: 32px;
-              background: var(--apple-primary);
-              color: var(--apple-on-primary);
-              border-radius: var(--apple-rounded-full);
+              background: var(--app-color-primary);
+              color: var(--app-color-on-primary);
+              border-radius: var(--app-radius-pill);
               display: flex;
               align-items: center;
               justify-content: center;
-              font-size: var(--apple-fs-caption);
+              font-size: var(--app-fs-caption);
               font-weight: 600;
               flex-shrink: 0;
             }
             
             .step-content {
               h4 {
-                margin: 0 0 var(--apple-spacing-xs) 0;
-                font-size: var(--apple-fs-caption);
-                color: var(--apple-ink);
+                margin: 0 0 var(--app-space-2) 0;
+                font-size: var(--app-fs-caption);
+                color: var(--app-color-ink);
               }
               
               p {
                 margin: 0;
-                font-size: var(--apple-fs-caption);
-                color: var(--apple-ink-muted-48);
+                font-size: var(--app-fs-caption);
+                color: var(--app-color-text-muted);
               }
             }
           }
         }
         
         .comparison-section {
-          padding: var(--apple-spacing-md);
-          border-radius: var(--apple-rounded-lg);
-          margin-bottom: var(--apple-spacing-md);
+          padding: var(--app-space-4);
+          border-radius: var(--app-radius-lg);
+          margin-bottom: var(--app-space-4);
           
           &.good {
-            background: var(--apple-info-bg);
-            border: 1px solid var(--apple-info-border);
+            background: var(--app-color-info-bg);
+            border: 1px solid var(--app-color-info-border);
             
             h3 {
-              color: var(--apple-success);
+              color: var(--app-color-success);
             }
           }
           
           &.bad {
-            background: var(--apple-danger-bg);
-            border: 1px solid var(--apple-danger-border);
+            background: var(--app-color-danger-bg);
+            border: 1px solid var(--app-color-danger-border);
             
             h3 {
-              color: var(--apple-danger);
+              color: var(--app-color-danger);
             }
           }
           
           h3 {
             display: flex;
             align-items: center;
-            gap: var(--apple-spacing-xs);
-            margin: 0 0 var(--apple-spacing-sm) 0;
-            font-size: var(--apple-fs-body-strong);
+            gap: var(--app-space-2);
+            margin: 0 0 var(--app-space-3) 0;
+            font-size: var(--app-fs-body);
             font-weight: 600;
           }
           
           ul {
-            padding-left: var(--apple-spacing-md);
+            padding-left: var(--app-space-4);
             
             li {
-              margin-bottom: var(--apple-spacing-xs);
-              font-size: var(--apple-fs-caption);
-              color: var(--apple-ink);
+              margin-bottom: var(--app-space-2);
+              font-size: var(--app-fs-caption);
+              color: var(--app-color-ink);
             }
           }
         }
         
         .citation-examples {
-          margin-top: var(--apple-spacing-lg);
+          margin-top: var(--app-space-6);
           
           h3 {
-            margin: 0 0 var(--apple-spacing-md) 0;
-            font-family: var(--apple-font-display);
-            font-size: var(--apple-fs-body-strong);
-            color: var(--apple-ink);
+            margin: 0 0 var(--app-space-4) 0;
+            font-family: var(--app-font-family);
+            font-size: var(--app-fs-body);
+            color: var(--app-color-ink);
           }
           
           .format-example {
             h4 {
-              margin: 0 0 var(--apple-spacing-xs) 0;
-              color: var(--apple-ink-muted-48);
-              font-size: var(--apple-fs-caption);
+              margin: 0 0 var(--app-space-2) 0;
+              color: var(--app-color-text-muted);
+              font-size: var(--app-fs-caption);
             }
             
             .example {
-              background: var(--apple-canvas-parchment);
-              padding: var(--apple-spacing-sm);
-              border-radius: var(--apple-rounded-md);
-              font-family: monospace;
-              font-size: var(--apple-fs-fine-print);
-              margin-bottom: var(--apple-spacing-xs);
-              color: var(--apple-ink);
+              background: var(--app-color-fill);
+              padding: var(--app-space-3);
+              border-radius: var(--app-radius-md);
+              font-family: var(--app-font-mono);
+              font-size: var(--app-fs-meta);
+              margin-bottom: var(--app-space-2);
+              color: var(--app-color-ink);
             }
             
             .example-text {
-              color: var(--apple-ink-muted-48);
-              font-size: var(--apple-fs-caption);
-              margin-bottom: var(--apple-spacing-md);
+              color: var(--app-color-text-muted);
+              font-size: var(--app-fs-caption);
+              margin-bottom: var(--app-space-4);
             }
           }
         }
@@ -787,17 +787,17 @@ onUnmounted(() => {
       .card-header {
         display: flex;
         align-items: center;
-        gap: var(--apple-spacing-xs);
-        font-family: var(--apple-font-display);
-        font-size: var(--apple-fs-body-strong);
+        gap: var(--app-space-2);
+        font-family: var(--app-font-family);
+        font-size: var(--app-fs-body);
         font-weight: 600;
-        color: var(--apple-ink);
+        color: var(--app-color-ink);
       }
       
       .checklist {
         .checklist-item {
-          padding: var(--apple-spacing-sm) 0;
-          border-bottom: 1px solid var(--apple-divider-soft);
+          padding: var(--app-space-3) 0;
+          border-bottom: 1px solid var(--app-color-divider);
           
           &:last-child {
             border-bottom: none;
@@ -805,8 +805,8 @@ onUnmounted(() => {
           
           &.checked {
             :deep(.el-checkbox__input.is-checked .el-checkbox__inner) {
-              background-color: var(--apple-success);
-              border-color: var(--apple-success);
+              background-color: var(--app-color-success);
+              border-color: var(--app-color-success);
             }
           }
         }
@@ -816,66 +816,66 @@ onUnmounted(() => {
     .personal-guide {
       .personal-content {
         .advice-section {
-          margin-bottom: var(--apple-spacing-lg);
+          margin-bottom: var(--app-space-6);
           
           h3 {
             display: flex;
             align-items: center;
-            gap: var(--apple-spacing-xs);
-            margin: 0 0 var(--apple-spacing-md) 0;
-            padding-bottom: var(--apple-spacing-sm);
-            border-bottom: 1px solid var(--apple-divider-soft);
-            font-size: var(--apple-fs-body-strong);
+            gap: var(--app-space-2);
+            margin: 0 0 var(--app-space-4) 0;
+            padding-bottom: var(--app-space-3);
+            border-bottom: 1px solid var(--app-color-divider);
+            font-size: var(--app-fs-body);
           }
           
           .advice-item {
-            background: var(--apple-danger-bg);
-            border: 1px solid var(--apple-danger-border);
-            border-radius: var(--apple-rounded-lg);
-            padding: var(--apple-spacing-md);
-            margin-bottom: var(--apple-spacing-sm);
+            background: var(--app-color-danger-bg);
+            border: 1px solid var(--app-color-danger-border);
+            border-radius: var(--app-radius-lg);
+            padding: var(--app-space-4);
+            margin-bottom: var(--app-space-3);
             
             &.positive {
-              background: var(--apple-info-bg);
-              border-color: var(--apple-info-border);
+              background: var(--app-color-info-bg);
+              border-color: var(--app-color-info-border);
             }
             
             .area-header {
               display: flex;
               justify-content: space-between;
               align-items: center;
-              margin-bottom: var(--apple-spacing-xs);
+              margin-bottom: var(--app-space-2);
               
               .similarity-rate {
-                font-family: var(--apple-font-display);
+                font-family: var(--app-font-family);
                 font-weight: 600;
-                font-size: var(--apple-fs-body-strong);
-                color: var(--apple-danger);
+                font-size: var(--app-fs-body);
+                color: var(--app-color-danger);
                 
                 &.good {
-                  color: var(--apple-success);
+                  color: var(--app-color-success);
                 }
               }
             }
             
             .area-issue {
-              color: var(--apple-ink);
-              margin-bottom: var(--apple-spacing-xs);
-              font-size: var(--apple-fs-caption);
+              color: var(--app-color-ink);
+              margin-bottom: var(--app-space-2);
+              font-size: var(--app-fs-caption);
               font-weight: 600;
             }
             
             .area-suggestion {
               display: flex;
               align-items: flex-start;
-              gap: var(--apple-spacing-xs);
-              font-size: var(--apple-fs-caption);
-              color: var(--apple-ink-muted-48);
+              gap: var(--app-space-2);
+              font-size: var(--app-fs-caption);
+              color: var(--app-color-text-muted);
               line-height: 1.5;
               
               .el-icon {
                 margin-top: 3px;
-                color: var(--apple-primary);
+                color: var(--app-color-primary);
               }
             }
           }
@@ -884,21 +884,21 @@ onUnmounted(() => {
             .tip-item {
               display: flex;
               align-items: flex-start;
-              gap: var(--apple-spacing-sm);
-              padding: var(--apple-spacing-md);
-              background: var(--apple-canvas-parchment);
-              border-radius: var(--apple-rounded-md);
-              margin-bottom: var(--apple-spacing-sm);
+              gap: var(--app-space-3);
+              padding: var(--app-space-4);
+              background: var(--app-color-fill);
+              border-radius: var(--app-radius-md);
+              margin-bottom: var(--app-space-3);
               
               .el-icon {
-                color: var(--apple-success);
+                color: var(--app-color-success);
                 margin-top: 3px;
               }
               
               span {
                 flex: 1;
-                font-size: var(--apple-fs-caption);
-                color: var(--apple-ink);
+                font-size: var(--app-fs-caption);
+                color: var(--app-color-ink);
                 line-height: 1.5;
               }
             }
@@ -908,32 +908,32 @@ onUnmounted(() => {
     }
     
     .resource-card {
-      border-radius: var(--apple-rounded-lg);
+      border-radius: var(--app-radius-lg);
       height: fit-content;
       
       .card-header {
         display: flex;
         align-items: center;
-        gap: var(--apple-spacing-xs);
-        font-family: var(--apple-font-display);
-        font-size: var(--apple-fs-body-strong);
+        gap: var(--app-space-2);
+        font-family: var(--app-font-family);
+        font-size: var(--app-fs-body);
         font-weight: 600;
-        color: var(--apple-ink);
+        color: var(--app-color-ink);
       }
       
       .resources {
         .resource-item {
           display: flex;
           align-items: center;
-          gap: var(--apple-spacing-sm);
-          padding: var(--apple-spacing-md);
-          border-radius: var(--apple-rounded-md);
-          margin-bottom: var(--apple-spacing-sm);
+          gap: var(--app-space-3);
+          padding: var(--app-space-4);
+          border-radius: var(--app-radius-md);
+          margin-bottom: var(--app-space-3);
           cursor: pointer;
-          transition: all 0.3s ease;
+          transition: all var(--app-transition-slow);
           
           &:hover {
-            background: var(--apple-canvas-parchment);
+            background: var(--app-color-fill);
           }
 
           &:active {
@@ -941,22 +941,22 @@ onUnmounted(() => {
           }
           
           .resource-icon {
-            font-size: var(--apple-fs-tagline);
+            font-size: var(--app-fs-title);
           }
           
           .resource-info {
             flex: 1;
             
             .resource-title {
-              font-size: var(--apple-fs-caption);
+              font-size: var(--app-fs-caption);
               font-weight: 600;
-              color: var(--apple-ink);
-              margin-bottom: var(--apple-spacing-xxs);
+              color: var(--app-color-ink);
+              margin-bottom: var(--app-space-1);
             }
             
             .resource-type {
-              font-size: var(--apple-fs-fine-print);
-              color: var(--apple-ink-muted-48);
+              font-size: var(--app-fs-meta);
+              color: var(--app-color-text-muted);
             }
           }
         }
@@ -967,11 +967,11 @@ onUnmounted(() => {
       .card-header {
         display: flex;
         align-items: center;
-        gap: var(--apple-spacing-xs);
-        font-family: var(--apple-font-display);
-        font-size: var(--apple-fs-body-strong);
+        gap: var(--app-space-2);
+        font-family: var(--app-font-family);
+        font-size: var(--app-fs-body);
         font-weight: 600;
-        color: var(--apple-ink);
+        color: var(--app-color-ink);
         
         .el-tag {
           margin-left: auto;
@@ -980,48 +980,48 @@ onUnmounted(() => {
       
       .case-content {
         .case-description {
-          margin-bottom: var(--apple-spacing-md);
+          margin-bottom: var(--app-space-4);
           
           h4 {
-            margin: 0 0 var(--apple-spacing-xs) 0;
-            color: var(--apple-ink);
+            margin: 0 0 var(--app-space-2) 0;
+            color: var(--app-color-ink);
           }
           
           p {
-            font-size: var(--apple-fs-caption);
-            color: var(--apple-ink-muted-48);
+            font-size: var(--app-fs-caption);
+            color: var(--app-color-text-muted);
             line-height: 1.5;
           }
         }
         
         .case-example {
-          margin-bottom: var(--apple-spacing-md);
+          margin-bottom: var(--app-space-4);
           
           h4 {
-            margin: 0 0 var(--apple-spacing-xs) 0;
-            color: var(--apple-ink);
+            margin: 0 0 var(--app-space-2) 0;
+            color: var(--app-color-ink);
           }
           
           .example-content {
-            background: var(--apple-canvas-parchment);
-            border-radius: var(--apple-rounded-md);
-            padding: var(--apple-spacing-md);
+            background: var(--app-color-fill);
+            border-radius: var(--app-radius-md);
+            padding: var(--app-space-4);
             
             .quote {
               font-style: italic;
-              margin: 0 0 var(--apple-spacing-sm) 0;
-              font-size: var(--apple-fs-caption);
-              color: var(--apple-ink);
+              margin: 0 0 var(--app-space-3) 0;
+              font-size: var(--app-fs-caption);
+              color: var(--app-color-ink);
               line-height: 1.6;
             }
             
             .citation {
               text-align: right;
-              color: var(--apple-ink-muted-48);
-              font-size: var(--apple-fs-fine-print);
+              color: var(--app-color-text-muted);
+              font-size: var(--app-fs-meta);
               
               &.warning {
-                color: var(--apple-danger);
+                color: var(--app-color-danger);
                 font-weight: 600;
               }
             }
@@ -1030,17 +1030,17 @@ onUnmounted(() => {
         
         .case-analysis {
           h4 {
-            margin: 0 0 var(--apple-spacing-xs) 0;
-            color: var(--apple-ink);
+            margin: 0 0 var(--app-space-2) 0;
+            color: var(--app-color-ink);
           }
           
           ul {
-            padding-left: var(--apple-spacing-md);
+            padding-left: var(--app-space-4);
             
             li {
-              margin-bottom: var(--apple-spacing-xs);
-              font-size: var(--apple-fs-caption);
-              color: var(--apple-ink-muted-48);
+              margin-bottom: var(--app-space-2);
+              font-size: var(--app-fs-caption);
+              color: var(--app-color-text-muted);
             }
           }
         }
@@ -1053,18 +1053,18 @@ onUnmounted(() => {
       .card-header {
         display: flex;
         align-items: center;
-        gap: var(--apple-spacing-xs);
-        font-family: var(--apple-font-display);
-        font-size: var(--apple-fs-body-strong);
+        gap: var(--app-space-2);
+        font-family: var(--app-font-family);
+        font-size: var(--app-fs-body);
         font-weight: 600;
-        color: var(--apple-ink);
+        color: var(--app-color-ink);
       }
       
       .contact-content {
         p {
-          color: var(--apple-ink-muted-48);
-          margin-bottom: var(--apple-spacing-md);
-          font-size: var(--apple-fs-caption);
+          color: var(--app-color-text-muted);
+          margin-bottom: var(--app-space-4);
+          font-size: var(--app-fs-caption);
           line-height: 1.5;
         }
         
@@ -1072,26 +1072,26 @@ onUnmounted(() => {
           .contact-item {
             display: flex;
             align-items: center;
-            gap: var(--apple-spacing-sm);
-            padding: var(--apple-spacing-sm);
-            background: var(--apple-canvas-parchment);
-            border-radius: var(--apple-rounded-md);
-            margin-bottom: var(--apple-spacing-sm);
+            gap: var(--app-space-3);
+            padding: var(--app-space-3);
+            background: var(--app-color-fill);
+            border-radius: var(--app-radius-md);
+            margin-bottom: var(--app-space-3);
             
             .el-icon {
-              color: var(--apple-primary);
+              color: var(--app-color-primary);
             }
             
             span {
-              font-size: var(--apple-fs-caption);
-              color: var(--apple-ink);
+              font-size: var(--app-fs-caption);
+              color: var(--app-color-ink);
             }
           }
         }
         
         .contact-button {
           width: 100%;
-          margin-top: 20px;
+          margin-top: var(--app-space-5);
         }
       }
     }
@@ -1099,45 +1099,45 @@ onUnmounted(() => {
 
   :deep(.el-collapse) {
     .el-collapse-item__header {
-      font-size: var(--apple-fs-caption);
+      font-size: var(--app-fs-caption);
       font-weight: 600;
-      padding: var(--apple-spacing-md);
+      padding: var(--app-space-4);
       
       .el-icon {
-        margin-right: 12px;
-        color: var(--apple-primary);
+        margin-right: var(--app-space-3);
+        color: var(--app-color-primary);
       }
     }
     
     .el-collapse-item__wrap {
-      border-bottom: 1px solid var(--apple-hairline);
+      border-bottom: 1px solid var(--app-color-border);
     }
     
     .el-collapse-item__content {
-      padding: var(--apple-spacing-md);
+      padding: var(--app-space-4);
       
       .faq-answer {
         p {
-          color: var(--apple-ink-muted-48);
-          font-size: var(--apple-fs-caption);
+          color: var(--app-color-text-muted);
+          font-size: var(--app-fs-caption);
           line-height: 1.6;
-          margin-bottom: 16px;
+          margin-bottom: var(--app-space-4);
         }
         
         .faq-example {
-          background: var(--apple-canvas-parchment);
-          border-radius: var(--apple-rounded-md);
-          padding: var(--apple-spacing-md);
-          margin-top: var(--apple-spacing-sm);
+          background: var(--app-color-fill);
+          border-radius: var(--app-radius-md);
+          padding: var(--app-space-4);
+          margin-top: var(--app-space-3);
           
           h4 {
-            margin: 0 0 8px 0;
-            color: var(--apple-ink);
+            margin: 0 0 var(--app-space-2) 0;
+            color: var(--app-color-ink);
           }
           
           p {
             margin: 0;
-            color: var(--apple-ink-muted-48);
+            color: var(--app-color-text-muted);
             font-style: italic;
           }
         }
@@ -1149,12 +1149,12 @@ onUnmounted(() => {
 // 响应式设计
 @media (max-width: 768px) {
   .academic-integrity-page {
-    padding: var(--apple-spacing-sm);
+    padding: var(--app-space-3);
 
     .comparison-section {
       .el-col {
         width: 100%;
-        margin-bottom: 20px;
+        margin-bottom: var(--app-space-5);
       }
     }
     
