@@ -513,7 +513,7 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background: var(--apple-canvas-parchment);
+  background: var(--app-color-page-bg);
   font-family: var(--apple-font-text);
 }
 
@@ -601,7 +601,7 @@ onUnmounted(() => {
   border-radius: var(--apple-rounded-sm);
   background: rgba(255, 255, 255, 0.08);
   border: none;
-  color: var(--apple-body-muted);
+  color: var(--app-color-nav-text);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -622,7 +622,7 @@ onUnmounted(() => {
   border-radius: var(--apple-rounded-sm);
   background: rgba(255, 255, 255, 0.08);
   border: none;
-  color: var(--apple-body-muted);
+  color: var(--app-color-nav-text);
   cursor: pointer;
   font-size: var(--apple-fs-nav-link);
   transition: color 0.2s ease, background-color 0.2s ease;
@@ -642,14 +642,15 @@ onUnmounted(() => {
 .nav-user-name { font-size: var(--apple-fs-nav-link); white-space: nowrap; }
 .nav-chevron { font-size: 10px; margin-left: 2px; }
 
-// ── Sub Nav (48px, frosted parchment) ────────────────────
+// ── Sub Nav (48px, 白底，与页面底色分层) ────────────────────
+// 原为毛玻璃羊皮纸色（rgba(245,245,247,.8)），与页面底色同色，
+// 只靠 1px 分隔线区分，顶栏层级实际是「平的」；改实心白底后
+// 与 --app-color-page-bg 形成明确的前后层次。
 .sub-nav {
   height: var(--app-subnav-height);
   padding: 0;
-  background: rgba(245, 245, 247, 0.8);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border-bottom: 1px solid var(--apple-hairline-alpha);
+  background: var(--app-color-card-bg);
+  border-bottom: 1px solid var(--app-color-border);
   flex-shrink: 0;
   position: sticky;
   top: var(--apple-global-nav-height);
@@ -720,7 +721,7 @@ onUnmounted(() => {
 // ── Sidebar (near-black, Apple-style) ────────────────────
 .sidebar {
   width: var(--app-sidebar-width);
-  background: var(--apple-surface-tile-1);
+  background: var(--app-color-nav-bg);
   overflow-y: auto;
   flex-shrink: 0;
   transition: transform 0.3s ease;
@@ -742,7 +743,9 @@ onUnmounted(() => {
 .sidebar-section-label {
   font-size: var(--apple-fs-fine-print);
   font-weight: 600;
-  color: var(--apple-ink-muted-48);
+  // 原 --apple-ink-muted-48(#7a7a7a) 在 #272729 上仅 3.4:1，低于 AA；
+  // 提到 slate-faint 后约 5.7:1。
+  color: var(--app-color-nav-text-muted);
   padding: 12px 12px 4px;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -761,10 +764,10 @@ onUnmounted(() => {
   font-weight: 600;
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  color: var(--apple-ink-muted-48);
+  color: var(--app-color-nav-text-muted);
   cursor: pointer;
 
-  &:hover { color: var(--apple-body-muted); }
+  &:hover { color: var(--app-color-nav-text); }
 }
 
 .sidebar-group-chevron {
@@ -789,7 +792,7 @@ onUnmounted(() => {
   font-size: var(--app-fs-body);
   font-weight: 400;
   letter-spacing: -0.224px;
-  color: var(--apple-body-muted);
+  color: var(--app-color-nav-text);
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease;
   text-decoration: none;
@@ -842,7 +845,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--apple-canvas-parchment);
+  background: var(--app-color-page-bg);
   padding: var(--app-page-gutter);
 }
 
@@ -889,9 +892,9 @@ onUnmounted(() => {
   padding: var(--app-page-gutter);
 }
 
-// ── Footer (parchment, dense) ────────────────────────────
+// ── Footer (page bg, dense) ──────────────────────────────
 .app-footer {
-  background: var(--apple-canvas-parchment);
+  background: var(--app-color-page-bg);
   border-top: 1px solid var(--apple-hairline);
   padding: var(--app-space-8) 0 var(--app-space-4);
   margin-top: auto;
