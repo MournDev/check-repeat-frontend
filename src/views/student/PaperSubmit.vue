@@ -95,13 +95,12 @@
                 </div>
               </el-upload>
               <div v-if="uploadProgress > 0 && uploadProgress < 100" class="upload-progress">
-                <div class="progress-bar">
-                  <div class="progress-fill" :style="{ width: uploadProgress + '%' }"></div>
-                </div>
+                <!-- 进度条改用 el-progress：颜色由 --el-color-primary（映射 --app-color-primary）统一 -->
+                <el-progress :percentage="uploadProgress" :show-text="false" :stroke-width="6" />
               </div>
               <div v-if="paperForm.file" class="upload-success">
-                <el-icon color="var(--apple-success)"><Check /></el-icon>
-                <span style="margin-left: 8px; color: var(--apple-success);">文件已上传</span>
+                <el-icon class="upload-success-icon"><Check /></el-icon>
+                <span class="upload-success-text">文件已上传</span>
               </div>
             </div>
           </div>
@@ -736,33 +735,28 @@ const resetForm = () => {
   width: 100%;
   max-width: 900px;
   margin: 0 auto;
-  background: var(--apple-surface);
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-lg);
+  background: var(--app-color-card-bg);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
   overflow: hidden;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    border-color: var(--apple-hairline);
-  }
 
   .card-header {
-    background: var(--apple-surface);
-    color: var(--apple-ink);
-    padding: var(--apple-spacing-lg) var(--apple-spacing-xl);
-    border-bottom: 1px solid var(--apple-divider-soft);
+    background: var(--app-color-card-bg);
+    color: var(--app-color-ink);
+    padding: var(--app-space-6) var(--app-space-8);
+    border-bottom: 1px solid var(--app-color-divider);
     text-align: center;
 
     .card-title {
-      margin: 0 0 var(--apple-spacing-xxs);
-      font-family: var(--apple-font-display);
-      font-size: var(--apple-fs-tagline);
+      margin: 0 0 var(--app-space-1);
+      font-family: var(--app-font-family);
+      font-size: var(--app-fs-title);
       font-weight: 600;
     }
 
     .card-subtitle {
-      font-size: var(--apple-fs-caption);
-      color: var(--apple-ink-muted-48);
+      font-size: var(--app-fs-caption);
+      color: var(--app-color-text-muted);
       opacity: 1;
       margin: 0;
     }
@@ -772,8 +766,8 @@ const resetForm = () => {
 // 步骤条
 .submit-steps {
   display: flex;
-  gap: var(--apple-spacing-lg);
-  padding: var(--apple-spacing-xl);
+  gap: var(--app-space-6);
+  padding: var(--app-space-8);
   position: relative;
   
   &::before {
@@ -783,7 +777,7 @@ const resetForm = () => {
     left: 32px;
     right: 32px;
     height: 2px;
-    background: var(--apple-hairline);
+    background: var(--app-color-border);
     z-index: 0;
   }
   
@@ -798,61 +792,61 @@ const resetForm = () => {
     .step-number {
       width: 44px;
       height: 44px;
-      border-radius: var(--apple-rounded-full);
+      border-radius: var(--app-radius-pill);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: var(--apple-fs-body-strong);
+      font-size: var(--app-fs-body);
       font-weight: 600;
-      margin-bottom: var(--apple-spacing-sm);
-      transition: all 0.2s ease;
+      margin-bottom: var(--app-space-3);
+      transition: all var(--app-transition-normal);
     }
     
     .step-content {
       .step-title {
-        font-size: var(--apple-fs-caption);
+        font-size: var(--app-fs-caption);
         font-weight: 600;
-        color: var(--apple-ink-muted-48);
-        transition: all 0.2s ease;
+        color: var(--app-color-text-muted);
+        transition: all var(--app-transition-normal);
       }
     }
     
     &.step-active {
       .step-number {
-        background: var(--apple-success);
-        color: var(--apple-on-primary);
+        background: var(--app-color-success);
+        color: var(--app-color-on-primary);
       }
       .step-title {
-        color: var(--apple-ink);
+        color: var(--app-color-ink);
         font-weight: 600;
       }
     }
     
     &.step-current {
       .step-number {
-        background: var(--apple-primary);
-        color: var(--apple-on-primary);
+        background: var(--app-color-primary);
+        color: var(--app-color-on-primary);
       }
       .step-title {
-        color: var(--apple-ink);
+        color: var(--app-color-ink);
         font-weight: 600;
       }
     }
     
     &.step-pending {
       .step-number {
-        background: var(--apple-canvas-parchment);
-        color: var(--apple-ink-muted-48);
+        background: var(--app-color-fill);
+        color: var(--app-color-text-muted);
       }
       .step-title {
-        color: var(--apple-ink-muted-48);
+        color: var(--app-color-text-muted);
       }
     }
   }
 }
 
 .step-content {
-  padding: 0 var(--apple-spacing-xl) var(--apple-spacing-xl);
+  padding: 0 var(--app-space-8) var(--app-space-8);
 }
 
 // 表单样式
@@ -860,44 +854,43 @@ const resetForm = () => {
   max-width: 100%;
   
   .form-group {
-    margin-bottom: var(--apple-spacing-lg);
+    margin-bottom: var(--app-space-6);
     
     .form-label {
       display: block;
-      font-size: var(--apple-fs-caption);
+      font-size: var(--app-fs-caption);
       font-weight: 600;
-      color: var(--apple-ink);
-      margin-bottom: var(--apple-spacing-xs);
+      color: var(--app-color-ink);
+      margin-bottom: var(--app-space-2);
     }
 
     /* 选项拉取失败时的行内提示。比再弹一次 ElMessage 好：
        全局拦截器已经弹过一次，这里只需要一个不会消失的出口。 */
     .form-tip-error {
       margin-top: 6px;
-      font-size: var(--apple-fs-fine-print);
-      color: var(--apple-danger);
+      font-size: var(--app-fs-meta);
+      color: var(--app-color-danger);
 
       a {
-        color: var(--apple-primary);
+        color: var(--app-color-primary);
         text-decoration: underline;
       }
     }
 
     .form-control {
       width: 100%;
-      transition: all 0.2s ease;
 
       :deep(.el-input__wrapper),
       :deep(.el-textarea__inner),
       :deep(.el-select__wrapper) {
-        border-radius: var(--apple-rounded-md);
-        font-size: var(--apple-fs-caption);
+        border-radius: var(--app-radius-md);
+        font-size: var(--app-fs-caption);
       }
 
       :deep(.el-input__wrapper.is-focus),
       :deep(.el-select__wrapper.is-focused) {
-        box-shadow: 0 0 0 1px var(--apple-primary) inset,
-          0 0 0 3px rgba(0, 102, 204, 0.1);
+        box-shadow: 0 0 0 1px var(--app-color-primary) inset,
+          0 0 0 3px rgba(var(--app-color-primary-rgb), 0.1);
       }
     }
   }
@@ -905,16 +898,16 @@ const resetForm = () => {
 
 // 上传区域
 .upload-area {
-  border: 1px dashed var(--apple-hairline);
-  border-radius: var(--apple-rounded-lg);
-  padding: var(--apple-spacing-xl);
-  background: var(--apple-surface-pearl);
+  border: 1px dashed var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  padding: var(--app-space-8);
+  background: var(--app-color-fill-light);
   text-align: center;
-  transition: all 0.2s ease;
+  transition: all var(--app-transition-normal);
   
   &:hover {
-    border-color: var(--apple-primary);
-    background: var(--apple-info-bg);
+    border-color: var(--app-color-primary);
+    background: var(--app-color-info-bg);
   }
 }
 
@@ -922,67 +915,59 @@ const resetForm = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--apple-spacing-sm);
+  gap: var(--app-space-3);
   
   .upload-icon {
-    font-size: var(--apple-fs-display-md);
-    color: var(--apple-primary);
+    font-size: var(--app-fs-display);
+    color: var(--app-color-primary);
   }
   
   .upload-text {
     p {
       margin: 0;
-      color: var(--apple-ink);
-      font-size: var(--apple-fs-body-strong);
+      color: var(--app-color-ink);
+      font-size: var(--app-fs-body);
       font-weight: 600;
     }
     .upload-tip {
-      margin-top: var(--apple-spacing-xs);
-      color: var(--apple-ink-muted-48);
-      font-size: var(--apple-fs-caption);
+      margin-top: var(--app-space-2);
+      color: var(--app-color-text-muted);
+      font-size: var(--app-fs-caption);
     }
   }
 }
 
-// 上传进度
+// 上传进度：进度条本体由 el-progress 渲染，这里只留容器间距
 .upload-progress {
-  margin-top: var(--apple-spacing-sm);
-  
-  .progress-bar {
-    height: 6px;
-    background: var(--apple-hairline);
-    border-radius: var(--apple-rounded-pill);
-    overflow: hidden;
-    
-    .progress-fill {
-      height: 100%;
-      background: var(--apple-primary);
-      border-radius: var(--apple-rounded-pill);
-      transition: width 0.3s ease;
-    }
-  }
+  margin-top: var(--app-space-3);
 }
 
 .upload-success {
-  margin-top: 16px;
+  margin-top: var(--app-space-4);
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: var(--app-space-2);
+
+  .upload-success-icon,
+  .upload-success-text {
+    color: var(--app-color-success);
+  }
 }
 
 // 确认内容
 .confirm-content {
-  background: var(--apple-canvas-parchment);
-  border-radius: var(--apple-rounded-lg);
-  padding: var(--apple-spacing-lg);
+  background: var(--app-color-fill);
+  border-radius: var(--app-radius-lg);
+  padding: var(--app-space-6);
   
   h4 {
     margin-top: 0;
-    color: var(--apple-ink);
-    font-family: var(--apple-font-display);
-    font-size: var(--apple-fs-body-strong);
+    color: var(--app-color-ink);
+    font-family: var(--app-font-family);
+    font-size: var(--app-fs-body);
     font-weight: 600;
-    margin-bottom: var(--apple-spacing-md);
+    margin-bottom: var(--app-space-4);
   }
   
   .confirm-details {
@@ -990,27 +975,26 @@ const resetForm = () => {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-      background: var(--apple-surface);
-      border: 1px solid var(--apple-hairline);
-      border-radius: var(--apple-rounded-md);
-      margin-bottom: var(--apple-spacing-xs);
-      transition: all 0.2s ease;
-      
+      padding: var(--app-space-3) var(--app-space-4);
+      background: var(--app-color-card-bg);
+      border: 1px solid var(--app-color-border);
+      border-radius: var(--app-radius-md);
+      margin-bottom: var(--app-space-2);
+
       &:last-child {
         margin-bottom: 0;
       }
       
       .detail-label {
-        font-size: var(--apple-fs-caption);
+        font-size: var(--app-fs-caption);
         font-weight: 600;
-        color: var(--apple-ink-muted-48);
+        color: var(--app-color-text-muted);
         min-width: 104px;
       }
       
       .detail-value {
-        font-size: var(--apple-fs-caption);
-        color: var(--apple-ink);
+        font-size: var(--app-fs-caption);
+        color: var(--app-color-ink);
         flex: 1;
         text-align: right;
       }
@@ -1020,36 +1004,36 @@ const resetForm = () => {
 
 // 操作按钮
 .step-actions {
-  padding: var(--apple-spacing-md) var(--apple-spacing-xl);
-  background: var(--apple-surface);
-  border-top: 1px solid var(--apple-divider-soft);
+  padding: var(--app-space-4) var(--app-space-8);
+  background: var(--app-color-card-bg);
+  border-top: 1px solid var(--app-color-divider);
   display: flex;
   justify-content: flex-end;
-  gap: var(--apple-spacing-sm);
+  gap: var(--app-space-3);
 
   .btn {
     padding: 9px 22px;
-    border-radius: var(--apple-rounded-pill);
-    font-size: var(--apple-fs-caption);
+    border-radius: var(--app-radius-pill);
+    font-size: var(--app-fs-caption);
     font-weight: 500;
   }
 
   .btn-secondary {
-    background: var(--apple-surface);
-    border: 1px solid var(--apple-hairline);
-    color: var(--apple-ink);
+    background: var(--app-color-card-bg);
+    border: 1px solid var(--app-color-border);
+    color: var(--app-color-ink);
 
     &:hover {
-      background: var(--apple-canvas-parchment);
+      background: var(--app-color-fill);
     }
   }
 
   .btn-primary {
-    background: var(--apple-primary);
-    color: var(--apple-on-primary);
+    background: var(--app-color-primary);
+    color: var(--app-color-on-primary);
 
     &:hover {
-      background: var(--apple-primary-hover);
+      background: var(--app-color-primary-hover);
     }
 
     &:disabled {
@@ -1059,11 +1043,11 @@ const resetForm = () => {
   }
 
   .btn-text {
-    color: var(--apple-ink-muted-48);
+    color: var(--app-color-text-muted);
 
     &:hover {
-      color: var(--apple-ink);
-      background: var(--apple-canvas-parchment);
+      color: var(--app-color-ink);
+      background: var(--app-color-fill);
     }
   }
 }
@@ -1071,61 +1055,61 @@ const resetForm = () => {
 // 响应式设计
 @media (max-width: 768px) {
   .paper-submit-container {
-    padding: var(--apple-spacing-sm);
+    padding: var(--app-space-3);
   }
   
   .paper-submit-card {
     margin: 0;
 
     .card-header {
-      padding: var(--apple-spacing-md);
+      padding: var(--app-space-4);
       
       .card-title {
-        font-size: var(--apple-fs-body-strong);
+        font-size: var(--app-fs-body);
       }
     }
   }
   
   .submit-steps {
-    padding: var(--apple-spacing-md);
-    gap: var(--apple-spacing-sm);
+    padding: var(--app-space-4);
+    gap: var(--app-space-3);
     
     .step {
       .step-number {
         width: 36px;
         height: 36px;
-        font-size: var(--apple-fs-caption);
+        font-size: var(--app-fs-caption);
       }
       
       .step-content {
         .step-title {
-          font-size: var(--apple-fs-fine-print);
+          font-size: var(--app-fs-meta);
         }
       }
     }
   }
   
   .step-content {
-    padding: 0 var(--apple-spacing-md) var(--apple-spacing-md);
+    padding: 0 var(--app-space-4) var(--app-space-4);
   }
   
   .paper-form {
     .form-group {
-      margin-bottom: var(--apple-spacing-md);
+      margin-bottom: var(--app-space-4);
     }
   }
   
   .upload-area {
-    padding: var(--apple-spacing-lg);
+    padding: var(--app-space-6);
   }
   
   .confirm-content {
-    padding: var(--apple-spacing-md);
+    padding: var(--app-space-4);
     
     .detail-item {
       flex-direction: column;
       align-items: flex-start;
-      gap: var(--apple-spacing-xs);
+      gap: var(--app-space-2);
       
       .detail-value {
         text-align: left;
@@ -1135,7 +1119,7 @@ const resetForm = () => {
   }
   
   .step-actions {
-    padding: var(--apple-spacing-md);
+    padding: var(--app-space-4);
     flex-direction: column;
     
     .btn {
