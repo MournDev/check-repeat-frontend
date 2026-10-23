@@ -604,15 +604,15 @@ onMounted(async () => {
 <style lang="scss" scoped>
 .school-overview {
   padding: 0;
-  font-family: var(--apple-font-text);
+  font-family: var(--app-font-family);
 }
 
 .overview-cards {
-  margin-bottom: var(--apple-spacing-md);
+  margin-bottom: var(--app-space-4);
   
   .overview-card {
     border: none;
-    border-radius: var(--apple-rounded-lg);
+    border-radius: var(--app-radius-lg);
     
     .card-content {
       display: flex;
@@ -624,27 +624,27 @@ onMounted(async () => {
         justify-content: center;
         width: 48px;
         height: 48px;
-        border-radius: var(--apple-rounded-lg);
-        margin-right: var(--apple-spacing-md);
+        border-radius: var(--app-radius-lg);
+        margin-right: var(--app-space-4);
         
         &.bg-primary {
-          background: var(--apple-primary);
+          background: var(--app-color-primary);
         }
 
         &.bg-success {
-          background: var(--apple-success);
+          background: var(--app-color-success);
         }
 
         &.bg-warning {
-          background: var(--apple-warning);
+          background: var(--app-color-warning);
         }
 
         &.bg-info {
-          background: #5ac8fa;
+          background: var(--app-color-primary);
         }
         
         .el-icon {
-          color: white;
+          color: var(--app-color-on-primary);
           font-size: 1.5rem;
         }
       }
@@ -653,16 +653,16 @@ onMounted(async () => {
         flex: 1;
         
         .card-value {
-          font-size: var(--apple-fs-lead);
+          font-size: var(--app-fs-metric);
           font-weight: 700;
-          color: var(--apple-ink);
+          color: var(--app-color-ink);
           line-height: 1;
         }
         
         .card-label {
-          font-size: var(--apple-fs-fine-print);
-          color: var(--apple-ink-secondary);
-          margin: var(--apple-spacing-xxs) 0;
+          font-size: var(--app-fs-meta);
+          color: var(--app-color-text-secondary);
+          margin: var(--app-space-1) 0;
         }
       }
     }
@@ -671,13 +671,13 @@ onMounted(async () => {
 
 .charts-section {
   .chart-card {
-    border-radius: var(--apple-rounded-lg);
-    border: 1px solid var(--apple-hairline);
-    margin-bottom: var(--apple-spacing-sm);
+    border-radius: var(--app-radius-lg);
+    border: 1px solid var(--app-color-border);
+    margin-bottom: var(--app-space-3);
     
     :deep(.el-card__header) {
-      padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-      border-bottom: 1px solid var(--apple-hairline);
+      padding: var(--app-space-3) var(--app-space-4);
+      border-bottom: 1px solid var(--app-color-border);
       
       .card-header {
         display: flex;
@@ -686,14 +686,14 @@ onMounted(async () => {
         .card-title {
           display: flex;
           align-items: center;
-          font-family: var(--apple-font-display);
-          font-size: var(--apple-fs-body-strong);
+          font-family: var(--app-font-family);
+          font-size: var(--app-fs-body);
           font-weight: 600;
-          color: var(--apple-ink);
+          color: var(--app-color-ink);
           
           .el-icon {
-            margin-right: var(--apple-spacing-xs);
-            color: var(--apple-primary);
+            margin-right: var(--app-space-2);
+            color: var(--app-color-primary);
           }
         }
       }
@@ -726,13 +726,13 @@ onMounted(async () => {
 }
 
 .info-card {
-  border-radius: var(--apple-rounded-lg);
-  border: 1px solid var(--apple-hairline);
-  margin-bottom: var(--apple-spacing-sm);
+  border-radius: var(--app-radius-lg);
+  border: 1px solid var(--app-color-border);
+  margin-bottom: var(--app-space-3);
   
   :deep(.el-card__header) {
-    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-    border-bottom: 1px solid var(--apple-hairline);
+    padding: var(--app-space-3) var(--app-space-4);
+    border-bottom: 1px solid var(--app-color-border);
     
     .card-header {
       display: flex;
@@ -741,14 +741,14 @@ onMounted(async () => {
       .card-title {
         display: flex;
         align-items: center;
-        font-family: var(--apple-font-display);
-        font-size: var(--apple-fs-body-strong);
+        font-family: var(--app-font-family);
+        font-size: var(--app-fs-body);
         font-weight: 600;
-        color: var(--apple-ink);
+        color: var(--app-color-ink);
         
         .el-icon {
-          margin-right: var(--apple-spacing-xs);
-          color: var(--apple-primary);
+          margin-right: var(--app-space-2);
+          color: var(--app-color-primary);
         }
       }
     }
@@ -760,22 +760,22 @@ onMounted(async () => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--apple-spacing-sm) 0;
-    border-bottom: 1px solid var(--apple-divider-soft);
+    padding: var(--app-space-3) 0;
+    border-bottom: 1px solid var(--app-color-divider);
     
     &:last-child {
       border-bottom: none;
     }
     
     .stat-label {
-      font-size: var(--apple-fs-fine-print);
-      color: var(--apple-ink-secondary);
+      font-size: var(--app-fs-meta);
+      color: var(--app-color-text-secondary);
     }
     
     .stat-value {
-      font-size: var(--apple-fs-tagline);
+      font-size: var(--app-fs-title);
       font-weight: 700;
-      color: var(--apple-ink);
+      color: var(--app-color-ink);
     }
   }
 }
@@ -783,7 +783,7 @@ onMounted(async () => {
 @media (max-width: 768px) {
   .page-header {
     flex-direction: column;
-    gap: var(--apple-spacing-sm);
+    gap: var(--app-space-3);
     
     .header-actions {
       width: 100%;
@@ -796,13 +796,13 @@ onMounted(async () => {
   
   .overview-cards {
     .el-col {
-      margin-bottom: var(--apple-spacing-sm);
+      margin-bottom: var(--app-space-3);
     }
   }
   
   .charts-section {
     .el-col {
-      margin-bottom: var(--apple-spacing-sm);
+      margin-bottom: var(--app-space-3);
     }
   }
 }

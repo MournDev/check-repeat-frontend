@@ -121,7 +121,7 @@
           <div class="app-metric-item" v-for="item in appMetrics" :key="item.label">
             <div class="app-metric-row">
               <span class="app-metric-label">{{ item.label }}</span>
-              <span class="app-metric-value" :style="{ color: item.color || 'var(--apple-ink)' }">{{ item.value }}</span>
+              <span class="app-metric-value" :style="{ color: item.color || 'var(--app-color-ink)' }">{{ item.value }}</span>
             </div>
             <el-progress v-if="item.percent !== undefined" :percentage="item.percent" :stroke-width="6" :color="item.color" />
           </div>
@@ -180,9 +180,9 @@ const getStatusClass = (value) => {
 }
 
 const getProgressColor = (value) => {
-  if (!value || value < 60) return '#34c759'
-  if (value < 80) return '#ff9500'
-  return '#ff3b30'
+  if (!value || value < 60) return 'var(--app-color-success)'
+  if (value < 80) return 'var(--app-color-warning)'
+  return 'var(--app-color-danger)'
 }
 
 const loadResources = async () => {
@@ -376,41 +376,41 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.system-monitoring { padding: 0; font-family: var(--apple-font-text); }
+.system-monitoring { padding: 0; font-family: var(--app-font-family); }
 
-.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--apple-spacing-md); margin-bottom: var(--apple-spacing-md); }
-.stat-card { display: flex; align-items: center; gap: var(--apple-spacing-md); padding: var(--apple-spacing-md); }
-.stat-icon { width: 56px; height: 56px; border-radius: var(--apple-rounded-lg); display: flex; align-items: center; justify-content: center; color: var(--apple-surface); flex-shrink: 0; }
-.stat-icon.cpu { background: linear-gradient(135deg, var(--apple-primary), #337ecc); }
-.stat-icon.memory { background: linear-gradient(135deg, var(--apple-success), #529b2e); }
-.stat-icon.disk { background: linear-gradient(135deg, var(--apple-warning), #b88230); }
-.stat-icon.db { background: linear-gradient(135deg, #9B59B6, #7d3c98); }
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--app-space-4); margin-bottom: var(--app-space-4); }
+.stat-card { display: flex; align-items: center; gap: var(--app-space-4); padding: var(--app-space-4); }
+.stat-icon { width: 56px; height: 56px; border-radius: var(--app-radius-lg); display: flex; align-items: center; justify-content: center; color: var(--app-color-card-bg); flex-shrink: 0; }
+.stat-icon.cpu { background: var(--app-color-primary); }
+.stat-icon.memory { background: var(--app-color-success); }
+.stat-icon.disk { background: var(--app-color-warning); }
+.stat-icon.db { background: var(--app-color-purple); }
 .stat-info { flex: 1; min-width: 0; }
-.stat-value { font-size: var(--apple-fs-lead); font-weight: 700; color: var(--apple-ink); line-height: 1.2; }
-.stat-value.status-normal { color: var(--apple-success); }
-.stat-value.status-warning { color: var(--apple-warning); }
-.stat-value.status-danger { color: var(--apple-danger); }
-.stat-label { font-size: var(--apple-fs-fine-print); color: var(--apple-info); margin: var(--apple-spacing-xxs) 0 var(--apple-spacing-xs); }
+.stat-value { font-size: var(--app-fs-metric); font-weight: 700; color: var(--app-color-ink); line-height: 1.2; }
+.stat-value.status-normal { color: var(--app-color-success); }
+.stat-value.status-warning { color: var(--app-color-warning); }
+.stat-value.status-danger { color: var(--app-color-danger); }
+.stat-label { font-size: var(--app-fs-meta); color: var(--app-color-info); margin: var(--app-space-1) 0 var(--app-space-2); }
 
-.overview-card { margin-bottom: var(--apple-spacing-md); }
-.card-title { font-weight: 600; font-size: var(--apple-fs-caption); font-family: var(--apple-font-display); }
+.overview-card { margin-bottom: var(--app-space-4); }
+.card-title { font-weight: 600; font-size: var(--app-fs-caption); font-family: var(--app-font-family); }
 .card-header { display: flex; justify-content: space-between; align-items: center; }
 
-.charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--apple-spacing-md); margin-bottom: var(--apple-spacing-md); }
+.charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--app-space-4); margin-bottom: var(--app-space-4); }
 .chart-card { margin-bottom: 0; }
 .chart-container { width: 100%; height: 320px; }
 .chart-container-small { width: 100%; height: 200px; }
 
-.db-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--apple-spacing-sm); margin-bottom: var(--apple-spacing-md); }
-.db-metric-item { text-align: center; padding: var(--apple-spacing-sm); background: var(--apple-canvas-parchment); border-radius: var(--apple-rounded-sm); }
-.db-metric-value { font-size: var(--apple-fs-tagline); font-weight: 600; color: var(--apple-ink); }
-.db-metric-label { font-size: var(--apple-fs-fine-print); color: var(--apple-info); margin-top: var(--apple-spacing-xxs); }
+.db-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--app-space-3); margin-bottom: var(--app-space-4); }
+.db-metric-item { text-align: center; padding: var(--app-space-3); background: var(--app-color-fill); border-radius: var(--app-radius-sm); }
+.db-metric-value { font-size: var(--app-fs-title); font-weight: 600; color: var(--app-color-ink); }
+.db-metric-label { font-size: var(--app-fs-meta); color: var(--app-color-info); margin-top: var(--app-space-1); }
 
-.app-metrics { display: flex; flex-direction: column; gap: var(--apple-spacing-md); }
+.app-metrics { display: flex; flex-direction: column; gap: var(--app-space-4); }
 .app-metric-item { }
-.app-metric-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--apple-spacing-xxs); }
-.app-metric-label { font-size: var(--apple-fs-fine-print); color: var(--apple-ink-muted-80); }
-.app-metric-value { font-size: var(--apple-fs-body-strong); font-weight: 600; }
+.app-metric-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--app-space-1); }
+.app-metric-label { font-size: var(--app-fs-meta); color: var(--app-color-text); }
+.app-metric-value { font-size: var(--app-fs-body); font-weight: 600; }
 
 @media (max-width: 768px) {
   .stats-row { grid-template-columns: repeat(2, 1fr); }

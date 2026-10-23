@@ -461,26 +461,26 @@ onMounted(() => {
 
 // 欢迎区域
 .welcome-section {
-  margin-bottom: var(--apple-spacing-xl);
+  margin-bottom: var(--app-space-8);
   
   .welcome-content {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: var(--apple-spacing-lg);
+    margin-bottom: var(--app-space-6);
     
     .welcome-left {
 
       .welcome-subtitle {
-        font-size: var(--apple-fs-caption);
-        color: var(--apple-ink-secondary);
+        font-size: var(--app-fs-caption);
+        color: var(--app-color-text-secondary);
         margin: 0;
       }
     }
     
     .welcome-actions {
       display: flex;
-      gap: var(--apple-spacing-sm);
+      gap: var(--app-space-3);
     }
   }
 }
@@ -489,22 +489,22 @@ onMounted(() => {
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--apple-spacing-md);
-  margin-bottom: var(--apple-spacing-xl);
+  gap: var(--app-space-4);
+  margin-bottom: var(--app-space-8);
 }
 
 .stat-card {
-  background: var(--apple-surface);
-  border: 1px solid var(--apple-slate-border);
-  border-radius: var(--apple-rounded-lg);
-  padding: var(--apple-spacing-md);
+  background: var(--app-color-card-bg);
+  border: 1px solid var(--app-color-border-soft);
+  border-radius: var(--app-radius-lg);
+  padding: var(--app-space-4);
   display: flex;
   align-items: center;
-  gap: var(--apple-spacing-md);
-  transition: all 0.2s ease;
+  gap: var(--app-space-4);
+  transition: all var(--app-transition-normal);
   
   &:hover {
-    border-color: var(--apple-slate-border-strong);
+    border-color: var(--app-color-border-strong);
   }
 
   &:active {
@@ -515,7 +515,7 @@ onMounted(() => {
   .stat-icon {
     width: 48px;
     height: 48px;
-    border-radius: var(--apple-rounded-lg);
+    border-radius: var(--app-radius-lg);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -523,23 +523,23 @@ onMounted(() => {
     flex-shrink: 0;
     
     &.user-icon {
-      background: var(--apple-info-bg);
-      color: var(--apple-primary);
+      background: var(--app-color-info-bg);
+      color: var(--app-color-primary);
     }
     
     &.paper-icon {
-      background: var(--apple-warning-bg);
-      color: var(--apple-warning);
+      background: var(--app-color-warning-bg);
+      color: var(--app-color-warning);
     }
     
     &.unassigned-icon {
-      background: var(--apple-success-bg);
-      color: var(--apple-success);
+      background: var(--app-color-success-bg);
+      color: var(--app-color-success);
     }
     
     &.health-icon {
-      background: #ede9fe;
-      color: #8b5cf6;
+      background: rgba(var(--app-color-purple-rgb), 0.12);
+      color: var(--app-color-purple);
     }
   }
   
@@ -547,16 +547,16 @@ onMounted(() => {
     flex: 1;
     
     .stat-value {
-      font-size: var(--apple-fs-lead);
+      font-size: var(--app-fs-metric);
       font-weight: 700;
-      color: var(--apple-ink);
+      color: var(--app-color-ink);
       line-height: 1.2;
-      margin-bottom: var(--apple-spacing-xxs);
+      margin-bottom: var(--app-space-1);
     }
     
     .stat-label {
-      font-size: var(--apple-fs-fine-print);
-      color: var(--apple-ink-secondary);
+      font-size: var(--app-fs-meta);
+      color: var(--app-color-text-secondary);
     }
   }
 }
@@ -565,7 +565,7 @@ onMounted(() => {
 .main-content {
   display: grid;
   grid-template-columns: 1fr 320px;
-  gap: var(--apple-spacing-lg);
+  gap: var(--app-space-6);
   
   @media (max-width: 1200px) {
     grid-template-columns: 1fr;
@@ -574,34 +574,34 @@ onMounted(() => {
 
 // 通用卡片样式
 .card {
-  background: var(--apple-surface);
-  border: 1px solid var(--apple-slate-border);
-  border-radius: var(--apple-rounded-lg);
-  padding: var(--apple-spacing-lg);
-  margin-bottom: var(--apple-spacing-lg);
-  transition: all 0.2s ease;
+  background: var(--app-color-card-bg);
+  border: 1px solid var(--app-color-border-soft);
+  border-radius: var(--app-radius-lg);
+  padding: var(--app-space-6);
+  margin-bottom: var(--app-space-6);
+  transition: all var(--app-transition-normal);
   
   &:hover {
-    border-color: var(--apple-slate-border-strong);
+    border-color: var(--app-color-border-strong);
   }
 
   .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: var(--apple-spacing-md);
+    margin-bottom: var(--app-space-4);
     
     .card-title {
       display: flex;
       align-items: center;
-      gap: var(--apple-spacing-xs);
-      font-family: var(--apple-font-display);
-      font-size: var(--apple-fs-body-strong);
+      gap: var(--app-space-2);
+      font-family: var(--app-font-family);
+      font-size: var(--app-fs-body);
       font-weight: 600;
-      color: var(--apple-ink);
+      color: var(--app-color-ink);
       
       .el-icon {
-        color: var(--apple-ink-secondary);
+        color: var(--app-color-text-secondary);
       }
     }
   }
@@ -612,65 +612,65 @@ onMounted(() => {
   .metrics-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: var(--apple-spacing-md);
-    margin-bottom: var(--apple-spacing-lg);
+    gap: var(--app-space-4);
+    margin-bottom: var(--app-space-6);
   }
   
   .metric-item {
-    padding: var(--apple-spacing-md);
-    background: var(--apple-canvas-parchment);
-    border-radius: var(--apple-rounded-sm);
-    transition: all 0.2s ease;
+    padding: var(--app-space-4);
+    background: var(--app-color-fill);
+    border-radius: var(--app-radius-sm);
+    transition: all var(--app-transition-normal);
     
     &:hover {
-      background: var(--apple-slate-bg);
-      border-color: var(--apple-slate-border-strong);
+      background: var(--app-color-fill);
+      border-color: var(--app-color-border-strong);
     }
     
     .metric-value {
-      font-size: var(--apple-fs-lead-airy);
+      font-size: var(--app-fs-display);
       font-weight: 700;
-      color: var(--apple-ink);
-      margin-bottom: var(--apple-spacing-xs);
+      color: var(--app-color-ink);
+      margin-bottom: var(--app-space-2);
     }
     
     .metric-label {
-      color: var(--apple-ink-secondary);
-      font-size: var(--apple-fs-fine-print);
-      margin-bottom: var(--apple-spacing-sm);
+      color: var(--app-color-text-secondary);
+      font-size: var(--app-fs-meta);
+      margin-bottom: var(--app-space-3);
     }
   }
   
   .server-info {
-    margin-top: var(--apple-spacing-lg);
+    margin-top: var(--app-space-6);
     
     h4 {
-      margin: 0 0 var(--apple-spacing-md) 0;
-      color: var(--apple-ink);
+      margin: 0 0 var(--app-space-4) 0;
+      color: var(--app-color-ink);
       font-weight: 600;
     }
     
     .server-details {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: var(--apple-spacing-md);
+      gap: var(--app-space-4);
     }
     
     .server-detail-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: var(--apple-spacing-sm);
-      background: var(--apple-canvas-parchment);
-      border-radius: var(--apple-rounded-sm);
+      padding: var(--app-space-3);
+      background: var(--app-color-fill);
+      border-radius: var(--app-radius-sm);
       
       .detail-label {
-        color: var(--apple-ink-secondary);
-        font-size: var(--apple-fs-fine-print);
+        color: var(--app-color-text-secondary);
+        font-size: var(--app-fs-meta);
       }
       
       .detail-value {
-        color: var(--apple-ink);
+        color: var(--app-color-ink);
         font-weight: 400;
       }
     }
@@ -680,7 +680,7 @@ onMounted(() => {
 // 用户分布
 .users-distribution {
   .distribution-item {
-    margin-bottom: var(--apple-spacing-md);
+    margin-bottom: var(--app-space-4);
     
     &:last-child {
       margin-bottom: 0;
@@ -690,17 +690,17 @@ onMounted(() => {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: var(--apple-spacing-xs);
+      margin-bottom: var(--app-space-2);
       
       .dist-value {
-        font-size: var(--apple-fs-body-strong);
+        font-size: var(--app-fs-body);
         font-weight: 700;
-        color: var(--apple-ink);
+        color: var(--app-color-ink);
       }
       
       .dist-label {
-        color: var(--apple-ink-secondary);
-        font-size: var(--apple-fs-fine-print);
+        color: var(--app-color-text-secondary);
+        font-size: var(--app-fs-meta);
       }
     }
   }
@@ -709,7 +709,7 @@ onMounted(() => {
 // 进度条
 .progress-bar {
   height: 6px;
-  background: var(--apple-slate-border);
+  background: var(--app-color-border-soft);
   border-radius: 3px;
   overflow: hidden;
   
@@ -719,19 +719,19 @@ onMounted(() => {
     transition: width 0.5s ease;
     
     &:not(.student):not(.teacher):not(.admin) {
-      background: var(--apple-primary);
+      background: var(--app-color-primary);
     }
     
     &.student {
-      background: var(--apple-primary);
+      background: var(--app-color-primary);
     }
     
     &.teacher {
-      background: var(--apple-danger);
+      background: var(--app-color-danger);
     }
     
     &.admin {
-      background: var(--apple-success);
+      background: var(--app-color-success);
     }
   }
 }
@@ -741,14 +741,14 @@ onMounted(() => {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: var(--apple-spacing-xxs) var(--apple-spacing-sm);
-  border-radius: var(--apple-rounded-pill);
-  font-size: var(--apple-fs-fine-print);
+  padding: var(--app-space-1) var(--app-space-3);
+  border-radius: var(--app-radius-pill);
+  font-size: var(--app-fs-meta);
   font-weight: 400;
   
   &.success {
-    background: var(--apple-success-bg);
-    color: var(--apple-success);
+    background: var(--app-color-success-bg);
+    color: var(--app-color-success);
   }
   
   .el-icon {
@@ -758,12 +758,12 @@ onMounted(() => {
 
 // 业务指标
 .business-metrics-card {
-  margin-top: var(--apple-spacing-lg);
+  margin-top: var(--app-space-6);
 }
 
 // 响应时间趋势图
 .response-time-card {
-  margin-top: var(--apple-spacing-lg);
+  margin-top: var(--app-space-6);
 
   .header-right {
     display: flex;
@@ -783,24 +783,24 @@ onMounted(() => {
 .business-metrics {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: var(--apple-spacing-md);
+  gap: var(--app-space-4);
 
   .metric-item {
-    padding: var(--apple-spacing-md);
-    background: var(--apple-canvas-parchment);
-    border-radius: var(--apple-rounded-sm);
+    padding: var(--app-space-4);
+    background: var(--app-color-fill);
+    border-radius: var(--app-radius-sm);
     text-align: center;
 
     .metric-value {
-      font-size: var(--apple-fs-lead);
+      font-size: var(--app-fs-metric);
       font-weight: 700;
-      color: var(--apple-ink);
-      margin-bottom: var(--apple-spacing-xs);
+      color: var(--app-color-ink);
+      margin-bottom: var(--app-space-2);
     }
 
     .metric-label {
-      color: var(--apple-ink-secondary);
-      font-size: var(--apple-fs-fine-print);
+      color: var(--app-color-text-secondary);
+      font-size: var(--app-fs-meta);
     }
   }
 }
@@ -808,13 +808,13 @@ onMounted(() => {
 // 响应式设计
 @media (max-width: 768px) {
   .admin-dashboard {
-    padding: var(--apple-spacing-sm);
+    padding: var(--app-space-3);
   }
   
   .welcome-content {
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--apple-spacing-sm);
+    gap: var(--app-space-3);
   }
   
   .welcome-actions {
@@ -846,7 +846,7 @@ onMounted(() => {
   }
   
   .card {
-    padding: 20px;
+    padding: var(--app-space-5);
   }
 }
 </style>
