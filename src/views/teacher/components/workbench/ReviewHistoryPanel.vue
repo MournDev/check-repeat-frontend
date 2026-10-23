@@ -72,9 +72,9 @@ watch(() => props.paperId, load, { immediate: true })
 
 <style scoped>
 .review-history-panel {
-  padding: var(--apple-spacing-sm) 0 var(--apple-spacing-xs);
+  padding: var(--app-space-3) 0 var(--app-space-2);
   min-height: 200px;
-  font-family: var(--apple-font-text);
+  font-family: var(--app-font-family);
 }
 
 .history-empty {
@@ -84,28 +84,28 @@ watch(() => props.paperId, load, { immediate: true })
   justify-content: center;
   min-height: 220px;
   text-align: center;
-  color: var(--apple-ink-muted-48);
+  color: var(--app-color-text-muted);
 }
 
 .empty-icon {
   font-size: 36px;
-  color: var(--apple-slate-faint);
+  color: var(--app-color-text-secondary);
 }
 
 .history-empty p {
-  margin: var(--apple-spacing-sm) 0 var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-caption);
-  color: var(--apple-ink);
+  margin: var(--app-space-3) 0 var(--app-space-1);
+  font-size: var(--app-fs-caption);
+  color: var(--app-color-ink);
 }
 
 .history-empty span {
-  font-size: var(--apple-fs-fine-print);
+  font-size: var(--app-fs-meta);
 }
 
 .history-list {
   position: relative;
   margin: 0;
-  padding: 0 0 0 var(--apple-spacing-md);
+  padding: 0 0 0 var(--app-space-4);
   list-style: none;
 }
 
@@ -116,12 +116,12 @@ watch(() => props.paperId, load, { immediate: true })
   bottom: 8px;
   left: 4px;
   width: 1px;
-  background: var(--apple-hairline);
+  background: var(--app-color-border);
 }
 
 .history-item {
   position: relative;
-  margin-bottom: var(--apple-spacing-sm);
+  margin-bottom: var(--app-space-3);
 }
 
 .history-item:last-child {
@@ -134,81 +134,81 @@ watch(() => props.paperId, load, { immediate: true })
   left: -16px;
   width: 9px;
   height: 9px;
-  border: 2px solid var(--apple-canvas);
+  border: 2px solid var(--app-color-card-bg);
   border-radius: 50%;
-  background: var(--apple-ink-muted-48);
-  box-shadow: 0 0 0 1px var(--apple-hairline);
+  background: var(--app-color-text-muted);
+  box-shadow: 0 0 0 1px var(--app-color-border);
 }
 
 .timeline-dot.success {
-  background: var(--apple-success);
+  background: var(--app-color-success);
 }
 
 .timeline-dot.danger {
-  background: var(--apple-danger);
+  background: var(--app-color-danger);
 }
 
 .timeline-dot.warning {
-  background: var(--apple-warning);
+  background: var(--app-color-warning);
 }
 
 .history-card {
-  padding: var(--apple-spacing-xs) var(--apple-spacing-sm);
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-sm);
-  background: var(--apple-canvas);
+  padding: var(--app-space-2) var(--app-space-3);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-sm);
+  background: var(--app-color-card-bg);
 }
 
 .history-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--apple-spacing-xs);
+  gap: var(--app-space-2);
 }
 
 .status-tag {
-  padding: 0 var(--apple-spacing-xs);
-  font-size: var(--apple-fs-fine-print);
+  padding: 0 var(--app-space-2);
+  font-size: var(--app-fs-meta);
   line-height: 18px;
-  border-radius: var(--apple-rounded-xs);
-  color: var(--apple-ink-muted-48);
-  background: var(--apple-canvas-parchment);
+  border-radius: var(--app-radius-xs);
+  color: var(--app-color-text-muted);
+  background: var(--app-color-fill);
 }
 
 .status-tag.success {
-  color: var(--apple-success);
-  background: var(--apple-success-bg);
+  color: var(--app-color-success);
+  background: var(--app-color-success-bg);
 }
 
 .status-tag.danger {
-  color: var(--apple-danger);
-  background: var(--apple-danger-bg);
+  color: var(--app-color-danger);
+  background: var(--app-color-danger-bg);
 }
 
 .status-tag.warning {
-  color: var(--apple-warning);
-  background: var(--apple-warning-bg);
+  color: var(--app-color-warning);
+  background: var(--app-color-warning-bg);
 }
 
 .history-time {
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 .history-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--apple-spacing-xxs) var(--apple-spacing-sm);
-  margin-top: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  gap: var(--app-space-1) var(--app-space-3);
+  margin-top: var(--app-space-1);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 .history-opinion {
-  margin: var(--apple-spacing-xxs) 0 0;
-  font-size: var(--apple-fs-fine-print);
+  margin: var(--app-space-1) 0 0;
+  font-size: var(--app-fs-meta);
   line-height: 1.6;
-  color: var(--apple-ink-muted-80);
+  color: var(--app-color-text);
   white-space: pre-wrap;
 }
 </style>

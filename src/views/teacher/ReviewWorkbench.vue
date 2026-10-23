@@ -460,10 +460,10 @@ onBeforeUnmount(() => {
   height: calc(100vh - 160px);
   min-height: 560px;
   overflow: hidden;
-  background: var(--apple-canvas);
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-lg);
-  font-family: var(--apple-font-text);
+  background: var(--app-color-card-bg);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  font-family: var(--app-font-family);
 }
 
 /* 工作台为满屏三栏，隐藏全局页脚避免页面出现纵向滚动 */
@@ -481,20 +481,20 @@ onBeforeUnmount(() => {
 .wb-detail {
   display: flex;
   flex-direction: column;
-  border-left: 1px solid var(--apple-hairline);
-  background: var(--apple-canvas);
+  border-left: 1px solid var(--app-color-border);
+  background: var(--app-color-card-bg);
 }
 
 .paper-head {
   flex-shrink: 0;
-  padding: var(--apple-spacing-sm) var(--apple-spacing-md) var(--apple-spacing-xs);
-  border-bottom: 1px solid var(--apple-hairline);
+  padding: var(--app-space-3) var(--app-space-4) var(--app-space-2);
+  border-bottom: 1px solid var(--app-color-border);
 }
 
 .student-line {
   display: flex;
   align-items: center;
-  gap: var(--apple-spacing-xs);
+  gap: var(--app-space-2);
 }
 
 .avatar {
@@ -504,10 +504,10 @@ onBeforeUnmount(() => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: var(--apple-fs-fine-print);
+  font-size: var(--app-fs-meta);
   font-weight: 600;
-  color: var(--apple-primary);
-  background: var(--apple-info-bg);
+  color: var(--app-color-primary);
+  background: var(--app-color-info-bg);
   border-radius: 50%;
 }
 
@@ -518,15 +518,15 @@ onBeforeUnmount(() => {
 
 .student-meta strong {
   display: block;
-  font-size: var(--apple-fs-caption);
-  color: var(--apple-ink);
+  font-size: var(--app-fs-caption);
+  color: var(--app-color-ink);
 }
 
 .student-meta span {
   display: block;
   margin-top: 1px;
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -534,31 +534,31 @@ onBeforeUnmount(() => {
 
 .status-flag {
   flex-shrink: 0;
-  padding: 0 var(--apple-spacing-xs);
-  font-size: var(--apple-fs-fine-print);
+  padding: 0 var(--app-space-2);
+  font-size: var(--app-fs-meta);
   line-height: 18px;
-  color: var(--apple-ink-muted-48);
-  background: var(--apple-canvas-parchment);
-  border-radius: var(--apple-rounded-xs);
+  color: var(--app-color-text-muted);
+  background: var(--app-color-fill);
+  border-radius: var(--app-radius-xs);
 }
 
 .status-flag.urgent {
-  color: var(--apple-warning);
-  background: var(--apple-warning-bg);
+  color: var(--app-color-warning);
+  background: var(--app-color-warning-bg);
 }
 
 .status-flag.overdue {
-  color: var(--apple-danger);
-  background: var(--apple-danger-bg);
+  color: var(--app-color-danger);
+  background: var(--app-color-danger-bg);
 }
 
 .paper-title {
-  margin: var(--apple-spacing-xs) 0 0;
-  font-family: var(--apple-font-display);
-  font-size: var(--apple-fs-body-strong);
+  margin: var(--app-space-2) 0 0;
+  font-family: var(--app-font-family);
+  font-size: var(--app-fs-body);
   line-height: 1.4;
   font-weight: 600;
-  color: var(--apple-ink);
+  color: var(--app-color-ink);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -568,25 +568,25 @@ onBeforeUnmount(() => {
 .paper-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--apple-spacing-xxs) var(--apple-spacing-xs);
-  margin-top: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  gap: var(--app-space-1) var(--app-space-2);
+  margin-top: var(--app-space-1);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 .steps {
   display: flex;
   align-items: center;
-  gap: var(--apple-spacing-xxs);
-  margin-top: var(--apple-spacing-sm);
+  gap: var(--app-space-1);
+  margin-top: var(--app-space-3);
 }
 
 .step {
   display: flex;
   align-items: center;
-  gap: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  gap: var(--app-space-1);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
   white-space: nowrap;
 }
 
@@ -598,37 +598,37 @@ onBeforeUnmount(() => {
   justify-content: center;
   font-size: 10px;
   font-weight: 600;
-  color: var(--apple-ink-muted-48);
-  background: var(--apple-canvas-parchment);
+  color: var(--app-color-text-muted);
+  background: var(--app-color-fill);
   border-radius: 50%;
 }
 
 .step.done {
-  color: var(--apple-success);
+  color: var(--app-color-success);
 }
 
 .step.done .step-dot {
-  color: var(--apple-on-primary);
-  background: var(--apple-success);
+  color: var(--app-color-on-primary);
+  background: var(--app-color-success);
 }
 
 .step.current {
-  color: var(--apple-primary);
+  color: var(--app-color-primary);
 }
 
 .step.current .step-dot {
-  color: var(--apple-on-primary);
-  background: var(--apple-primary);
+  color: var(--app-color-on-primary);
+  background: var(--app-color-primary);
 }
 
 .step-line {
   flex: 1;
   height: 1px;
-  background: var(--apple-hairline);
+  background: var(--app-color-border);
 }
 
 .step-line.done {
-  background: var(--apple-success);
+  background: var(--app-color-success);
 }
 
 .wb-tabs {
@@ -636,7 +636,7 @@ onBeforeUnmount(() => {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  padding: 0 var(--apple-spacing-md);
+  padding: 0 var(--app-space-4);
 }
 
 .wb-tabs :deep(.el-tabs__header) {
@@ -648,7 +648,7 @@ onBeforeUnmount(() => {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding-right: var(--apple-spacing-xxs);
+  padding-right: var(--app-space-1);
 }
 
 .wb-tabs :deep(.el-tab-pane) {
@@ -660,23 +660,23 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--apple-spacing-sm);
-  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-  border-top: 1px solid var(--apple-hairline);
-  background: var(--apple-canvas);
+  gap: var(--app-space-3);
+  padding: var(--app-space-3) var(--app-space-4);
+  border-top: 1px solid var(--app-color-border);
+  background: var(--app-color-card-bg);
 }
 
 .action-note {
   flex: 1;
   min-width: 0;
-  font-size: var(--apple-fs-fine-print);
+  font-size: var(--app-fs-meta);
   line-height: 1.4;
-  color: var(--apple-ink-muted-48);
+  color: var(--app-color-text-muted);
 }
 
 .action-buttons {
   display: flex;
-  gap: var(--apple-spacing-xs);
+  gap: var(--app-space-2);
   flex-shrink: 0;
 }
 
@@ -690,43 +690,43 @@ onBeforeUnmount(() => {
 .reject-dialog {
   display: flex;
   flex-direction: column;
-  gap: var(--apple-spacing-xs);
+  gap: var(--app-space-2);
 }
 
 .reject-tip {
   margin: 0;
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 .template-tip {
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 .template-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--apple-spacing-xxs);
+  gap: var(--app-space-1);
   max-height: 96px;
   overflow-y: auto;
 }
 
 .template-chip {
-  padding: 3px var(--apple-spacing-xs);
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-80);
-  background: var(--apple-canvas-parchment);
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-pill);
+  padding: 3px var(--app-space-2);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text);
+  background: var(--app-color-fill);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-pill);
   cursor: pointer;
-  transition: var(--apple-transition-fast);
+  transition: var(--app-transition-fast);
 }
 
 .template-chip:hover {
-  color: var(--apple-primary);
-  border-color: var(--apple-info-border);
-  background: var(--apple-info-bg);
+  color: var(--app-color-primary);
+  border-color: var(--app-color-info-border);
+  background: var(--app-color-info-bg);
 }
 
 @media (max-width: 1200px) {
@@ -746,7 +746,7 @@ onBeforeUnmount(() => {
   .wb-queue {
     height: 260px;
     border-right: none;
-    border-bottom: 1px solid var(--apple-hairline);
+    border-bottom: 1px solid var(--app-color-border);
   }
 
   .wb-preview {
@@ -756,24 +756,24 @@ onBeforeUnmount(() => {
 
   .wb-detail {
     border-left: none;
-    border-top: 1px solid var(--apple-hairline);
+    border-top: 1px solid var(--app-color-border);
     min-height: 640px;
   }
 }
 
 @media (max-width: 768px) {
   .paper-head {
-    padding: var(--apple-spacing-sm);
+    padding: var(--app-space-3);
   }
 
   .wb-tabs {
-    padding: 0 var(--apple-spacing-sm);
+    padding: 0 var(--app-space-3);
   }
 
   .wb-actions {
     flex-direction: column;
     align-items: stretch;
-    padding: var(--apple-spacing-sm);
+    padding: var(--app-space-3);
   }
 
   .action-buttons {

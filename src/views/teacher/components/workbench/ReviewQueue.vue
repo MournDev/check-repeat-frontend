@@ -137,145 +137,145 @@ watch(() => props.currentId, async () => {
   flex-direction: column;
   height: 100%;
   min-height: 0;
-  background: var(--apple-canvas);
-  border-right: 1px solid var(--apple-hairline);
-  font-family: var(--apple-font-text);
+  background: var(--app-color-card-bg);
+  border-right: 1px solid var(--app-color-border);
+  font-family: var(--app-font-family);
 }
 
 .queue-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--apple-spacing-md) var(--apple-spacing-md) var(--apple-spacing-xs);
+  padding: var(--app-space-4) var(--app-space-4) var(--app-space-2);
   flex-shrink: 0;
 }
 
 .queue-title {
   display: flex;
   align-items: baseline;
-  gap: var(--apple-spacing-xs);
-  font-family: var(--apple-font-display);
-  font-size: var(--apple-fs-body-strong);
+  gap: var(--app-space-2);
+  font-family: var(--app-font-family);
+  font-size: var(--app-fs-body);
   font-weight: 600;
-  color: var(--apple-ink);
+  color: var(--app-color-ink);
 }
 
 .queue-count {
-  font-size: var(--apple-fs-fine-print);
+  font-size: var(--app-fs-meta);
   font-weight: 500;
-  color: var(--apple-primary);
+  color: var(--app-color-primary);
 }
 
 .queue-count em {
   font-style: normal;
-  color: var(--apple-ink-muted-48);
+  color: var(--app-color-text-muted);
 }
 
 .queue-search {
-  padding: 0 var(--apple-spacing-md);
+  padding: 0 var(--app-space-4);
   flex-shrink: 0;
 
   :deep(.el-input__wrapper) {
-    border-radius: var(--apple-rounded-md);
-    font-size: var(--apple-fs-fine-print);
+    border-radius: var(--app-radius-md);
+    font-size: var(--app-fs-meta);
   }
 }
 
 .queue-filters {
   display: flex;
-  gap: var(--apple-spacing-xxs);
-  padding: var(--apple-spacing-xs) var(--apple-spacing-md) var(--apple-spacing-sm);
+  gap: var(--app-space-1);
+  padding: var(--app-space-2) var(--app-space-4) var(--app-space-3);
   flex-shrink: 0;
 }
 
 .filter-chip {
-  padding: 3px var(--apple-spacing-xs);
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
-  background: var(--apple-canvas-parchment);
+  padding: 3px var(--app-space-2);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
+  background: var(--app-color-fill);
   border: 1px solid transparent;
-  border-radius: var(--apple-rounded-pill);
+  border-radius: var(--app-radius-pill);
   cursor: pointer;
-  transition: var(--apple-transition-fast);
+  transition: var(--app-transition-fast);
 }
 
 .filter-chip:hover {
-  color: var(--apple-ink);
+  color: var(--app-color-ink);
 }
 
 .filter-chip.active {
-  color: var(--apple-primary);
-  background: var(--apple-info-bg);
-  border-color: var(--apple-info-border);
+  color: var(--app-color-primary);
+  background: var(--app-color-info-bg);
+  border-color: var(--app-color-info-border);
 }
 
 .queue-list {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 0 var(--apple-spacing-sm) var(--apple-spacing-md);
+  padding: 0 var(--app-space-3) var(--app-space-4);
   display: flex;
   flex-direction: column;
-  gap: var(--apple-spacing-xs);
+  gap: var(--app-space-2);
 }
 
 .queue-card {
   display: block;
   width: 100%;
-  padding: var(--apple-spacing-xs) var(--apple-spacing-sm);
+  padding: var(--app-space-2) var(--app-space-3);
   text-align: left;
-  background: var(--apple-canvas);
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-md);
+  background: var(--app-color-card-bg);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-md);
   cursor: pointer;
-  transition: var(--apple-transition-fast);
+  transition: var(--app-transition-fast);
 }
 
 .queue-card:hover {
-  border-color: var(--apple-slate-border-strong);
-  background: var(--apple-surface-pearl);
+  border-color: var(--app-color-border-strong);
+  background: var(--app-color-fill-light);
 }
 
 .queue-card.active {
-  border-color: var(--apple-primary);
-  background: var(--apple-info-bg);
+  border-color: var(--app-color-primary);
+  background: var(--app-color-info-bg);
 }
 
 .card-top {
   display: flex;
   align-items: center;
-  gap: var(--apple-spacing-xxs);
+  gap: var(--app-space-1);
 }
 
 .student-name {
-  font-size: var(--apple-fs-caption);
+  font-size: var(--app-fs-caption);
   font-weight: 600;
-  color: var(--apple-ink);
+  color: var(--app-color-ink);
 }
 
 .flag {
   margin-left: auto;
-  padding: 0 var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
+  padding: 0 var(--app-space-1);
+  font-size: var(--app-fs-meta);
   line-height: 16px;
-  border-radius: var(--apple-rounded-xs);
+  border-radius: var(--app-radius-xs);
 }
 
 .flag.danger {
-  color: var(--apple-danger);
-  background: var(--apple-danger-bg);
+  color: var(--app-color-danger);
+  background: var(--app-color-danger-bg);
 }
 
 .flag.warning {
-  color: var(--apple-warning);
-  background: var(--apple-warning-bg);
+  color: var(--app-color-warning);
+  background: var(--app-color-warning-bg);
 }
 
 .card-title {
-  margin-top: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
+  margin-top: var(--app-space-1);
+  font-size: var(--app-fs-meta);
   line-height: 1.4;
-  color: var(--apple-ink-muted-80);
+  color: var(--app-color-text);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -285,10 +285,10 @@ watch(() => props.currentId, async () => {
 .card-meta {
   display: flex;
   align-items: center;
-  gap: var(--apple-spacing-xs);
-  margin-top: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  gap: var(--app-space-2);
+  margin-top: var(--app-space-1);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 .card-meta .sim {
@@ -298,61 +298,61 @@ watch(() => props.currentId, async () => {
 /* 颜色由 global-styles.scss 的 similarity-* 语义类统一提供 */
 
 .queue-empty {
-  padding: var(--apple-spacing-xl) var(--apple-spacing-sm);
+  padding: var(--app-space-8) var(--app-space-3);
   text-align: center;
-  color: var(--apple-ink-muted-48);
-  font-size: var(--apple-fs-caption);
+  color: var(--app-color-text-muted);
+  font-size: var(--app-fs-caption);
 }
 
 .empty-icon {
   font-size: 28px;
-  color: var(--apple-slate-faint);
+  color: var(--app-color-text-secondary);
 }
 
 .queue-empty p {
-  margin: var(--apple-spacing-xs) 0;
+  margin: var(--app-space-2) 0;
 }
 
 .queue-hint {
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: var(--apple-spacing-sm);
-  padding: var(--apple-spacing-xs) var(--apple-spacing-md);
-  border-top: 1px solid var(--apple-hairline);
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  gap: var(--app-space-3);
+  padding: var(--app-space-2) var(--app-space-4);
+  border-top: 1px solid var(--app-color-border);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 .queue-hint span {
   display: inline-flex;
   align-items: center;
-  gap: var(--apple-spacing-xxs);
+  gap: var(--app-space-1);
 }
 
 .queue-hint kbd {
   min-width: 16px;
-  padding: 0 4px;
-  font-family: var(--apple-font-text);
-  font-size: var(--apple-fs-fine-print);
+  padding: 0 var(--app-space-1);
+  font-family: var(--app-font-family);
+  font-size: var(--app-fs-meta);
   line-height: 16px;
   text-align: center;
-  color: var(--apple-ink-muted-80);
-  background: var(--apple-canvas-parchment);
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-xs);
+  color: var(--app-color-text);
+  background: var(--app-color-fill);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-xs);
 }
 
 @media (max-width: 768px) {
   .queue-head {
-    padding: var(--apple-spacing-sm);
+    padding: var(--app-space-3);
   }
 
   .queue-search,
   .queue-filters,
   .queue-list {
-    padding-left: var(--apple-spacing-sm);
-    padding-right: var(--apple-spacing-sm);
+    padding-left: var(--app-space-3);
+    padding-right: var(--app-space-3);
   }
 }
 </style>

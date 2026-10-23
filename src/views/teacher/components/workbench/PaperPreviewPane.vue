@@ -158,41 +158,41 @@ watch(() => props.paper?.paperId, load, { immediate: true })
   flex-direction: column;
   height: 100%;
   min-height: 0;
-  background: var(--apple-canvas-parchment);
-  font-family: var(--apple-font-text);
+  background: var(--app-color-fill);
+  font-family: var(--app-font-family);
 }
 
 .preview-toolbar {
   display: flex;
   align-items: center;
-  gap: var(--apple-spacing-sm);
-  padding: var(--apple-spacing-xs) var(--apple-spacing-md);
-  background: var(--apple-canvas);
-  border-bottom: 1px solid var(--apple-hairline);
+  gap: var(--app-space-3);
+  padding: var(--app-space-2) var(--app-space-4);
+  background: var(--app-color-card-bg);
+  border-bottom: 1px solid var(--app-color-border);
   flex-shrink: 0;
 }
 
 .preview-heading {
   display: flex;
   align-items: baseline;
-  gap: var(--apple-spacing-xs);
+  gap: var(--app-space-2);
   min-width: 0;
   flex: 1;
 }
 
 .preview-label {
   flex-shrink: 0;
-  padding: 1px var(--apple-spacing-xs);
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-primary);
-  background: var(--apple-info-bg);
-  border-radius: var(--apple-rounded-pill);
+  padding: 1px var(--app-space-2);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-primary);
+  background: var(--app-color-info-bg);
+  border-radius: var(--app-radius-pill);
 }
 
 .preview-title {
-  font-size: var(--apple-fs-caption);
+  font-size: var(--app-fs-caption);
   font-weight: 600;
-  color: var(--apple-ink);
+  color: var(--app-color-ink);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -208,15 +208,15 @@ watch(() => props.paper?.paperId, load, { immediate: true })
   position: relative;
   flex: 1;
   min-height: 0;
-  padding: var(--apple-spacing-sm);
+  padding: var(--app-space-3);
 }
 
 .preview-frame {
   width: 100%;
   height: 100%;
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-md);
-  background: var(--apple-canvas);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-md);
+  background: var(--app-color-card-bg);
 }
 
 .preview-fallback,
@@ -226,69 +226,69 @@ watch(() => props.paper?.paperId, load, { immediate: true })
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--apple-spacing-xl);
+  padding: var(--app-space-8);
   text-align: center;
-  color: var(--apple-ink-muted-48);
-  background: var(--apple-canvas);
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-md);
+  color: var(--app-color-text-muted);
+  background: var(--app-color-card-bg);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-md);
 }
 
 .fallback-icon,
 .empty-icon {
   font-size: 40px;
-  color: var(--apple-slate-faint);
+  color: var(--app-color-text-secondary);
 }
 
 .preview-fallback h3 {
-  margin: var(--apple-spacing-sm) 0 var(--apple-spacing-xxs);
+  margin: var(--app-space-3) 0 var(--app-space-1);
   max-width: 520px;
-  font-family: var(--apple-font-display);
-  font-size: var(--apple-fs-body-strong);
-  color: var(--apple-ink);
+  font-family: var(--app-font-family);
+  font-size: var(--app-fs-body);
+  color: var(--app-color-ink);
 }
 
 .fallback-meta {
   margin: 0;
-  font-size: var(--apple-fs-caption);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-caption);
+  color: var(--app-color-text-muted);
 }
 
 .fallback-meta span {
-  margin: 0 var(--apple-spacing-xxs);
+  margin: 0 var(--app-space-1);
 }
 
 .fallback-tip {
-  margin: var(--apple-spacing-sm) 0 0;
+  margin: var(--app-space-3) 0 0;
   max-width: 460px;
-  font-size: var(--apple-fs-caption);
+  font-size: var(--app-fs-caption);
   line-height: 1.5;
-  color: var(--apple-ink-muted-48);
+  color: var(--app-color-text-muted);
 }
 
 .fallback-actions {
   display: flex;
-  gap: var(--apple-spacing-xs);
-  margin-top: var(--apple-spacing-md);
+  gap: var(--app-space-2);
+  margin-top: var(--app-space-4);
 }
 
 .preview-empty p {
-  margin: var(--apple-spacing-sm) 0 0;
-  font-size: var(--apple-fs-caption);
+  margin: var(--app-space-3) 0 0;
+  font-size: var(--app-fs-caption);
 }
 
 @media (max-width: 768px) {
   .preview-toolbar {
-    padding: var(--apple-spacing-xs) var(--apple-spacing-sm);
+    padding: var(--app-space-2) var(--app-space-3);
   }
 
   .preview-body {
-    padding: var(--apple-spacing-xs);
+    padding: var(--app-space-2);
   }
 
   .preview-fallback,
   .preview-empty {
-    padding: var(--apple-spacing-lg);
+    padding: var(--app-space-6);
   }
 }
 </style>
