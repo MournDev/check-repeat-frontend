@@ -2,10 +2,7 @@
   <div class="defense-workbench">
     <!-- ==================== 我的批次列表 ==================== -->
     <template v-if="view === 'list'">
-      <el-card class="console-card console-page-head-card" shadow="never">
-        <h2 class="head-title">答辩工作台</h2>
-        <p class="head-desc">我参与的中期/终期答辩批次：作为组长可提交答辩结论，成员与秘书可查看会议信息与答辩记录。</p>
-      </el-card>
+      <PageHeader description="我参与的中期/终期答辩批次：作为组长可提交答辩结论，成员与秘书可查看会议信息与答辩记录。" />
 
       <el-card class="console-card" shadow="never">
         <el-table :data="batches" v-loading="loading" row-key="id">
@@ -244,6 +241,7 @@
 </template>
 
 <script setup>
+import PageHeader from '@/components/common/PageHeader.vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores/user'
@@ -532,12 +530,6 @@ onMounted(() => {
   font-size: var(--app-fs-title);
   font-weight: 700;
   line-height: 1.2;
-}
-
-.head-desc {
-  margin: 0;
-  font-size: var(--app-fs-caption);
-  color: var(--app-color-text-muted);
 }
 
 .head-row {

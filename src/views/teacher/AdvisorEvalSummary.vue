@@ -1,15 +1,11 @@
 <template>
   <div class="advisor-eval-summary">
     <!-- 页头 -->
-    <el-card class="console-card console-page-head-card" shadow="never">
-      <div class="head-row">
-        <div class="head-text">
-          <h2 class="head-title">学生评价汇总</h2>
-          <p class="head-desc">查看学生对您指导工作的匿名聚合评价，数据仅作教学改进参考。</p>
-        </div>
+    <PageHeader description="查看学生对您指导工作的匿名聚合评价，数据仅作教学改进参考。">
+      <template #actions>
         <el-button :icon="Refresh" @click="fetchSummary">刷新</el-button>
-      </div>
-    </el-card>
+      </template>
+    </PageHeader>
 
     <!-- 加载中 -->
     <el-card v-if="loading" class="console-card" shadow="never">
@@ -95,6 +91,7 @@
 </template>
 
 <script setup>
+import PageHeader from '@/components/common/PageHeader.vue'
 import { ref, onMounted, nextTick } from 'vue'
 import { Refresh, Histogram, CollectionTag, Hide } from '@element-plus/icons-vue'
 import { getAdvisorEvalSummary } from '@/api/advisorEvaluation'
@@ -204,27 +201,6 @@ onMounted(() => {
   gap: var(--app-space-4);
   color: var(--app-color-ink);
   font-family: var(--app-font-family);
-}
-
-.head-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--app-space-4);
-}
-
-.head-title {
-  margin: 0 0 var(--app-space-1);
-  font-family: var(--app-font-family);
-  font-size: var(--app-fs-title);
-  font-weight: 700;
-  line-height: 1.2;
-}
-
-.head-desc {
-  margin: 0;
-  font-size: var(--app-fs-meta);
-  color: var(--app-color-text-muted);
 }
 
 .masked-block {
@@ -337,11 +313,6 @@ onMounted(() => {
 @media (max-width: 992px) {
   .el-col {
     margin-bottom: var(--app-space-4);
-  }
-
-  .head-row {
-    flex-direction: column;
-    align-items: stretch;
   }
 
   .masked-block {

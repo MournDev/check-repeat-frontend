@@ -1,18 +1,14 @@
 <template>
   <div class="advisor-eval-management">
     <!-- 页头 -->
-    <el-card class="console-card console-page-head-card" shadow="never">
-      <div class="head-row">
-        <div class="head-text">
-          <h2 class="head-title">导师评价管理</h2>
-          <p class="head-desc">全校导师评价完成率、导师排行、学院对比与实名评价明细，支持导出 xlsx。</p>
-        </div>
+    <PageHeader description="全校导师评价完成率、导师排行、学院对比与实名评价明细，支持导出 xlsx。">
+      <template #actions>
         <el-button type="primary" :loading="exporting" @click="handleExport">
           <el-icon><Download /></el-icon>
           导出明细
         </el-button>
-      </div>
-    </el-card>
+      </template>
+    </PageHeader>
 
     <!-- 统计时段标注：分段口径下完成率分母为该时段内通过终期答辩的论文数（P6b） -->
     <div class="period-tip">
@@ -282,6 +278,7 @@
 </template>
 
 <script setup>
+import PageHeader from '@/components/common/PageHeader.vue'
 import { ref, computed, onMounted, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Download, Refresh, Warning, Trophy, DataAnalysis, Document, InfoFilled } from '@element-plus/icons-vue'
@@ -521,26 +518,6 @@ onMounted(() => {
   font-family: var(--app-font-family);
 }
 
-.head-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--app-space-4);
-}
-
-.head-title {
-  margin: 0 0 var(--app-space-1);
-  font-family: var(--app-font-family);
-  font-size: var(--app-fs-title);
-  font-weight: 600;
-}
-
-.head-desc {
-  margin: 0;
-  font-size: var(--app-fs-meta);
-  color: var(--app-color-text-muted);
-}
-
 .period-tip {
   display: flex;
   align-items: center;
@@ -734,10 +711,6 @@ onMounted(() => {
 }
 
 @media (max-width: 768px) {
-  .head-row {
-    flex-direction: column;
-  }
-
   .filter-bar {
     .filter-item,
     .filter-date {

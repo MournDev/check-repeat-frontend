@@ -1,18 +1,14 @@
 <template>
   <div class="stat-report">
     <!-- 页头 -->
-    <el-card class="console-card console-page-head-card" shadow="never">
-      <div class="head-row">
-        <div class="head-text">
-          <h2 class="head-title">统计报表</h2>
-          <p class="head-desc">全校查重结果分布、学院对比与近 12 个月查重趋势，支持一键导出 xlsx。</p>
-        </div>
+    <PageHeader description="全校查重结果分布、学院对比与近 12 个月查重趋势，支持一键导出 xlsx。">
+      <template #actions>
         <el-button type="primary" :loading="exporting" @click="handleExport">
           <el-icon><Download /></el-icon>
           导出报表
         </el-button>
-      </div>
-    </el-card>
+      </template>
+    </PageHeader>
 
     <!-- 相似度分布 + 月度趋势 -->
     <el-row :gutter="16">
@@ -70,6 +66,7 @@
 </template>
 
 <script setup>
+import PageHeader from '@/components/common/PageHeader.vue'
 import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Download, Histogram, TrendCharts, DataAnalysis } from '@element-plus/icons-vue'
@@ -292,26 +289,6 @@ onMounted(() => {
   font-family: var(--app-font-family);
 }
 
-.head-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--app-space-4);
-}
-
-.head-title {
-  margin: 0 0 var(--app-space-1);
-  font-size: var(--app-fs-title);
-  font-weight: 600;
-  font-family: var(--app-font-family);
-}
-
-.head-desc {
-  margin: 0;
-  font-size: var(--app-fs-meta);
-  color: var(--app-color-text-muted);
-}
-
 .chart-card {
   margin-bottom: 0;
 
@@ -353,12 +330,6 @@ onMounted(() => {
 @media (max-width: 992px) {
   .el-col {
     margin-bottom: var(--app-space-4);
-  }
-}
-
-@media (max-width: 768px) {
-  .head-row {
-    flex-direction: column;
   }
 }
 </style>

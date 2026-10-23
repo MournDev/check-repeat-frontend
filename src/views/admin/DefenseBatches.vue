@@ -1,18 +1,14 @@
 <template>
   <div class="defense-batches">
     <!-- 页头 -->
-    <el-card class="console-card console-page-head-card" shadow="never">
-      <div class="head-row">
-        <div class="head-text">
-          <h2 class="head-title">答辩批次管理</h2>
-          <p class="head-desc">统一编排中期/终期答辩批次：分配答辩组、安排学生入批、跟踪结论提交进度。</p>
-        </div>
+    <PageHeader description="统一编排中期/终期答辩批次：分配答辩组、安排学生入批、跟踪结论提交进度。">
+      <template #actions>
         <el-button type="primary" @click="openCreateDialog">
           <el-icon><Plus /></el-icon>
           新建批次
         </el-button>
-      </div>
-    </el-card>
+      </template>
+    </PageHeader>
 
     <!-- 筛选 + 列表 -->
     <ListPageShell
@@ -154,6 +150,7 @@
 </template>
 
 <script setup>
+import PageHeader from '@/components/common/PageHeader.vue'
 import { computed, reactive, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -383,26 +380,6 @@ onMounted(async () => {
   font-family: var(--app-font-family);
 }
 
-.head-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--app-space-4);
-}
-
-.head-title {
-  margin: 0 0 var(--app-space-1);
-  font-size: var(--app-fs-title);
-  font-weight: 600;
-  font-family: var(--app-font-family);
-}
-
-.head-desc {
-  margin: 0;
-  font-size: var(--app-fs-meta);
-  color: var(--app-color-text-muted);
-}
-
 .filter-row {
   display: flex;
   align-items: center;
@@ -454,10 +431,6 @@ onMounted(async () => {
 }
 
 @media (max-width: 768px) {
-  .head-row {
-    flex-direction: column;
-  }
-
   .filter-item,
   .filter-college {
     width: 100%;

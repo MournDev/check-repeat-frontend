@@ -1,14 +1,7 @@
 <template>
   <div class="advisor-evaluation">
     <!-- 页头 -->
-    <el-card class="console-card console-page-head-card" shadow="never">
-      <div class="head-row">
-        <div class="head-text">
-          <h2 class="head-title">导师评价</h2>
-          <p class="head-desc">终期答辩通过后对指导教师的指导工作进行评价，评价结果仅作教师考核数据源，不进入成绩合成。</p>
-        </div>
-      </div>
-    </el-card>
+    <PageHeader description="终期答辩通过后对指导教师的指导工作进行评价，评价结果仅作教师考核数据源，不进入成绩合成。" />
 
     <!-- 状态卡：加载中 -->
     <el-card v-if="loading" class="console-card" shadow="never">
@@ -164,6 +157,7 @@ import {
   advisorEvalTagLabel,
   isNegativeAdvisorEvalTag
 } from '@/utils/advisorEvalTag'
+import PageHeader from '@/components/common/PageHeader.vue'
 import { formatDateTime } from '@/utils/dataType.js'
 
 const route = useRoute()
@@ -302,28 +296,6 @@ onMounted(() => {
   gap: var(--app-space-4);
   color: var(--app-color-ink);
   font-family: var(--app-font-family);
-}
-
-.head-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--app-space-4);
-}
-
-.head-title {
-  margin: 0 0 var(--app-space-2);
-  font-family: var(--app-font-family);
-  font-size: var(--app-fs-title);
-  font-weight: 700;
-  line-height: var(--app-lh-display);
-  color: var(--app-color-ink);
-}
-
-.head-desc {
-  margin: 0;
-  font-size: var(--app-fs-caption);
-  color: var(--app-color-text-muted);
 }
 
 .state-block {

@@ -1,15 +1,11 @@
 <template>
   <div class="check-policy">
     <!-- 页头 -->
-    <el-card class="console-card console-page-head-card" shadow="never">
-      <div class="head-row">
-        <div class="head-text">
-          <h2 class="head-title">检测策略</h2>
-          <p class="head-desc">按学位类型配置查重合格阈值、单篇最大相似比上限与查重频次限制</p>
-        </div>
+    <PageHeader description="按学位类型配置查重合格阈值、单篇最大相似比上限与查重频次限制">
+      <template #actions>
         <el-button :icon="Refresh" @click="fetchPolicies">刷新</el-button>
-      </div>
-    </el-card>
+      </template>
+    </PageHeader>
 
     <!-- 策略列表 -->
     <el-card class="console-card" shadow="never">
@@ -150,6 +146,7 @@
 </template>
 
 <script setup>
+import PageHeader from '@/components/common/PageHeader.vue'
 import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Refresh } from '@element-plus/icons-vue'
@@ -345,26 +342,6 @@ onMounted(() => {
   font-family: var(--app-font-family);
 }
 
-.head-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--app-space-4);
-}
-
-.head-title {
-  margin: 0 0 var(--app-space-1);
-  font-size: var(--app-fs-title);
-  font-weight: 600;
-  font-family: var(--app-font-family);
-}
-
-.head-desc {
-  margin: 0;
-  font-size: var(--app-fs-meta);
-  color: var(--app-color-text-muted);
-}
-
 .mechanism-alert {
   margin-bottom: var(--app-space-4);
 }
@@ -394,10 +371,6 @@ onMounted(() => {
 }
 
 @media (max-width: 768px) {
-  .head-row {
-    flex-direction: column;
-  }
-
   .num-input {
     width: 100%;
   }
