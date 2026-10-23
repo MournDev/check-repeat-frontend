@@ -308,9 +308,12 @@
                 <div class="status-label">已提交</div>
                 <div class="status-percentage">{{ studentStats.total > 0 ? Math.min(Math.round((studentStats.submitted / studentStats.total) * 100), 100) : 0 }}%</div>
               </div>
-              <div class="progress-bar">
-                <div class="progress-fill" :style="{ width: (studentStats.total > 0 ? Math.min((studentStats.submitted / studentStats.total) * 100, 100) : 0) + '%' }"></div>
-              </div>
+              <el-progress
+                :percentage="studentStats.total > 0 ? Math.min((studentStats.submitted / studentStats.total) * 100, 100) : 0"
+                :stroke-width="6"
+                :show-text="false"
+                color="var(--app-color-primary)"
+              />
             </div>
             
             <!-- 审核中 -->
@@ -320,9 +323,13 @@
                 <div class="status-label">审核中</div>
                 <div class="status-percentage">{{ studentStats.total > 0 ? Math.round((studentStats.reviewing / studentStats.total) * 100) : 0 }}%</div>
               </div>
-              <div v-if="studentStats.reviewing > 0" class="progress-bar">
-                <div class="progress-fill warning" :style="{ width: (studentStats.total > 0 ? Math.min((studentStats.reviewing / studentStats.total) * 100, 100) : 0) + '%' }"></div>
-              </div>
+              <el-progress
+                v-if="studentStats.reviewing > 0"
+                :percentage="studentStats.total > 0 ? Math.min((studentStats.reviewing / studentStats.total) * 100, 100) : 0"
+                :stroke-width="6"
+                :show-text="false"
+                color="var(--app-color-warning)"
+              />
               <div v-else class="empty-progress">无进行中审核</div>
             </div>
             
@@ -333,9 +340,12 @@
                 <div class="status-label">已通过</div>
                 <div class="status-percentage">{{ studentStats.total > 0 ? Math.round((studentStats.approved / studentStats.total) * 100) : 0 }}%</div>
               </div>
-              <div class="progress-bar">
-                <div class="progress-fill success" :style="{ width: (studentStats.total > 0 ? Math.min((studentStats.approved / studentStats.total) * 100, 100) : 0) + '%' }"></div>
-              </div>
+              <el-progress
+                :percentage="studentStats.total > 0 ? Math.min((studentStats.approved / studentStats.total) * 100, 100) : 0"
+                :stroke-width="6"
+                :show-text="false"
+                color="var(--app-color-success)"
+              />
             </div>
             
             <!-- 需修改 -->
@@ -345,9 +355,13 @@
                 <div class="status-label">需修改</div>
                 <div class="status-percentage">{{ studentStats.total > 0 ? Math.min(Math.round((studentStats.rejected / studentStats.total) * 100), 100) : 0 }}%</div>
               </div>
-              <div v-if="studentStats.rejected > 0" class="progress-bar">
-                <div class="progress-fill danger" :style="{ width: (studentStats.total > 0 ? Math.min((studentStats.rejected / studentStats.total) * 100, 100) : 0) + '%' }"></div>
-              </div>
+              <el-progress
+                v-if="studentStats.rejected > 0"
+                :percentage="studentStats.total > 0 ? Math.min((studentStats.rejected / studentStats.total) * 100, 100) : 0"
+                :stroke-width="6"
+                :show-text="false"
+                color="var(--app-color-danger)"
+              />
               <div v-else class="empty-progress">无需修改论文</div>
             </div>
           </div>
@@ -1439,6 +1453,7 @@ onMounted(() => {
         height: 100%;
         background: var(--app-color-primary);
         border-radius: 8px;
+        // 图表宽度动画专属过渡：条形图随数据补间宽度，固定 0.5s，不纳入全局过渡令牌
         transition: width 0.5s ease;
       }
     }
@@ -1506,35 +1521,6 @@ onMounted(() => {
         font-size: var(--app-fs-caption);
         font-weight: 600;
         color: var(--app-color-ink);
-      }
-    }
-    
-    .progress-bar {
-      height: 6px;
-      background: var(--app-color-border);
-      border-radius: 8px;
-      overflow: hidden;
-      
-      .progress-fill {
-        height: 100%;
-        border-radius: 8px;
-        transition: width 0.5s ease;
-        
-        &.warning {
-          background: var(--app-color-warning);
-        }
-        
-        &.success {
-          background: var(--app-color-success);
-        }
-        
-        &.danger {
-          background: var(--app-color-danger);
-        }
-        
-        &:not(.warning):not(.success):not(.danger) {
-          background: var(--app-color-primary);
-        }
       }
     }
     

@@ -66,10 +66,10 @@
               系统监控
             </div>
             <div class="monitor-status">
-              <span class="status-badge success">
+              <el-tag type="success" size="small" round>
                 <el-icon><SuccessFilled /></el-icon>
                 运行正常
-              </span>
+              </el-tag>
             </div>
           </div>
           
@@ -78,23 +78,32 @@
               <div class="metric-item">
                 <div class="metric-value">{{ systemMonitorData.cpuUsage }}%</div>
                 <div class="metric-label">CPU使用率</div>
-                <div class="progress-bar">
-                  <div class="progress-fill" :style="{ width: systemMonitorData.cpuUsage + '%' }"></div>
-                </div>
+                <el-progress
+                  :percentage="clampPct(systemMonitorData.cpuUsage)"
+                  :stroke-width="6"
+                  :show-text="false"
+                  color="var(--app-color-primary)"
+                />
               </div>
               <div class="metric-item">
                 <div class="metric-value">{{ systemMonitorData.memoryUsage }}%</div>
                 <div class="metric-label">内存使用率</div>
-                <div class="progress-bar">
-                  <div class="progress-fill" :style="{ width: systemMonitorData.memoryUsage + '%' }"></div>
-                </div>
+                <el-progress
+                  :percentage="clampPct(systemMonitorData.memoryUsage)"
+                  :stroke-width="6"
+                  :show-text="false"
+                  color="var(--app-color-primary)"
+                />
               </div>
               <div class="metric-item">
                 <div class="metric-value">{{ systemMonitorData.todayVisits }}</div>
                 <div class="metric-label">今日访问</div>
-                <div class="progress-bar">
-                  <div class="progress-fill" :style="{ width: Math.min(100, systemMonitorData.todayVisits / 2) + '%' }"></div>
-                </div>
+                <el-progress
+                  :percentage="clampPct(systemMonitorData.todayVisits / 2)"
+                  :stroke-width="6"
+                  :show-text="false"
+                  color="var(--app-color-primary)"
+                />
               </div>
             </div>
             
@@ -140,27 +149,36 @@
                 <div class="dist-value">{{ userDistribution.students }}</div>
                 <div class="dist-label">学生</div>
               </div>
-              <div class="progress-bar">
-                <div class="progress-fill student" :style="{ width: safePercent(userDistribution.students, userDistribution.total) + '%' }"></div>
-              </div>
+              <el-progress
+                :percentage="safePercent(userDistribution.students, userDistribution.total)"
+                :stroke-width="6"
+                :show-text="false"
+                color="var(--app-color-primary)"
+              />
             </div>
             <div class="distribution-item">
               <div class="dist-info">
                 <div class="dist-value">{{ userDistribution.teachers }}</div>
                 <div class="dist-label">教师</div>
               </div>
-              <div class="progress-bar">
-                <div class="progress-fill teacher" :style="{ width: safePercent(userDistribution.teachers, userDistribution.total) + '%' }"></div>
-              </div>
+              <el-progress
+                :percentage="safePercent(userDistribution.teachers, userDistribution.total)"
+                :stroke-width="6"
+                :show-text="false"
+                color="var(--app-color-danger)"
+              />
             </div>
             <div class="distribution-item">
               <div class="dist-info">
                 <div class="dist-value">{{ userDistribution.admins }}</div>
                 <div class="dist-label">管理员</div>
               </div>
-              <div class="progress-bar">
-                <div class="progress-fill admin" :style="{ width: safePercent(userDistribution.admins, userDistribution.total) + '%' }"></div>
-              </div>
+              <el-progress
+                :percentage="safePercent(userDistribution.admins, userDistribution.total)"
+                :stroke-width="6"
+                :show-text="false"
+                color="var(--app-color-success)"
+              />
             </div>
           </div>
         </div>
@@ -294,6 +312,13 @@ const safePercent = (count, total) => {
   if (t <= 0 || !isFinite(t) || !isFinite(c)) return 0
   const p = Math.max(0, Math.min(100, (c / t) * 100))
   return Math.round(p * 100) / 100
+}
+
+// el-progress 只接受 0-100 的有限数值，空值按 0 处理
+const clampPct = (value) => {
+  const n = Number(value)
+  if (!isFinite(n)) return 0
+  return Math.max(0, Math.min(100, n))
 }
 
 // 方法
@@ -706,53 +731,12 @@ onMounted(() => {
   }
 }
 
-// 进度条
-.progress-bar {
-  height: 6px;
-  background: var(--app-color-border-soft);
-  border-radius: 3px;
-  overflow: hidden;
-  
-  .progress-fill {
-    height: 100%;
-    border-radius: 3px;
-    transition: width 0.5s ease;
-    
-    &:not(.student):not(.teacher):not(.admin) {
-      background: var(--app-color-primary);
-    }
-    
-    &.student {
-      background: var(--app-color-primary);
-    }
-    
-    &.teacher {
-      background: var(--app-color-danger);
-    }
-    
-    &.admin {
-      background: var(--app-color-success);
-    }
-  }
-}
-
 // 状态标签
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: var(--app-space-1) var(--app-space-3);
-  border-radius: var(--app-radius-pill);
-  font-size: var(--app-fs-meta);
-  font-weight: 400;
-  
-  &.success {
-    background: var(--app-color-success-bg);
-    color: var(--app-color-success);
-  }
-  
-  .el-icon {
-    font-size: 14px;
+.monitor-status {
+  :deep(.el-tag__content) {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
   }
 }
 
