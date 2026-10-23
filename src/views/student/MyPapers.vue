@@ -1214,32 +1214,32 @@ const batchDelete = async () => {
 // 筛选卡片
 .filter-card {
   max-width: 1200px;
-  margin: 0 auto var(--apple-spacing-lg);
+  margin: 0 auto var(--app-space-6);
   padding: 0;
   
   .filter-form {
-    background: var(--apple-surface);
-    border: 1px solid var(--apple-hairline);
-    border-radius: var(--apple-rounded-lg);
-    padding: var(--apple-spacing-lg);
-    transition: all 0.2s ease;
+    background: var(--app-color-card-bg);
+    border: 1px solid var(--app-color-border);
+    border-radius: var(--app-radius-lg);
+    padding: var(--app-space-6);
+    transition: all var(--app-transition-normal);
     
     &:hover {
-      border-color: var(--apple-hairline);
+      border-color: var(--app-color-border);
     }
     
     .form-row {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: var(--apple-spacing-md);
+      gap: var(--app-space-4);
       align-items: end;
       
       .form-group {
         .form-label {
           display: block;
-          font-size: var(--apple-fs-fine-print);
+          font-size: var(--app-fs-meta);
           font-weight: 600;
-          color: var(--apple-ink-muted-48);
+          color: var(--app-color-text-muted);
           margin-bottom: 6px;
           text-transform: none;
           letter-spacing: 0;
@@ -1247,21 +1247,21 @@ const batchDelete = async () => {
         
         .form-select {
           width: 100%;
-          padding: 8px 12px;
-          border: 1px solid var(--apple-hairline);
-          border-radius: var(--apple-rounded-md);
-          font-size: var(--apple-fs-caption);
-          color: var(--apple-ink);
-          transition: all 0.2s ease;
+          padding: var(--app-space-2) var(--app-space-3);
+          border: 1px solid var(--app-color-border);
+          border-radius: var(--app-radius-md);
+          font-size: var(--app-fs-caption);
+          color: var(--app-color-ink);
+          transition: all var(--app-transition-normal);
           
           &:hover {
-            border-color: var(--apple-ink-muted-48);
+            border-color: var(--app-color-text-muted);
           }
           
           &:focus {
             outline: none;
-            border-color: var(--apple-primary);
-            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.12);
+            border-color: var(--app-color-primary);
+            box-shadow: 0 0 0 3px rgba(var(--app-color-primary-rgb), 0.12);
           }
         }
         
@@ -1269,15 +1269,15 @@ const batchDelete = async () => {
           width: 100%;
           
           :deep(.el-input__wrapper) {
-            border-radius: var(--apple-rounded-md);
+            border-radius: var(--app-radius-md);
             
             &:hover {
               box-shadow: none;
-              border-color: var(--apple-slate-border-strong);
+              border-color: var(--app-color-border-strong);
             }
             
             &.is-focus {
-              box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+              box-shadow: 0 0 0 3px rgba(var(--app-color-primary-rgb), 0.1);
             }
           }
         }
@@ -1290,7 +1290,7 @@ const batchDelete = async () => {
             left: 12px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--apple-slate-faint);
+            color: var(--app-color-text-secondary);
           }
           
           .input-field {
@@ -1298,15 +1298,15 @@ const batchDelete = async () => {
             padding-left: 36px;
             
             :deep(.el-input__wrapper) {
-              border-radius: var(--apple-rounded-md);
+              border-radius: var(--app-radius-md);
               
               &:hover {
                 box-shadow: none;
-                border-color: var(--apple-slate-border-strong);
+                border-color: var(--app-color-border-strong);
               }
               
               &.is-focus {
-                box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+                box-shadow: 0 0 0 3px rgba(var(--app-color-primary-rgb), 0.1);
               }
             }
           }
@@ -1315,24 +1315,24 @@ const batchDelete = async () => {
       
       .form-actions {
         display: flex;
-        gap: var(--apple-spacing-sm);
+        gap: var(--app-space-3);
         
         .primary-button {
           display: flex;
           align-items: center;
           gap: 6px;
-          padding: 9px 16px;
-          background: var(--apple-primary);
-          color: var(--apple-on-primary);
+          padding: 9px var(--app-space-4);
+          background: var(--app-color-primary);
+          color: var(--app-color-on-primary);
           border: none;
-          border-radius: var(--apple-rounded-md);
-          font-size: var(--apple-fs-caption);
+          border-radius: var(--app-radius-md);
+          font-size: var(--app-fs-caption);
           font-weight: 600;
           cursor: pointer;
-          transition: all 0.2s ease;
+          transition: all var(--app-transition-normal);
           
           &:hover {
-            background: var(--apple-primary-hover);
+            background: var(--app-color-primary-hover);
           }
         }
         
@@ -1340,20 +1340,20 @@ const batchDelete = async () => {
           display: flex;
           align-items: center;
           gap: 6px;
-          padding: 9px 16px;
-          background: var(--apple-surface);
-          color: var(--apple-ink-secondary);
-          border: 1px solid var(--apple-hairline);
-          border-radius: var(--apple-rounded-md);
-          font-size: var(--apple-fs-caption);
+          padding: 9px var(--app-space-4);
+          background: var(--app-color-card-bg);
+          color: var(--app-color-text-secondary);
+          border: 1px solid var(--app-color-border);
+          border-radius: var(--app-radius-md);
+          font-size: var(--app-fs-caption);
           font-weight: 600;
           cursor: pointer;
-          transition: all 0.2s ease;
+          transition: all var(--app-transition-normal);
           
           &:hover {
-            border-color: var(--apple-hairline);
-            background: var(--apple-canvas-parchment);
-            color: var(--apple-ink);
+            border-color: var(--app-color-border);
+            background: var(--app-color-fill);
+            color: var(--app-color-ink);
           }
         }
       }
@@ -1366,27 +1366,27 @@ const batchDelete = async () => {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0;
-  background: var(--apple-surface);
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-lg);
+  background: var(--app-color-card-bg);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
   overflow: hidden;
   
   .header-actions-group {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: var(--app-space-4);
     
     .batch-toolbar {
       display: flex;
       align-items: center;
-      gap: var(--apple-spacing-xs);
+      gap: var(--app-space-2);
       
       .selected-count {
-        padding: 4px 10px;
-        background: var(--apple-canvas-parchment);
-        color: var(--apple-ink-muted-48);
-        border-radius: var(--apple-rounded-pill);
-        font-size: var(--apple-fs-fine-print);
+        padding: var(--app-space-1) 10px;
+        background: var(--app-color-fill);
+        color: var(--app-color-text-muted);
+        border-radius: var(--app-radius-pill);
+        font-size: var(--app-fs-meta);
         font-weight: 600;
       }
       
@@ -1398,44 +1398,44 @@ const batchDelete = async () => {
         gap: 6px;
         padding: 6px 11px;
         border: none;
-        border-radius: var(--apple-rounded-md);
-        font-size: var(--apple-fs-fine-print);
+        border-radius: var(--app-radius-md);
+        font-size: var(--app-fs-meta);
         font-weight: 600;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: all var(--app-transition-normal);
       }
       
       .primary-button {
-        background: var(--apple-primary);
+        background: var(--app-color-primary);
         color: white;
         
         &:hover {
-          background: var(--apple-primary-active);
+          background: var(--app-color-primary-hover);
         }
       }
       
       .success-button {
-        background: var(--apple-success);
+        background: var(--app-color-success);
         color: white;
         
         &:hover {
-          background: var(--apple-success);
+          background: var(--app-color-success);
         }
       }
       
       .danger-button {
-        background: var(--apple-danger);
+        background: var(--app-color-danger);
         color: white;
         
         &:hover {
-          background: var(--apple-danger);
+          background: var(--app-color-danger);
         }
       }
       
       .divider {
         width: 1px;
         height: 20px;
-        background: var(--apple-hairline);
+        background: var(--app-color-border);
       }
       
       .checkbox-label {
@@ -1450,8 +1450,8 @@ const batchDelete = async () => {
         }
         
         .checkbox-text {
-          font-size: var(--apple-fs-fine-print);
-          color: var(--apple-ink-secondary);
+          font-size: var(--app-fs-meta);
+          color: var(--app-color-text-secondary);
         }
       }
     }
@@ -1462,32 +1462,32 @@ const batchDelete = async () => {
     border: none;
     border-top: none;
     border-radius: 0;
-    padding: var(--apple-spacing-md) var(--apple-spacing-lg) var(--apple-spacing-lg);
+    padding: var(--app-space-4) var(--app-space-6) var(--app-space-6);
     
     .paper-item {
-      border: 1px solid var(--apple-hairline);
-      border-radius: var(--apple-rounded-md);
-      margin-bottom: var(--apple-spacing-sm);
-      transition: all 0.2s ease;
+      border: 1px solid var(--app-color-border);
+      border-radius: var(--app-radius-md);
+      margin-bottom: var(--app-space-3);
+      transition: all var(--app-transition-normal);
       display: flex;
-      gap: 16px;
-      background: var(--apple-surface);
+      gap: var(--app-space-4);
+      background: var(--app-color-card-bg);
       
       &:hover {
-        border-color: var(--apple-ink-muted-48);
+        border-color: var(--app-color-text-muted);
       }
       
       &.paper-selected {
-        border-color: var(--apple-primary);
-        background: var(--apple-info-bg);
+        border-color: var(--app-color-primary);
+        background: var(--app-color-info-bg);
       }
       
       .paper-select {
         display: flex;
         align-items: center;
         flex-shrink: 0;
-        padding-top: 20px;
-        padding-left: 20px;
+        padding-top: var(--app-space-5);
+        padding-left: var(--app-space-5);
         
         .checkbox-label {
           cursor: pointer;
@@ -1500,7 +1500,7 @@ const batchDelete = async () => {
       }
       
       .paper-main {
-        padding: var(--apple-spacing-md);
+        padding: var(--app-space-4);
         flex: 1;
       }
       
@@ -1508,16 +1508,16 @@ const batchDelete = async () => {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        margin-bottom: 16px;
+        margin-bottom: var(--app-space-4);
         
         .paper-title {
           margin: 0;
-          font-family: var(--apple-font-display);
-          color: var(--apple-ink);
-          font-size: var(--apple-fs-body-strong);
+          font-family: var(--app-font-family);
+          color: var(--app-color-ink);
+          font-size: var(--app-fs-body);
           font-weight: 600;
           flex: 1;
-          margin-right: 16px;
+          margin-right: var(--app-space-4);
         }
         
         .paper-actions {
@@ -1528,65 +1528,65 @@ const batchDelete = async () => {
           .action-button {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: var(--app-space-1);
             padding: 5px 10px;
-            border: 1px solid var(--apple-hairline);
-            border-radius: var(--apple-rounded-sm);
-            background: var(--apple-surface);
-            color: var(--apple-ink-secondary);
-            font-size: var(--apple-fs-fine-print);
+            border: 1px solid var(--app-color-border);
+            border-radius: var(--app-radius-sm);
+            background: var(--app-color-card-bg);
+            color: var(--app-color-text-secondary);
+            font-size: var(--app-fs-meta);
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all var(--app-transition-normal);
             
             &:hover {
-              background: var(--apple-canvas-parchment);
-              border-color: var(--apple-ink-muted-48);
-              color: var(--apple-ink);
+              background: var(--app-color-fill);
+              border-color: var(--app-color-text-muted);
+              color: var(--app-color-ink);
             }
             
             &.primary {
-              background: var(--apple-primary);
+              background: var(--app-color-primary);
               color: white;
-              border-color: var(--apple-primary);
+              border-color: var(--app-color-primary);
               
               &:hover {
-                background: var(--apple-primary-active);
+                background: var(--app-color-primary-hover);
               }
             }
             
             &.warning {
-              background: var(--apple-warning);
+              background: var(--app-color-warning);
               color: white;
-              border-color: var(--apple-warning);
+              border-color: var(--app-color-warning);
               
               &:hover {
-                background: var(--apple-warning);
+                background: var(--app-color-warning);
               }
             }
             
             &.info {
-              background: var(--apple-primary);
+              background: var(--app-color-primary);
               color: white;
-              border-color: var(--apple-primary);
+              border-color: var(--app-color-primary);
               
               &:hover {
-                background: var(--apple-primary);
+                background: var(--app-color-primary);
               }
             }
             
             &.danger {
-              background: var(--apple-danger);
+              background: var(--app-color-danger);
               color: white;
-              border-color: var(--apple-danger);
+              border-color: var(--app-color-danger);
               
               &:hover {
-                background: var(--apple-danger);
+                background: var(--app-color-danger);
               }
               
               &:disabled {
-                background: var(--apple-danger-border);
-                border-color: var(--apple-danger-border);
+                background: var(--app-color-danger-border);
+                border-color: var(--app-color-danger-border);
                 cursor: not-allowed;
                 
                 &:hover {
@@ -1601,19 +1601,19 @@ const batchDelete = async () => {
       
       .paper-meta {
         display: flex;
-        gap: var(--apple-spacing-md);
-        margin-bottom: var(--apple-spacing-sm);
+        gap: var(--app-space-4);
+        margin-bottom: var(--app-space-3);
         flex-wrap: wrap;
         
         .meta-item {
           display: flex;
           align-items: center;
           gap: 6px;
-          color: var(--apple-ink-muted-48);
-          font-size: var(--apple-fs-fine-print);
+          color: var(--app-color-text-muted);
+          font-size: var(--app-fs-meta);
           
           .el-icon {
-            color: var(--apple-ink-muted-48);
+            color: var(--app-color-text-muted);
           }
         }
       }
@@ -1621,64 +1621,64 @@ const batchDelete = async () => {
       .paper-status {
         display: flex;
         align-items: center;
-        gap: var(--apple-spacing-xs);
+        gap: var(--app-space-2);
         flex-wrap: wrap;
         
         .status-badge {
           padding: 3px 10px;
-          border-radius: var(--apple-rounded-pill);
-          font-size: var(--apple-fs-fine-print);
+          border-radius: var(--app-radius-pill);
+          font-size: var(--app-fs-meta);
           font-weight: 500;
           
           &.info {
-            background: var(--apple-info-bg);
-            color: var(--apple-primary);
+            background: var(--app-color-info-bg);
+            color: var(--app-color-primary);
           }
           &.warning {
-            background: var(--apple-warning-bg);
-            color: var(--apple-warning);
+            background: var(--app-color-warning-bg);
+            color: var(--app-color-warning);
           }
           &.primary {
-            background: var(--apple-info-bg);
-            color: var(--apple-primary);
+            background: var(--app-color-info-bg);
+            color: var(--app-color-primary);
           }
           &.success {
-            background: var(--apple-success-bg);
-            color: var(--apple-success);
+            background: var(--app-color-success-bg);
+            color: var(--app-color-success);
           }
           &.danger {
-            background: var(--apple-danger-bg);
-            color: var(--apple-danger);
+            background: var(--app-color-danger-bg);
+            color: var(--app-color-danger);
           }
         }
         
         .feedback-brief {
-          color: var(--apple-danger);
-          font-size: var(--apple-fs-fine-print);
+          color: var(--app-color-danger);
+          font-size: var(--app-fs-meta);
           font-style: normal;
         }
       }
       
       .paper-versions {
-        border-top: 1px solid var(--apple-divider-soft);
-        padding: var(--apple-spacing-md) var(--apple-spacing-lg);
-        background: var(--apple-canvas-parchment);
+        border-top: 1px solid var(--app-color-divider);
+        padding: var(--app-space-4) var(--app-space-6);
+        background: var(--app-color-fill);
         
         .versions-header {
-          margin-bottom: 16px;
+          margin-bottom: var(--app-space-4);
           
           h5 {
             margin: 0;
-            font-family: var(--apple-font-display);
-            color: var(--apple-ink);
-            font-size: var(--apple-fs-caption);
+            font-family: var(--app-font-family);
+            color: var(--app-color-ink);
+            font-size: var(--app-fs-caption);
             font-weight: 600;
           }
         }
         
         .timeline {
           position: relative;
-          padding-left: 24px;
+          padding-left: var(--app-space-6);
           
           &::before {
             content: '';
@@ -1687,12 +1687,12 @@ const batchDelete = async () => {
             top: 0;
             bottom: 0;
             width: 2px;
-            background: var(--apple-hairline);
+            background: var(--app-color-border);
           }
           
           .timeline-item {
             position: relative;
-            margin-bottom: 24px;
+            margin-bottom: var(--app-space-6);
             
             &:last-child {
               margin-bottom: 0;
@@ -1705,47 +1705,47 @@ const batchDelete = async () => {
               width: 16px;
               height: 16px;
               border-radius: 50%;
-              background: var(--apple-hairline);
-              border: 2px solid var(--apple-surface);
+              background: var(--app-color-border);
+              border: 2px solid var(--app-color-card-bg);
               
               &.current {
-                background: var(--apple-primary);
+                background: var(--app-color-primary);
               }
             }
             
             .timeline-content {
               .timeline-timestamp {
-                font-size: var(--apple-fs-fine-print);
-                color: var(--apple-ink-muted-48);
-                margin-bottom: 8px;
+                font-size: var(--app-fs-meta);
+                color: var(--app-color-text-muted);
+                margin-bottom: var(--app-space-2);
               }
               
               .version-item {
                 .version-header {
                   display: flex;
                   align-items: center;
-                  gap: 12px;
-                  margin-bottom: 8px;
+                  gap: var(--app-space-3);
+                  margin-bottom: var(--app-space-2);
                   
                   .version-title {
                     font-weight: 600;
-                    color: var(--apple-ink);
-                    font-size: var(--apple-fs-fine-print);
+                    color: var(--app-color-ink);
+                    font-size: var(--app-fs-meta);
                   }
                   
                   .current-badge {
-                    padding: 2px 8px;
-                    background: var(--apple-info-bg);
-                    color: var(--apple-primary);
-                    border-radius: var(--apple-rounded-pill);
-                    font-size: var(--apple-fs-fine-print);
+                    padding: 2px var(--app-space-2);
+                    background: var(--app-color-info-bg);
+                    color: var(--app-color-primary);
+                    border-radius: var(--app-radius-pill);
+                    font-size: var(--app-fs-meta);
                     font-weight: 500;
                   }
                 }
                 
                 .version-actions {
                   display: flex;
-                  gap: 12px;
+                  gap: var(--app-space-3);
                   
                   .checkbox-label {
                     display: flex;
@@ -1759,27 +1759,27 @@ const batchDelete = async () => {
                     }
                     
                     .checkbox-text {
-                      font-size: var(--apple-fs-fine-print);
-                      color: var(--apple-ink-secondary);
+                      font-size: var(--app-fs-meta);
+                      color: var(--app-color-text-secondary);
                     }
                   }
                   
                   .version-button {
                     display: flex;
                     align-items: center;
-                    gap: 4px;
+                    gap: var(--app-space-1);
                     padding: 5px 10px;
-                    border: 1px solid var(--apple-hairline);
-                    border-radius: var(--apple-rounded-sm);
-                    background: var(--apple-surface);
-                    color: var(--apple-ink-secondary);
-                    font-size: var(--apple-fs-fine-print);
+                    border: 1px solid var(--app-color-border);
+                    border-radius: var(--app-radius-sm);
+                    background: var(--app-color-card-bg);
+                    color: var(--app-color-text-secondary);
+                    font-size: var(--app-fs-meta);
                     cursor: pointer;
-                    transition: all 0.2s ease;
+                    transition: all var(--app-transition-normal);
                     
                     &:hover {
-                      color: var(--apple-ink);
-                      border-color: var(--apple-ink-muted-48);
+                      color: var(--app-color-ink);
+                      border-color: var(--app-color-text-muted);
                     }
                   }
                 }
@@ -1790,28 +1790,28 @@ const batchDelete = async () => {
       }
       
       .paper-toggle {
-        border-top: 1px solid var(--apple-divider-soft);
-        padding: var(--apple-spacing-sm) var(--apple-spacing-lg);
+        border-top: 1px solid var(--app-color-divider);
+        padding: var(--app-space-3) var(--app-space-6);
         text-align: center;
-        background: var(--apple-surface);
+        background: var(--app-color-card-bg);
         
         .toggle-button {
           display: flex;
           align-items: center;
           gap: 6px;
-          padding: 6px 12px;
+          padding: 6px var(--app-space-3);
           background: transparent;
           border: none;
-          color: var(--apple-ink-muted-48);
-          font-size: var(--apple-fs-fine-print);
+          color: var(--app-color-text-muted);
+          font-size: var(--app-fs-meta);
           font-weight: 500;
           cursor: pointer;
-          transition: all 0.2s ease;
+          transition: all var(--app-transition-normal);
           
           &:hover {
-            color: var(--apple-ink);
-            background: var(--apple-canvas-parchment);
-            border-radius: var(--apple-rounded-sm);
+            color: var(--app-color-ink);
+            background: var(--app-color-fill);
+            border-radius: var(--app-radius-sm);
           }
         }
       }
@@ -1823,46 +1823,46 @@ const batchDelete = async () => {
     border: none;
     border-top: none;
     border-radius: 0;
-    padding: var(--apple-spacing-xxl) var(--apple-spacing-lg);
+    padding: var(--app-space-12) var(--app-space-6);
     text-align: center;
     
     .empty-content {
       .empty-icon {
         font-size: 36px;
-        color: var(--apple-ink-muted-48);
-        margin-bottom: var(--apple-spacing-sm);
+        color: var(--app-color-text-muted);
+        margin-bottom: var(--app-space-3);
       }
       
       h3 {
-        margin: 0 0 8px 0;
-        font-family: var(--apple-font-display);
-        color: var(--apple-ink);
-        font-size: var(--apple-fs-body-strong);
+        margin: 0 0 var(--app-space-2) 0;
+        font-family: var(--app-font-family);
+        color: var(--app-color-ink);
+        font-size: var(--app-fs-body);
         font-weight: 600;
       }
       
       p {
-        margin: 0 0 var(--apple-spacing-lg) 0;
-        color: var(--apple-ink-muted-48);
-        font-size: var(--apple-fs-caption);
+        margin: 0 0 var(--app-space-6) 0;
+        color: var(--app-color-text-muted);
+        font-size: var(--app-fs-caption);
       }
       
       .primary-button {
         display: flex;
         align-items: center;
-        gap: 8px;
-        padding: 9px 16px;
-        background: var(--apple-primary);
-        color: var(--apple-on-primary);
+        gap: var(--app-space-2);
+        padding: 9px var(--app-space-4);
+        background: var(--app-color-primary);
+        color: var(--app-color-on-primary);
         border: none;
-        border-radius: var(--apple-rounded-md);
-        font-size: var(--apple-fs-caption);
+        border-radius: var(--app-radius-md);
+        font-size: var(--app-fs-caption);
         font-weight: 600;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: all var(--app-transition-normal);
         
         &:hover {
-          background: var(--apple-primary-hover);
+          background: var(--app-color-primary-hover);
         }
       }
     }
@@ -1875,8 +1875,8 @@ const batchDelete = async () => {
     .detail-row {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-      margin-bottom: 16px;
+      gap: var(--app-space-4);
+      margin-bottom: var(--app-space-4);
       
       &.full-width {
         grid-template-columns: 1fr;
@@ -1884,43 +1884,43 @@ const batchDelete = async () => {
       
       .detail-item {
         .detail-label {
-          font-size: 0.75rem;
+          font-size: var(--app-fs-meta);
           font-weight: 600;
-          color: var(--apple-slate-sub);
+          color: var(--app-color-text-muted);
           margin-bottom: 6px;
           text-transform: uppercase;
           letter-spacing: 0.5px;
         }
         
         .detail-value {
-          font-size: 0.875rem;
-          color: var(--apple-slate-ink);
+          font-size: var(--app-fs-caption);
+          color: var(--app-color-ink);
           
           .status-badge {
-            padding: 4px 12px;
+            padding: var(--app-space-1) var(--app-space-3);
             border-radius: 16px;
-            font-size: 0.75rem;
+            font-size: var(--app-fs-meta);
             font-weight: 600;
             
             &.info {
-              background: var(--apple-info-bg);
-              color: var(--apple-primary);
+              background: var(--app-color-info-bg);
+              color: var(--app-color-primary);
             }
             &.warning {
-              background: var(--apple-canvas-parchment);
-              color: var(--apple-warning);
+              background: var(--app-color-fill);
+              color: var(--app-color-warning);
             }
             &.primary {
-              background: var(--apple-canvas-parchment);
-              color: var(--apple-primary);
+              background: var(--app-color-fill);
+              color: var(--app-color-primary);
             }
             &.success {
-              background: var(--apple-canvas-parchment);
-              color: var(--apple-success);
+              background: var(--app-color-fill);
+              color: var(--app-color-success);
             }
             &.danger {
-              background: var(--apple-danger-bg);
-              color: var(--apple-danger);
+              background: var(--app-color-danger-bg);
+              color: var(--app-color-danger);
             }
           }
         }
@@ -1935,21 +1935,21 @@ const batchDelete = async () => {
   }
   
   .feedback-content {
-    background: var(--apple-canvas-parchment);
-    padding: 16px;
-    border-radius: var(--apple-rounded-md);
-    border-left: 4px solid var(--apple-primary);
-    font-size: var(--apple-fs-caption);
-    color: var(--apple-ink);
+    background: var(--app-color-fill);
+    padding: var(--app-space-4);
+    border-radius: var(--app-radius-md);
+    border-left: 4px solid var(--app-color-primary);
+    font-size: var(--app-fs-caption);
+    color: var(--app-color-ink);
     line-height: 1.5;
   }
   
   .file-attachments {
-    margin-top: 24px;
+    margin-top: var(--app-space-6);
     
     h4 {
-      margin: 0 0 16px 0;
-      color: var(--apple-slate-ink);
+      margin: 0 0 var(--app-space-4) 0;
+      color: var(--app-color-ink);
       font-size: 1rem;
       font-weight: 600;
     }
@@ -1958,49 +1958,49 @@ const batchDelete = async () => {
       .attachment-item {
         display: flex;
         align-items: center;
-        gap: 12px;
-        padding: 12px;
-        border: 1px solid var(--apple-hairline);
-        border-radius: var(--apple-rounded-md);
-        margin-bottom: 8px;
-        background: var(--apple-surface);
-        transition: all 0.2s ease;
+        gap: var(--app-space-3);
+        padding: var(--app-space-3);
+        border: 1px solid var(--app-color-border);
+        border-radius: var(--app-radius-md);
+        margin-bottom: var(--app-space-2);
+        background: var(--app-color-card-bg);
+        transition: all var(--app-transition-normal);
         
         &:hover {
-          border-color: var(--apple-ink-muted-48);
+          border-color: var(--app-color-text-muted);
         }
         
         .el-icon {
-          color: var(--apple-slate-sub);
+          color: var(--app-color-text-muted);
         }
         
         .file-name {
           flex: 1;
-          color: var(--apple-ink);
-          font-size: var(--apple-fs-caption);
+          color: var(--app-color-ink);
+          font-size: var(--app-fs-caption);
         }
         
         .file-size {
-          color: var(--apple-ink-muted-48);
-          font-size: var(--apple-fs-fine-print);
+          color: var(--app-color-text-muted);
+          font-size: var(--app-fs-meta);
         }
         
         .attachment-button {
           display: flex;
           align-items: center;
-          gap: 4px;
-          padding: 4px 8px;
-          border: 1px solid var(--apple-hairline);
-          border-radius: var(--apple-rounded-sm);
-          background: var(--apple-surface);
-          color: var(--apple-ink-secondary);
-          font-size: var(--apple-fs-fine-print);
+          gap: var(--app-space-1);
+          padding: var(--app-space-1) var(--app-space-2);
+          border: 1px solid var(--app-color-border);
+          border-radius: var(--app-radius-sm);
+          background: var(--app-color-card-bg);
+          color: var(--app-color-text-secondary);
+          font-size: var(--app-fs-meta);
           cursor: pointer;
-          transition: all 0.2s ease;
+          transition: all var(--app-transition-normal);
           
           &:hover {
-            border-color: var(--apple-ink-muted-48);
-            color: var(--apple-ink);
+            border-color: var(--app-color-text-muted);
+            color: var(--app-color-ink);
           }
         }
       }
@@ -2011,15 +2011,15 @@ const batchDelete = async () => {
 // 版本对比
 .version-compare-container {
   .compare-header {
-    margin-bottom: 24px;
+    margin-bottom: var(--app-space-6);
     
     .alert-info {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 12px 16px;
-      background: var(--apple-info-bg);
-      color: var(--apple-primary);
+      gap: var(--app-space-2);
+      padding: var(--app-space-3) var(--app-space-4);
+      background: var(--app-color-info-bg);
+      color: var(--app-color-primary);
       border-radius: 11px;
       
       .el-icon {
@@ -2032,20 +2032,20 @@ const batchDelete = async () => {
     .version-columns {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      margin-bottom: 24px;
+      gap: var(--app-space-6);
+      margin-bottom: var(--app-space-6);
       
       .version-column {
         background: white;
-        border: 1px solid var(--apple-hairline);
-        border-radius: var(--apple-rounded-md);
-        padding: 20px;
+        border: 1px solid var(--app-color-border);
+        border-radius: var(--app-radius-md);
+        padding: var(--app-space-5);
         
         h4 {
-          margin: 0 0 16px 0;
-          font-family: var(--apple-font-display);
-          color: var(--apple-ink);
-          font-size: var(--apple-fs-caption);
+          margin: 0 0 var(--app-space-4) 0;
+          font-family: var(--app-font-family);
+          color: var(--app-color-ink);
+          font-size: var(--app-fs-caption);
           font-weight: 600;
         }
         
@@ -2054,21 +2054,21 @@ const batchDelete = async () => {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid var(--apple-slate-border);
+            padding: var(--app-space-2) 0;
+            border-bottom: 1px solid var(--app-color-border-soft);
             
             &:last-child {
               border-bottom: none;
             }
             
             .info-label {
-              font-size: 0.875rem;
-              color: var(--apple-slate-sub);
+              font-size: var(--app-fs-caption);
+              color: var(--app-color-text-muted);
             }
             
             .info-value {
-              font-size: 0.875rem;
-              color: var(--apple-slate-ink);
+              font-size: var(--app-fs-caption);
+              color: var(--app-color-ink);
               font-weight: 600;
             }
           }
@@ -2078,29 +2078,29 @@ const batchDelete = async () => {
     
     .diff-section {
       h4 {
-        margin: 0 0 16px 0;
-        color: var(--apple-slate-ink);
+        margin: 0 0 var(--app-space-4) 0;
+        color: var(--app-color-ink);
         font-size: 1rem;
         font-weight: 600;
       }
       
       .diff-table {
         background: white;
-        border: 1px solid var(--apple-hairline);
-        border-radius: var(--apple-rounded-md);
+        border: 1px solid var(--app-color-border);
+        border-radius: var(--app-radius-md);
         overflow: hidden;
         
         .table-header {
           display: grid;
           grid-template-columns: 120px 1fr 1fr 100px;
-          background: var(--apple-canvas-parchment);
-          padding: 12px 16px;
-          border-bottom: 1px solid var(--apple-hairline);
+          background: var(--app-color-fill);
+          padding: var(--app-space-3) var(--app-space-4);
+          border-bottom: 1px solid var(--app-color-border);
           
           .table-cell {
-            font-size: 0.75rem;
+            font-size: var(--app-fs-meta);
             font-weight: 600;
-            color: var(--apple-slate-sub);
+            color: var(--app-color-text-muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
           }
@@ -2109,16 +2109,16 @@ const batchDelete = async () => {
         .table-row {
           display: grid;
           grid-template-columns: 120px 1fr 1fr 100px;
-          padding: 12px 16px;
-          border-bottom: 1px solid var(--apple-divider-soft);
+          padding: var(--app-space-3) var(--app-space-4);
+          border-bottom: 1px solid var(--app-color-divider);
           
           &:last-child {
             border-bottom: none;
           }
           
           .table-cell {
-            font-size: 0.875rem;
-            color: var(--apple-slate-ink);
+            font-size: var(--app-fs-caption);
+            color: var(--app-color-ink);
             
             &.field {
               font-weight: 600;
@@ -2129,18 +2129,18 @@ const batchDelete = async () => {
               align-items: center;
               
               .change-badge {
-                padding: 2px 8px;
+                padding: 2px var(--app-space-2);
                 border-radius: 18px;
-                font-size: 0.75rem;
+                font-size: var(--app-fs-meta);
                 font-weight: 600;
                 
                 &.increase {
-                  background: var(--apple-danger-bg);
-                  color: var(--apple-danger);
+                  background: var(--app-color-danger-bg);
+                  color: var(--app-color-danger);
                 }
                 &.decrease {
-                  background: var(--apple-canvas-parchment);
-                  color: var(--apple-success);
+                  background: var(--app-color-fill);
+                  color: var(--app-color-success);
                 }
               }
             }
@@ -2154,14 +2154,14 @@ const batchDelete = async () => {
 // 响应式设计
 @media (max-width: 768px) {
   .my-papers-page {
-    padding: var(--apple-spacing-sm);
+    padding: var(--app-space-3);
   }
 
   .filter-card {
-    margin-bottom: var(--apple-spacing-lg);
+    margin-bottom: var(--app-space-6);
     
     .filter-form {
-      padding: var(--apple-spacing-lg);
+      padding: var(--app-space-6);
       
       .form-row {
         grid-template-columns: 1fr;
@@ -2181,24 +2181,24 @@ const batchDelete = async () => {
   
   .papers-card {
     .papers-list {
-      padding: var(--apple-spacing-sm);
+      padding: var(--app-space-3);
       
       .paper-item {
         flex-direction: column;
-        gap: 8px;
+        gap: var(--app-space-2);
         
         .paper-select {
-          padding: 16px 16px 0;
+          padding: var(--app-space-4) var(--app-space-4) 0;
         }
         
         .paper-main {
-          padding: var(--apple-spacing-md);
+          padding: var(--app-space-4);
         }
         
         .paper-header {
           flex-direction: column;
           align-items: flex-start;
-          gap: 12px;
+          gap: var(--app-space-3);
           
           .paper-title {
             margin-right: 0;
@@ -2218,15 +2218,15 @@ const batchDelete = async () => {
         
         .paper-meta {
           flex-direction: column;
-          gap: 8px;
+          gap: var(--app-space-2);
         }
         
         .paper-versions {
-          padding: var(--apple-spacing-md) var(--apple-spacing-lg);
+          padding: var(--app-space-4) var(--app-space-6);
         }
         
         .paper-toggle {
-          padding: var(--apple-spacing-sm) var(--apple-spacing-lg);
+          padding: var(--app-space-3) var(--app-space-6);
         }
       }
     }
