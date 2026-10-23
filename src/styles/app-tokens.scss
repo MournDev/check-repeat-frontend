@@ -14,6 +14,9 @@
 
 :root {
   // ── Typography（控制台字号阶梯，6 档）────────────────────
+  // 业务页写字体族一律用 --app-font-family，禁止直接写 --apple-font-* 或字面量
+  --app-font-family: var(--apple-font-text);
+
   --app-fs-display: 24px; // 页面内主标题（仪表盘大数字除外）
   --app-fs-title: 20px; // 区块标题 / 卡片标题
   --app-fs-heading: 16px; // 小标题 / 弹窗标题
@@ -30,11 +33,12 @@
   --app-control-h: 32px; // 默认按钮、输入框、下拉
   --app-control-h-lg: 40px; // 表单主操作 / 登录后页面的强调按钮
 
-  // ── Radius（圆角仅三档）────────────────────────────────
+  // ── Radius（圆角 5 档）─────────────────────────────────
   --app-radius-xs: 4px; // 标签、徽标
   --app-radius-sm: 6px; // 按钮、输入框、分页
   --app-radius-md: 8px; // 下拉、弹窗内小卡片
   --app-radius-lg: 12px; // 卡片、弹窗、页头卡片
+  --app-radius-pill: 9999px; // 胶囊徽标 / Tag，全站 pill 的唯一出处
 
   // ── Spacing（4px 基准）─────────────────────────────────
   --app-space-1: 4px;
