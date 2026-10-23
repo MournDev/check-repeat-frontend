@@ -7,12 +7,3 @@
 
 <script setup>
 </script>
-
-<style lang="scss" scoped>
-.paper-review {
-  min-height: 100vh;
-  background: var(--apple-canvas-parchment);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
-}
-</style>

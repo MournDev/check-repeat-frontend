@@ -229,11 +229,6 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .sentence-detail-page {
-  padding: var(--apple-spacing-lg);
-  min-height: 100vh;
-  background: var(--apple-canvas-parchment);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
 
   .error-result {
     background: var(--apple-surface);

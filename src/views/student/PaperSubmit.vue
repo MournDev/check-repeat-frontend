@@ -727,11 +727,6 @@ const resetForm = () => {
 <style lang="scss" scoped>
 // 论文提交页面样式
 .paper-submit-container {
-  min-height: 100vh;
-  background: var(--apple-canvas-parchment); // Slate-50
-  padding: var(--apple-spacing-lg) var(--apple-spacing-md);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -748,7 +743,6 @@ const resetForm = () => {
   transition: all 0.2s ease;
   
   &:hover {
-    /* box-shadow removed */
     border-color: var(--apple-hairline);
   }
 
@@ -838,7 +832,6 @@ const resetForm = () => {
       .step-number {
         background: var(--apple-primary);
         color: var(--apple-on-primary);
-        /* box-shadow removed */
       }
       .step-title {
         color: var(--apple-ink);
@@ -1006,10 +999,6 @@ const resetForm = () => {
       
       &:last-child {
         margin-bottom: 0;
-      }
-      
-      &:hover {
-        /* box-shadow removed */
       }
       
       .detail-label {

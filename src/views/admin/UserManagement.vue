@@ -813,14 +813,6 @@ const rowKey = (row) => {
 </script>
 
 <style lang="scss" scoped>
-.user-management {
-  min-height: 100vh;
-  background: var(--apple-canvas-parchment);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
-  padding: var(--apple-spacing-lg);
-}
-
 .unassigned {
   color: var(--apple-danger);
   font-style: italic;

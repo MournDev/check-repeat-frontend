@@ -494,7 +494,6 @@ onMounted(async () => {
         
         &:hover {
           border-color: var(--apple-primary);
-          /* box-shadow removed for Apple HIG */
         }
         
         .template-header {

@@ -511,12 +511,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.admin-report-management {
-  padding: var(--apple-spacing-lg);
-  background-color: var(--apple-canvas-parchment);
-  min-height: 100vh;
-  font-family: var(--apple-font-text);
-}
 
 .search-form {
   display: flex;

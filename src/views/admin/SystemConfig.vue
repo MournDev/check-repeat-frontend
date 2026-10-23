@@ -473,14 +473,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.system-config {
-  min-height: 100vh;
-  background: var(--apple-canvas-parchment); // Slate-50
-  color: var(--apple-ink); // Slate-900
-  font-family: var(--apple-font-text);
-  padding: var(--apple-spacing-lg);
-}
-
 .config-alert {
   margin-bottom: var(--apple-spacing-md);
 }
@@ -558,7 +550,6 @@ onMounted(() => {
             
             &:hover {
               border-color: var(--apple-surface-chip-translucent);
-              /* box-shadow removed for Apple HIG */
             }
           }
           
@@ -569,7 +560,6 @@ onMounted(() => {
             
             &:hover {
               border-color: var(--apple-surface-chip-translucent);
-              /* box-shadow removed for Apple HIG */
             }
           }
         }

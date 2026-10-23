@@ -442,12 +442,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.teacher-review {
-  min-height: 100vh;
-  background: var(--apple-canvas-parchment);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
-}
 
 .filter-content {
   padding: 0;

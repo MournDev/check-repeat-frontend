@@ -458,14 +458,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-// 全局样式
-.admin-dashboard {
-  padding: var(--apple-spacing-lg);
-  min-height: 100vh;
-  background: var(--apple-canvas-parchment); // Slate-50
-  color: var(--apple-ink); // Slate-900
-  font-family: var(--apple-font-text);
-}
 
 // 欢迎区域
 .welcome-section {

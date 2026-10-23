@@ -1,7 +1,7 @@
 <template>
   <div class="check-config-center">
     <!-- 子导航：查重规则/比对库/学科三页合一，菜单只露出「查重配置」一项 -->
-    <el-tabs :model-value="activeTab" class="mb-4" @tab-click="handleTabChange">
+    <el-tabs :model-value="activeTab" @tab-click="handleTabChange">
       <el-tab-pane label="查重规则" name="/admin/check-config/rules" />
       <el-tab-pane label="比对库管理" name="/admin/check-config/compare-lib" />
       <el-tab-pane label="学科领域" name="/admin/check-config/subjects" />
@@ -28,28 +28,22 @@ const handleTabChange = (tab) => {
 </script>
 
 <style lang="scss" scoped>
-.check-config-center {
-  min-height: 100vh;
-  background: var(--apple-canvas-parchment);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
-}
 
 :deep(.el-tabs) {
-  margin-bottom: 24px;
+  margin-bottom: var(--apple-spacing-lg);
 
   .el-tabs__header {
-    margin-bottom: 24px;
+    margin-bottom: var(--apple-spacing-lg);
 
     .el-tabs__nav {
-      border-bottom: 1px solid var(--apple-surface-chip-translucent);
+      border-bottom: 1px solid var(--apple-hairline);
 
       .el-tabs__item {
-        font-size: 0.875rem;
+        font-size: var(--apple-fs-caption);
         font-weight: 400;
         color: var(--apple-ink-muted-48);
-        padding: 12px 16px;
-        margin-right: 24px;
+        padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+        margin-right: var(--apple-spacing-lg);
         transition: border-color 0.2s ease;
 
         &:hover {
@@ -65,25 +59,6 @@ const handleTabChange = (tab) => {
             height: 2px;
           }
         }
-      }
-    }
-  }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-:deep(.el-tabs) {
-  margin-bottom: var(--apple-spacing-lg);
-
-  .el-tabs__header {
-    margin-bottom: var(--apple-spacing-lg);
-
-    .el-tabs__nav {
-      border-bottom-color: var(--apple-hairline);
-
-      .el-tabs__item {
-        padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-        margin-right: var(--apple-spacing-lg);
-        font-size: var(--apple-fs-caption);
       }
     }
   }

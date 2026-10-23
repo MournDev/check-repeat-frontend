@@ -294,11 +294,6 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .check-history-list-page {
-  padding: var(--apple-spacing-lg);
-  background-color: var(--apple-canvas-parchment);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
-  min-height: 100vh;
 
   .paper-title-cell {
     display: flex;

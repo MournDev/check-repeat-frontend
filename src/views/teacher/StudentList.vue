@@ -1073,17 +1073,6 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
-.student-management {
-  min-height: 100vh;
-  background: var(--apple-canvas-parchment);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
-  padding: var(--apple-spacing-xl);
-
-  :deep(.el-dialog) {
-    border-radius: var(--apple-rounded-lg);
-  }
-}
 
 // 论文预览弹层样式（append-to-body，scoped :deep() 不生效，外壳依赖全局；slot 内元素可正常 scoped）
 .paper-preview-dialog {

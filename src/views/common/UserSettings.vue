@@ -34,12 +34,6 @@ function saveSettings() { panelRef.value?.save() }
 </script>
 
 <style lang="scss" scoped>
-.user-settings {
-  padding: var(--apple-spacing-lg);
-  min-height: 100vh;
-  background: var(--apple-canvas-parchment);
-  font-family: var(--apple-font-text);
-}
 
 // 学生版页面无整体卡片，去掉外层留白
 .role-student { padding: 0; }

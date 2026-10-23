@@ -254,7 +254,7 @@
         <div class="report-sections">
           <h4>相似段落</h4>
           <div v-if="reportData.similarSegments && reportData.similarSegments.length > 0">
-            <el-card v-for="(segment, index) in reportData.similarSegments" :key="index" class="mb-4">
+            <el-card v-for="(segment, index) in reportData.similarSegments" :key="index" class="segment-card">
               <template #header>
                 <div class="card-header">
                   <span>{{ segment.paperTitle }}</span>
@@ -762,11 +762,6 @@ onUnmounted(() => {
 
 <style scoped lang="scss">
 .check-container {
-  min-height: 100vh;
-  padding: var(--apple-spacing-lg);
-  background: var(--apple-canvas-parchment);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
 
   .action-bar {
     margin-bottom: var(--apple-spacing-lg);
@@ -939,7 +934,7 @@ onUnmounted(() => {
     color: var(--apple-ink-muted-48);
   }
 
-  .mb-4 {
+  .segment-card {
     margin-bottom: 16px;
   }
 

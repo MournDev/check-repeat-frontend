@@ -1,7 +1,7 @@
 <template>
   <div class="assignment-center">
     <!-- 子导航：论文分配四页合一，菜单只露出「论文分配」一项 -->
-    <el-tabs :model-value="activeTab" class="mb-4" @tab-click="handleTabChange">
+    <el-tabs :model-value="activeTab" @tab-click="handleTabChange">
       <el-tab-pane label="分配总览" name="/admin/paper-assignment" />
       <el-tab-pane label="手动分配" name="/admin/paper-assignment/manual" />
       <el-tab-pane label="自动分配" name="/admin/paper-assignment/auto" />
@@ -30,12 +30,6 @@ const handleTabChange = (tab) => {
 </script>
 
 <style lang="scss" scoped>
-.assignment-center {
-  min-height: 100vh;
-  background: var(--apple-canvas-parchment);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
-}
 
 :deep(.el-tabs) {
   margin-bottom: 24px;

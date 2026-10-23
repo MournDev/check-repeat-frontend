@@ -603,11 +603,6 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .academic-integrity-page {
-  padding: var(--apple-spacing-lg);
-  background-color: var(--apple-canvas-parchment);
-  min-height: 100vh;
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
 
   .navigation-card,
   .content-card,

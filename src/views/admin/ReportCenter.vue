@@ -1,7 +1,7 @@
 <template>
   <div class="report-center">
     <!-- 子导航：报告管理/统计报表/导师评价三页合一，菜单只露出「数据报表」一项 -->
-    <el-tabs :model-value="activeTab" class="mb-4" @tab-click="handleTabChange">
+    <el-tabs :model-value="activeTab" @tab-click="handleTabChange">
       <el-tab-pane label="报告管理" name="/admin/report-center/reports" />
       <el-tab-pane label="统计报表" name="/admin/report-center/statistics" />
       <el-tab-pane label="导师评价" name="/admin/report-center/advisor-eval" />
@@ -28,12 +28,6 @@ const handleTabChange = (tab) => {
 </script>
 
 <style lang="scss" scoped>
-.report-center {
-  min-height: 100vh;
-  background: var(--apple-canvas-parchment);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
-}
 
 :deep(.el-tabs) {
   margin-bottom: 24px;

@@ -705,7 +705,6 @@ watch(
               padding: var(--apple-spacing-sm);
               font-size: var(--apple-fs-caption);
               border-radius: var(--apple-rounded-lg) var(--apple-rounded-md) var(--apple-rounded-md) 0;
-              /* box-shadow removed for Apple HIG */
               word-break: break-all;
             }
 

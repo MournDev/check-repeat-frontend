@@ -1210,13 +1210,6 @@ const batchDelete = async () => {
 }
 
 // 全局样式
-.my-papers-page {
-  min-height: 100vh;
-  background: var(--apple-canvas-parchment); // Slate-50
-  color: var(--apple-ink); // Slate-900
-  font-family: var(--apple-font-text);
-  padding: var(--apple-spacing-lg);
-}
 
 // 筛选卡片
 .filter-card {
@@ -1232,7 +1225,6 @@ const batchDelete = async () => {
     transition: all 0.2s ease;
     
     &:hover {
-      /* box-shadow removed */
       border-color: var(--apple-hairline);
     }
     
@@ -1341,8 +1333,6 @@ const batchDelete = async () => {
           
           &:hover {
             background: var(--apple-primary-hover);
-            /* translateY removed */
-            /* box-shadow removed */
           }
         }
         
@@ -1364,7 +1354,6 @@ const batchDelete = async () => {
             border-color: var(--apple-hairline);
             background: var(--apple-canvas-parchment);
             color: var(--apple-ink);
-            /* translateY removed */
           }
         }
       }
@@ -1414,10 +1403,6 @@ const batchDelete = async () => {
         font-weight: 600;
         cursor: pointer;
         transition: all 0.2s ease;
-        
-        &:hover {
-          /* translateY removed */
-        }
       }
       
       .primary-button {
@@ -1426,7 +1411,6 @@ const batchDelete = async () => {
         
         &:hover {
           background: var(--apple-primary-active);
-          /* box-shadow removed */
         }
       }
       
@@ -1436,7 +1420,6 @@ const batchDelete = async () => {
         
         &:hover {
           background: var(--apple-success);
-          /* box-shadow removed */
         }
       }
       
@@ -1446,7 +1429,6 @@ const batchDelete = async () => {
         
         &:hover {
           background: var(--apple-danger);
-          /* box-shadow removed */
         }
       }
       
@@ -1492,8 +1474,6 @@ const batchDelete = async () => {
       background: var(--apple-surface);
       
       &:hover {
-        /* translateY removed */
-        /* box-shadow removed */
         border-color: var(--apple-ink-muted-48);
       }
       
@@ -1563,7 +1543,6 @@ const batchDelete = async () => {
               background: var(--apple-canvas-parchment);
               border-color: var(--apple-ink-muted-48);
               color: var(--apple-ink);
-              /* translateY removed */
             }
             
             &.primary {
@@ -1573,7 +1552,6 @@ const batchDelete = async () => {
               
               &:hover {
                 background: var(--apple-primary-active);
-                /* box-shadow removed */
               }
             }
             
@@ -1584,7 +1562,6 @@ const batchDelete = async () => {
               
               &:hover {
                 background: var(--apple-warning);
-                /* box-shadow removed */
               }
             }
             
@@ -1595,7 +1572,6 @@ const batchDelete = async () => {
               
               &:hover {
                 background: var(--apple-primary);
-                /* box-shadow removed */
               }
             }
             
@@ -1606,7 +1582,6 @@ const batchDelete = async () => {
               
               &:hover {
                 background: var(--apple-danger);
-                /* box-shadow removed */
               }
               
               &:disabled {
@@ -1732,7 +1707,6 @@ const batchDelete = async () => {
               border-radius: 50%;
               background: var(--apple-hairline);
               border: 2px solid var(--apple-surface);
-              /* box-shadow removed */
               
               &.current {
                 background: var(--apple-primary);
@@ -1889,8 +1863,6 @@ const batchDelete = async () => {
         
         &:hover {
           background: var(--apple-primary-hover);
-          /* translateY removed */
-          /* box-shadow removed */
         }
       }
     }
@@ -1996,7 +1968,6 @@ const batchDelete = async () => {
         
         &:hover {
           border-color: var(--apple-ink-muted-48);
-          /* box-shadow removed */
         }
         
         .el-icon {

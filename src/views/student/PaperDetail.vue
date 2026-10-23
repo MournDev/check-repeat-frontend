@@ -1391,11 +1391,6 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .paper-details-container {
-    padding: var(--apple-spacing-lg);
-    min-height: 100vh;
-    background: var(--apple-canvas-parchment);
-    color: var(--apple-ink);
-    font-family: var(--apple-font-text);
 
     :deep(.el-tag) {
         border-radius: var(--apple-rounded-pill);

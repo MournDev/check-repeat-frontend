@@ -796,14 +796,6 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 // 颜色/圆角/间距一律引用 design-tokens.scss（唯一真源）
 
-.report-page {
-  padding: var(--apple-spacing-lg);
-  background: var(--apple-canvas-parchment);
-  min-height: 100vh;
-  font-family: var(--apple-font-text);
-  color: var(--apple-ink);
-}
-
 .report-body {
   display: flex;
   flex-direction: column;

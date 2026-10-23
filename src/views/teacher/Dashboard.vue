@@ -815,14 +815,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-// Design tokens from src/styles/design-tokens.scss
-.teacher-dashboard {
-  padding: var(--apple-spacing-xl);
-  min-height: 100vh;
-  background: var(--apple-canvas-parchment);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
-}
 
 // 欢迎区域
 .welcome-section {
@@ -1572,10 +1564,6 @@ onMounted(() => {
     font-size: 0.875rem;
     font-weight: 400;
     transition: border-color 0.2s ease;
-
-    &:hover {
-      /* translateY + box-shadow removed for Apple HIG */
-    }
 
     &:active {
       transform: scale(0.985);

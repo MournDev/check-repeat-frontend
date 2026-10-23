@@ -894,11 +894,6 @@ onMounted(async () => {
 <style lang="scss" scoped>
 // 全局样式
 .check-history-page {
-  padding: var(--apple-spacing-lg);
-  min-height: 100vh;
-  background: var(--apple-canvas-parchment); // Slate-50
-  color: var(--apple-ink); // Slate-900
-  font-family: var(--apple-font-text);
 
   .back-button {
     display: flex;
@@ -918,7 +913,6 @@ onMounted(async () => {
       border-color: var(--apple-hairline);
       background: var(--apple-canvas-parchment);
       color: var(--apple-ink);
-      /* translateY removed */
     }
   }
 
@@ -940,7 +934,6 @@ onMounted(async () => {
       border-color: var(--apple-hairline);
       background: var(--apple-canvas-parchment);
       color: var(--apple-ink);
-      /* translateY removed */
     }
   }
 
