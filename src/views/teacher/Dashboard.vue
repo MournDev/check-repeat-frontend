@@ -826,13 +826,13 @@ onMounted(() => {
 
 // 欢迎区域
 .welcome-section {
-  margin-bottom: 32px;
+  margin-bottom: var(--apple-spacing-xl);
   
   .welcome-content {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 24px;
+    margin-bottom: var(--apple-spacing-lg);
     
     .welcome-left {
 
@@ -845,7 +845,7 @@ onMounted(() => {
     
     .welcome-actions {
       display: flex;
-      gap: 12px;
+      gap: var(--apple-spacing-sm);
     }
   }
   
@@ -881,8 +881,8 @@ onMounted(() => {
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-bottom: 32px;
+  gap: var(--apple-spacing-md);
+  margin-bottom: var(--apple-spacing-xl);
 
   @media (max-width: 1200px) {
     grid-template-columns: repeat(2, 1fr);
@@ -980,19 +980,20 @@ onMounted(() => {
 
 // 通用区域样式
 .section {
-  margin-bottom: 32px;
+  margin-bottom: var(--apple-spacing-xl);
   
   .section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    margin-bottom: var(--apple-spacing-md);
     
     .section-title {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 1.125rem;
+      gap: var(--apple-spacing-xs);
+      font-family: var(--apple-font-display);
+      font-size: var(--apple-fs-body-strong);
       font-weight: 600;
       color: var(--apple-ink);
       
@@ -1067,7 +1068,7 @@ onMounted(() => {
       gap: var(--apple-spacing-sm);
 
       .priority-badge {
-        padding: 4px 12px;
+        padding: var(--apple-spacing-xxs) var(--apple-spacing-sm);
         border-radius: var(--apple-rounded-pill);
         font-size: var(--apple-fs-fine-print);
         font-weight: 400;
@@ -1101,7 +1102,7 @@ onMounted(() => {
 .main-content {
   display: grid;
   grid-template-columns: 1fr 300px;
-  gap: 24px;
+  gap: var(--apple-spacing-lg);
 
   @media (max-width: 1400px) {
     grid-template-columns: 1fr 280px;
@@ -1730,13 +1731,13 @@ onMounted(() => {
 // 响应式设计
 @media (max-width: 768px) {
   .teacher-dashboard {
-    padding: 16px;
+    padding: var(--apple-spacing-md);
   }
   
   .welcome-content {
     flex-direction: column;
     align-items: flex-start;
-    gap: 16px;
+    gap: var(--apple-spacing-sm);
   }
   
   .welcome-actions {
@@ -1747,6 +1748,10 @@ onMounted(() => {
       flex: 1;
       justify-content: center;
     }
+  }
+
+  .section-title {
+    font-size: var(--apple-fs-caption-strong);
   }
   
   .today-stats {
@@ -1781,63 +1786,6 @@ onMounted(() => {
   
   .card {
     padding: 20px;
-  }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.teacher-dashboard {
-  .welcome-section {
-    margin-bottom: var(--apple-spacing-xl);
-
-    .welcome-content {
-      margin-bottom: var(--apple-spacing-lg);
-    }
-
-    .welcome-actions {
-      gap: var(--apple-spacing-sm);
-    }
-  }
-
-  .stats-grid {
-    gap: var(--apple-spacing-md);
-    margin-bottom: var(--apple-spacing-xl);
-  }
-
-  .section {
-    margin-bottom: var(--apple-spacing-xl);
-
-    .section-header {
-      margin-bottom: var(--apple-spacing-md);
-
-      .section-title {
-        gap: var(--apple-spacing-xs);
-        font-family: var(--apple-font-display);
-        font-size: var(--apple-fs-body-strong);
-      }
-    }
-  }
-
-  .main-content {
-    gap: var(--apple-spacing-lg);
-  }
-
-  .todo-item .priority-badge {
-    padding: var(--apple-spacing-xxs) var(--apple-spacing-sm);
-  }
-}
-
-@media (max-width: 768px) {
-  .teacher-dashboard {
-    padding: var(--apple-spacing-md);
-
-    .welcome-content {
-      flex-direction: column;
-      gap: var(--apple-spacing-sm);
-    }
-
-    .section-title {
-      font-size: var(--apple-fs-caption-strong);
-    }
   }
 }
 </style>

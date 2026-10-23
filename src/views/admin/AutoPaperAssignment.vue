@@ -753,18 +753,19 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .auto-assignment {
   padding: 0;
+  font-family: var(--apple-font-text);
 }
 
 .config-panel {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--apple-spacing-lg);
   
   .algorithm-card,
   .preview-card {
-    border-radius: 18px;
+    border-radius: var(--apple-rounded-lg);
     
     :deep(.el-card__header) {
-      padding: 1rem 1.25rem;
-      border-bottom: 1px solid var(--apple-surface-chip-translucent);
+      padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+      border-bottom: 1px solid var(--apple-hairline);
       
       .card-header {
         display: flex;
@@ -774,11 +775,13 @@ onUnmounted(() => {
         .card-title {
           display: flex;
           align-items: center;
+          font-family: var(--apple-font-display);
+          font-size: var(--apple-fs-body-strong);
           font-weight: 600;
           color: var(--apple-ink);
           
           .el-icon {
-            margin-right: 0.5rem;
+            margin-right: var(--apple-spacing-xs);
             color: var(--apple-primary);
           }
         }
@@ -788,7 +791,7 @@ onUnmounted(() => {
   
   .config-form {
     :deep(.el-form-item) {
-      margin-bottom: 1.5rem;
+      margin-bottom: var(--apple-spacing-lg);
     }
   }
   
@@ -797,20 +800,20 @@ onUnmounted(() => {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.75rem 0;
-      border-bottom: 1px solid var(--apple-canvas-parchment);
+      padding: var(--apple-spacing-sm) 0;
+      border-bottom: 1px solid var(--apple-divider-soft);
       
       &:last-child {
         border-bottom: none;
       }
       
       .preview-label {
-        font-size: 0.9rem;
+        font-size: var(--apple-fs-fine-print);
         color: var(--apple-ink-secondary);
       }
       
       .preview-value {
-        font-size: 1.2rem;
+        font-size: var(--apple-fs-tagline);
         font-weight: 600;
         color: var(--apple-ink);
         
@@ -826,24 +829,24 @@ onUnmounted(() => {
   }
   
   .weight-distribution {
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--apple-surface-chip-translucent);
+    margin-top: var(--apple-spacing-lg);
+    padding-top: var(--apple-spacing-lg);
+    border-top: 1px solid var(--apple-hairline);
     
     h4 {
-      margin: 0 0 1rem 0;
+      margin: 0 0 var(--apple-spacing-sm) 0;
       color: var(--apple-ink);
-      font-size: 1rem;
+      font-size: var(--apple-fs-body-strong);
     }
     
     .weights {
       .weight-item {
-        margin-bottom: 1rem;
+        margin-bottom: var(--apple-spacing-sm);
         
         span {
           display: block;
-          margin-bottom: 0.5rem;
-          font-size: 0.875rem;
+          margin-bottom: var(--apple-spacing-xs);
+          font-size: var(--apple-fs-fine-print);
           color: var(--apple-ink-secondary);
         }
       }
@@ -852,12 +855,12 @@ onUnmounted(() => {
 }
 
 .history-card {
-  border-radius: 18px;
-  margin-bottom: 1.5rem;
+  border-radius: var(--apple-rounded-lg);
+  margin-bottom: var(--apple-spacing-lg);
   
   :deep(.el-card__header) {
-    padding: 1rem 1.25rem;
-    border-bottom: 1px solid var(--apple-surface-chip-translucent);
+    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+    border-bottom: 1px solid var(--apple-hairline);
     
     .card-header {
       display: flex;
@@ -867,11 +870,13 @@ onUnmounted(() => {
       .card-title {
         display: flex;
         align-items: center;
+        font-family: var(--apple-font-display);
+        font-size: var(--apple-fs-body-strong);
         font-weight: 600;
         color: var(--apple-ink);
         
         .el-icon {
-          margin-right: 0.5rem;
+          margin-right: var(--apple-spacing-xs);
           color: var(--apple-primary);
         }
       }
@@ -881,28 +886,28 @@ onUnmounted(() => {
 
 .progress-content {
   .progress-info {
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--apple-spacing-lg);
     
     .current-step {
-      font-size: 1.1rem;
+      font-size: var(--apple-fs-body-strong);
       font-weight: 600;
       color: var(--apple-ink);
-      margin-bottom: 0.5rem;
+      margin-bottom: var(--apple-spacing-xs);
     }
     
     .progress-stats {
-      font-size: 0.95rem;
+      font-size: var(--apple-fs-fine-print);
       color: var(--apple-ink-secondary);
     }
   }
   
   .step-details {
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--apple-surface-chip-translucent);
+    margin-top: var(--apple-spacing-lg);
+    padding-top: var(--apple-spacing-lg);
+    border-top: 1px solid var(--apple-hairline);
     
     h4 {
-      margin: 0 0 1rem 0;
+      margin: 0 0 var(--apple-spacing-sm) 0;
       color: var(--apple-ink);
     }
     
@@ -913,8 +918,8 @@ onUnmounted(() => {
       .detail-item {
         display: flex;
         align-items: center;
-        padding: 0.5rem 0;
-        border-bottom: 1px solid var(--apple-canvas-parchment);
+        padding: var(--apple-spacing-xs) 0;
+        border-bottom: 1px solid var(--apple-divider-soft);
         
         &:last-child {
           border-bottom: none;
@@ -927,7 +932,7 @@ onUnmounted(() => {
         }
         
         .arrow-icon {
-          margin: 0 0.75rem;
+          margin: 0 var(--apple-spacing-sm);
           color: var(--apple-ink-secondary);
         }
         
@@ -942,12 +947,13 @@ onUnmounted(() => {
 
 .execution-detail {
   .detail-section {
-    margin-top: 1.5rem;
+    margin-top: var(--apple-spacing-lg);
     
     h3 {
-      margin: 0 0 1rem 0;
+      margin: 0 0 var(--apple-spacing-sm) 0;
       color: var(--apple-ink);
-      font-size: 1.1rem;
+      font-family: var(--apple-font-display);
+      font-size: var(--apple-fs-tagline);
     }
   }
 }
@@ -955,13 +961,13 @@ onUnmounted(() => {
 @media (max-width: 768px) {
   .config-panel {
     .el-col {
-      margin-bottom: 1rem;
+      margin-bottom: var(--apple-spacing-sm);
     }
     
     .weight-distribution {
       .weights {
         .weight-item {
-          margin-bottom: 0.75rem;
+          margin-bottom: var(--apple-spacing-sm);
         }
       }
     }
@@ -973,144 +979,6 @@ onUnmounted(() => {
         max-height: 150px;
       }
     }
-  }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.auto-assignment {
-  font-family: var(--apple-font-text);
-}
-
-.config-panel {
-  margin-bottom: var(--apple-spacing-lg);
-
-  .algorithm-card,
-  .preview-card {
-    border-radius: var(--apple-rounded-lg);
-
-    :deep(.el-card__header) {
-      padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-      border-bottom: 1px solid var(--apple-hairline);
-
-      .card-header .card-title {
-        font-size: var(--apple-fs-body-strong);
-        font-family: var(--apple-font-display);
-
-        .el-icon {
-          margin-right: var(--apple-spacing-xs);
-        }
-      }
-    }
-  }
-
-  .config-form :deep(.el-form-item) {
-    margin-bottom: var(--apple-spacing-lg);
-  }
-
-  .preview-stats .preview-item {
-    padding: var(--apple-spacing-sm) 0;
-    border-bottom: 1px solid var(--apple-divider-soft);
-
-    .preview-label {
-      font-size: var(--apple-fs-fine-print);
-    }
-
-    .preview-value {
-      font-size: var(--apple-fs-tagline);
-    }
-  }
-
-  .weight-distribution {
-    margin-top: var(--apple-spacing-lg);
-    padding-top: var(--apple-spacing-lg);
-    border-top: 1px solid var(--apple-hairline);
-
-    h4 {
-      margin-bottom: var(--apple-spacing-sm);
-      font-size: var(--apple-fs-body-strong);
-    }
-
-    .weights .weight-item {
-      margin-bottom: var(--apple-spacing-sm);
-
-      span {
-        margin-bottom: var(--apple-spacing-xs);
-        font-size: var(--apple-fs-fine-print);
-      }
-    }
-  }
-}
-
-.history-card {
-  margin-bottom: var(--apple-spacing-lg);
-  border-radius: var(--apple-rounded-lg);
-
-  :deep(.el-card__header) {
-    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-    border-bottom: 1px solid var(--apple-hairline);
-
-    .card-header .card-title {
-      font-size: var(--apple-fs-body-strong);
-      font-family: var(--apple-font-display);
-
-      .el-icon {
-        margin-right: var(--apple-spacing-xs);
-      }
-    }
-  }
-}
-
-.progress-content {
-  .progress-info {
-    margin-bottom: var(--apple-spacing-lg);
-
-    .current-step {
-      margin-bottom: var(--apple-spacing-xs);
-      font-size: var(--apple-fs-body-strong);
-    }
-
-    .progress-stats {
-      font-size: var(--apple-fs-fine-print);
-    }
-  }
-
-  .step-details {
-    margin-top: var(--apple-spacing-lg);
-    padding-top: var(--apple-spacing-lg);
-    border-top: 1px solid var(--apple-hairline);
-
-    h4 {
-      margin-bottom: var(--apple-spacing-sm);
-    }
-
-    .details-content .detail-item {
-      padding: var(--apple-spacing-xs) 0;
-      border-bottom: 1px solid var(--apple-divider-soft);
-
-      .arrow-icon {
-        margin: 0 var(--apple-spacing-sm);
-      }
-    }
-  }
-}
-
-.execution-detail .detail-section {
-  margin-top: var(--apple-spacing-lg);
-
-  h3 {
-    margin-bottom: var(--apple-spacing-sm);
-    font-size: var(--apple-fs-tagline);
-    font-family: var(--apple-font-display);
-  }
-}
-
-@media (max-width: 768px) {
-  .config-panel .el-col {
-    margin-bottom: var(--apple-spacing-sm);
-  }
-
-  .config-panel .weight-distribution .weights .weight-item {
-    margin-bottom: var(--apple-spacing-sm);
   }
 }
 </style>

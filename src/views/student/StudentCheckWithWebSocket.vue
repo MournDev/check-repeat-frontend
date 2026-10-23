@@ -762,16 +762,21 @@ onUnmounted(() => {
 
 <style scoped lang="scss">
 .check-container {
-  padding: 24px;
-
+  min-height: 100vh;
+  padding: var(--apple-spacing-lg);
+  background: var(--apple-canvas-parchment);
+  color: var(--apple-ink);
+  font-family: var(--apple-font-text);
 
   .action-bar {
-    margin-bottom: 24px;
+    margin-bottom: var(--apple-spacing-lg);
     display: flex;
     align-items: center;
-    padding: 16px;
-    background-color: var(--apple-canvas-parchment);
-    border-radius: 11px;
+    gap: var(--apple-spacing-xs);
+    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+    background: var(--apple-surface);
+    border: 1px solid var(--apple-hairline);
+    border-radius: var(--apple-rounded-lg);
   }
 
   .connection-status {
@@ -781,17 +786,23 @@ onUnmounted(() => {
 
   .task-stats {
     display: flex;
-    gap: 16px;
-    margin-bottom: 24px;
+    gap: var(--apple-spacing-md);
+    margin-bottom: var(--apple-spacing-lg);
   }
 
   .stat-card {
     flex: 1;
     min-width: 120px;
+    background: var(--apple-surface);
+    border: 1px solid var(--apple-hairline);
+    border-radius: var(--apple-rounded-lg);
   }
 
   .rule-info-card {
-    margin-bottom: 24px;
+    margin-bottom: var(--apple-spacing-lg);
+    background: var(--apple-surface);
+    border: 1px solid var(--apple-hairline);
+    border-radius: var(--apple-rounded-lg);
   }
 
   // 一个论文类型一行：类型名在左、百分比标签在右，多类型时纵向排列不挤成一行
@@ -806,6 +817,7 @@ onUnmounted(() => {
   }
 
   .paper-type-name {
+    font-size: var(--apple-fs-caption);
     color: var(--apple-ink);
   }
 
@@ -813,25 +825,32 @@ onUnmounted(() => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 16px;
+    padding: var(--apple-spacing-md);
   }
 
   .stat-label {
-    font-size: 17px;
-    color: var(--apple-ink-secondary);
-    margin-bottom: 8px;
+    font-size: var(--apple-fs-fine-print);
+    color: var(--apple-ink-muted-48);
+    margin-bottom: var(--apple-spacing-xxs);
   }
 
   .stat-value {
-    font-size: 24px;
+    font-family: var(--apple-font-display);
+    font-size: var(--apple-fs-display-md);
     font-weight: 600;
-    color: var(--apple-primary);
+    line-height: var(--apple-lh-display-md);
+    letter-spacing: var(--apple-ls-display-md);
+    color: var(--apple-ink);
   }
 
   .table-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    font-family: var(--apple-font-display);
+    font-size: var(--apple-fs-body-strong);
+    font-weight: 600;
+    color: var(--apple-ink);
   }
 
   .ellipsis {
@@ -846,8 +865,8 @@ onUnmounted(() => {
   }
 
   .fail-text {
-    font-size: 12px;
-    color: #f5222d;
+    font-size: var(--apple-fs-fine-print);
+    color: var(--apple-danger);
     word-break: break-all;
     max-width: 100%;
     display: block;
@@ -857,173 +876,6 @@ onUnmounted(() => {
     max-height: 600px;
     overflow-y: auto;
 
-    h3 {
-      margin-bottom: 16px;
-      color: var(--apple-primary);
-    }
-
-    h4 {
-      margin: 16px 0 8px 0;
-      color: var(--apple-ink);
-    }
-
-    h5 {
-      margin: 8px 0;
-      color: var(--apple-ink-secondary);
-    }
-
-    p {
-      margin: 8px 0;
-    }
-
-    .report-sections {
-      margin: 16px 0;
-      padding: 16px;
-      background-color: var(--apple-canvas-parchment);
-      border-radius: 11px;
-    }
-
-    .report-recommendations {
-      margin: 16px 0;
-      padding: 16px;
-      background-color: var(--apple-canvas-parchment);
-      border-radius: 11px;
-    }
-
-    .similarity-info {
-      display: flex;
-      align-items: center;
-      margin: 8px 0;
-
-      .similarity-value {
-        margin-left: 8px;
-        font-weight: bold;
-      }
-    }
-
-    .repeated-fragments {
-      margin-top: 8px;
-      padding: 8px;
-      background-color: var(--apple-danger-bg);
-      border-radius: 11px;
-    }
-  }
-
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .author-info {
-    font-size: 12px;
-    color: var(--apple-ink-secondary);
-  }
-
-  .mb-4 {
-    margin-bottom: 16px;
-  }
-
-  .fragment-item {
-    padding: 8px;
-    background-color: var(--apple-surface);
-    border-radius: 11px;
-    margin-bottom: 8px;
-    border-left: 3px solid var(--apple-danger);
-  }
-
-  .recommendation-item {
-    padding: 8px;
-    background-color: var(--apple-canvas-parchment);
-    border-radius: 11px;
-    margin-bottom: 8px;
-    border-left: 3px solid var(--apple-success);
-  }
-
-  .loading {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 400px;
-  }
-
-  .loading-text {
-    font-size: 16px;
-    color: var(--apple-ink-secondary);
-  }
-}
-
-// ── 视觉统一（design-tokens 覆盖层） ────────────────────────
-.check-container {
-  min-height: 100vh;
-  padding: var(--apple-spacing-lg);
-  background: var(--apple-canvas-parchment);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
-
-  .action-bar {
-    gap: var(--apple-spacing-xs);
-    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-    margin-bottom: var(--apple-spacing-lg);
-    background: var(--apple-surface);
-    border: 1px solid var(--apple-hairline);
-    border-radius: var(--apple-rounded-lg);
-  }
-
-  .task-stats {
-    gap: var(--apple-spacing-md);
-    margin-bottom: var(--apple-spacing-lg);
-  }
-
-  .stat-card {
-    background: var(--apple-surface);
-    border: 1px solid var(--apple-hairline);
-    border-radius: var(--apple-rounded-lg);
-  }
-
-  .stat-item {
-    padding: var(--apple-spacing-md);
-  }
-
-  .stat-label {
-    margin-bottom: var(--apple-spacing-xxs);
-    font-size: var(--apple-fs-fine-print);
-    color: var(--apple-ink-muted-48);
-  }
-
-  .stat-value {
-    font-family: var(--apple-font-display);
-    font-size: var(--apple-fs-display-md);
-    line-height: var(--apple-lh-display-md);
-    letter-spacing: var(--apple-ls-display-md);
-    color: var(--apple-ink);
-  }
-
-  .rule-info-card {
-    margin-bottom: var(--apple-spacing-lg);
-    background: var(--apple-surface);
-    border: 1px solid var(--apple-hairline);
-    border-radius: var(--apple-rounded-lg);
-  }
-
-  .table-header {
-    font-family: var(--apple-font-display);
-    font-size: var(--apple-fs-body-strong);
-    font-weight: 600;
-    color: var(--apple-ink);
-  }
-
-  .paper-type-name {
-    font-size: var(--apple-fs-caption);
-    color: var(--apple-ink);
-  }
-
-  .fail-text {
-    font-size: var(--apple-fs-fine-print);
-    color: var(--apple-danger);
-  }
-
-  .report-content {
     h3 {
       margin-bottom: var(--apple-spacing-sm);
       font-family: var(--apple-font-display);
@@ -1051,17 +903,35 @@ onUnmounted(() => {
 
     .report-sections,
     .report-recommendations {
-      padding: var(--apple-spacing-md);
       margin: var(--apple-spacing-sm) 0;
-      background: var(--apple-canvas-parchment);
+      padding: var(--apple-spacing-md);
+      background-color: var(--apple-canvas-parchment);
       border-radius: var(--apple-rounded-md);
     }
 
+    .similarity-info {
+      display: flex;
+      align-items: center;
+      margin: 8px 0;
+
+      .similarity-value {
+        margin-left: 8px;
+        font-weight: bold;
+      }
+    }
+
     .repeated-fragments {
+      margin-top: 8px;
       padding: var(--apple-spacing-xs);
-      background: var(--apple-danger-bg);
+      background-color: var(--apple-danger-bg);
       border-radius: var(--apple-rounded-md);
     }
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   .author-info {
@@ -1069,21 +939,30 @@ onUnmounted(() => {
     color: var(--apple-ink-muted-48);
   }
 
+  .mb-4 {
+    margin-bottom: 16px;
+  }
+
   .fragment-item {
     padding: var(--apple-spacing-xs);
-    background: var(--apple-surface);
-    border-left: 3px solid var(--apple-danger);
+    background-color: var(--apple-surface);
     border-radius: var(--apple-rounded-xs);
+    margin-bottom: 8px;
+    border-left: 3px solid var(--apple-danger);
   }
 
   .recommendation-item {
     padding: var(--apple-spacing-xs);
-    background: var(--apple-success-bg);
-    border-left: 3px solid var(--apple-success);
+    background-color: var(--apple-success-bg);
     border-radius: var(--apple-rounded-xs);
+    margin-bottom: 8px;
+    border-left: 3px solid var(--apple-success);
   }
 
   .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 320px;
   }
 

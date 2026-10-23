@@ -460,27 +460,27 @@ onMounted(() => {
 <style lang="scss" scoped>
 // 全局样式
 .admin-dashboard {
-  padding: 24px;
+  padding: var(--apple-spacing-lg);
   min-height: 100vh;
   background: var(--apple-canvas-parchment); // Slate-50
   color: var(--apple-ink); // Slate-900
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--apple-font-text);
 }
 
 // 欢迎区域
 .welcome-section {
-  margin-bottom: 32px;
+  margin-bottom: var(--apple-spacing-xl);
   
   .welcome-content {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 24px;
+    margin-bottom: var(--apple-spacing-lg);
     
     .welcome-left {
 
       .welcome-subtitle {
-        font-size: 1rem;
+        font-size: var(--apple-fs-caption);
         color: var(--apple-ink-secondary);
         margin: 0;
       }
@@ -488,7 +488,7 @@ onMounted(() => {
     
     .welcome-actions {
       display: flex;
-      gap: 12px;
+      gap: var(--apple-spacing-sm);
     }
   }
 }
@@ -497,18 +497,18 @@ onMounted(() => {
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
-  margin-bottom: 32px;
+  gap: var(--apple-spacing-md);
+  margin-bottom: var(--apple-spacing-xl);
 }
 
 .stat-card {
   background: var(--apple-surface);
   border: 1px solid var(--apple-slate-border);
-  border-radius: 18px;
-  padding: 20px;
+  border-radius: var(--apple-rounded-lg);
+  padding: var(--apple-spacing-md);
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--apple-spacing-md);
   transition: all 0.2s ease;
   
   &:hover {
@@ -523,7 +523,7 @@ onMounted(() => {
   .stat-icon {
     width: 48px;
     height: 48px;
-    border-radius: 18px;
+    border-radius: var(--apple-rounded-lg);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -555,15 +555,15 @@ onMounted(() => {
     flex: 1;
     
     .stat-value {
-      font-size: 1.75rem;
+      font-size: var(--apple-fs-lead);
       font-weight: 700;
       color: var(--apple-ink);
       line-height: 1.2;
-      margin-bottom: 4px;
+      margin-bottom: var(--apple-spacing-xxs);
     }
     
     .stat-label {
-      font-size: 0.875rem;
+      font-size: var(--apple-fs-fine-print);
       color: var(--apple-ink-secondary);
     }
   }
@@ -573,7 +573,7 @@ onMounted(() => {
 .main-content {
   display: grid;
   grid-template-columns: 1fr 320px;
-  gap: 24px;
+  gap: var(--apple-spacing-lg);
   
   @media (max-width: 1200px) {
     grid-template-columns: 1fr;
@@ -584,9 +584,9 @@ onMounted(() => {
 .card {
   background: var(--apple-surface);
   border: 1px solid var(--apple-slate-border);
-  border-radius: 18px;
-  padding: 24px;
-  margin-bottom: 24px;
+  border-radius: var(--apple-rounded-lg);
+  padding: var(--apple-spacing-lg);
+  margin-bottom: var(--apple-spacing-lg);
   transition: all 0.2s ease;
   
   &:hover {
@@ -597,13 +597,14 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: var(--apple-spacing-md);
     
     .card-title {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 1.125rem;
+      gap: var(--apple-spacing-xs);
+      font-family: var(--apple-font-display);
+      font-size: var(--apple-fs-body-strong);
       font-weight: 600;
       color: var(--apple-ink);
       
@@ -619,14 +620,14 @@ onMounted(() => {
   .metrics-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-    margin-bottom: 24px;
+    gap: var(--apple-spacing-md);
+    margin-bottom: var(--apple-spacing-lg);
   }
   
   .metric-item {
-    padding: 16px;
+    padding: var(--apple-spacing-md);
     background: var(--apple-canvas-parchment);
-    border-radius: 8px;
+    border-radius: var(--apple-rounded-sm);
     transition: all 0.2s ease;
     
     &:hover {
@@ -635,24 +636,24 @@ onMounted(() => {
     }
     
     .metric-value {
-      font-size: 1.5rem;
+      font-size: var(--apple-fs-lead-airy);
       font-weight: 700;
       color: var(--apple-ink);
-      margin-bottom: 8px;
+      margin-bottom: var(--apple-spacing-xs);
     }
     
     .metric-label {
       color: var(--apple-ink-secondary);
-      font-size: 0.875rem;
-      margin-bottom: 12px;
+      font-size: var(--apple-fs-fine-print);
+      margin-bottom: var(--apple-spacing-sm);
     }
   }
   
   .server-info {
-    margin-top: 24px;
+    margin-top: var(--apple-spacing-lg);
     
     h4 {
-      margin: 0 0 16px 0;
+      margin: 0 0 var(--apple-spacing-md) 0;
       color: var(--apple-ink);
       font-weight: 600;
     }
@@ -660,20 +661,20 @@ onMounted(() => {
     .server-details {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
+      gap: var(--apple-spacing-md);
     }
     
     .server-detail-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px;
+      padding: var(--apple-spacing-sm);
       background: var(--apple-canvas-parchment);
-      border-radius: 8px;
+      border-radius: var(--apple-rounded-sm);
       
       .detail-label {
         color: var(--apple-ink-secondary);
-        font-size: 0.875rem;
+        font-size: var(--apple-fs-fine-print);
       }
       
       .detail-value {
@@ -687,7 +688,7 @@ onMounted(() => {
 // 用户分布
 .users-distribution {
   .distribution-item {
-    margin-bottom: 16px;
+    margin-bottom: var(--apple-spacing-md);
     
     &:last-child {
       margin-bottom: 0;
@@ -697,17 +698,17 @@ onMounted(() => {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: var(--apple-spacing-xs);
       
       .dist-value {
-        font-size: 1.125rem;
+        font-size: var(--apple-fs-body-strong);
         font-weight: 700;
         color: var(--apple-ink);
       }
       
       .dist-label {
         color: var(--apple-ink-secondary);
-        font-size: 0.875rem;
+        font-size: var(--apple-fs-fine-print);
       }
     }
   }
@@ -748,9 +749,9 @@ onMounted(() => {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 12px;
-  border-radius: 16px;
-  font-size: 0.75rem;
+  padding: var(--apple-spacing-xxs) var(--apple-spacing-sm);
+  border-radius: var(--apple-rounded-pill);
+  font-size: var(--apple-fs-fine-print);
   font-weight: 400;
   
   &.success {
@@ -765,12 +766,12 @@ onMounted(() => {
 
 // 业务指标
 .business-metrics-card {
-  margin-top: 24px;
+  margin-top: var(--apple-spacing-lg);
 }
 
 // 响应时间趋势图
 .response-time-card {
-  margin-top: 24px;
+  margin-top: var(--apple-spacing-lg);
 
   .header-right {
     display: flex;
@@ -790,24 +791,24 @@ onMounted(() => {
 .business-metrics {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 16px;
+  gap: var(--apple-spacing-md);
 
   .metric-item {
-    padding: 16px;
+    padding: var(--apple-spacing-md);
     background: var(--apple-canvas-parchment);
-    border-radius: 8px;
+    border-radius: var(--apple-rounded-sm);
     text-align: center;
 
     .metric-value {
-      font-size: 1.75rem;
+      font-size: var(--apple-fs-lead);
       font-weight: 700;
       color: var(--apple-ink);
-      margin-bottom: 8px;
+      margin-bottom: var(--apple-spacing-xs);
     }
 
     .metric-label {
       color: var(--apple-ink-secondary);
-      font-size: 0.875rem;
+      font-size: var(--apple-fs-fine-print);
     }
   }
 }
@@ -815,13 +816,13 @@ onMounted(() => {
 // 响应式设计
 @media (max-width: 768px) {
   .admin-dashboard {
-    padding: 16px;
+    padding: var(--apple-spacing-sm);
   }
   
   .welcome-content {
     flex-direction: column;
     align-items: flex-start;
-    gap: 16px;
+    gap: var(--apple-spacing-sm);
   }
   
   .welcome-actions {
@@ -854,181 +855,6 @@ onMounted(() => {
   
   .card {
     padding: 20px;
-  }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.admin-dashboard {
-  padding: var(--apple-spacing-lg);
-  font-family: var(--apple-font-text);
-}
-
-.welcome-section {
-  margin-bottom: var(--apple-spacing-xl);
-
-  .welcome-content {
-    margin-bottom: var(--apple-spacing-lg);
-  }
-
-  .welcome-left {
-    .welcome-subtitle {
-      font-size: var(--apple-fs-caption);
-    }
-  }
-
-  .welcome-actions {
-    gap: var(--apple-spacing-sm);
-  }
-}
-
-.stats-grid {
-  gap: var(--apple-spacing-md);
-  margin-bottom: var(--apple-spacing-xl);
-}
-
-.stat-card {
-  padding: var(--apple-spacing-md);
-  border-radius: var(--apple-rounded-lg);
-
-  .stat-icon {
-    border-radius: var(--apple-rounded-lg);
-  }
-
-  .stat-content {
-    .stat-value {
-      margin-bottom: var(--apple-spacing-xxs);
-      font-size: var(--apple-fs-lead);
-    }
-
-    .stat-label {
-      font-size: var(--apple-fs-fine-print);
-    }
-  }
-}
-
-.main-content {
-  gap: var(--apple-spacing-lg);
-}
-
-.card {
-  padding: var(--apple-spacing-lg);
-  margin-bottom: var(--apple-spacing-lg);
-  border-radius: var(--apple-rounded-lg);
-
-  .card-header {
-    margin-bottom: var(--apple-spacing-md);
-
-    .card-title {
-      gap: var(--apple-spacing-xs);
-      font-size: var(--apple-fs-body-strong);
-      font-family: var(--apple-font-display);
-    }
-  }
-}
-
-.monitor-content {
-  .metrics-grid {
-    gap: var(--apple-spacing-md);
-    margin-bottom: var(--apple-spacing-lg);
-  }
-
-  .metric-item {
-    padding: var(--apple-spacing-md);
-    border-radius: var(--apple-rounded-sm);
-
-    .metric-value {
-      margin-bottom: var(--apple-spacing-xs);
-      font-size: var(--apple-fs-lead-airy);
-    }
-
-    .metric-label {
-      margin-bottom: var(--apple-spacing-sm);
-      font-size: var(--apple-fs-fine-print);
-    }
-  }
-
-  .server-info {
-    margin-top: var(--apple-spacing-lg);
-
-    h4 {
-      margin-bottom: var(--apple-spacing-md);
-    }
-
-    .server-details {
-      gap: var(--apple-spacing-md);
-    }
-
-    .server-detail-item {
-      padding: var(--apple-spacing-sm);
-      border-radius: var(--apple-rounded-sm);
-    }
-
-    .detail-label {
-      font-size: var(--apple-fs-fine-print);
-    }
-  }
-}
-
-.users-distribution .distribution-item {
-  margin-bottom: var(--apple-spacing-md);
-
-  .dist-info {
-    margin-bottom: var(--apple-spacing-xs);
-
-    .dist-value {
-      font-size: var(--apple-fs-body-strong);
-    }
-
-    .dist-label {
-      font-size: var(--apple-fs-fine-print);
-    }
-  }
-}
-
-.status-badge {
-  padding: var(--apple-spacing-xxs) var(--apple-spacing-sm);
-  border-radius: var(--apple-rounded-pill);
-  font-size: var(--apple-fs-fine-print);
-}
-
-.business-metrics-card,
-.response-time-card {
-  margin-top: var(--apple-spacing-lg);
-}
-
-.business-metrics {
-  gap: var(--apple-spacing-md);
-
-  .metric-item {
-    padding: var(--apple-spacing-md);
-    border-radius: var(--apple-rounded-sm);
-
-    .metric-value {
-      margin-bottom: var(--apple-spacing-xs);
-      font-size: var(--apple-fs-lead);
-    }
-
-    .metric-label {
-      font-size: var(--apple-fs-fine-print);
-    }
-  }
-}
-
-@media (max-width: 768px) {
-  .admin-dashboard {
-    padding: var(--apple-spacing-sm);
-  }
-
-  .welcome-content {
-    gap: var(--apple-spacing-sm);
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .welcome-actions {
-    width: 100%;
   }
 }
 </style>

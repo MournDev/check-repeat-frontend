@@ -229,9 +229,11 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .sentence-detail-page {
-  padding: 24px;
+  padding: var(--apple-spacing-lg);
   min-height: 100vh;
   background: var(--apple-canvas-parchment);
+  color: var(--apple-ink);
+  font-family: var(--apple-font-text);
 
   .error-result {
     background: var(--apple-surface);
@@ -240,229 +242,22 @@ onMounted(() => {
   }
 
   .metrics-card {
-    margin-bottom: 24px;
-
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 24px;
-
-      .metric-block {
-        .metric-label {
-          font-size: 0.75rem;
-          color: var(--apple-ink-secondary);
-          margin-bottom: 8px;
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-        }
-
-        .metric-value {
-          font-size: 1.5rem;
-          font-weight: 600;
-          color: var(--apple-ink);
-
-          &.primary {
-            font-size: 2.25rem;
-            color: var(--apple-primary);
-          }
-        }
-      }
-    }
-  }
-
-  .sources-card {
-    margin-bottom: 24px;
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 600;
-      color: var(--apple-ink);
-    }
-
-    .source-item {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-      padding: 14px 16px;
-      border: 1px solid var(--apple-hairline);
-      border-radius: var(--apple-rounded-md);
-      margin-bottom: 12px;
-      cursor: pointer;
-      transition: all var(--apple-transition-normal);
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-
-      &:hover {
-        border-color: var(--apple-primary);
-      }
-
-      &.active {
-        border-color: var(--apple-primary);
-        background: rgba(0, 102, 204, 0.04);
-      }
-
-      .source-info {
-        flex: 1;
-        min-width: 0;
-
-        .source-title {
-          font-weight: 600;
-          color: var(--apple-ink);
-          font-size: 0.875rem;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .source-meta {
-          font-size: 0.75rem;
-          color: var(--apple-ink-secondary);
-          margin-top: 4px;
-        }
-      }
-
-      .source-share {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        width: 220px;
-        flex-shrink: 0;
-
-        .el-progress {
-          flex: 1;
-        }
-
-        .share-text {
-          font-size: 0.875rem;
-          font-weight: 600;
-          color: var(--apple-ink);
-          min-width: 48px;
-          text-align: right;
-        }
-      }
-    }
-  }
-
-  .items-card {
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 600;
-      color: var(--apple-ink);
-
-      .item-count {
-        font-size: 0.75rem;
-        color: var(--apple-ink-secondary);
-        font-weight: normal;
-      }
-    }
-
-    .sentence-list {
-      .sentence-item {
-        padding: 16px;
-        border: 1px solid var(--apple-hairline);
-        border-radius: var(--apple-rounded-md);
-        margin-bottom: 12px;
-
-        &:last-child {
-          margin-bottom: 0;
-        }
-
-        .sentence-head {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          margin-bottom: 8px;
-
-          .sentence-index {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--apple-ink-secondary);
-          }
-
-          // 普通命中分档：≥80 深红 / 50-80 浅红
-          :deep(.sim-tag-high) {
-            background: #b91c1c;
-            border-color: #b91c1c;
-            color: var(--apple-surface);
-          }
-
-          :deep(.sim-tag-mid) {
-            background: var(--apple-danger-bg);
-            border-color: var(--apple-danger-bg);
-            color: var(--apple-danger);
-          }
-        }
-
-        .sentence-text {
-          color: var(--apple-ink);
-          font-size: 0.875rem;
-          line-height: 1.6;
-          word-break: break-word;
-        }
-
-        .sentence-source {
-          margin-top: 8px;
-          font-size: 0.75rem;
-          color: var(--apple-ink-secondary);
-        }
-      }
-    }
-  }
-}
-
-@media (max-width: 768px) {
-  .sentence-detail-page {
-    padding: 12px;
-
-    .sources-card {
-      .source-item {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 12px;
-
-        .source-share {
-          width: 100%;
-        }
-      }
-    }
-  }
-}
-
-// ── 视觉统一（design-tokens 覆盖层） ────────────────────────
-.sentence-detail-page {
-  padding: var(--apple-spacing-lg);
-  background: var(--apple-canvas-parchment);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
-
-  .error-result {
-    border-color: var(--apple-hairline);
-    border-radius: var(--apple-rounded-lg);
-    background: var(--apple-surface);
-  }
-
-  .metrics-card {
     margin-bottom: var(--apple-spacing-lg);
     border-radius: var(--apple-rounded-lg);
 
     .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: var(--apple-spacing-lg);
 
       .metric-block {
         .metric-label {
-          margin-bottom: var(--apple-spacing-xs);
           font-size: var(--apple-fs-fine-print);
-          font-weight: 600;
-          letter-spacing: 0;
-          text-transform: none;
           color: var(--apple-ink-muted-48);
+          margin-bottom: var(--apple-spacing-xs);
+          font-weight: 600;
+          text-transform: none;
+          letter-spacing: 0;
         }
 
         .metric-value {
@@ -486,6 +281,9 @@ onMounted(() => {
     margin-bottom: var(--apple-spacing-lg);
 
     .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       font-family: var(--apple-font-display);
       font-size: var(--apple-fs-body-strong);
       font-weight: 600;
@@ -493,31 +291,66 @@ onMounted(() => {
     }
 
     .source-item {
+      display: flex;
+      align-items: center;
       gap: var(--apple-spacing-md);
       padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-      margin-bottom: var(--apple-spacing-sm);
-      border-color: var(--apple-hairline);
+      border: 1px solid var(--apple-hairline);
       border-radius: var(--apple-rounded-md);
+      margin-bottom: var(--apple-spacing-sm);
+      cursor: pointer;
+      transition: all var(--apple-transition-normal);
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      &:hover {
+        border-color: var(--apple-primary);
+      }
+
+      &.active {
+        border-color: var(--apple-primary);
+        background: rgba(0, 102, 204, 0.04);
+      }
 
       .source-info {
+        flex: 1;
+        min-width: 0;
+
         .source-title {
-          font-size: var(--apple-fs-caption);
+          font-weight: 600;
           color: var(--apple-ink);
+          font-size: var(--apple-fs-caption);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
         .source-meta {
-          margin-top: var(--apple-spacing-xxs);
           font-size: var(--apple-fs-fine-print);
           color: var(--apple-ink-muted-48);
+          margin-top: var(--apple-spacing-xxs);
         }
       }
 
       .source-share {
+        display: flex;
+        align-items: center;
         gap: var(--apple-spacing-sm);
+        width: 220px;
+        flex-shrink: 0;
+
+        .el-progress {
+          flex: 1;
+        }
 
         .share-text {
           font-size: var(--apple-fs-caption);
+          font-weight: 600;
           color: var(--apple-ink);
+          min-width: 48px;
+          text-align: right;
         }
       }
     }
@@ -525,44 +358,63 @@ onMounted(() => {
 
   .items-card {
     .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       font-family: var(--apple-font-display);
       font-size: var(--apple-fs-body-strong);
       font-weight: 600;
+      color: var(--apple-ink);
 
       .item-count {
         font-size: var(--apple-fs-fine-print);
-        font-weight: 400;
         color: var(--apple-ink-muted-48);
+        font-weight: 400;
       }
     }
 
     .sentence-list {
       .sentence-item {
         padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-        margin-bottom: var(--apple-spacing-sm);
-        border-color: var(--apple-hairline);
+        border: 1px solid var(--apple-hairline);
         border-radius: var(--apple-rounded-md);
+        margin-bottom: var(--apple-spacing-sm);
+
+        &:last-child {
+          margin-bottom: 0;
+        }
 
         .sentence-head {
+          display: flex;
+          align-items: center;
           gap: var(--apple-spacing-xs);
           margin-bottom: var(--apple-spacing-xs);
 
           .sentence-index {
             font-size: var(--apple-fs-fine-print);
+            font-weight: 600;
             color: var(--apple-ink-muted-48);
           }
 
+          // 普通命中分档：≥80 深红 / 50-80 浅红
           :deep(.sim-tag-high) {
             background: var(--apple-danger);
             border-color: var(--apple-danger);
             color: var(--apple-on-primary);
           }
+
+          :deep(.sim-tag-mid) {
+            background: var(--apple-danger-bg);
+            border-color: var(--apple-danger-bg);
+            color: var(--apple-danger);
+          }
         }
 
         .sentence-text {
+          color: var(--apple-ink);
           font-size: var(--apple-fs-caption);
           line-height: 1.6;
-          color: var(--apple-ink);
+          word-break: break-word;
         }
 
         .sentence-source {

@@ -477,19 +477,19 @@ onMounted(() => {
   min-height: 100vh;
   background: var(--apple-canvas-parchment); // Slate-50
   color: var(--apple-ink); // Slate-900
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  padding: 24px;
+  font-family: var(--apple-font-text);
+  padding: var(--apple-spacing-lg);
 }
 
 .config-alert {
-  margin-bottom: 16px;
+  margin-bottom: var(--apple-spacing-md);
 }
 
 .nav-card {
-  margin-bottom: 24px;
+  margin-bottom: var(--apple-spacing-lg);
   background: var(--apple-surface);
-  border: 1px solid var(--apple-surface-chip-translucent);
-  border-radius: 18px;
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-lg);
   transition: all 0.2s ease;
   
   &:hover {
@@ -515,8 +515,8 @@ onMounted(() => {
 
 .config-card {
   background: var(--apple-surface);
-  border: 1px solid var(--apple-surface-chip-translucent);
-  border-radius: 18px;
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-lg);
   transition: all 0.2s ease;
   
   &:hover {
@@ -524,21 +524,22 @@ onMounted(() => {
   }
   
   :deep(.el-card__body) {
-    padding: 24px;
+    padding: var(--apple-spacing-lg);
   }
   
   .config-tab {
     .tab-title {
-      margin: 0 0 24px 0;
-      font-size: 1.25rem;
+      margin: 0 0 var(--apple-spacing-lg) 0;
+      font-family: var(--apple-font-display);
+      font-size: var(--apple-fs-tagline);
       color: var(--apple-ink); // Slate-900
-      padding-bottom: 12px;
-      border-bottom: 2px solid var(--apple-surface-chip-translucent);
+      padding-bottom: var(--apple-spacing-sm);
+      border-bottom: 1px solid var(--apple-hairline);
     }
     
     .config-form {
       :deep(.el-form-item) {
-        margin-bottom: 24px;
+        margin-bottom: var(--apple-spacing-md);
         
         .el-form-item__label {
           font-weight: 400;
@@ -551,8 +552,8 @@ onMounted(() => {
           width: 100%;
           
           :deep(.el-input__wrapper) {
-            border-radius: 8px;
-            border: 1px solid var(--apple-surface-chip-translucent);
+            border-radius: var(--apple-rounded-md);
+            border: 1px solid var(--apple-hairline);
             transition: all 0.2s ease;
             
             &:hover {
@@ -562,8 +563,8 @@ onMounted(() => {
           }
           
           :deep(.el-select__wrapper) {
-            border-radius: 8px;
-            border: 1px solid var(--apple-surface-chip-translucent);
+            border-radius: var(--apple-rounded-md);
+            border: 1px solid var(--apple-hairline);
             transition: all 0.2s ease;
             
             &:hover {
@@ -585,202 +586,15 @@ onMounted(() => {
       }
       
       .form-tip {
-        font-size: 0.875rem;
+        font-size: var(--apple-fs-fine-print);
         color: var(--apple-ink-secondary); // Slate-400
-        margin-top: 4px;
+        margin-top: var(--apple-spacing-xxs);
         line-height: 1.4;
       }
       
       .unit {
-        margin-left: 8px;
-        color: var(--apple-ink-secondary); // Slate-400
-        font-size: 0.875rem;
-      }
-    }
-  }
-}
-
-.help-card {
-  background: #f9f9fb;
-  border: 1px solid #e5e5ea;
-  border-radius: 14px;
-  transition: all 0.2s ease;
-
-  :deep(.el-card__header) {
-    padding: 12px 18px;
-    border-bottom: 1px solid #e5e5ea;
-    background: transparent;
-
-    .card-header .card-title {
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: #6e6e73;
-      .el-icon { margin-right: 6px; color: var(--apple-ink-secondary); }
-    }
-  }
-
-  :deep(.el-card__body) {
-    padding: 14px 18px;
-  }
-}
-
-.backup-card {
-  background: var(--apple-surface);
-  border: 1px solid var(--apple-surface-chip-translucent);
-  border-radius: 18px;
-  border-top: 3px solid var(--apple-primary);
-  transition: all 0.2s ease;
-
-  :deep(.el-card__header) {
-    padding: 16px 20px 12px;
-    border-bottom: none;
-    background: transparent;
-
-    .card-header .card-title {
-      display: flex;
-      align-items: center;
-      font-weight: 600;
-      font-size: 1rem;
-      color: var(--apple-ink);
-      .el-icon { margin-right: 8px; color: var(--apple-primary); }
-    }
-  }
-
-  :deep(.el-card__body) {
-    padding: 0 20px 20px;
-  }
-}
-
-.config-help {
-  .help-content {
-    h4 {
-      margin: 0 0 10px 0;
-      color: #6e6e73;
-      font-size: 0.875rem;
-    }
-    ul {
-      padding-left: 18px;
-      margin: 0;
-      li {
-        margin-bottom: 6px;
-        line-height: 1.5;
-        font-size: 0.8rem;
-        color: var(--apple-ink-secondary);
-        strong { color: #515154; }
-      }
-    }
-  }
-}
-.backup-settings {
-  margin-bottom: 0.5rem;
-
-  .setting-hint {
-    font-size: 0.8rem;
-    color: var(--apple-ink-secondary);
-  }
-}
-
-.backup-actions {
-  display: flex;
-  gap: 0.75rem;
-
-  .el-button {
-    border-radius: 8px;
-  }
-}
-
-.backup-info {
-  p {
-    margin: 4px 0;
-    font-size: 0.875rem;
-    color: var(--apple-ink-secondary); // Slate-400
-  }
-}
-
-.config-tab-container {
-  margin-top: 24px;
-}
-
-@media (max-width: 768px) {
-  .system-config {
-    padding: 16px;
-  }
-  
-  :deep(.el-row) {
-    flex-direction: column;
-    
-    .el-col {
-      width: 100% !important;
-      margin-bottom: 16px;
-    }
-  }
-  
-  .config-card {
-    :deep(.el-card__body) {
-      padding: 16px;
-    }
-  }
-  
-  .backup-actions {
-    .el-button {
-      margin-bottom: 8px;
-    }
-  }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.system-config {
-  padding: var(--apple-spacing-lg);
-  font-family: var(--apple-font-text);
-}
-
-.config-alert {
-  margin-bottom: var(--apple-spacing-md);
-}
-
-.nav-card,
-.config-card,
-.backup-card {
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-lg);
-}
-
-.nav-card {
-  margin-bottom: var(--apple-spacing-lg);
-}
-
-.config-card {
-  :deep(.el-card__body) {
-    padding: var(--apple-spacing-lg);
-  }
-
-  .config-tab {
-    .tab-title {
-      margin-bottom: var(--apple-spacing-lg);
-      padding-bottom: var(--apple-spacing-sm);
-      border-bottom: 1px solid var(--apple-hairline);
-      font-size: var(--apple-fs-tagline);
-      font-family: var(--apple-font-display);
-    }
-
-    .config-form {
-      :deep(.el-form-item) {
-        margin-bottom: var(--apple-spacing-md);
-      }
-
-      :deep(.el-input__wrapper),
-      :deep(.el-select__wrapper) {
-        border: 1px solid var(--apple-hairline);
-        border-radius: var(--apple-rounded-md);
-      }
-
-      .form-tip {
-        margin-top: var(--apple-spacing-xxs);
-        font-size: var(--apple-fs-fine-print);
-      }
-
-      .unit {
         margin-left: var(--apple-spacing-xs);
+        color: var(--apple-ink-secondary); // Slate-400
         font-size: var(--apple-fs-fine-print);
       }
     }
@@ -788,20 +602,21 @@ onMounted(() => {
 }
 
 .help-card {
+  background: var(--apple-surface-pearl);
   border: 1px solid var(--apple-hairline);
   border-radius: var(--apple-rounded-lg);
-  background: var(--apple-surface-pearl);
+  transition: all 0.2s ease;
 
   :deep(.el-card__header) {
     padding: var(--apple-spacing-sm) var(--apple-spacing-md);
     border-bottom: 1px solid var(--apple-hairline);
+    background: transparent;
 
     .card-header .card-title {
+      font-weight: 600;
       font-size: var(--apple-fs-caption);
-
-      .el-icon {
-        margin-right: var(--apple-spacing-xxs);
-      }
+      color: #6e6e73;
+      .el-icon { margin-right: var(--apple-spacing-xxs); color: var(--apple-ink-secondary); }
     }
   }
 
@@ -811,15 +626,24 @@ onMounted(() => {
 }
 
 .backup-card {
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-lg);
+  border-top: 3px solid var(--apple-primary);
+  transition: all 0.2s ease;
+
   :deep(.el-card__header) {
     padding: var(--apple-spacing-md) var(--apple-spacing-md) var(--apple-spacing-sm);
+    border-bottom: none;
+    background: transparent;
 
     .card-header .card-title {
+      display: flex;
+      align-items: center;
+      font-weight: 600;
       font-size: var(--apple-fs-body-strong);
-
-      .el-icon {
-        margin-right: var(--apple-spacing-xs);
-      }
+      color: var(--apple-ink);
+      .el-icon { margin-right: var(--apple-spacing-xs); color: var(--apple-primary); }
     }
   }
 
@@ -828,33 +652,50 @@ onMounted(() => {
   }
 }
 
-.config-help .help-content {
-  h4 {
-    margin-bottom: var(--apple-spacing-xs);
-    font-size: var(--apple-fs-caption);
-  }
-
-  ul li {
-    margin-bottom: var(--apple-spacing-xxs);
-    font-size: var(--apple-fs-fine-print);
+.config-help {
+  .help-content {
+    h4 {
+      margin: 0 0 var(--apple-spacing-xs) 0;
+      color: #6e6e73;
+      font-size: var(--apple-fs-caption);
+    }
+    ul {
+      padding-left: 18px;
+      margin: 0;
+      li {
+        margin-bottom: var(--apple-spacing-xxs);
+        line-height: 1.5;
+        font-size: var(--apple-fs-fine-print);
+        color: var(--apple-ink-secondary);
+        strong { color: #515154; }
+      }
+    }
   }
 }
-
 .backup-settings {
   margin-bottom: var(--apple-spacing-xs);
 
   .setting-hint {
     font-size: var(--apple-fs-fine-print);
+    color: var(--apple-ink-secondary);
   }
 }
 
 .backup-actions {
+  display: flex;
   gap: var(--apple-spacing-sm);
+
+  .el-button {
+    border-radius: 8px;
+  }
 }
 
-.backup-info p {
-  margin: var(--apple-spacing-xxs) 0;
-  font-size: var(--apple-fs-caption);
+.backup-info {
+  p {
+    margin: var(--apple-spacing-xxs) 0;
+    font-size: var(--apple-fs-caption);
+    color: var(--apple-ink-secondary); // Slate-400
+  }
 }
 
 .config-tab-container {
@@ -865,13 +706,26 @@ onMounted(() => {
   .system-config {
     padding: var(--apple-spacing-sm);
   }
-
-  :deep(.el-row) .el-col {
-    margin-bottom: var(--apple-spacing-sm);
+  
+  :deep(.el-row) {
+    flex-direction: column;
+    
+    .el-col {
+      width: 100% !important;
+      margin-bottom: var(--apple-spacing-sm);
+    }
   }
-
-  .config-card :deep(.el-card__body) {
-    padding: var(--apple-spacing-sm);
+  
+  .config-card {
+    :deep(.el-card__body) {
+      padding: var(--apple-spacing-sm);
+    }
+  }
+  
+  .backup-actions {
+    .el-button {
+      margin-bottom: 8px;
+    }
   }
 }
 </style>
