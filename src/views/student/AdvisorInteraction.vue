@@ -1254,7 +1254,6 @@ onMounted(() => {
           border: none;
           position: relative;
           max-width: 80%;
-          border-radius: var(--apple-rounded-md);
           padding: 9px 13px;
           
           &::after {
@@ -1295,7 +1294,6 @@ onMounted(() => {
           border: 1px solid var(--apple-hairline);
           position: relative;
           max-width: 80%;
-          border-radius: var(--apple-rounded-md);
           padding: 9px 13px;
 
           &::after {
@@ -1356,7 +1354,8 @@ onMounted(() => {
 
       .message-bubble {
         padding: 9px 13px;
-        border-radius: var(--apple-rounded-md);
+        // 气泡圆角：控制台 8px（--apple-rounded-md 的 11px 属展示尺度）
+        border-radius: var(--app-radius-md);
         margin-bottom: 4px;
         transition: all 0.2s ease;
         
