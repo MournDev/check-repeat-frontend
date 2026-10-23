@@ -402,118 +402,118 @@ onMounted(() => {
   .groups-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-    gap: var(--apple-spacing-md);
+    gap: var(--app-space-4);
 
     .group-card {
       .group-header {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        margin-bottom: var(--apple-spacing-md);
+        margin-bottom: var(--app-space-4);
 
         .group-info {
           flex: 1;
 
           .group-name {
-            margin: 0 0 var(--apple-spacing-xs);
-            font-family: var(--apple-font-display);
-            font-size: var(--apple-fs-body-strong);
+            margin: 0 0 var(--app-space-2);
+            font-family: var(--app-font-family);
+            font-size: var(--app-fs-body);
             font-weight: 600;
           }
 
           .group-meta {
             display: flex;
-            gap: var(--apple-spacing-md);
-            font-size: var(--apple-fs-fine-print);
-            color: var(--apple-ink-muted-48);
+            gap: var(--app-space-4);
+            font-size: var(--app-fs-meta);
+            color: var(--app-color-text-muted);
           }
         }
 
         .group-actions {
           display: flex;
-          gap: var(--apple-spacing-xs);
+          gap: var(--app-space-2);
         }
       }
 
       .group-students {
-        margin-bottom: var(--apple-spacing-md);
+        margin-bottom: var(--app-space-4);
 
         .students-list {
           display: flex;
           flex-wrap: wrap;
-          gap: var(--apple-spacing-xs);
+          gap: var(--app-space-2);
 
           .student-tag {
-            margin-bottom: var(--apple-spacing-xs);
+            margin-bottom: var(--app-space-2);
           }
         }
 
         .empty-students {
-          padding: var(--apple-spacing-md) 0;
+          padding: var(--app-space-4) 0;
         }
       }
 
       .group-footer {
         display: flex;
-        gap: var(--apple-spacing-xs);
+        gap: var(--app-space-2);
         justify-content: flex-end;
       }
     }
 
     .empty-groups {
       grid-column: 1 / -1;
-      padding: var(--apple-spacing-xxl) 0;
+      padding: var(--app-space-12) 0;
       text-align: center;
     }
   }
 
   .add-students-content {
     .search-box {
-      margin-bottom: var(--apple-spacing-md);
+      margin-bottom: var(--app-space-4);
 
       :deep(.el-input__wrapper) {
-        border-radius: var(--apple-rounded-md);
-        font-size: var(--apple-fs-caption);
+        border-radius: var(--app-radius-md);
+        font-size: var(--app-fs-caption);
       }
     }
 
     .students-selector {
       max-height: 400px;
       overflow-y: auto;
-      margin-bottom: var(--apple-spacing-md);
+      margin-bottom: var(--app-space-4);
 
       .student-checkbox {
         display: block;
-        margin-bottom: var(--apple-spacing-sm);
-        padding: var(--apple-spacing-sm);
-        border: 1px solid var(--apple-hairline);
-        border-radius: var(--apple-rounded-sm);
+        margin-bottom: var(--app-space-3);
+        padding: var(--app-space-3);
+        border: 1px solid var(--app-color-border);
+        border-radius: var(--app-radius-sm);
         cursor: pointer;
-        transition: border-color var(--apple-transition-normal);
+        transition: border-color var(--app-transition-normal);
 
         &:hover {
-          border-color: var(--apple-primary);
-          background-color: var(--apple-canvas-parchment);
+          border-color: var(--app-color-primary);
+          background-color: var(--app-color-fill);
         }
 
         .student-info {
           .student-name {
             font-weight: 500;
-            margin-bottom: var(--apple-spacing-xxs);
+            margin-bottom: var(--app-space-1);
           }
 
           .student-details {
-            font-size: var(--apple-fs-fine-print);
-            color: var(--apple-ink-muted-48);
+            font-size: var(--app-fs-meta);
+            color: var(--app-color-text-muted);
           }
         }
       }
     }
 
     .selected-count {
-      font-size: var(--apple-fs-caption);
-      color: var(--apple-ink-muted-80);
-      margin-bottom: var(--apple-spacing-md);
+      font-size: var(--app-fs-caption);
+      color: var(--app-color-text);
+      margin-bottom: var(--app-space-4);
     }
   }
 }

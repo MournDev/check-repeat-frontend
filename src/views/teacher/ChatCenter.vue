@@ -510,47 +510,47 @@ watch(
 
 <style lang="scss" scoped>
 .chat-center {
-  padding: var(--apple-spacing-lg);
-  background: var(--apple-surface);
-  border-radius: var(--apple-rounded-lg);
+  padding: var(--app-space-6);
+  background: var(--app-color-card-bg);
+  border-radius: var(--app-radius-lg);
   min-height: 600px;
-  font-family: var(--apple-font-text);
+  font-family: var(--app-font-family);
 
   .header {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    gap: var(--apple-spacing-md);
-    margin-bottom: var(--apple-spacing-lg);
-    padding-bottom: var(--apple-spacing-md);
-    border-bottom: 1px solid var(--apple-hairline);
+    gap: var(--app-space-4);
+    margin-bottom: var(--app-space-6);
+    padding-bottom: var(--app-space-4);
+    border-bottom: 1px solid var(--app-color-border);
 
     .header-actions {
       display: flex;
-      gap: var(--apple-spacing-md);
+      gap: var(--app-space-4);
     }
   }
 
   .chat-container {
     display: flex;
     height: 600px;
-    border: 1px solid var(--apple-hairline);
-    border-radius: var(--apple-rounded-lg);
+    border: 1px solid var(--app-color-border);
+    border-radius: var(--app-radius-lg);
     overflow: hidden;
 
     .session-list {
       width: 300px;
-      border-right: 1px solid var(--apple-hairline);
+      border-right: 1px solid var(--app-color-border);
       display: flex;
       flex-direction: column;
 
       .session-search {
-        padding: var(--apple-spacing-md);
-        border-bottom: 1px solid var(--apple-hairline);
+        padding: var(--app-space-4);
+        border-bottom: 1px solid var(--app-color-border);
 
         :deep(.el-input__wrapper) {
-          border-radius: var(--apple-rounded-md);
-          font-size: var(--apple-fs-caption);
+          border-radius: var(--app-radius-md);
+          font-size: var(--app-fs-caption);
         }
       }
 
@@ -561,21 +561,21 @@ watch(
         .session-item {
           display: flex;
           align-items: center;
-          padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+          padding: var(--app-space-3) var(--app-space-4);
           cursor: pointer;
-          transition: background-color var(--apple-transition-normal);
+          transition: background-color var(--app-transition-normal);
 
           &:hover {
-            background-color: var(--apple-canvas-parchment);
+            background-color: var(--app-color-fill);
           }
 
           &.active {
-            background-color: var(--apple-info-bg);
-            border-color: var(--apple-primary);
+            background-color: var(--app-color-info-bg);
+            border-color: var(--app-color-primary);
           }
 
           .session-avatar {
-            margin-right: var(--apple-spacing-sm);
+            margin-right: var(--app-space-3);
           }
 
           .session-info {
@@ -587,35 +587,35 @@ watch(
               align-items: center;
               justify-content: space-between;
               font-weight: 600;
-              color: var(--apple-ink);
-              margin-bottom: var(--apple-spacing-xxs);
-              font-size: var(--apple-fs-body-strong);
+              color: var(--app-color-ink);
+              margin-bottom: var(--app-space-1);
+              font-size: var(--app-fs-body);
             }
 
             .session-last-message {
               display: flex;
               align-items: center;
               justify-content: space-between;
-              font-size: var(--apple-fs-fine-print);
-              color: var(--apple-ink-muted-48);
+              font-size: var(--app-fs-meta);
+              color: var(--app-color-text-muted);
 
               .last-message {
                 flex: 1;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
-                margin-right: var(--apple-spacing-xs);
+                margin-right: var(--app-space-2);
               }
 
               .last-time {
-                color: var(--apple-ink-muted-48);
+                color: var(--app-color-text-muted);
               }
             }
           }
         }
 
         .empty-sessions {
-          padding: var(--apple-spacing-xl) 0;
+          padding: var(--app-space-8) 0;
           text-align: center;
         }
       }
@@ -630,45 +630,45 @@ watch(
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-        border-bottom: 1px solid var(--apple-hairline);
+        padding: var(--app-space-3) var(--app-space-4);
+        border-bottom: 1px solid var(--app-color-border);
 
         .chat-header-info {
           display: flex;
           align-items: center;
 
           .chat-header-details {
-            margin-left: var(--apple-spacing-sm);
+            margin-left: var(--app-space-3);
 
             .chat-header-name {
-              font-family: var(--apple-font-display);
+              font-family: var(--app-font-family);
               font-weight: 600;
-              color: var(--apple-ink);
-              font-size: var(--apple-fs-body-strong);
+              color: var(--app-color-ink);
+              font-size: var(--app-fs-body);
             }
 
             .chat-header-members {
-              font-size: var(--apple-fs-fine-print);
-              color: var(--apple-ink-muted-48);
+              font-size: var(--app-fs-meta);
+              color: var(--app-color-text-muted);
             }
           }
         }
 
         .chat-header-actions {
           display: flex;
-          gap: var(--apple-spacing-xs);
+          gap: var(--app-space-2);
         }
       }
 
       .chat-messages {
         flex: 1;
-        padding: var(--apple-spacing-lg);
+        padding: var(--app-space-6);
         overflow-y: auto;
-        background-color: var(--apple-canvas-parchment);
+        background-color: var(--app-color-fill);
 
         .message-item {
           display: flex;
-          margin-bottom: var(--apple-spacing-md);
+          margin-bottom: var(--app-space-4);
 
           &.own-message {
             flex-direction: row-reverse;
@@ -677,15 +677,15 @@ watch(
               align-items: flex-end;
 
               .message-text {
-                background-color: var(--apple-primary);
-                color: var(--apple-on-primary);
-                border-radius: var(--apple-rounded-lg) var(--apple-rounded-md) 0 var(--apple-rounded-md);
+                background-color: var(--app-color-primary);
+                color: var(--app-color-on-primary);
+                border-radius: var(--app-radius-md) var(--app-radius-md) 0 var(--app-radius-md);
               }
             }
           }
 
           .message-avatar {
-            margin: 0 var(--apple-spacing-sm);
+            margin: 0 var(--app-space-3);
           }
 
           .message-content {
@@ -695,29 +695,29 @@ watch(
             max-width: 70%;
 
             .message-sender {
-              font-size: var(--apple-fs-fine-print);
-              color: var(--apple-ink-muted-48);
-              margin-bottom: var(--apple-spacing-xxs);
+              font-size: var(--app-fs-meta);
+              color: var(--app-color-text-muted);
+              margin-bottom: var(--app-space-1);
             }
 
             .message-text {
-              background-color: var(--apple-canvas);
-              padding: var(--apple-spacing-sm);
-              font-size: var(--apple-fs-caption);
-              border-radius: var(--apple-rounded-lg) var(--apple-rounded-md) var(--apple-rounded-md) 0;
+              background-color: var(--app-color-card-bg);
+              padding: var(--app-space-3);
+              font-size: var(--app-fs-caption);
+              border-radius: var(--app-radius-md) var(--app-radius-md) var(--app-radius-md) 0;
               word-break: break-all;
             }
 
             .message-time {
-              font-size: var(--apple-fs-fine-print);
-              color: var(--apple-ink-muted-48);
-              margin-top: var(--apple-spacing-xxs);
+              font-size: var(--app-fs-meta);
+              color: var(--app-color-text-muted);
+              margin-top: var(--app-space-1);
             }
           }
         }
 
         .empty-messages {
-          padding: var(--apple-spacing-xl) 0;
+          padding: var(--app-space-8) 0;
           text-align: center;
         }
       }
@@ -725,12 +725,12 @@ watch(
       .chat-input {
         display: flex;
         align-items: flex-end;
-        padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-        border-top: 1px solid var(--apple-hairline);
-        gap: var(--apple-spacing-sm);
+        padding: var(--app-space-3) var(--app-space-4);
+        border-top: 1px solid var(--app-color-border);
+        gap: var(--app-space-3);
 
         .upload-demo {
-          margin-bottom: 8px;
+          margin-bottom: var(--app-space-2);
         }
 
         .el-input {
@@ -742,8 +742,8 @@ watch(
         }
 
         :deep(.el-textarea__inner) {
-          border-radius: var(--apple-rounded-md);
-          font-size: var(--apple-fs-caption);
+          border-radius: var(--app-radius-md);
+          font-size: var(--app-fs-caption);
         }
       }
     }
@@ -753,25 +753,25 @@ watch(
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: var(--apple-canvas-parchment);
+      background-color: var(--app-color-fill);
     }
   }
 }
 
 @media (max-width: 768px) {
   .chat-center {
-    padding: var(--apple-spacing-sm);
+    padding: var(--app-space-3);
 
     .header {
       flex-direction: column;
       align-items: flex-start;
-      gap: var(--apple-spacing-sm);
-      margin-bottom: var(--apple-spacing-md);
+      gap: var(--app-space-3);
+      margin-bottom: var(--app-space-4);
 
       .header-actions {
         width: 100%;
         justify-content: space-between;
-        gap: var(--apple-spacing-sm);
+        gap: var(--app-space-3);
       }
     }
 
@@ -783,7 +783,7 @@ watch(
         width: 100%;
         height: 200px;
         border-right: none;
-        border-bottom: 1px solid var(--apple-hairline);
+        border-bottom: 1px solid var(--app-color-border);
 
         .session-items {
           display: flex;
@@ -797,7 +797,7 @@ watch(
 
             .session-avatar {
               margin-right: 0;
-              margin-bottom: var(--apple-spacing-xs);
+              margin-bottom: var(--app-space-2);
             }
 
             .session-info {
@@ -823,7 +823,7 @@ watch(
           align-items: stretch;
 
           .el-input {
-            margin: var(--apple-spacing-xs) 0;
+            margin: var(--app-space-2) 0;
           }
 
           .el-button {

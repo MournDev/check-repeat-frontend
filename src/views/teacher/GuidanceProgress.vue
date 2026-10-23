@@ -82,6 +82,7 @@ import { Refresh } from '@element-plus/icons-vue'
 import { getGuidanceProgress } from '@/api/p5.js'
 import { loadDefenseDict, getDefenseDictText, DICT_PAPER_STATUS } from '@/utils/defenseDict.js'
 import { getStatusText, getStatusType } from '@/utils/reviewStatus.js'
+import { getSimilarityLevel } from '@/utils/similarity.js'
 import { useChart } from '@/composables/useChart'
 import PageHeader from '@/components/common/PageHeader.vue'
 import CheckSignoffDialog from '@/views/teacher/components/CheckSignoffDialog.vue'
@@ -106,14 +107,10 @@ const onViewReport = (paperId) => {
 const statusText = (v) => getDefenseDictText(DICT_PAPER_STATUS, v, getStatusText(v, v || '—'))
 const statusTagType = (v) => getStatusType(v)
 
-const rateClass = (rate) => {
-  if (rate === null || rate === undefined) return ''
-  const n = Number(rate)
-  if (Number.isNaN(n)) return ''
-  if (n >= 30) return 'rate-high'
-  if (n >= 15) return 'rate-medium'
-  return 'rate-low'
-}
+const RATE_CLASS = { unknown: '', low: 'rate-low', medium: 'rate-medium', high: 'rate-high' }
+
+// 重复率分档统一走 utils/similarity.js，本页仅保留既有类名
+const rateClass = (rate) => RATE_CLASS[getSimilarityLevel(rate)]
 
 // ── 状态分布饼图（useChart 托管容器/dispose/resize/空态）──────────────────
 const statusChart = useChart()
@@ -189,14 +186,14 @@ onMounted(() => {
 .guidance-progress {
   display: flex;
   flex-direction: column;
-  gap: var(--apple-spacing-md);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
+  gap: var(--app-space-4);
+  color: var(--app-color-ink);
+  font-family: var(--app-font-family);
 }
 
 .stats-row {
   display: flex;
-  gap: var(--apple-spacing-md);
+  gap: var(--app-space-4);
   flex-wrap: wrap;
 }
 
@@ -210,22 +207,22 @@ onMounted(() => {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--apple-spacing-xs);
+    gap: var(--app-space-2);
   }
 }
 
 .total-value {
-  font-family: var(--apple-font-display);
-  font-size: var(--apple-fs-display-lg);
+  font-family: var(--app-font-family);
+  font-size: var(--app-fs-metric);
   font-weight: 700;
   line-height: 1;
-  color: var(--apple-primary);
+  color: var(--app-color-primary);
   font-variant-numeric: tabular-nums;
 }
 
 .total-label {
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 .chart-card {
@@ -242,13 +239,13 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--apple-spacing-sm);
+  margin-bottom: var(--app-space-3);
 }
 
 .section-title {
-  margin-bottom: var(--apple-spacing-xs);
-  font-family: var(--apple-font-display);
-  font-size: var(--apple-fs-body-strong);
+  margin-bottom: var(--app-space-2);
+  font-family: var(--app-font-family);
+  font-size: var(--app-fs-body);
   font-weight: 600;
 }
 
@@ -257,22 +254,22 @@ onMounted(() => {
 }
 
 .muted {
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 .rate-high {
-  color: var(--apple-danger);
+  color: var(--app-color-danger);
   font-weight: 600;
 }
 
 .rate-medium {
-  color: var(--apple-warning);
+  color: var(--app-color-warning);
   font-weight: 600;
 }
 
 .rate-low {
-  color: var(--apple-success);
+  color: var(--app-color-success);
   font-weight: 600;
 }
 
@@ -290,7 +287,7 @@ onMounted(() => {
   }
 
   .section-head {
-    gap: var(--apple-spacing-xs);
+    gap: var(--app-space-2);
     align-items: flex-start;
     flex-direction: column;
   }

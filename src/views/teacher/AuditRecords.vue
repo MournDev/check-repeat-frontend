@@ -449,62 +449,62 @@ onMounted(() => {
 
 .filter-actions {
   display: flex;
-  gap: var(--apple-spacing-sm);
-  padding-top: var(--apple-spacing-xxs);
+  gap: var(--app-space-3);
+  padding-top: var(--app-space-1);
 }
 
 .student-info {
   display: flex;
   flex-direction: column;
-  gap: var(--apple-spacing-xxs);
+  gap: var(--app-space-1);
 }
 
 .student-name {
   font-weight: 600;
-  color: var(--apple-ink);
+  color: var(--app-color-ink);
 }
 
 .student-meta {
   display: flex;
   align-items: center;
-  gap: var(--apple-spacing-xs);
-  font-size: var(--apple-fs-fine-print);
+  gap: var(--app-space-2);
+  font-size: var(--app-fs-meta);
 }
 
 .college {
-  color: var(--apple-ink-muted-48);
+  color: var(--app-color-text-muted);
 }
 
 .paper-info {
   display: flex;
   flex-direction: column;
-  gap: var(--apple-spacing-xxs);
+  gap: var(--app-space-1);
 }
 
 .paper-title {
   font-weight: 600;
-  color: var(--apple-ink);
+  color: var(--app-color-ink);
   line-height: 1.4;
 }
 
 .paper-meta {
   display: flex;
   align-items: center;
-  gap: var(--apple-spacing-sm);
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  gap: var(--app-space-3);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 .version {
-  background-color: var(--apple-canvas-parchment);
-  padding: 2px var(--apple-spacing-xxs);
-  border-radius: var(--apple-rounded-xs);
+  background-color: var(--app-color-fill);
+  padding: 2px var(--app-space-1);
+  border-radius: var(--app-radius-xs);
 }
 
 .similarity-cell {
   display: flex;
   align-items: center;
-  gap: var(--apple-spacing-xs);
+  gap: var(--app-space-2);
 }
 
 .similarity-progress {
@@ -515,7 +515,7 @@ onMounted(() => {
 .similarity-value {
   min-width: 45px;
   text-align: right;
-  font-size: var(--apple-fs-body-strong);
+  font-size: var(--app-fs-body);
   font-weight: 400;
 }
 
@@ -531,24 +531,24 @@ onMounted(() => {
 
 .action-buttons {
   display: flex;
-  gap: var(--apple-spacing-xs);
+  gap: var(--app-space-2);
   align-items: center;
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
   .teacher-review {
-    padding: var(--apple-spacing-sm);
+    padding: var(--app-space-3);
   }
 
   .filter-actions {
     flex-wrap: wrap;
-    gap: var(--apple-spacing-xs);
+    gap: var(--app-space-2);
   }
 
   .action-buttons {
     flex-direction: column;
-    gap: var(--apple-spacing-xxs);
+    gap: var(--app-space-1);
   }
 }
 
@@ -557,13 +557,13 @@ onMounted(() => {
   .paper-meta {
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--apple-spacing-xxs);
+    gap: var(--app-space-1);
   }
 
   .similarity-cell {
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--apple-spacing-xxs);
+    gap: var(--app-space-1);
   }
 
   .similarity-progress {
