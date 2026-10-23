@@ -116,7 +116,7 @@
                   <el-dropdown-item :icon="Document" command="paper">
                     论文详情
                   </el-dropdown-item>
-                  <el-dropdown-item :icon="Delete" command="delete" divided style="color: var(--apple-danger);">
+                  <el-dropdown-item :icon="Delete" command="delete" divided style="color: var(--app-color-danger);">
                     删除
                   </el-dropdown-item>
                 </el-dropdown-menu>
@@ -274,9 +274,9 @@ const getStatusText = (status) => {
 
 <style lang="scss" scoped>
 .list-card {
-  background: var(--apple-surface);
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-lg);
+  background: var(--app-color-card-bg);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
   overflow: hidden;
 
   :deep(.el-card__body) {
@@ -288,26 +288,26 @@ const getStatusText = (status) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-  background: var(--apple-canvas-parchment);
-  border-bottom: 1px solid var(--apple-hairline);
+  padding: var(--app-space-3) var(--app-space-4);
+  background: var(--app-color-fill);
+  border-bottom: 1px solid var(--app-color-border);
 
   .header-title {
     display: flex;
     align-items: center;
-    gap: var(--apple-spacing-xs);
+    gap: var(--app-space-2);
     font-weight: 600;
-    font-size: var(--apple-fs-body-strong);
-    color: var(--apple-ink);
+    font-size: var(--app-fs-body);
+    color: var(--app-color-ink);
 
     .el-icon {
-      color: var(--apple-ink-muted-48);
+      color: var(--app-color-text-muted);
     }
 
     .total-count {
-      font-size: var(--apple-fs-fine-print);
-      color: var(--apple-ink-muted-48);
-      margin-left: var(--apple-spacing-xs);
+      font-size: var(--app-fs-meta);
+      color: var(--app-color-text-muted);
+      margin-left: var(--app-space-2);
       font-weight: 400;
     }
   }
@@ -315,61 +315,61 @@ const getStatusText = (status) => {
 
 :deep(.student-table) {
   .el-table__header th {
-    background: var(--apple-canvas-parchment);
-    color: var(--apple-ink);
+    background: var(--app-color-fill);
+    color: var(--app-color-ink);
     font-weight: 600;
-    border-bottom: 1px solid var(--apple-hairline);
-    padding: var(--apple-spacing-xs) var(--apple-spacing-sm);
-    font-size: var(--apple-fs-caption);
+    border-bottom: 1px solid var(--app-color-border);
+    padding: var(--app-space-2) var(--app-space-3);
+    font-size: var(--app-fs-caption);
   }
 
   .el-table__row {
-    transition: background-color 0.2s ease;
+    transition: background-color var(--app-transition-normal);
 
     &:hover > td.el-table__cell {
-      background-color: var(--apple-canvas-parchment);
+      background-color: var(--app-color-fill);
     }
 
     td.el-table__cell {
-      padding: var(--apple-spacing-xs) var(--apple-spacing-sm);
-      border-bottom: 1px solid var(--apple-divider-soft);
-      font-size: var(--apple-fs-caption);
-      color: var(--apple-ink);
+      padding: var(--app-space-2) var(--app-space-3);
+      border-bottom: 1px solid var(--app-color-divider);
+      font-size: var(--app-fs-caption);
+      color: var(--app-color-ink);
     }
   }
 
   .student-id {
-    font-family: var(--apple-font-text);
-    color: var(--apple-ink);
+    font-family: var(--app-font-family);
+    color: var(--app-color-ink);
     font-weight: 500;
   }
 
   .student-info .name {
-    color: var(--apple-ink);
+    color: var(--app-color-ink);
     font-weight: 500;
   }
 
   .major, .grade {
-    color: var(--apple-ink);
+    color: var(--app-color-ink);
   }
 
   .advisor-info .advisor-name {
-    color: var(--apple-ink);
+    color: var(--app-color-ink);
     font-weight: 500;
   }
 
   .no-advisor {
-    color: var(--apple-ink-muted-48);
-    font-size: var(--apple-fs-fine-print);
+    color: var(--app-color-text-muted);
+    font-size: var(--app-fs-meta);
   }
 
   .submit-time {
-    color: var(--apple-ink-muted-48);
-    font-size: var(--apple-fs-fine-print);
+    color: var(--app-color-text-muted);
+    font-size: var(--app-fs-meta);
   }
 
   .no-submit {
-    color: var(--apple-ink-muted-48);
+    color: var(--app-color-text-muted);
   }
 
   .similarity-progress {
@@ -380,15 +380,15 @@ const getStatusText = (status) => {
   }
 
   .similarity-value {
-    font-size: var(--apple-fs-fine-print);
-    color: var(--apple-ink);
+    font-size: var(--app-fs-meta);
+    color: var(--app-color-ink);
     font-weight: 600;
   }
 
   .action-buttons {
     display: flex;
     align-items: center;
-    gap: var(--apple-spacing-xs);
+    gap: var(--app-space-2);
   }
 }
 
@@ -398,23 +398,23 @@ const getStatusText = (status) => {
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: var(--apple-spacing-sm);
-  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-  border-top: 1px solid var(--apple-hairline);
-  background: var(--apple-surface);
+  gap: var(--app-space-3);
+  padding: var(--app-space-3) var(--app-space-4);
+  border-top: 1px solid var(--app-color-border);
+  background: var(--app-color-card-bg);
 }
 
 .batch-bar {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--app-space-2);
 }
 
 .batch-bar .batch-summary {
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink);
-  margin-right: var(--apple-spacing-xxs);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-ink);
+  margin-right: var(--app-space-1);
 }
 
 .pagination {
@@ -426,30 +426,30 @@ const getStatusText = (status) => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--apple-spacing-xs);
-  padding: var(--apple-spacing-xxl) 0;
-  color: var(--apple-ink-muted-48);
+  gap: var(--app-space-2);
+  padding: var(--app-space-12) 0;
+  color: var(--app-color-text-muted);
 
   .el-icon {
-    color: var(--apple-surface-chip-translucent);
+    color: var(--app-color-border-strong);
   font-size: 48px;
   }
 
   p {
     margin: 0;
-    font-size: var(--apple-fs-caption);
+    font-size: var(--app-fs-caption);
   }
 }
 
 @media (max-width: 768px) {
   .list-header {
-    padding: var(--apple-spacing-sm);
+    padding: var(--app-space-3);
   }
 
   .table-footer {
     flex-direction: column;
     align-items: stretch;
-    padding: var(--apple-spacing-sm);
+    padding: var(--app-space-3);
   }
 
   .pagination {

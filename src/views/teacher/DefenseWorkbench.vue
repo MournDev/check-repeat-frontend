@@ -518,33 +518,33 @@ onMounted(() => {
 .defense-workbench {
   display: flex;
   flex-direction: column;
-  gap: var(--apple-spacing-md);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
+  gap: var(--app-space-4);
+  color: var(--app-color-ink);
+  font-family: var(--app-font-family);
 }
 
 .head-title {
   display: flex;
   align-items: center;
-  gap: var(--apple-spacing-xs);
-  margin: 0 0 var(--apple-spacing-xxs);
-  font-family: var(--apple-font-display);
-  font-size: 1.25rem;
+  gap: var(--app-space-2);
+  margin: 0 0 var(--app-space-1);
+  font-family: var(--app-font-family);
+  font-size: var(--app-fs-title);
   font-weight: 700;
   line-height: 1.2;
 }
 
 .head-desc {
   margin: 0;
-  font-size: 0.8125rem;
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-caption);
+  color: var(--app-color-text-muted);
 }
 
 .head-row {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--apple-spacing-md);
+  gap: var(--app-space-4);
 }
 
 .head-left {
@@ -564,8 +564,8 @@ onMounted(() => {
 
 .progress-text {
   display: block;
-  margin-bottom: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
+  margin-bottom: var(--app-space-1);
+  font-size: var(--app-fs-meta);
   font-variant-numeric: tabular-nums;
 }
 
@@ -574,20 +574,20 @@ onMounted(() => {
 }
 
 .meeting-desc {
-  margin-top: var(--apple-spacing-md);
+  margin-top: var(--app-space-4);
 }
 
 .members-line {
   display: flex;
   align-items: center;
-  gap: var(--apple-spacing-xs);
-  margin-top: var(--apple-spacing-sm);
+  gap: var(--app-space-2);
+  margin-top: var(--app-space-3);
   flex-wrap: wrap;
 }
 
 .members-label {
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 .member-tag {
@@ -601,8 +601,8 @@ onMounted(() => {
 }
 
 .section-title {
-  font-family: var(--apple-font-display);
-  font-size: var(--apple-fs-body-strong);
+  font-family: var(--app-font-family);
+  font-size: var(--app-fs-body);
   font-weight: 600;
 }
 
@@ -610,37 +610,37 @@ onMounted(() => {
   width: 140px;
 
   :deep(.el-select__wrapper) {
-    border-radius: var(--apple-rounded-md);
-    font-size: var(--apple-fs-caption);
+    border-radius: var(--app-radius-md);
+    font-size: var(--app-fs-caption);
   }
 }
 
 .leader-tip {
-  margin-bottom: var(--apple-spacing-md);
+  margin-bottom: var(--app-space-4);
 }
 
 .sep {
-  margin: 0 var(--apple-spacing-xxs);
-  color: var(--apple-divider-soft);
+  margin: 0 var(--app-space-1);
+  color: var(--app-color-divider);
 }
 
 .mode-tag {
-  margin-left: var(--apple-spacing-xs);
+  margin-left: var(--app-space-2);
 }
 
 .stu-no {
-  color: var(--apple-ink-muted-48);
+  color: var(--app-color-text-muted);
 }
 
 .muted {
-  color: var(--apple-ink-muted-48);
+  color: var(--app-color-text-muted);
 }
 
 .score-paper-info {
-  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-  margin-bottom: var(--apple-spacing-md);
-  border-radius: var(--apple-rounded-md);
-  background: var(--apple-canvas-parchment);
+  padding: var(--app-space-3) var(--app-space-4);
+  margin-bottom: var(--app-space-4);
+  border-radius: var(--app-radius-md);
+  background: var(--app-color-fill);
 }
 
 .score-paper-title {
@@ -648,29 +648,29 @@ onMounted(() => {
 }
 
 .score-paper-student {
-  margin-top: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  margin-top: var(--app-space-1);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 .form-tip-inline {
-  margin-left: var(--apple-spacing-sm);
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  margin-left: var(--app-space-3);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 .form-tip {
   width: 100%;
-  margin-top: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
+  margin-top: var(--app-space-1);
+  font-size: var(--app-fs-meta);
   line-height: 1.5;
-  color: var(--apple-ink-muted-48);
+  color: var(--app-color-text-muted);
 }
 
 .upload-area {
   display: flex;
   align-items: center;
-  gap: var(--apple-spacing-xs);
+  gap: var(--app-space-2);
   flex-wrap: wrap;
 }
 
@@ -679,7 +679,7 @@ onMounted(() => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: var(--apple-fs-fine-print);
+  font-size: var(--app-fs-meta);
 }
 
 @media (max-width: 768px) {
@@ -693,7 +693,7 @@ onMounted(() => {
   }
 
   .members-line {
-    gap: var(--apple-spacing-xxs);
+    gap: var(--app-space-1);
   }
 }
 </style>

@@ -81,10 +81,10 @@ defineEmits(['update:keyword', 'update:status', 'update:college', 'reset'])
 
 <style scoped lang="scss">
 .filter-card {
-  margin-bottom: var(--apple-spacing-md);
+  margin-bottom: var(--app-space-4);
 
   :deep(.el-card__body) {
-    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+    padding: var(--app-space-3) var(--app-space-4);
   }
 }
 
@@ -92,7 +92,7 @@ defineEmits(['update:keyword', 'update:status', 'update:college', 'reset'])
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--apple-spacing-sm);
+  gap: var(--app-space-3);
 }
 
 .filter-search {
@@ -107,14 +107,14 @@ defineEmits(['update:keyword', 'update:status', 'update:college', 'reset'])
 .filter-select {
   :deep(.el-input__wrapper),
   :deep(.el-select__wrapper) {
-    border-radius: var(--apple-rounded-md);
-    font-size: var(--apple-fs-caption);
+    border-radius: var(--app-radius-md);
+    font-size: var(--app-fs-caption);
   }
 }
 
 @media (max-width: 768px) {
   .filter-card {
-    margin-bottom: var(--apple-spacing-sm);
+    margin-bottom: var(--app-space-3);
   }
 
   .filter-content {

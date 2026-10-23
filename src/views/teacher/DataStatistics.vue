@@ -25,7 +25,7 @@
       <el-col :xs="24" :sm="12" :lg="6">
         <el-card class="stat-card" shadow="never">
           <div class="stat-content">
-            <div class="stat-icon-wrapper" style="background: var(--apple-primary)">
+            <div class="stat-icon-wrapper" style="background: var(--app-color-primary)">
               <el-icon color="white" size="24"><Document /></el-icon>
             </div>
             <div class="stat-info">
@@ -43,7 +43,7 @@
       <el-col :xs="24" :sm="12" :lg="6">
         <el-card class="stat-card" shadow="never">
           <div class="stat-content">
-            <div class="stat-icon-wrapper" style="background: var(--apple-primary)">
+            <div class="stat-icon-wrapper" style="background: var(--app-color-primary)">
               <el-icon color="white" size="24"><Clock /></el-icon>
             </div>
             <div class="stat-info">
@@ -61,7 +61,7 @@
       <el-col :xs="24" :sm="12" :lg="6">
         <el-card class="stat-card" shadow="never">
           <div class="stat-content">
-            <div class="stat-icon-wrapper" style="background: var(--apple-primary)">
+            <div class="stat-icon-wrapper" style="background: var(--app-color-primary)">
               <el-icon color="white" size="24"><CircleCheck /></el-icon>
             </div>
             <div class="stat-info">
@@ -79,7 +79,7 @@
       <el-col :xs="24" :sm="12" :lg="6">
         <el-card class="stat-card" shadow="never">
           <div class="stat-content">
-            <div class="stat-icon-wrapper" style="background: var(--apple-primary)">
+            <div class="stat-icon-wrapper" style="background: var(--app-color-primary)">
               <el-icon color="white" size="24"><User /></el-icon>
             </div>
             <div class="stat-info">
@@ -479,7 +479,7 @@ onMounted(async () => {
 <style scoped lang="scss">
 .teacher-dashboard {
   .stats-row {
-    margin-bottom: var(--apple-spacing-md);
+    margin-bottom: var(--app-space-4);
 
     .stat-card {
       .stat-content {
@@ -492,42 +492,42 @@ onMounted(async () => {
           justify-content: center;
           width: 56px;
           height: 56px;
-          border-radius: var(--apple-rounded-lg);
-          margin-right: var(--apple-spacing-md);
+          border-radius: var(--app-radius-lg);
+          margin-right: var(--app-space-4);
         }
 
         .stat-info {
           .stat-number {
-            font-family: var(--apple-font-display);
-            font-size: var(--apple-fs-lead);
+            font-family: var(--app-font-family);
+            font-size: var(--app-fs-metric);
             font-weight: 700;
-            color: var(--apple-ink);
+            color: var(--app-color-ink);
             line-height: 1;
           }
 
           .stat-label {
-            margin: var(--apple-spacing-xs) 0 var(--apple-spacing-xxs);
-            font-size: var(--apple-fs-caption);
-            color: var(--apple-ink-muted-48);
+            margin: var(--app-space-2) 0 var(--app-space-1);
+            font-size: var(--app-fs-caption);
+            color: var(--app-color-text-muted);
           }
 
           .stat-trend {
-            font-size: var(--apple-fs-fine-print);
+            font-size: var(--app-fs-meta);
 
             &.trend-up {
-              color: var(--apple-success);
+              color: var(--app-color-success);
             }
 
             &.trend-down {
-              color: var(--apple-danger);
+              color: var(--app-color-danger);
             }
 
             &.trend-flat {
-              color: var(--apple-ink-muted-48);
+              color: var(--app-color-text-muted);
             }
 
             .trend-icon {
-              margin-right: var(--apple-spacing-xxs);
+              margin-right: var(--app-space-1);
             }
           }
         }
@@ -536,15 +536,15 @@ onMounted(async () => {
   }
 
   .charts-row {
-    margin-bottom: var(--apple-spacing-md);
+    margin-bottom: var(--app-space-4);
 
     .chart-card {
       .card-header {
         display: flex;
         align-items: center;
-        gap: var(--apple-spacing-xs);
-        font-family: var(--apple-font-display);
-        font-size: var(--apple-fs-body-strong);
+        gap: var(--app-space-2);
+        font-family: var(--app-font-family);
+        font-size: var(--app-fs-body);
         font-weight: 600;
 
         .el-icon {
@@ -553,7 +553,7 @@ onMounted(async () => {
       }
 
       .chart-container {
-        padding: var(--apple-spacing-md) 0;
+        padding: var(--app-space-4) 0;
       }
     }
   }
@@ -567,9 +567,9 @@ onMounted(async () => {
       .header-left {
         display: flex;
         align-items: center;
-        gap: var(--apple-spacing-xs);
-        font-family: var(--apple-font-display);
-        font-size: var(--apple-fs-body-strong);
+        gap: var(--app-space-2);
+        font-family: var(--app-font-family);
+        font-size: var(--app-fs-body);
         font-weight: 600;
 
         .el-icon {
@@ -579,7 +579,7 @@ onMounted(async () => {
     }
 
     .detail-table {
-      margin-top: var(--apple-spacing-md);
+      margin-top: var(--app-space-4);
     }
   }
 }

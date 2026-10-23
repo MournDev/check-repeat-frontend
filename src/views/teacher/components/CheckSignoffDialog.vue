@@ -210,38 +210,38 @@ defineExpose({ open })
 
 <style scoped>
 .signoff-paper-info {
-  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-  margin-bottom: var(--apple-spacing-md);
-  border-radius: var(--apple-rounded-md);
-  background: var(--apple-canvas-parchment);
+  padding: var(--app-space-3) var(--app-space-4);
+  margin-bottom: var(--app-space-4);
+  border-radius: var(--app-radius-md);
+  background: var(--app-color-fill);
 }
 
 .signoff-paper-title {
   font-weight: 600;
-  color: var(--apple-ink);
+  color: var(--app-color-ink);
 }
 
 .signoff-paper-student {
-  margin-top: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  margin-top: var(--app-space-1);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 .signoff-report-summary {
-  margin-bottom: var(--apple-spacing-md);
+  margin-bottom: var(--app-space-4);
 }
 
 .summary-line {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--apple-spacing-sm);
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink);
+  gap: var(--app-space-3);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-ink);
 }
 
 .summary-line + .summary-line {
-  margin-top: var(--apple-spacing-xxs);
+  margin-top: var(--app-space-1);
 }
 
 .summary-item strong {
@@ -254,26 +254,26 @@ defineExpose({ open })
 }
 
 .summary-muted {
-  color: var(--apple-ink-muted-48);
+  color: var(--app-color-text-muted);
 }
 
 .form-tip-inline {
-  margin-left: var(--apple-spacing-sm);
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  margin-left: var(--app-space-3);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 :deep(.el-form-item) {
-  margin-bottom: var(--apple-spacing-md);
+  margin-bottom: var(--app-space-4);
 }
 
 :deep(.el-form-item__label) {
-  font-size: var(--apple-fs-fine-print);
+  font-size: var(--app-fs-meta);
 }
 
 :deep(.el-textarea__inner),
 :deep(.el-input__wrapper) {
-  border-radius: var(--apple-rounded-md);
-  font-size: var(--apple-fs-caption);
+  border-radius: var(--app-radius-md);
+  font-size: var(--app-fs-caption);
 }
 </style>

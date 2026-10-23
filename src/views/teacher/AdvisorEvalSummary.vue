@@ -81,7 +81,7 @@
                 <el-progress
                   :percentage="tagPercent(item.count)"
                   :stroke-width="8"
-                  :color="isNegativeTag(item.tag) ? 'var(--apple-danger)' : 'var(--apple-success)'"
+                  :color="isNegativeTag(item.tag) ? 'var(--app-color-danger)' : 'var(--app-color-success)'"
                   :show-text="false"
                 />
               </div>
@@ -152,7 +152,7 @@ const renderRadar = () => {
       indicator: dimensionLabels.map((name) => ({ name, max: 5 })),
       radius: '65%',
       splitNumber: 5,
-      axisName: { color: 'var(--apple-ink)', fontSize: 12 },
+      axisName: { color: 'var(--app-color-ink)', fontSize: 12 },
       splitArea: {
         areaStyle: {
           color: ['rgba(0,102,204,0.02)', 'rgba(0,102,204,0.05)', 'rgba(0,102,204,0.08)', 'rgba(0,102,204,0.11)', 'rgba(0,102,204,0.14)']
@@ -201,56 +201,56 @@ onMounted(() => {
 .advisor-eval-summary {
   display: flex;
   flex-direction: column;
-  gap: var(--apple-spacing-md);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
+  gap: var(--app-space-4);
+  color: var(--app-color-ink);
+  font-family: var(--app-font-family);
 }
 
 .head-row {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--apple-spacing-md);
+  gap: var(--app-space-4);
 }
 
 .head-title {
-  margin: 0 0 var(--apple-spacing-xxs);
-  font-family: var(--apple-font-display);
-  font-size: 1.25rem;
+  margin: 0 0 var(--app-space-1);
+  font-family: var(--app-font-family);
+  font-size: var(--app-fs-title);
   font-weight: 700;
   line-height: 1.2;
 }
 
 .head-desc {
   margin: 0;
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 .masked-block {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--apple-spacing-sm);
-  padding: var(--apple-spacing-xxl) var(--apple-spacing-lg);
+  gap: var(--app-space-3);
+  padding: var(--app-space-12) var(--app-space-6);
   text-align: center;
 }
 
 .masked-icon {
-  color: var(--apple-ink-muted-48);
+  color: var(--app-color-text-muted);
 }
 
 .masked-title {
   margin: 0;
-  font-family: var(--apple-font-display);
-  font-size: var(--apple-fs-body-strong);
+  font-family: var(--app-font-family);
+  font-size: var(--app-fs-body);
   font-weight: 600;
 }
 
 .masked-desc {
   margin: 0;
-  font-size: var(--apple-fs-caption);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-caption);
+  color: var(--app-color-text-muted);
   max-width: 480px;
   line-height: 1.6;
 }
@@ -260,30 +260,30 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--apple-spacing-xs);
-    padding: var(--apple-spacing-xl) var(--apple-spacing-lg);
+    gap: var(--app-space-2);
+    padding: var(--app-space-8) var(--app-space-6);
     text-align: center;
   }
 
   .hero-label {
-    font-size: var(--apple-fs-caption);
-    color: var(--apple-ink-muted-48);
+    font-size: var(--app-fs-caption);
+    color: var(--app-color-text-muted);
     text-transform: uppercase;
     letter-spacing: 1px;
   }
 
   .hero-value {
-    font-family: var(--apple-font-display);
-    font-size: var(--apple-fs-display-lg);
+    font-family: var(--app-font-family);
+    font-size: var(--app-fs-metric);
     font-weight: 700;
-    color: var(--apple-primary);
+    color: var(--app-color-primary);
     font-variant-numeric: tabular-nums;
     line-height: 1;
   }
 
   .hero-sub {
-    font-size: var(--apple-fs-caption);
-    color: var(--apple-ink-muted-48);
+    font-size: var(--app-fs-caption);
+    color: var(--app-color-text-muted);
   }
 }
 
@@ -294,13 +294,13 @@ onMounted(() => {
   .card-title {
     display: flex;
     align-items: center;
-    font-family: var(--apple-font-display);
-    font-size: var(--apple-fs-body-strong);
+    font-family: var(--app-font-family);
+    font-size: var(--app-fs-body);
     font-weight: 600;
 
     .el-icon {
-      margin-right: var(--apple-spacing-xs);
-      color: var(--apple-primary);
+      margin-right: var(--app-space-2);
+      color: var(--app-color-primary);
     }
   }
 }
@@ -312,14 +312,14 @@ onMounted(() => {
 .tag-stats-body {
   display: flex;
   flex-direction: column;
-  gap: var(--apple-spacing-sm);
-  padding: var(--apple-spacing-xs) 0;
+  gap: var(--app-space-3);
+  padding: var(--app-space-2) 0;
 }
 
 .tag-stat-row {
   display: flex;
   flex-direction: column;
-  gap: var(--apple-spacing-xxs);
+  gap: var(--app-space-1);
 
   .tag-info {
     display: flex;
@@ -328,15 +328,15 @@ onMounted(() => {
   }
 
   .tag-count {
-    font-size: var(--apple-fs-fine-print);
-    color: var(--apple-ink-muted-48);
+    font-size: var(--app-fs-meta);
+    color: var(--app-color-text-muted);
     font-variant-numeric: tabular-nums;
   }
 }
 
 @media (max-width: 992px) {
   .el-col {
-    margin-bottom: var(--apple-spacing-md);
+    margin-bottom: var(--app-space-4);
   }
 
   .head-row {
@@ -345,7 +345,7 @@ onMounted(() => {
   }
 
   .masked-block {
-    padding: var(--apple-spacing-xl) var(--apple-spacing-md);
+    padding: var(--app-space-8) var(--app-space-4);
   }
 }
 </style>

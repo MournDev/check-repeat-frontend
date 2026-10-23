@@ -100,70 +100,70 @@ defineEmits(['filter'])
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--apple-spacing-sm);
-  margin-bottom: var(--apple-spacing-md);
+  gap: var(--app-space-3);
+  margin-bottom: var(--app-space-4);
 }
 
 .stat-card {
-  background: var(--apple-surface);
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-lg);
-  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+  background: var(--app-color-card-bg);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  padding: var(--app-space-3) var(--app-space-4);
   display: flex;
   align-items: center;
-  gap: var(--apple-spacing-sm);
-  transition: border-color var(--apple-transition-normal);
+  gap: var(--app-space-3);
+  transition: border-color var(--app-transition-normal);
 
   &.clickable {
     cursor: pointer;
 
     &:hover {
-      border-color: var(--apple-surface-chip-translucent);
+      border-color: var(--app-color-border-strong);
     }
 
     &:focus-visible {
-      outline: 2px solid var(--apple-primary);
+      outline: 2px solid var(--app-color-primary);
       outline-offset: 2px;
     }
 
     &:active {
-      border-color: var(--apple-primary);
+      border-color: var(--app-color-primary);
     }
   }
 
   &.active {
-    border-color: var(--apple-primary);
-    box-shadow: 0 0 0 1px var(--apple-primary);
+    border-color: var(--app-color-primary);
+    box-shadow: 0 0 0 1px var(--app-color-primary);
   }
 
   .stat-icon {
     width: 40px;
     height: 40px;
-    border-radius: var(--apple-rounded-md);
+    border-radius: var(--app-radius-md);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: var(--apple-fs-body-strong);
+    font-size: var(--app-fs-body);
     flex-shrink: 0;
 
     &.total-icon {
-      background: color-mix(in srgb, var(--apple-primary) 12%, transparent);
-      color: var(--apple-primary);
+      background: color-mix(in srgb, var(--app-color-primary) 12%, transparent);
+      color: var(--app-color-primary);
     }
 
     &.submitted-icon {
-      background: color-mix(in srgb, var(--apple-info) 12%, transparent);
-      color: var(--apple-info);
+      background: color-mix(in srgb, var(--app-color-info) 12%, transparent);
+      color: var(--app-color-info);
     }
 
     &.assigned-icon {
-      background: color-mix(in srgb, var(--apple-warning) 14%, transparent);
-      color: var(--apple-warning);
+      background: color-mix(in srgb, var(--app-color-warning) 14%, transparent);
+      color: var(--app-color-warning);
     }
 
     &.completed-icon {
-      background: color-mix(in srgb, var(--apple-success) 12%, transparent);
-      color: var(--apple-success);
+      background: color-mix(in srgb, var(--app-color-success) 12%, transparent);
+      color: var(--app-color-success);
     }
   }
 
@@ -172,17 +172,17 @@ defineEmits(['filter'])
     min-width: 0;
 
     .stat-value {
-      font-family: var(--apple-font-display);
-      font-size: var(--apple-fs-tagline);
+      font-family: var(--app-font-family);
+      font-size: var(--app-fs-title);
       font-weight: 600;
-      color: var(--apple-ink);
+      color: var(--app-color-ink);
       line-height: 1.2;
       margin-bottom: 2px;
     }
 
     .stat-label {
-      font-size: var(--apple-fs-fine-print);
-      color: var(--apple-ink-muted-48);
+      font-size: var(--app-fs-meta);
+      color: var(--app-color-text-muted);
     }
   }
 }
@@ -196,8 +196,8 @@ defineEmits(['filter'])
 @media (max-width: 768px) {
   .stats-grid {
     grid-template-columns: 1fr;
-    gap: var(--apple-spacing-sm);
-    margin-bottom: var(--apple-spacing-sm);
+    gap: var(--app-space-3);
+    margin-bottom: var(--app-space-3);
   }
 }
 </style>
