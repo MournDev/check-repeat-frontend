@@ -86,7 +86,7 @@ defineProps({
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 48px;
+  padding: var(--apple-spacing-xxl);
   background: var(--apple-surface-tile-1);
   overflow: hidden;
 }
@@ -96,13 +96,13 @@ defineProps({
   z-index: 10;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--apple-spacing-xs);
 }
 
 .brand-mark {
   width: 40px;
   height: 40px;
-  border-radius: 10px;
+  border-radius: var(--apple-rounded-md);
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.12);
   display: flex;
@@ -112,11 +112,11 @@ defineProps({
 }
 
 .brand-name {
-  font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
-  font-size: 21px;
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-fs-tagline);
   font-weight: 600;
-  letter-spacing: 0.231px;
-  color: var(--apple-canvas);
+  letter-spacing: var(--apple-ls-tagline);
+  color: var(--apple-on-dark);
 }
 
 .characters-area {
@@ -131,10 +131,10 @@ defineProps({
 .left-tagline {
   position: relative;
   z-index: 10;
-  font-family: "SF Pro Text", "Inter", system-ui, sans-serif;
-  font-size: 24px;
+  font-family: var(--apple-font-text);
+  font-size: var(--apple-fs-lead-airy);
   font-weight: 300;
-  line-height: 1.5;
+  line-height: var(--apple-lh-lead-airy);
   color: rgba(255, 255, 255, 0.55);
   margin: 0;
   text-align: center;
@@ -145,7 +145,7 @@ defineProps({
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 32px;
+  padding: var(--apple-spacing-xl);
   background: var(--apple-canvas);
 }
 
@@ -158,17 +158,17 @@ defineProps({
   display: none;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  font-size: 18px;
+  gap: var(--apple-spacing-xs);
+  font-size: var(--apple-fs-button-large);
   font-weight: 600;
   color: var(--apple-ink);
-  margin-bottom: 48px;
+  margin-bottom: var(--apple-spacing-xxl);
 }
 
 .mobile-logo-icon {
   width: 32px;
   height: 32px;
-  border-radius: 8px;
+  border-radius: var(--apple-rounded-sm);
   background: var(--apple-canvas-parchment);
   display: flex;
   align-items: center;
@@ -177,84 +177,25 @@ defineProps({
 
 .form-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: var(--apple-spacing-xl);
 }
 
 .form-title {
-  font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
-  font-size: 40px;
-  font-weight: 600;
-  line-height: 1.10;
-  color: var(--apple-ink);
-  margin: 0 0 10px 0;
-}
-
-.form-subtitle {
-  font-size: 17px;
-  font-weight: 400;
-  line-height: 1.47;
-  letter-spacing: -0.374px;
-  color: var(--apple-ink-muted-48);
-  margin: 0;
-}
-
-@media (max-width: 1068px) {
-  .form-title { font-size: 34px; }
-}
-
-@media (max-width: 640px) {
-  .form-title { font-size: 28px; }
-}
-
-@media (max-width: 480px) {
-  .right-panel { padding: 20px; }
-  .form-title { font-size: 24px; }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.left-panel { padding: var(--apple-spacing-xxl); }
-
-.left-top { gap: var(--apple-spacing-xs); }
-
-.brand-mark { border-radius: var(--apple-rounded-md); }
-
-.brand-name {
-  font-family: var(--apple-font-display);
-  font-size: var(--apple-fs-tagline);
-  letter-spacing: var(--apple-ls-tagline);
-  color: var(--apple-on-dark);
-}
-
-.left-tagline {
-  font-family: var(--apple-font-text);
-  font-size: var(--apple-fs-lead-airy);
-  line-height: var(--apple-lh-lead-airy);
-}
-
-.right-panel { padding: var(--apple-spacing-xl); }
-
-.mobile-logo {
-  gap: var(--apple-spacing-xs);
-  margin-bottom: var(--apple-spacing-xxl);
-  font-size: var(--apple-fs-button-large);
-}
-
-.mobile-logo-icon { border-radius: var(--apple-rounded-sm); }
-
-.form-header { margin-bottom: var(--apple-spacing-xl); }
-
-.form-title {
-  margin: 0 0 var(--apple-spacing-xs);
   font-family: var(--apple-font-display);
   font-size: var(--apple-fs-display-lg);
+  font-weight: 600;
   line-height: var(--apple-lh-display-lg);
   color: var(--apple-ink);
+  margin: 0 0 var(--apple-spacing-xs);
 }
 
 .form-subtitle {
   font-size: var(--apple-fs-body-strong);
+  font-weight: 400;
   line-height: var(--apple-lh-body);
   letter-spacing: var(--apple-ls-body);
+  color: var(--apple-ink-muted-48);
+  margin: 0;
 }
 
 @media (max-width: 1068px) {

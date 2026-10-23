@@ -828,14 +828,15 @@ onMounted(() => {
 <style lang="scss" scoped>
 .manual-assignment {
   padding: 0;
+  font-family: var(--apple-font-text);
 }
 
 .stats-cards {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--apple-spacing-lg);
   
   .stat-card {
     border: none;
-    border-radius: 18px;
+    border-radius: var(--apple-rounded-lg);
     
     .stat-content {
       display: flex;
@@ -847,8 +848,8 @@ onMounted(() => {
         justify-content: center;
         width: 48px;
         height: 48px;
-        border-radius: 18px;
-        margin-right: 1rem;
+        border-radius: var(--apple-rounded-lg);
+        margin-right: var(--apple-spacing-md);
         
         &.bg-primary {
           background: var(--apple-primary);
@@ -874,16 +875,16 @@ onMounted(() => {
       
       .stat-info {
         .stat-value {
-          font-size: 1.75rem;
+          font-size: var(--apple-fs-lead);
           font-weight: 700;
           color: var(--apple-ink);
           line-height: 1;
         }
 
         .stat-label {
-          font-size: 0.875rem;
+          font-size: var(--apple-fs-fine-print);
           color: var(--apple-ink-secondary);
-          margin-top: 0.25rem;
+          margin-top: var(--apple-spacing-xxs);
         }
       }
     }
@@ -891,16 +892,16 @@ onMounted(() => {
 }
 
 .assignment-area {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--apple-spacing-lg);
   
   .student-card,
   .teacher-card {
-    border-radius: 18px;
+    border-radius: var(--apple-rounded-lg);
     height: 500px;
     
     :deep(.el-card__header) {
-      padding: 1rem 1.25rem;
-      border-bottom: 1px solid var(--apple-surface-chip-translucent);
+      padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+      border-bottom: 1px solid var(--apple-hairline);
       
       .card-header {
         display: flex;
@@ -910,16 +911,18 @@ onMounted(() => {
         .card-title {
           display: flex;
           align-items: center;
+          font-family: var(--apple-font-display);
+          font-size: var(--apple-fs-body-strong);
           font-weight: 600;
           color: var(--apple-ink);
           
           .el-icon {
-            margin-right: 0.5rem;
+            margin-right: var(--apple-spacing-xs);
             color: var(--apple-primary);
           }
           
           .el-tag {
-            margin-left: 0.5rem;
+            margin-left: var(--apple-spacing-xs);
           }
         }
       }
@@ -937,8 +940,8 @@ onMounted(() => {
 .teacher-list {
   .student-item,
   .teacher-item {
-    padding: 1rem;
-    border-bottom: 1px solid var(--apple-canvas-parchment);
+    padding: var(--apple-spacing-md);
+    border-bottom: 1px solid var(--apple-divider-soft);
     cursor: pointer;
     transition: all 0.3s ease;
     
@@ -958,67 +961,67 @@ onMounted(() => {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 0.5rem;
+        margin-bottom: var(--apple-spacing-xs);
         
         .student-name,
         .teacher-name {
           margin: 0;
-          font-size: 1rem;
+          font-size: var(--apple-fs-body-strong);
           font-weight: 600;
           color: var(--apple-ink);
         }
         
         .student-id,
         .teacher-title {
-          font-size: 0.875rem;
+          font-size: var(--apple-fs-fine-print);
           color: var(--apple-ink-secondary);
         }
       }
       
       .student-major,
       .teacher-department {
-        margin-bottom: 0.5rem;
-        font-size: 0.875rem;
+        margin-bottom: var(--apple-spacing-xs);
+        font-size: var(--apple-fs-fine-print);
         color: var(--apple-ink-secondary);
         
         .grade {
-          margin-left: 0.5rem;
+          margin-left: var(--apple-spacing-xs);
         }
       }
       
       .student-interests,
       .teacher-expertise {
         .el-tag {
-          margin-right: 0.25rem;
-          margin-bottom: 0.25rem;
+          margin-right: var(--apple-spacing-xxs);
+          margin-bottom: var(--apple-spacing-xxs);
         }
       }
       
       .teacher-load {
-        font-size: 0.875rem;
+        font-size: var(--apple-fs-fine-print);
         color: var(--apple-ink-secondary);
       }
     }
     
     .student-actions,
     .teacher-actions {
-      margin-top: 0.5rem;
+      margin-top: var(--apple-spacing-xs);
     }
   }
   
   .empty-students,
   .empty-teachers {
-    padding: 2rem 0;
+    padding: var(--apple-spacing-xl) 0;
     text-align: center;
   }
 }
 
 .batch-actions-card {
-  border-radius: 18px;
-  margin-bottom: 1.5rem;
+  border-radius: var(--apple-rounded-lg);
+  margin-bottom: var(--apple-spacing-lg);
   
   :deep(.el-card__body) {
-    padding: 1rem 1.25rem;
+    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
   }
   
   .batch-actions {
@@ -1027,24 +1030,24 @@ onMounted(() => {
     align-items: center;
     
     .selected-info {
-      font-size: 1rem;
+      font-size: var(--apple-fs-caption);
       color: var(--apple-ink);
     }
     
     .batch-buttons {
       display: flex;
-      gap: 0.75rem;
+      gap: var(--apple-spacing-sm);
     }
   }
 }
 
 .student-preview {
-  padding: 0.75rem;
+  padding: var(--apple-spacing-sm);
   background-color: var(--apple-canvas-parchment);
-  border-radius: 8px;
+  border-radius: var(--apple-rounded-sm);
   
   div {
-    margin-bottom: 0.25rem;
+    margin-bottom: var(--apple-spacing-xxs);
     
     &:last-child {
       margin-bottom: 0;
@@ -1054,28 +1057,28 @@ onMounted(() => {
 
 .selected-students-preview {
   .student-tag {
-    margin-right: 0.5rem;
-    margin-bottom: 0.5rem;
+    margin-right: var(--apple-spacing-xs);
+    margin-bottom: var(--apple-spacing-xs);
   }
 }
 
 .teacher-option {
   .teacher-name {
     font-weight: 600;
-    margin-right: 0.5rem;
+    margin-right: var(--apple-spacing-xs);
   }
   
   .teacher-detail {
-    font-size: 0.875rem;
+    font-size: var(--apple-fs-fine-print);
     color: var(--apple-ink-secondary);
-    margin-top: 0.25rem;
+    margin-top: var(--apple-spacing-xxs);
   }
 }
 
 @media (max-width: 768px) {
   .stats-cards {
     .el-col {
-      margin-bottom: 0.75rem;
+      margin-bottom: var(--apple-spacing-sm);
     }
   }
   
@@ -1083,7 +1086,7 @@ onMounted(() => {
     .student-card,
     .teacher-card {
       height: auto;
-      margin-bottom: 1rem;
+      margin-bottom: var(--apple-spacing-sm);
       
       :deep(.el-card__body) {
         height: auto;
@@ -1096,176 +1099,6 @@ onMounted(() => {
     flex-direction: column;
     gap: 1rem;
     align-items: flex-start;
-  }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.manual-assignment {
-  font-family: var(--apple-font-text);
-}
-
-.stats-cards {
-  margin-bottom: var(--apple-spacing-lg);
-
-  .stat-card {
-    border-radius: var(--apple-rounded-lg);
-
-    .stat-content .stat-icon {
-      margin-right: var(--apple-spacing-md);
-      border-radius: var(--apple-rounded-lg);
-    }
-
-    .stat-info {
-      .stat-value {
-        font-size: var(--apple-fs-lead);
-      }
-
-      .stat-label {
-        margin-top: var(--apple-spacing-xxs);
-        font-size: var(--apple-fs-fine-print);
-      }
-    }
-  }
-}
-
-.assignment-area {
-  margin-bottom: var(--apple-spacing-lg);
-
-  .student-card,
-  .teacher-card {
-    border-radius: var(--apple-rounded-lg);
-
-    :deep(.el-card__header) {
-      padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-      border-bottom: 1px solid var(--apple-hairline);
-
-      .card-header .card-title {
-        font-size: var(--apple-fs-body-strong);
-        font-family: var(--apple-font-display);
-
-        .el-icon {
-          margin-right: var(--apple-spacing-xs);
-        }
-
-        .el-tag {
-          margin-left: var(--apple-spacing-xs);
-        }
-      }
-    }
-  }
-}
-
-.student-list,
-.teacher-list {
-  .student-item,
-  .teacher-item {
-    padding: var(--apple-spacing-md);
-    border-bottom: 1px solid var(--apple-divider-soft);
-
-    .student-info,
-    .teacher-info {
-      .student-basic,
-      .teacher-basic {
-        margin-bottom: var(--apple-spacing-xs);
-
-        .student-name,
-        .teacher-name {
-          font-size: var(--apple-fs-body-strong);
-        }
-
-        .student-id,
-        .teacher-title {
-          font-size: var(--apple-fs-fine-print);
-        }
-      }
-
-      .student-major,
-      .teacher-department {
-        margin-bottom: var(--apple-spacing-xs);
-        font-size: var(--apple-fs-fine-print);
-
-        .grade {
-          margin-left: var(--apple-spacing-xs);
-        }
-      }
-
-      .student-interests,
-      .teacher-expertise {
-        .el-tag {
-          margin-right: var(--apple-spacing-xxs);
-          margin-bottom: var(--apple-spacing-xxs);
-        }
-      }
-
-      .teacher-load {
-        font-size: var(--apple-fs-fine-print);
-      }
-    }
-
-    .student-actions,
-    .teacher-actions {
-      margin-top: var(--apple-spacing-xs);
-    }
-  }
-
-  .empty-students,
-  .empty-teachers {
-    padding: var(--apple-spacing-xl) 0;
-  }
-}
-
-.batch-actions-card {
-  margin-bottom: var(--apple-spacing-lg);
-  border-radius: var(--apple-rounded-lg);
-
-  :deep(.el-card__body) {
-    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-  }
-
-  .batch-actions {
-    .selected-info {
-      font-size: var(--apple-fs-caption);
-    }
-
-    .batch-buttons {
-      gap: var(--apple-spacing-sm);
-    }
-  }
-}
-
-.student-preview {
-  padding: var(--apple-spacing-sm);
-  border-radius: var(--apple-rounded-sm);
-
-  div {
-    margin-bottom: var(--apple-spacing-xxs);
-  }
-}
-
-.selected-students-preview .student-tag {
-  margin-right: var(--apple-spacing-xs);
-  margin-bottom: var(--apple-spacing-xs);
-}
-
-.teacher-option {
-  .teacher-name {
-    margin-right: var(--apple-spacing-xs);
-  }
-
-  .teacher-detail {
-    margin-top: var(--apple-spacing-xxs);
-    font-size: var(--apple-fs-fine-print);
-  }
-}
-
-@media (max-width: 768px) {
-  .stats-cards .el-col {
-    margin-bottom: var(--apple-spacing-sm);
-  }
-
-  .assignment-area .student-card,
-  .assignment-area .teacher-card {
-    margin-bottom: var(--apple-spacing-sm);
   }
 }
 </style>

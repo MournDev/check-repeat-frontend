@@ -603,28 +603,40 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .academic-integrity-page {
-  padding: 20px;
+  padding: var(--apple-spacing-lg);
   background-color: var(--apple-canvas-parchment);
   min-height: 100vh;
+  color: var(--apple-ink);
+  font-family: var(--apple-font-text);
+
+  .navigation-card,
+  .content-card,
+  .sidebar-card,
+  .case-card,
+  .contact-card {
+    background: var(--apple-surface);
+    border: 1px solid var(--apple-hairline);
+    border-radius: var(--apple-rounded-lg);
+  }
 
   .navigation-card {
-    border-radius: 18px;
     overflow: hidden;
     
     :deep(.el-tabs__content) {
-      padding: 30px 20px;
+      padding: var(--apple-spacing-lg) var(--apple-spacing-md);
     }
   }
 
   .tab-content {
     .content-card {
-      border-radius: 18px;
       height: 100%;
       
       .card-header {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: var(--apple-spacing-xs);
+        font-family: var(--apple-font-display);
+        font-size: var(--apple-fs-body-strong);
         font-weight: 600;
         color: var(--apple-ink);
         
@@ -637,12 +649,13 @@ onUnmounted(() => {
         line-height: 1.6;
         
         .definition-list {
-          padding-left: 20px;
-          margin: 16px 0;
+          padding-left: var(--apple-spacing-md);
+          margin: var(--apple-spacing-sm) 0;
           
           li {
-            margin-bottom: 8px;
-            color: var(--apple-ink-secondary);
+            margin-bottom: var(--apple-spacing-xs);
+            font-size: var(--apple-fs-caption);
+            color: var(--apple-ink-muted-48);
             
             strong {
               color: var(--apple-ink);
@@ -651,49 +664,52 @@ onUnmounted(() => {
         }
         
         .consequence-box {
-          margin-top: 20px;
+          margin-top: var(--apple-spacing-md);
         }
         
         .process-steps {
           .step {
             display: flex;
-            gap: 16px;
-            margin-bottom: 20px;
-            padding: 16px;
+            gap: var(--apple-spacing-sm);
+            margin-bottom: var(--apple-spacing-md);
+            padding: var(--apple-spacing-md);
             background: var(--apple-canvas-parchment);
-            border-radius: 11px;
+            border-radius: var(--apple-rounded-md);
             
             .step-number {
               width: 32px;
               height: 32px;
               background: var(--apple-primary);
-              color: white;
-              border-radius: 50%;
+              color: var(--apple-on-primary);
+              border-radius: var(--apple-rounded-full);
               display: flex;
               align-items: center;
               justify-content: center;
+              font-size: var(--apple-fs-caption);
               font-weight: 600;
               flex-shrink: 0;
             }
             
             .step-content {
               h4 {
-                margin: 0 0 8px 0;
+                margin: 0 0 var(--apple-spacing-xs) 0;
+                font-size: var(--apple-fs-caption);
                 color: var(--apple-ink);
               }
               
               p {
                 margin: 0;
-                color: var(--apple-ink-secondary);
+                font-size: var(--apple-fs-caption);
+                color: var(--apple-ink-muted-48);
               }
             }
           }
         }
         
         .comparison-section {
-          padding: 20px;
-          border-radius: 18px;
-          margin-bottom: 20px;
+          padding: var(--apple-spacing-md);
+          border-radius: var(--apple-rounded-lg);
+          margin-bottom: var(--apple-spacing-md);
           
           &.good {
             background: var(--apple-info-bg);
@@ -716,49 +732,54 @@ onUnmounted(() => {
           h3 {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin: 0 0 16px 0;
-            font-size: 18px;
+            gap: var(--apple-spacing-xs);
+            margin: 0 0 var(--apple-spacing-sm) 0;
+            font-size: var(--apple-fs-body-strong);
+            font-weight: 600;
           }
           
           ul {
-            padding-left: 20px;
+            padding-left: var(--apple-spacing-md);
             
             li {
-              margin-bottom: 12px;
+              margin-bottom: var(--apple-spacing-xs);
+              font-size: var(--apple-fs-caption);
               color: var(--apple-ink);
             }
           }
         }
         
         .citation-examples {
-          margin-top: 30px;
+          margin-top: var(--apple-spacing-lg);
           
           h3 {
-            margin: 0 0 20px 0;
+            margin: 0 0 var(--apple-spacing-md) 0;
+            font-family: var(--apple-font-display);
+            font-size: var(--apple-fs-body-strong);
             color: var(--apple-ink);
           }
           
           .format-example {
             h4 {
-              margin: 0 0 12px 0;
-              color: var(--apple-ink-secondary);
-              font-size: 16px;
+              margin: 0 0 var(--apple-spacing-xs) 0;
+              color: var(--apple-ink-muted-48);
+              font-size: var(--apple-fs-caption);
             }
             
             .example {
               background: var(--apple-canvas-parchment);
-              padding: 12px;
-              border-radius: 11px;
+              padding: var(--apple-spacing-sm);
+              border-radius: var(--apple-rounded-md);
               font-family: monospace;
-              margin-bottom: 8px;
+              font-size: var(--apple-fs-fine-print);
+              margin-bottom: var(--apple-spacing-xs);
               color: var(--apple-ink);
             }
             
             .example-text {
-              color: var(--apple-ink-secondary);
-              font-size: 17px;
-              margin-bottom: 20px;
+              color: var(--apple-ink-muted-48);
+              font-size: var(--apple-fs-caption);
+              margin-bottom: var(--apple-spacing-md);
             }
           }
         }
@@ -766,21 +787,22 @@ onUnmounted(() => {
     }
     
     .sidebar-card {
-      border-radius: 18px;
       height: fit-content;
       
       .card-header {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: var(--apple-spacing-xs);
+        font-family: var(--apple-font-display);
+        font-size: var(--apple-fs-body-strong);
         font-weight: 600;
         color: var(--apple-ink);
       }
       
       .checklist {
         .checklist-item {
-          padding: 12px 0;
-          border-bottom: 1px solid var(--apple-canvas-parchment);
+          padding: var(--apple-spacing-sm) 0;
+          border-bottom: 1px solid var(--apple-divider-soft);
           
           &:last-child {
             border-bottom: none;
@@ -799,23 +821,24 @@ onUnmounted(() => {
     .personal-guide {
       .personal-content {
         .advice-section {
-          margin-bottom: 30px;
+          margin-bottom: var(--apple-spacing-lg);
           
           h3 {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin: 0 0 20px 0;
-            padding-bottom: 12px;
-            border-bottom: 2px solid var(--apple-canvas-parchment);
+            gap: var(--apple-spacing-xs);
+            margin: 0 0 var(--apple-spacing-md) 0;
+            padding-bottom: var(--apple-spacing-sm);
+            border-bottom: 1px solid var(--apple-divider-soft);
+            font-size: var(--apple-fs-body-strong);
           }
           
           .advice-item {
             background: var(--apple-danger-bg);
             border: 1px solid var(--apple-danger-border);
-            border-radius: 18px;
-            padding: 20px;
-            margin-bottom: 16px;
+            border-radius: var(--apple-rounded-lg);
+            padding: var(--apple-spacing-md);
+            margin-bottom: var(--apple-spacing-sm);
             
             &.positive {
               background: var(--apple-info-bg);
@@ -826,11 +849,12 @@ onUnmounted(() => {
               display: flex;
               justify-content: space-between;
               align-items: center;
-              margin-bottom: 12px;
+              margin-bottom: var(--apple-spacing-xs);
               
               .similarity-rate {
+                font-family: var(--apple-font-display);
                 font-weight: 600;
-                font-size: 18px;
+                font-size: var(--apple-fs-body-strong);
                 color: var(--apple-danger);
                 
                 &.good {
@@ -841,15 +865,17 @@ onUnmounted(() => {
             
             .area-issue {
               color: var(--apple-ink);
-              margin-bottom: 12px;
+              margin-bottom: var(--apple-spacing-xs);
+              font-size: var(--apple-fs-caption);
               font-weight: 600;
             }
             
             .area-suggestion {
               display: flex;
               align-items: flex-start;
-              gap: 8px;
-              color: var(--apple-ink-secondary);
+              gap: var(--apple-spacing-xs);
+              font-size: var(--apple-fs-caption);
+              color: var(--apple-ink-muted-48);
               line-height: 1.5;
               
               .el-icon {
@@ -863,11 +889,11 @@ onUnmounted(() => {
             .tip-item {
               display: flex;
               align-items: flex-start;
-              gap: 12px;
-              padding: 16px;
+              gap: var(--apple-spacing-sm);
+              padding: var(--apple-spacing-md);
               background: var(--apple-canvas-parchment);
-              border-radius: 11px;
-              margin-bottom: 12px;
+              border-radius: var(--apple-rounded-md);
+              margin-bottom: var(--apple-spacing-sm);
               
               .el-icon {
                 color: var(--apple-success);
@@ -876,6 +902,7 @@ onUnmounted(() => {
               
               span {
                 flex: 1;
+                font-size: var(--apple-fs-caption);
                 color: var(--apple-ink);
                 line-height: 1.5;
               }
@@ -886,13 +913,15 @@ onUnmounted(() => {
     }
     
     .resource-card {
-      border-radius: 18px;
+      border-radius: var(--apple-rounded-lg);
       height: fit-content;
       
       .card-header {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: var(--apple-spacing-xs);
+        font-family: var(--apple-font-display);
+        font-size: var(--apple-fs-body-strong);
         font-weight: 600;
         color: var(--apple-ink);
       }
@@ -901,10 +930,10 @@ onUnmounted(() => {
         .resource-item {
           display: flex;
           align-items: center;
-          gap: 12px;
-          padding: 16px;
-          border-radius: 11px;
-          margin-bottom: 12px;
+          gap: var(--apple-spacing-sm);
+          padding: var(--apple-spacing-md);
+          border-radius: var(--apple-rounded-md);
+          margin-bottom: var(--apple-spacing-sm);
           cursor: pointer;
           transition: all 0.3s ease;
           
@@ -917,21 +946,22 @@ onUnmounted(() => {
           }
           
           .resource-icon {
-            font-size: 24px;
+            font-size: var(--apple-fs-tagline);
           }
           
           .resource-info {
             flex: 1;
             
             .resource-title {
+              font-size: var(--apple-fs-caption);
               font-weight: 600;
               color: var(--apple-ink);
-              margin-bottom: 4px;
+              margin-bottom: var(--apple-spacing-xxs);
             }
             
             .resource-type {
-              font-size: 12px;
-              color: var(--apple-ink-secondary);
+              font-size: var(--apple-fs-fine-print);
+              color: var(--apple-ink-muted-48);
             }
           }
         }
@@ -939,12 +969,12 @@ onUnmounted(() => {
     }
     
     .case-card {
-      border-radius: 18px;
-      
       .card-header {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: var(--apple-spacing-xs);
+        font-family: var(--apple-font-display);
+        font-size: var(--apple-fs-body-strong);
         font-weight: 600;
         color: var(--apple-ink);
         
@@ -955,43 +985,45 @@ onUnmounted(() => {
       
       .case-content {
         .case-description {
-          margin-bottom: 20px;
+          margin-bottom: var(--apple-spacing-md);
           
           h4 {
-            margin: 0 0 8px 0;
+            margin: 0 0 var(--apple-spacing-xs) 0;
             color: var(--apple-ink);
           }
           
           p {
-            color: var(--apple-ink-secondary);
+            font-size: var(--apple-fs-caption);
+            color: var(--apple-ink-muted-48);
             line-height: 1.5;
           }
         }
         
         .case-example {
-          margin-bottom: 20px;
+          margin-bottom: var(--apple-spacing-md);
           
           h4 {
-            margin: 0 0 12px 0;
+            margin: 0 0 var(--apple-spacing-xs) 0;
             color: var(--apple-ink);
           }
           
           .example-content {
             background: var(--apple-canvas-parchment);
-            border-radius: 11px;
-            padding: 20px;
+            border-radius: var(--apple-rounded-md);
+            padding: var(--apple-spacing-md);
             
             .quote {
               font-style: italic;
-              margin: 0 0 16px 0;
+              margin: 0 0 var(--apple-spacing-sm) 0;
+              font-size: var(--apple-fs-caption);
               color: var(--apple-ink);
               line-height: 1.6;
             }
             
             .citation {
               text-align: right;
-              color: var(--apple-ink-secondary);
-              font-size: 17px;
+              color: var(--apple-ink-muted-48);
+              font-size: var(--apple-fs-fine-print);
               
               &.warning {
                 color: var(--apple-danger);
@@ -1003,16 +1035,17 @@ onUnmounted(() => {
         
         .case-analysis {
           h4 {
-            margin: 0 0 12px 0;
+            margin: 0 0 var(--apple-spacing-xs) 0;
             color: var(--apple-ink);
           }
           
           ul {
-            padding-left: 20px;
+            padding-left: var(--apple-spacing-md);
             
             li {
-              margin-bottom: 8px;
-              color: var(--apple-ink-secondary);
+              margin-bottom: var(--apple-spacing-xs);
+              font-size: var(--apple-fs-caption);
+              color: var(--apple-ink-muted-48);
             }
           }
         }
@@ -1020,21 +1053,23 @@ onUnmounted(() => {
     }
     
     .contact-card {
-      border-radius: 18px;
       height: fit-content;
       
       .card-header {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: var(--apple-spacing-xs);
+        font-family: var(--apple-font-display);
+        font-size: var(--apple-fs-body-strong);
         font-weight: 600;
         color: var(--apple-ink);
       }
       
       .contact-content {
         p {
-          color: var(--apple-ink-secondary);
-          margin-bottom: 20px;
+          color: var(--apple-ink-muted-48);
+          margin-bottom: var(--apple-spacing-md);
+          font-size: var(--apple-fs-caption);
           line-height: 1.5;
         }
         
@@ -1042,17 +1077,18 @@ onUnmounted(() => {
           .contact-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 12px;
+            gap: var(--apple-spacing-sm);
+            padding: var(--apple-spacing-sm);
             background: var(--apple-canvas-parchment);
-            border-radius: 11px;
-            margin-bottom: 12px;
+            border-radius: var(--apple-rounded-md);
+            margin-bottom: var(--apple-spacing-sm);
             
             .el-icon {
               color: var(--apple-primary);
             }
             
             span {
+              font-size: var(--apple-fs-caption);
               color: var(--apple-ink);
             }
           }
@@ -1068,9 +1104,9 @@ onUnmounted(() => {
 
   :deep(.el-collapse) {
     .el-collapse-item__header {
-      font-size: 16px;
+      font-size: var(--apple-fs-caption);
       font-weight: 600;
-      padding: 20px;
+      padding: var(--apple-spacing-md);
       
       .el-icon {
         margin-right: 12px;
@@ -1083,20 +1119,21 @@ onUnmounted(() => {
     }
     
     .el-collapse-item__content {
-      padding: 20px;
+      padding: var(--apple-spacing-md);
       
       .faq-answer {
         p {
-          color: var(--apple-ink-secondary);
+          color: var(--apple-ink-muted-48);
+          font-size: var(--apple-fs-caption);
           line-height: 1.6;
           margin-bottom: 16px;
         }
         
         .faq-example {
           background: var(--apple-canvas-parchment);
-          border-radius: 11px;
-          padding: 16px;
-          margin-top: 16px;
+          border-radius: var(--apple-rounded-md);
+          padding: var(--apple-spacing-md);
+          margin-top: var(--apple-spacing-sm);
           
           h4 {
             margin: 0 0 8px 0;
@@ -1105,7 +1142,7 @@ onUnmounted(() => {
           
           p {
             margin: 0;
-            color: var(--apple-ink-secondary);
+            color: var(--apple-ink-muted-48);
             font-style: italic;
           }
         }
@@ -1117,7 +1154,7 @@ onUnmounted(() => {
 // 响应式设计
 @media (max-width: 768px) {
   .academic-integrity-page {
-    padding: 12px;
+    padding: var(--apple-spacing-sm);
 
     .comparison-section {
       .el-col {
@@ -1132,346 +1169,6 @@ onUnmounted(() => {
         text-align: center;
       }
     }
-  }
-}
-
-// ── 视觉统一（design-tokens 覆盖层） ────────────────────────
-.academic-integrity-page {
-  padding: var(--apple-spacing-lg);
-  background-color: var(--apple-canvas-parchment);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
-
-  .navigation-card,
-  .content-card,
-  .sidebar-card,
-  .case-card,
-  .contact-card {
-    background: var(--apple-surface);
-    border: 1px solid var(--apple-hairline);
-    border-radius: var(--apple-rounded-lg);
-  }
-
-  .navigation-card {
-    :deep(.el-tabs__content) {
-      padding: var(--apple-spacing-lg) var(--apple-spacing-md);
-    }
-  }
-
-  .tab-content {
-    .card-header {
-      gap: var(--apple-spacing-xs);
-      font-family: var(--apple-font-display);
-      font-size: var(--apple-fs-body-strong);
-      font-weight: 600;
-      color: var(--apple-ink);
-    }
-
-    .content-body {
-      line-height: 1.6;
-
-      .definition-list {
-        padding-left: var(--apple-spacing-md);
-        margin: var(--apple-spacing-sm) 0;
-
-        li {
-          margin-bottom: var(--apple-spacing-xs);
-          font-size: var(--apple-fs-caption);
-          color: var(--apple-ink-muted-48);
-
-          strong {
-            color: var(--apple-ink);
-          }
-        }
-      }
-
-      .consequence-box {
-        margin-top: var(--apple-spacing-md);
-      }
-
-      .process-steps {
-        .step {
-          gap: var(--apple-spacing-sm);
-          margin-bottom: var(--apple-spacing-md);
-          padding: var(--apple-spacing-md);
-          background: var(--apple-canvas-parchment);
-          border-radius: var(--apple-rounded-md);
-
-          .step-number {
-            width: 32px;
-            height: 32px;
-            background: var(--apple-primary);
-            color: var(--apple-on-primary);
-            border-radius: var(--apple-rounded-full);
-            font-size: var(--apple-fs-caption);
-          }
-
-          .step-content {
-            h4 {
-              margin: 0 0 var(--apple-spacing-xs);
-              font-size: var(--apple-fs-caption);
-              color: var(--apple-ink);
-            }
-
-            p {
-              font-size: var(--apple-fs-caption);
-              color: var(--apple-ink-muted-48);
-            }
-          }
-        }
-      }
-
-      .comparison-section {
-        padding: var(--apple-spacing-md);
-        margin-bottom: var(--apple-spacing-md);
-        border-radius: var(--apple-rounded-lg);
-
-        h3 {
-          gap: var(--apple-spacing-xs);
-          margin: 0 0 var(--apple-spacing-sm);
-          font-size: var(--apple-fs-body-strong);
-          font-weight: 600;
-        }
-
-        ul {
-          padding-left: var(--apple-spacing-md);
-
-          li {
-            margin-bottom: var(--apple-spacing-xs);
-            font-size: var(--apple-fs-caption);
-          }
-        }
-      }
-
-      .citation-examples {
-        margin-top: var(--apple-spacing-lg);
-
-        h3 {
-          margin: 0 0 var(--apple-spacing-md);
-          font-family: var(--apple-font-display);
-          font-size: var(--apple-fs-body-strong);
-        }
-
-        .format-example {
-          h4 {
-            margin: 0 0 var(--apple-spacing-xs);
-            font-size: var(--apple-fs-caption);
-            color: var(--apple-ink-muted-48);
-          }
-
-          .example {
-            padding: var(--apple-spacing-sm);
-            margin-bottom: var(--apple-spacing-xs);
-            background: var(--apple-canvas-parchment);
-            border-radius: var(--apple-rounded-md);
-            font-size: var(--apple-fs-fine-print);
-          }
-
-          .example-text {
-            margin-bottom: var(--apple-spacing-md);
-            font-size: var(--apple-fs-caption);
-            color: var(--apple-ink-muted-48);
-          }
-        }
-      }
-    }
-
-    .sidebar-card {
-      .checklist {
-        .checklist-item {
-          padding: var(--apple-spacing-sm) 0;
-          border-bottom: 1px solid var(--apple-divider-soft);
-        }
-      }
-    }
-
-    .personal-guide {
-      .personal-content {
-        .advice-section {
-          margin-bottom: var(--apple-spacing-lg);
-
-          h3 {
-            gap: var(--apple-spacing-xs);
-            margin: 0 0 var(--apple-spacing-md);
-            padding-bottom: var(--apple-spacing-sm);
-            border-bottom: 1px solid var(--apple-divider-soft);
-            font-size: var(--apple-fs-body-strong);
-          }
-
-          .advice-item {
-            padding: var(--apple-spacing-md);
-            margin-bottom: var(--apple-spacing-sm);
-            border-radius: var(--apple-rounded-lg);
-
-            .area-header {
-              margin-bottom: var(--apple-spacing-xs);
-
-              .similarity-rate {
-                font-family: var(--apple-font-display);
-                font-size: var(--apple-fs-body-strong);
-              }
-            }
-
-            .area-issue {
-              margin-bottom: var(--apple-spacing-xs);
-              font-size: var(--apple-fs-caption);
-            }
-
-            .area-suggestion {
-              gap: var(--apple-spacing-xs);
-              font-size: var(--apple-fs-caption);
-            }
-          }
-
-          .tips-list {
-            .tip-item {
-              gap: var(--apple-spacing-sm);
-              padding: var(--apple-spacing-md);
-              margin-bottom: var(--apple-spacing-sm);
-              background: var(--apple-canvas-parchment);
-              border-radius: var(--apple-rounded-md);
-
-              span {
-                font-size: var(--apple-fs-caption);
-              }
-            }
-          }
-        }
-      }
-    }
-
-    .resource-card {
-      .resources {
-        .resource-item {
-          gap: var(--apple-spacing-sm);
-          padding: var(--apple-spacing-md);
-          margin-bottom: var(--apple-spacing-sm);
-          border-radius: var(--apple-rounded-md);
-
-          .resource-icon {
-            font-size: var(--apple-fs-tagline);
-          }
-
-          .resource-info {
-            .resource-title {
-              margin-bottom: var(--apple-spacing-xxs);
-              font-size: var(--apple-fs-caption);
-              color: var(--apple-ink);
-            }
-
-            .resource-type {
-              font-size: var(--apple-fs-fine-print);
-              color: var(--apple-ink-muted-48);
-            }
-          }
-        }
-      }
-    }
-
-    .case-card {
-      .case-content {
-        .case-description {
-          margin-bottom: var(--apple-spacing-md);
-
-          p {
-            font-size: var(--apple-fs-caption);
-            color: var(--apple-ink-muted-48);
-          }
-        }
-
-        .case-example {
-          margin-bottom: var(--apple-spacing-md);
-
-          .example-content {
-            padding: var(--apple-spacing-md);
-            background: var(--apple-canvas-parchment);
-            border-radius: var(--apple-rounded-md);
-
-            .quote {
-              margin: 0 0 var(--apple-spacing-sm);
-              font-size: var(--apple-fs-caption);
-            }
-
-            .citation {
-              font-size: var(--apple-fs-fine-print);
-              color: var(--apple-ink-muted-48);
-            }
-          }
-        }
-
-        .case-analysis {
-          ul {
-            padding-left: var(--apple-spacing-md);
-
-            li {
-              margin-bottom: var(--apple-spacing-xs);
-              font-size: var(--apple-fs-caption);
-              color: var(--apple-ink-muted-48);
-            }
-          }
-        }
-      }
-    }
-
-    .contact-card {
-      .contact-content {
-        p {
-          margin-bottom: var(--apple-spacing-md);
-          font-size: var(--apple-fs-caption);
-          color: var(--apple-ink-muted-48);
-        }
-
-        .contact-methods {
-          .contact-item {
-            gap: var(--apple-spacing-sm);
-            padding: var(--apple-spacing-sm);
-            margin-bottom: var(--apple-spacing-sm);
-            background: var(--apple-canvas-parchment);
-            border-radius: var(--apple-rounded-md);
-
-            span {
-              font-size: var(--apple-fs-caption);
-            }
-          }
-        }
-      }
-    }
-  }
-
-  :deep(.el-collapse) {
-    .el-collapse-item__header {
-      padding: var(--apple-spacing-md);
-      font-size: var(--apple-fs-caption);
-      font-weight: 600;
-    }
-
-    .el-collapse-item__content {
-      padding: var(--apple-spacing-md);
-
-      .faq-answer {
-        p {
-          font-size: var(--apple-fs-caption);
-          color: var(--apple-ink-muted-48);
-        }
-
-        .faq-example {
-          padding: var(--apple-spacing-md);
-          margin-top: var(--apple-spacing-sm);
-          background: var(--apple-canvas-parchment);
-          border-radius: var(--apple-rounded-md);
-
-          p {
-            margin: 0;
-          }
-        }
-      }
-    }
-  }
-}
-
-@media (max-width: 768px) {
-  .academic-integrity-page {
-    padding: var(--apple-spacing-sm);
   }
 }
 </style>

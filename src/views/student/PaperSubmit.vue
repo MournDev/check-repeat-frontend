@@ -729,7 +729,9 @@ const resetForm = () => {
 .paper-submit-container {
   min-height: 100vh;
   background: var(--apple-canvas-parchment); // Slate-50
-  padding: 24px 0;
+  padding: var(--apple-spacing-lg) var(--apple-spacing-md);
+  color: var(--apple-ink);
+  font-family: var(--apple-font-text);
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -740,391 +742,21 @@ const resetForm = () => {
   max-width: 900px;
   margin: 0 auto;
   background: var(--apple-surface);
-  border: 1px solid var(--apple-slate-border);
-  border-radius: 18px;
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-lg);
   overflow: hidden;
   transition: all 0.2s ease;
   
   &:hover {
     /* box-shadow removed */
-    border-color: var(--apple-slate-border-strong);
-  }
-
-  .card-header {
-    background: var(--apple-primary);
-    color: white;
-    padding: 24px 32px;
-    text-align: center;
-
-    .card-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-
-    .card-subtitle {
-      font-size: 1rem;
-      opacity: 0.9;
-      margin: 0;
-    }
-  }
-}
-
-// 步骤条
-.submit-steps {
-  display: flex;
-  gap: 32px;
-  padding: 32px;
-  position: relative;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 24px;
-    left: 32px;
-    right: 32px;
-    height: 2px;
-    background: var(--apple-slate-border);
-    z-index: 0;
-  }
-  
-  .step {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-    z-index: 1;
-    
-    .step-number {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 12px;
-      transition: all 0.2s ease;
-    }
-    
-    .step-content {
-      .step-title {
-        font-size: 17px;
-        font-weight: 600;
-        color: var(--apple-slate-sub);
-        transition: all 0.2s ease;
-      }
-    }
-    
-    &.step-active {
-      .step-number {
-        background: var(--apple-success);
-        color: white;
-      }
-      .step-title {
-        color: var(--apple-slate-ink);
-        font-weight: 600;
-      }
-    }
-    
-    &.step-current {
-      .step-number {
-        background: var(--apple-primary);
-        color: white;
-        /* box-shadow removed */
-      }
-      .step-title {
-        color: var(--apple-slate-ink);
-        font-weight: 600;
-      }
-    }
-    
-    &.step-pending {
-      .step-number {
-        background: var(--apple-slate-bg);
-        color: var(--apple-slate-sub);
-      }
-      .step-title {
-        color: var(--apple-slate-faint);
-      }
-    }
-  }
-}
-
-.step-content {
-  padding: 0 32px 32px;
-}
-
-// 表单样式
-.paper-form {
-  max-width: 100%;
-  
-  .form-group {
-    margin-bottom: 24px;
-    
-    .form-label {
-      display: block;
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--apple-slate-ink);
-      margin-bottom: 8px;
-    }
-
-    /* 选项拉取失败时的行内提示。比再弹一次 ElMessage 好：
-       全局拦截器已经弹过一次，这里只需要一个不会消失的出口。 */
-    .form-tip-error {
-      margin-top: 6px;
-      font-size: 0.8125rem;
-      color: var(--apple-danger);
-
-      a {
-        color: var(--apple-primary);
-        text-decoration: underline;
-      }
-    }
-
-    .form-control {
-      width: 100%;
-      transition: all 0.2s ease;
-      
-      &:hover {
-        border-color: var(--apple-slate-border-strong);
-      }
-      
-      &:focus {
-        border-color: var(--apple-primary);
-        box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
-      }
-    }
-  }
-}
-
-// 上传区域
-.upload-area {
-  border: 2px dashed var(--apple-slate-border);
-  border-radius: 18px;
-  padding: 40px;
-  text-align: center;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    border-color: var(--apple-primary);
-    background: var(--apple-canvas-parchment);
-  }
-}
-
-.upload-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  
-  .upload-icon {
-    font-size: 48px;
-    color: var(--apple-primary);
-  }
-  
-  .upload-text {
-    p {
-      margin: 0;
-      color: var(--apple-slate-ink);
-      font-size: 1rem;
-      font-weight: 600;
-    }
-    .upload-tip {
-      margin-top: 8px;
-      color: var(--apple-slate-sub);
-      font-size: 0.875rem;
-    }
-  }
-}
-
-// 上传进度
-.upload-progress {
-  margin-top: 16px;
-  
-  .progress-bar {
-    height: 6px;
-    background: var(--apple-slate-border);
-    border-radius: 3px;
-    overflow: hidden;
-    
-    .progress-fill {
-      height: 100%;
-      background: var(--apple-primary);
-      border-radius: 3px;
-      transition: width 0.3s ease;
-    }
-  }
-}
-
-.upload-success {
-  margin-top: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-// 确认内容
-.confirm-content {
-  background: var(--apple-canvas-parchment);
-  border-radius: 18px;
-  padding: 24px;
-  
-  h4 {
-    margin-top: 0;
-    color: var(--apple-slate-ink);
-    font-size: 1.125rem;
-    font-weight: 600;
-    margin-bottom: 20px;
-  }
-  
-  .confirm-details {
-    .detail-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding: 16px;
-      background: var(--apple-surface);
-      border-radius: 11px;
-      margin-bottom: 12px;
-      transition: all 0.2s ease;
-      
-      &:last-child {
-        margin-bottom: 0;
-      }
-      
-      &:hover {
-        /* box-shadow removed */
-      }
-      
-      .detail-label {
-        font-size: 0.875rem;
-        font-weight: 600;
-        color: var(--apple-slate-sub);
-        min-width: 120px;
-      }
-      
-      .detail-value {
-        font-size: 0.875rem;
-        color: var(--apple-slate-ink);
-        flex: 1;
-        text-align: right;
-      }
-    }
-  }
-}
-
-// 操作按钮
-.step-actions {
-  padding: 24px 32px;
-  background: var(--apple-canvas-parchment);
-  border-top: 1px solid var(--apple-slate-border);
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-}
-
-// 响应式设计
-@media (max-width: 768px) {
-  .paper-submit-container {
-    padding: 16px;
-  }
-  
-  .paper-submit-card {
-    margin: 0;
-  }
-  
-  .card-header {
-    padding: 20px;
-    
-    .card-title {
-      font-size: 1.25rem;
-    }
-  }
-  
-  .submit-steps {
-    padding: 20px;
-    gap: 16px;
-    
-    .step {
-      .step-number {
-        width: 40px;
-        height: 40px;
-        font-size: 17px;
-      }
-      
-      .step-title {
-        font-size: 12px;
-      }
-    }
-  }
-  
-  .step-content {
-    padding: 0 20px 20px;
-  }
-  
-  .paper-form {
-    .form-group {
-      margin-bottom: 20px;
-    }
-  }
-  
-  .upload-area {
-    padding: 32px;
-  }
-  
-  .confirm-content {
-    padding: 20px;
-    
-    .detail-item {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 8px;
-      
-      .detail-value {
-        text-align: left;
-        width: 100%;
-      }
-    }
-  }
-  
-  .step-actions {
-    padding: 20px;
-    flex-direction: column;
-    
-    .btn {
-      width: 100%;
-      justify-content: center;
-    }
-  }
-}
-
-// ── 视觉统一（design-tokens 覆盖层） ────────────────────────
-.paper-submit-container {
-  min-height: 100vh;
-  padding: var(--apple-spacing-lg) var(--apple-spacing-md);
-  background: var(--apple-canvas-parchment);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
-}
-
-.paper-submit-card {
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-lg);
-  background: var(--apple-surface);
-
-  &:hover {
     border-color: var(--apple-hairline);
   }
 
   .card-header {
-    padding: var(--apple-spacing-lg) var(--apple-spacing-xl);
     background: var(--apple-surface);
-    border-bottom: 1px solid var(--apple-divider-soft);
     color: var(--apple-ink);
+    padding: var(--apple-spacing-lg) var(--apple-spacing-xl);
+    border-bottom: 1px solid var(--apple-divider-soft);
     text-align: center;
 
     .card-title {
@@ -1138,63 +770,87 @@ const resetForm = () => {
       font-size: var(--apple-fs-caption);
       color: var(--apple-ink-muted-48);
       opacity: 1;
+      margin: 0;
     }
   }
 }
 
+// 步骤条
 .submit-steps {
+  display: flex;
   gap: var(--apple-spacing-lg);
   padding: var(--apple-spacing-xl);
-
+  position: relative;
+  
   &::before {
+    content: '';
+    position: absolute;
+    top: 24px;
+    left: 32px;
+    right: 32px;
+    height: 2px;
     background: var(--apple-hairline);
+    z-index: 0;
   }
-
+  
   .step {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    
     .step-number {
       width: 44px;
       height: 44px;
-      margin-bottom: var(--apple-spacing-sm);
       border-radius: var(--apple-rounded-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: var(--apple-fs-body-strong);
       font-weight: 600;
+      margin-bottom: var(--apple-spacing-sm);
+      transition: all 0.2s ease;
     }
-
+    
     .step-content {
       .step-title {
         font-size: var(--apple-fs-caption);
+        font-weight: 600;
         color: var(--apple-ink-muted-48);
+        transition: all 0.2s ease;
       }
     }
-
+    
     &.step-active {
       .step-number {
         background: var(--apple-success);
         color: var(--apple-on-primary);
       }
-
       .step-title {
         color: var(--apple-ink);
+        font-weight: 600;
       }
     }
-
+    
     &.step-current {
       .step-number {
         background: var(--apple-primary);
         color: var(--apple-on-primary);
+        /* box-shadow removed */
       }
-
       .step-title {
         color: var(--apple-ink);
+        font-weight: 600;
       }
     }
-
+    
     &.step-pending {
       .step-number {
         background: var(--apple-canvas-parchment);
         color: var(--apple-ink-muted-48);
       }
-
       .step-title {
         color: var(--apple-ink-muted-48);
       }
@@ -1206,24 +862,38 @@ const resetForm = () => {
   padding: 0 var(--apple-spacing-xl) var(--apple-spacing-xl);
 }
 
+// 表单样式
 .paper-form {
+  max-width: 100%;
+  
   .form-group {
     margin-bottom: var(--apple-spacing-lg);
-
+    
     .form-label {
-      margin-bottom: var(--apple-spacing-xs);
+      display: block;
       font-size: var(--apple-fs-caption);
       font-weight: 600;
       color: var(--apple-ink);
+      margin-bottom: var(--apple-spacing-xs);
     }
 
+    /* 选项拉取失败时的行内提示。比再弹一次 ElMessage 好：
+       全局拦截器已经弹过一次，这里只需要一个不会消失的出口。 */
     .form-tip-error {
       margin-top: 6px;
       font-size: var(--apple-fs-fine-print);
       color: var(--apple-danger);
+
+      a {
+        color: var(--apple-primary);
+        text-decoration: underline;
+      }
     }
 
     .form-control {
+      width: 100%;
+      transition: all 0.2s ease;
+
       :deep(.el-input__wrapper),
       :deep(.el-textarea__inner),
       :deep(.el-select__wrapper) {
@@ -1240,94 +910,132 @@ const resetForm = () => {
   }
 }
 
+// 上传区域
 .upload-area {
-  padding: var(--apple-spacing-xl);
   border: 1px dashed var(--apple-hairline);
   border-radius: var(--apple-rounded-lg);
+  padding: var(--apple-spacing-xl);
   background: var(--apple-surface-pearl);
-
+  text-align: center;
+  transition: all 0.2s ease;
+  
   &:hover {
-    background: var(--apple-info-bg);
     border-color: var(--apple-primary);
+    background: var(--apple-info-bg);
   }
 }
 
 .upload-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: var(--apple-spacing-sm);
-
+  
   .upload-icon {
     font-size: var(--apple-fs-display-md);
     color: var(--apple-primary);
   }
-
+  
   .upload-text {
     p {
+      margin: 0;
+      color: var(--apple-ink);
       font-size: var(--apple-fs-body-strong);
       font-weight: 600;
-      color: var(--apple-ink);
     }
-
     .upload-tip {
       margin-top: var(--apple-spacing-xs);
-      font-size: var(--apple-fs-caption);
       color: var(--apple-ink-muted-48);
+      font-size: var(--apple-fs-caption);
     }
   }
 }
 
+// 上传进度
 .upload-progress {
   margin-top: var(--apple-spacing-sm);
-
+  
   .progress-bar {
     height: 6px;
-    border-radius: var(--apple-rounded-pill);
     background: var(--apple-hairline);
-
+    border-radius: var(--apple-rounded-pill);
+    overflow: hidden;
+    
     .progress-fill {
-      border-radius: var(--apple-rounded-pill);
+      height: 100%;
       background: var(--apple-primary);
+      border-radius: var(--apple-rounded-pill);
+      transition: width 0.3s ease;
     }
   }
 }
 
-.confirm-content {
-  padding: var(--apple-spacing-lg);
-  border-radius: var(--apple-rounded-lg);
-  background: var(--apple-canvas-parchment);
+.upload-success {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
+// 确认内容
+.confirm-content {
+  background: var(--apple-canvas-parchment);
+  border-radius: var(--apple-rounded-lg);
+  padding: var(--apple-spacing-lg);
+  
   h4 {
-    margin-bottom: var(--apple-spacing-md);
+    margin-top: 0;
+    color: var(--apple-ink);
     font-family: var(--apple-font-display);
     font-size: var(--apple-fs-body-strong);
-    color: var(--apple-ink);
+    font-weight: 600;
+    margin-bottom: var(--apple-spacing-md);
   }
-
+  
   .confirm-details {
     .detail-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
       padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-      margin-bottom: var(--apple-spacing-xs);
       background: var(--apple-surface);
       border: 1px solid var(--apple-hairline);
       border-radius: var(--apple-rounded-md);
-
-      .detail-label {
-        min-width: 104px;
-        font-size: var(--apple-fs-caption);
-        color: var(--apple-ink-muted-48);
+      margin-bottom: var(--apple-spacing-xs);
+      transition: all 0.2s ease;
+      
+      &:last-child {
+        margin-bottom: 0;
       }
-
+      
+      &:hover {
+        /* box-shadow removed */
+      }
+      
+      .detail-label {
+        font-size: var(--apple-fs-caption);
+        font-weight: 600;
+        color: var(--apple-ink-muted-48);
+        min-width: 104px;
+      }
+      
       .detail-value {
         font-size: var(--apple-fs-caption);
         color: var(--apple-ink);
+        flex: 1;
+        text-align: right;
       }
     }
   }
 }
 
+// 操作按钮
 .step-actions {
   padding: var(--apple-spacing-md) var(--apple-spacing-xl);
   background: var(--apple-surface);
   border-top: 1px solid var(--apple-divider-soft);
+  display: flex;
+  justify-content: flex-end;
   gap: var(--apple-spacing-sm);
 
   .btn {
@@ -1371,30 +1079,35 @@ const resetForm = () => {
   }
 }
 
+// 响应式设计
 @media (max-width: 768px) {
   .paper-submit-container {
     padding: var(--apple-spacing-sm);
   }
+  
+  .paper-submit-card {
+    margin: 0;
 
-  .paper-submit-card .card-header {
-    padding: var(--apple-spacing-md);
-
-    .card-title {
-      font-size: var(--apple-fs-body-strong);
+    .card-header {
+      padding: var(--apple-spacing-md);
+      
+      .card-title {
+        font-size: var(--apple-fs-body-strong);
+      }
     }
   }
-
+  
   .submit-steps {
     padding: var(--apple-spacing-md);
     gap: var(--apple-spacing-sm);
-
+    
     .step {
       .step-number {
         width: 36px;
         height: 36px;
         font-size: var(--apple-fs-caption);
       }
-
+      
       .step-content {
         .step-title {
           font-size: var(--apple-fs-fine-print);
@@ -1402,40 +1115,44 @@ const resetForm = () => {
       }
     }
   }
-
+  
   .step-content {
     padding: 0 var(--apple-spacing-md) var(--apple-spacing-md);
   }
-
+  
   .paper-form {
     .form-group {
       margin-bottom: var(--apple-spacing-md);
     }
   }
-
+  
   .upload-area {
     padding: var(--apple-spacing-lg);
   }
-
+  
   .confirm-content {
     padding: var(--apple-spacing-md);
-
-    .confirm-details {
-      .detail-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--apple-spacing-xs);
-
-        .detail-value {
-          width: 100%;
-          text-align: left;
-        }
+    
+    .detail-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--apple-spacing-xs);
+      
+      .detail-value {
+        text-align: left;
+        width: 100%;
       }
     }
   }
-
+  
   .step-actions {
     padding: var(--apple-spacing-md);
+    flex-direction: column;
+    
+    .btn {
+      width: 100%;
+      justify-content: center;
+    }
   }
 }
 </style>

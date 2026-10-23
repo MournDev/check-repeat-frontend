@@ -894,29 +894,30 @@ onMounted(async () => {
 <style lang="scss" scoped>
 // 全局样式
 .check-history-page {
-  padding: 24px;
+  padding: var(--apple-spacing-lg);
   min-height: 100vh;
   background: var(--apple-canvas-parchment); // Slate-50
-  color: var(--apple-slate-ink); // Slate-900
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--apple-ink); // Slate-900
+  font-family: var(--apple-font-text);
 
   .back-button {
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 8px 16px;
-    border: 1px solid var(--apple-slate-border);
-    border-radius: 11px;
-    background: white;
-    color: var(--apple-slate-muted);
-    font-size: 0.875rem;
-    font-weight: 600;
+    padding: 7px 14px;
+    border: 1px solid var(--apple-hairline);
+    border-radius: var(--apple-rounded-md);
+    background: var(--apple-surface);
+    color: var(--apple-ink-secondary);
+    font-size: var(--apple-fs-caption);
+    font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
 
     &:hover {
-      border-color: var(--apple-slate-border-strong);
+      border-color: var(--apple-hairline);
       background: var(--apple-canvas-parchment);
+      color: var(--apple-ink);
       /* translateY removed */
     }
   }
@@ -925,64 +926,67 @@ onMounted(async () => {
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 8px 16px;
-    border: 1px solid var(--apple-slate-border);
-    border-radius: 11px;
-    background: white;
-    color: var(--apple-slate-muted);
-    font-size: 0.875rem;
-    font-weight: 600;
+    padding: 7px 14px;
+    border: 1px solid var(--apple-hairline);
+    border-radius: var(--apple-rounded-md);
+    background: var(--apple-surface);
+    color: var(--apple-ink-secondary);
+    font-size: var(--apple-fs-caption);
+    font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
 
     &:hover {
-      border-color: var(--apple-slate-border-strong);
+      border-color: var(--apple-hairline);
       background: var(--apple-canvas-parchment);
+      color: var(--apple-ink);
       /* translateY removed */
     }
   }
 
   // 论文信息卡片
   .paper-info-card {
-    background: white;
-    border: 1px solid var(--apple-slate-border);
-    border-radius: 18px;
-    padding: 24px;
-    margin-bottom: 24px;
+    background: var(--apple-surface);
+    border: 1px solid var(--apple-hairline);
+    border-radius: var(--apple-rounded-lg);
+    padding: var(--apple-spacing-lg);
+    margin-bottom: var(--apple-spacing-lg);
     transition: all 0.2s ease;
     
     &:hover {
-      border-color: var(--apple-slate-border-strong);
+      border-color: var(--apple-hairline);
     }
     
     .paper-header {
       .paper-title {
-        font-size: 1.25rem;
+        font-family: var(--apple-font-display);
+        font-size: var(--apple-fs-lead-airy);
         font-weight: 600;
-        color: var(--apple-slate-ink);
-        margin-bottom: 20px;
-        line-height: 1.3;
+        color: var(--apple-ink);
+        margin-bottom: var(--apple-spacing-md);
+        line-height: 1.25;
       }
       
       .paper-stats {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 20px;
+        gap: var(--apple-spacing-lg);
         
         .stat-item {
           .stat-label {
-            font-size: 0.75rem;
-            color: var(--apple-slate-sub);
-            margin-bottom: 6px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-size: var(--apple-fs-fine-print);
+            color: var(--apple-ink-muted-48);
+            margin-bottom: var(--apple-spacing-xxs);
+            font-weight: 500;
+            text-transform: none;
+            letter-spacing: 0;
           }
           
           .stat-value {
-            font-size: 1.25rem;
+            font-family: var(--apple-font-display);
+            font-size: var(--apple-fs-tagline);
             font-weight: 600;
-            color: var(--apple-slate-ink);
+            color: var(--apple-ink);
             
             &.excellent { color: var(--apple-success); }
             &.good { color: var(--apple-primary); }
@@ -996,61 +1000,63 @@ onMounted(async () => {
 
   // 趋势卡片
   .trend-card {
-    background: white;
-    border: 1px solid var(--apple-slate-border);
-    border-radius: 18px;
-    padding: 24px;
-    margin-bottom: 24px;
+    background: var(--apple-surface);
+    border: 1px solid var(--apple-hairline);
+    border-radius: var(--apple-rounded-lg);
+    padding: var(--apple-spacing-lg);
+    margin-bottom: var(--apple-spacing-lg);
     transition: all 0.2s ease;
     
     &:hover {
-      border-color: var(--apple-slate-border-strong);
+      border-color: var(--apple-hairline);
     }
     
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 24px;
+      margin-bottom: var(--apple-spacing-md);
       
       .card-title {
         display: flex;
         align-items: center;
         gap: 8px;
-        font-size: 1.125rem;
+        font-family: var(--apple-font-display);
+        font-size: var(--apple-fs-body-strong);
         font-weight: 600;
-        color: var(--apple-slate-ink);
+        color: var(--apple-ink);
         
         .el-icon {
-          color: var(--apple-slate-sub);
+          color: var(--apple-ink-muted-48);
         }
       }
       
       .trend-controls {
         .radio-group {
           display: flex;
-          gap: 4px;
-          background: var(--apple-canvas-parchment);
-          border: 1px solid var(--apple-slate-border);
-          border-radius: 11px;
-          padding: 4px;
+          gap: 2px;
+          background: var(--apple-divider-soft);
+          border: 1px solid var(--apple-hairline);
+          border-radius: var(--apple-rounded-sm);
+          padding: 3px;
           
           .radio-button {
-            padding: 6px 16px;
-            border-radius: 11px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--apple-slate-sub);
+            padding: 5px 12px;
+            border-radius: var(--apple-rounded-xs);
+            font-size: var(--apple-fs-fine-print);
+            font-weight: 500;
+            color: var(--apple-ink-secondary);
             cursor: pointer;
             transition: all 0.2s ease;
             
             &.active {
-              background: white;
-              color: var(--apple-slate-ink);
+              background: var(--apple-surface);
+              color: var(--apple-ink);
+              box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
             }
             
             &:hover:not(.active) {
-              color: var(--apple-slate-body);
+              color: var(--apple-ink);
             }
           }
         }
@@ -1060,12 +1066,13 @@ onMounted(async () => {
     .trend-chart-container {
       display: grid;
       grid-template-columns: 1fr 280px;
-      gap: 24px;
+      gap: var(--apple-spacing-lg);
       
       .chart-wrapper {
-        background: var(--apple-canvas-parchment);
-        border-radius: 11px;
-        padding: 20px;
+        background: var(--apple-surface);
+        border: 1px solid var(--apple-divider-soft);
+        border-radius: var(--apple-rounded-md);
+        padding: var(--apple-spacing-md);
         min-height: 400px;
         display: flex;
         align-items: center;
@@ -1075,27 +1082,28 @@ onMounted(async () => {
       .trend-summary {
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        gap: var(--apple-spacing-md);
         
         .summary-item {
           .summary-label {
-            font-size: 0.75rem;
-            color: var(--apple-slate-sub);
-            margin-bottom: 6px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-size: var(--apple-fs-fine-print);
+            color: var(--apple-ink-muted-48);
+            margin-bottom: var(--apple-spacing-xxs);
+            font-weight: 500;
+            text-transform: none;
+            letter-spacing: 0;
           }
           
           .summary-value {
-            font-size: 1.25rem;
+            font-family: var(--apple-font-display);
+            font-size: var(--apple-fs-tagline);
             font-weight: 600;
             
             &.decreasing { color: var(--apple-success); }
             &.increasing { color: var(--apple-danger); }
-            &.stable { color: var(--apple-slate-faint); }
+            &.stable { color: var(--apple-ink-muted-48); }
             &.improvement { color: var(--apple-success); }
-            &.best { color: #8b5cf6; }
+            &.best { color: var(--apple-primary); }
           }
         }
       }
@@ -1110,59 +1118,61 @@ onMounted(async () => {
     }
 
     .trend-empty {
-      padding: 80px 0;
+      padding: 64px 0;
       text-align: center;
-      color: var(--apple-slate-faint);
-      font-size: 0.875rem;
+      color: var(--apple-ink-muted-48);
+      font-size: var(--apple-fs-caption);
     }
   }
 
   // 历史卡片
   .history-card {
-    background: white;
-    border: 1px solid var(--apple-slate-border);
-    border-radius: 18px;
-    padding: 24px;
-    margin-bottom: 24px;
+    background: var(--apple-surface);
+    border: 1px solid var(--apple-hairline);
+    border-radius: var(--apple-rounded-lg);
+    padding: var(--apple-spacing-lg);
+    margin-bottom: var(--apple-spacing-lg);
     transition: all 0.2s ease;
     
     &:hover {
-      border-color: var(--apple-slate-border-strong);
+      border-color: var(--apple-hairline);
     }
     
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 24px;
+      margin-bottom: var(--apple-spacing-md);
       
       .card-title {
         display: flex;
         align-items: center;
         gap: 8px;
-        font-size: 1.125rem;
+        font-family: var(--apple-font-display);
+        font-size: var(--apple-fs-body-strong);
         font-weight: 600;
-        color: var(--apple-slate-ink);
+        color: var(--apple-ink);
         
         .el-icon {
-          color: var(--apple-slate-sub);
+          color: var(--apple-ink-muted-48);
         }
       }
       
       .text-button {
-        padding: 6px 12px;
+        padding: 6px 10px;
         background: transparent;
         border: none;
-        color: var(--apple-slate-sub);
-        font-size: 0.875rem;
-        font-weight: 600;
+        border-radius: var(--apple-rounded-sm);
+        color: var(--apple-primary);
+        font-size: var(--apple-fs-caption);
+        font-weight: 500;
         cursor: pointer;
         transition: all 0.2s ease;
         
         &:hover {
-          color: var(--apple-slate-ink);
-          background: var(--apple-canvas-parchment);
-          border-radius: 11px;
+          color: var(--apple-primary-hover);
+          background: var(--apple-info-bg);
+          border-radius: var(--apple-rounded-sm);
         }
       }
     }
@@ -1179,7 +1189,7 @@ onMounted(async () => {
           top: 0;
           bottom: 0;
           width: 2px;
-          background: var(--apple-slate-border);
+          background: var(--apple-hairline);
         }
         
         .timeline-item {
@@ -1198,7 +1208,7 @@ onMounted(async () => {
             height: 16px;
             border-radius: 50%;
             background: var(--apple-slate-border-strong);
-            border: 2px solid white;
+            border: 2px solid var(--apple-surface);
 
             &.success {
               background: var(--apple-success);
@@ -1223,35 +1233,35 @@ onMounted(async () => {
             top: 20px;
             bottom: -32px;
             width: 2px;
-            background: var(--apple-slate-border);
+            background: var(--apple-hairline);
           }
           
           .timeline-content {
             .timeline-timestamp {
-              font-size: 0.75rem;
-              color: var(--apple-slate-faint);
-              margin-bottom: 8px;
-              font-weight: 600;
+              margin-bottom: 6px;
+              font-size: var(--apple-fs-fine-print);
+              font-weight: 500;
+              color: var(--apple-ink-muted-48);
             }
             
             .history-record {
-              padding: 20px;
-              background: var(--apple-canvas-parchment);
-              border: 1px solid var(--apple-slate-border);
-              border-radius: 11px;
+              padding: var(--apple-spacing-md);
+              background: var(--apple-surface);
+              border: 1px solid var(--apple-hairline);
+              border-radius: var(--apple-rounded-md);
               transition: all 0.2s ease;
               
               &:hover {
-                border-color: var(--apple-slate-border-strong);
+                border-color: var(--apple-hairline);
               }
 
               &:active {
-                transform: scale(0.95);
+                transform: none;
               }
 
               &.current-version {
-                border-color: #8b5cf6;
-                background: rgba(139, 92, 246, 0.05);
+                border-color: var(--apple-primary);
+                background: var(--apple-info-bg);
               }
               
               .record-header {
@@ -1263,14 +1273,20 @@ onMounted(async () => {
                 .version-info {
                   display: flex;
                   align-items: center;
-                  gap: 12px;
+                  gap: var(--apple-spacing-xs);
                   flex-wrap: wrap;
+
+                  :deep(.el-tag) {
+                    border-radius: var(--apple-rounded-pill);
+                    font-size: var(--apple-fs-fine-print);
+                    font-weight: 600;
+                  }
                   
                   .similarity-badge {
-                    padding: 4px 12px;
-                    border-radius: 16px;
+                    padding: 3px 10px;
+                    border-radius: var(--apple-rounded-pill);
                     font-weight: 600;
-                    font-size: 0.75rem;
+                    font-size: var(--apple-fs-fine-print);
                     
                     &.excellent { background: var(--apple-success-bg); color: var(--apple-success); }
                     &.good { background: var(--apple-info-bg); color: var(--apple-primary); }
@@ -1282,20 +1298,20 @@ onMounted(async () => {
                 
                 .record-actions {
                   display: flex;
-                  gap: 8px;
+                  gap: var(--apple-spacing-xxs);
                 }
               }
               
               .record-content {
                 .p5-metric-row {
                   display: flex;
-                  gap: 16px;
-                  margin-bottom: 12px;
+                  gap: var(--apple-spacing-md);
+                  margin-bottom: var(--apple-spacing-sm);
 
                   .p5-metric-item {
-                    font-size: 0.75rem;
-                    font-weight: 600;
-                    color: var(--apple-slate-sub);
+                    font-size: var(--apple-fs-fine-print);
+                    font-weight: 500;
+                    color: var(--apple-ink-muted-48);
                   }
                 }
 
@@ -1303,32 +1319,34 @@ onMounted(async () => {
                   display: flex;
                   align-items: flex-start;
                   gap: 8px;
-                  margin-bottom: 16px;
-                  color: var(--apple-slate-muted);
+                  margin-bottom: var(--apple-spacing-sm);
+                  color: var(--apple-ink-secondary);
                   line-height: 1.5;
-                  font-size: 0.875rem;
+                  font-size: var(--apple-fs-caption);
                   
                   .el-icon {
                     margin-top: 3px;
-                    color: #8b5cf6;
+                    color: var(--apple-primary);
                   }
                 }
                 
                 .improvement-info {
                   display: flex;
                   align-items: center;
-                  gap: 8px;
-                  margin-bottom: 16px;
+                  gap: var(--apple-spacing-xs);
+                  margin-bottom: var(--apple-spacing-sm);
+                  color: var(--apple-ink-muted-48);
+                  font-size: var(--apple-fs-caption);
                   
                   .improvement-badge {
-                    padding: 4px 12px;
-                    border-radius: 16px;
+                    padding: 3px 10px;
+                    border-radius: var(--apple-rounded-pill);
                     font-weight: 600;
-                    font-size: 0.75rem;
+                    font-size: var(--apple-fs-fine-print);
                     
                     &.improved { background: var(--apple-success-bg); color: var(--apple-success); }
                     &.regressed { background: var(--apple-danger-bg); color: var(--apple-danger); }
-                    &.unchanged { background: var(--apple-slate-bg); color: var(--apple-slate-sub); }
+                    &.unchanged { background: var(--apple-divider-soft); color: var(--apple-ink-muted-48); }
                   }
                 }
                 
@@ -1336,25 +1354,25 @@ onMounted(async () => {
                   .section-change {
                     display: flex;
                     justify-content: space-between;
-                    padding: 8px 0;
-                    border-bottom: 1px solid var(--apple-slate-border);
+                    padding: 6px 0;
+                    border-bottom: 1px solid var(--apple-divider-soft);
                     
                     &:last-child {
                       border-bottom: none;
                     }
                     
                     .section-name {
-                      color: var(--apple-slate-sub);
-                      font-size: 0.875rem;
+                      color: var(--apple-ink-secondary);
+                      font-size: var(--apple-fs-caption);
                     }
                     
                     .change-value {
                       font-weight: 600;
-                      font-size: 0.875rem;
+                      font-size: var(--apple-fs-caption);
                       
                       &.decreased { color: var(--apple-success); }
                       &.increased { color: var(--apple-danger); }
-                      &.unchanged { color: var(--apple-slate-faint); }
+                      &.unchanged { color: var(--apple-ink-muted-48); }
                     }
                   }
                 }
@@ -1372,81 +1390,83 @@ onMounted(async () => {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 30px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--apple-slate-border);
+      margin-bottom: var(--apple-spacing-lg);
+      padding-bottom: var(--apple-spacing-md);
+      border-bottom: 1px solid var(--apple-divider-soft);
       
       .version-tags {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: var(--apple-spacing-sm);
         
         .version-tag {
-          padding: 4px 12px;
-          border-radius: 16px;
-          font-size: 0.875rem;
+          padding: 3px 12px;
+          border-radius: var(--apple-rounded-pill);
+          font-size: var(--apple-fs-caption);
           font-weight: 600;
           
           &.old {
-            background: var(--apple-slate-bg);
-            color: var(--apple-slate-sub);
+            background: var(--apple-divider-soft);
+            color: var(--apple-ink-secondary);
           }
           &.current {
             background: var(--apple-primary);
-            color: white;
+            color: var(--apple-on-primary);
           }
         }
         
         .vs {
+          font-size: var(--apple-fs-fine-print);
           font-weight: 600;
-          color: var(--apple-slate-faint);
+          color: var(--apple-ink-muted-48);
         }
       }
       
       .overall-change {
-        font-size: 1rem;
+        font-family: var(--apple-font-display);
+        font-size: var(--apple-fs-body-strong);
         font-weight: 600;
         
         &.improved { color: var(--apple-success); }
         &.regressed { color: var(--apple-danger); }
-        &.unchanged { color: var(--apple-slate-faint); }
+        &.unchanged { color: var(--apple-ink-muted-48); }
       }
     }
     
     .compare-sections {
       .section-compare-card {
-        background: white;
-        border: 1px solid var(--apple-slate-border);
-        border-radius: 11px;
-        padding: 20px;
-        margin-bottom: 16px;
+        background: var(--apple-surface);
+        border: 1px solid var(--apple-hairline);
+        border-radius: var(--apple-rounded-md);
+        padding: var(--apple-spacing-md);
+        margin-bottom: var(--apple-spacing-sm);
         transition: all 0.2s ease;
         
         &:hover {
-          border-color: var(--apple-slate-border-strong);
+          border-color: var(--apple-hairline);
         }
 
         .section-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 16px;
+          margin-bottom: var(--apple-spacing-sm);
           
           .section-name {
             font-weight: 600;
-            color: var(--apple-slate-ink);
-            font-size: 0.875rem;
+            color: var(--apple-ink);
+            font-size: var(--apple-fs-caption);
           }
           
           .change-tag {
-            padding: 2px 8px;
-            border-radius: 18px;
-            font-size: 0.75rem;
+            padding: 3px 10px;
+            border-radius: var(--apple-rounded-pill);
+            font-size: var(--apple-fs-fine-print);
             font-weight: 600;
             
             &.success { background: var(--apple-success-bg); color: var(--apple-success); }
             &.danger { background: var(--apple-danger-bg); color: var(--apple-danger); }
-            &.info { background: var(--apple-slate-bg); color: var(--apple-slate-sub); }
+            &.info { background: var(--apple-divider-soft); color: var(--apple-ink-muted-48); }
           }
         }
         
@@ -1454,26 +1474,26 @@ onMounted(async () => {
           .similarity-item {
             display: flex;
             align-items: center;
-            gap: 16px;
-            margin-bottom: 12px;
+            gap: var(--apple-spacing-sm);
+            margin-bottom: var(--apple-spacing-xs);
             
             .version-label {
               width: 60px;
-              font-size: 0.75rem;
-              color: var(--apple-slate-sub);
-              font-weight: 600;
+              font-size: var(--apple-fs-fine-print);
+              color: var(--apple-ink-muted-48);
+              font-weight: 500;
             }
             
             .progress-container {
               flex: 1;
-              height: 8px;
-              background: var(--apple-slate-border);
-              border-radius: 11px;
+              height: 6px;
+              background: var(--apple-divider-soft);
+              border-radius: var(--apple-rounded-pill);
               overflow: hidden;
               
               .progress-bar {
                 height: 100%;
-                border-radius: 11px;
+                border-radius: var(--apple-rounded-pill);
                 transition: width 0.3s ease;
                 
                 &.excellent { background: var(--apple-success); }
@@ -1486,8 +1506,8 @@ onMounted(async () => {
             .similarity-value {
               min-width: 50px;
               font-weight: 600;
-              color: var(--apple-slate-ink);
-              font-size: 0.875rem;
+              color: var(--apple-ink);
+              font-size: var(--apple-fs-caption);
             }
           }
         }
@@ -1499,32 +1519,32 @@ onMounted(async () => {
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 16px;
+    gap: var(--apple-spacing-sm);
     
     .stat-card {
-      background: white;
-      border: 1px solid var(--apple-slate-border);
-      border-radius: 18px;
-      padding: 20px;
+      background: var(--apple-surface);
+      border: 1px solid var(--apple-hairline);
+      border-radius: var(--apple-rounded-lg);
+      padding: var(--apple-spacing-md);
       transition: all 0.2s ease;
       
       &:hover {
-        border-color: var(--apple-slate-border-strong);
+        border-color: var(--apple-hairline);
       }
 
       &:active {
-        transform: scale(0.95);
+        transform: none;
       }
 
       .stat-content {
         display: flex;
         align-items: center;
-        gap: 16px;
+        gap: var(--apple-spacing-sm);
         
         .stat-icon {
-          width: 48px;
-          height: 48px;
-          border-radius: 18px;
+          width: 44px;
+          height: 44px;
+          border-radius: var(--apple-rounded-md);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -1547,17 +1567,18 @@ onMounted(async () => {
         
         .stat-info {
           .stat-number {
-            font-size: 1.75rem;
+            font-family: var(--apple-font-display);
+            font-size: var(--apple-fs-lead-airy);
             font-weight: 600;
-            color: var(--apple-slate-ink);
+            color: var(--apple-ink);
             line-height: 1.2;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
           }
           
           .stat-label {
-            font-size: 0.875rem;
-            color: var(--apple-slate-sub);
-            font-weight: 600;
+            font-size: var(--apple-fs-fine-print);
+            color: var(--apple-ink-muted-48);
+            font-weight: 500;
           }
         }
       }
@@ -1585,10 +1606,16 @@ onMounted(async () => {
 
 @media (max-width: 768px) {
   .check-history-page {
-    padding: 16px;
+    padding: var(--apple-spacing-sm);
 
     .paper-info-card {
-      padding: 20px;
+      padding: var(--apple-spacing-md);
+      
+      .paper-header {
+        .paper-title {
+          font-size: var(--apple-fs-tagline);
+        }
+      }
       
       .paper-stats {
         grid-template-columns: 1fr;
@@ -1597,7 +1624,7 @@ onMounted(async () => {
     }
     
     .trend-card {
-      padding: 20px;
+      padding: var(--apple-spacing-md);
       
       .trend-chart-container {
         gap: 16px;
@@ -1610,7 +1637,7 @@ onMounted(async () => {
     }
     
     .history-card {
-      padding: 20px;
+      padding: var(--apple-spacing-md);
       
       .timeline-container {
         .timeline {
@@ -1626,7 +1653,7 @@ onMounted(async () => {
             }
             
             .history-record {
-              padding: 16px;
+              padding: var(--apple-spacing-sm);
               
               .record-header {
                 flex-direction: column;
@@ -1646,579 +1673,7 @@ onMounted(async () => {
     
     .stats-grid {
       grid-template-columns: 1fr;
-    }
-  }
-}
-
-// ── 视觉统一（design-tokens 覆盖层） ────────────────────────
-.check-history-page {
-  padding: var(--apple-spacing-lg);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
-
-  .back-button,
-  .refresh-button {
-    padding: 7px 14px;
-    background: var(--apple-surface);
-    border-color: var(--apple-hairline);
-    border-radius: var(--apple-rounded-md);
-    color: var(--apple-ink-secondary);
-    font-size: var(--apple-fs-caption);
-    font-weight: 500;
-
-    &:hover {
-      background: var(--apple-canvas-parchment);
-      border-color: var(--apple-hairline);
-      color: var(--apple-ink);
-    }
-  }
-
-  .paper-info-card,
-  .trend-card,
-  .history-card {
-    padding: var(--apple-spacing-lg);
-    margin-bottom: var(--apple-spacing-lg);
-    background: var(--apple-surface);
-    border: 1px solid var(--apple-hairline);
-    border-radius: var(--apple-rounded-lg);
-
-    &:hover {
-      border-color: var(--apple-hairline);
-    }
-  }
-
-  .paper-info-card {
-    .paper-header {
-      .paper-title {
-        margin-bottom: var(--apple-spacing-md);
-        font-family: var(--apple-font-display);
-        font-size: var(--apple-fs-lead-airy);
-        font-weight: 600;
-        line-height: 1.25;
-        color: var(--apple-ink);
-      }
-
-      .paper-stats {
-        gap: var(--apple-spacing-lg);
-      }
-    }
-
-    .stat-item {
-      .stat-label {
-        margin-bottom: var(--apple-spacing-xxs);
-        font-size: var(--apple-fs-fine-print);
-        font-weight: 500;
-        color: var(--apple-ink-muted-48);
-        letter-spacing: 0;
-        text-transform: none;
-      }
-
-      .stat-value {
-        font-family: var(--apple-font-display);
-        font-size: var(--apple-fs-tagline);
-        font-weight: 600;
-        color: var(--apple-ink);
-
-        &.excellent,
-        &.lowest {
-          color: var(--apple-success);
-        }
-        &.good {
-          color: var(--apple-primary);
-        }
-        &.warning {
-          color: var(--apple-warning);
-        }
-      }
-    }
-  }
-
-  .trend-card,
-  .history-card {
-    .card-header {
-      margin-bottom: var(--apple-spacing-md);
-
-      .card-title {
-        font-family: var(--apple-font-display);
-        font-size: var(--apple-fs-body-strong);
-        font-weight: 600;
-        color: var(--apple-ink);
-
-        .el-icon {
-          color: var(--apple-ink-muted-48);
-        }
-      }
-
-      .text-button {
-        padding: 6px 10px;
-        border-radius: var(--apple-rounded-sm);
-        color: var(--apple-primary);
-        font-size: var(--apple-fs-caption);
-        font-weight: 500;
-
-        &:hover {
-          background: var(--apple-info-bg);
-          border-radius: var(--apple-rounded-sm);
-          color: var(--apple-primary-hover);
-        }
-      }
-    }
-  }
-
-  .trend-controls {
-    .radio-group {
-      gap: 2px;
-      padding: 3px;
-      background: var(--apple-divider-soft);
-      border: 1px solid var(--apple-hairline);
-      border-radius: var(--apple-rounded-sm);
-
-      .radio-button {
-        padding: 5px 12px;
-        border-radius: var(--apple-rounded-xs);
-        font-size: var(--apple-fs-fine-print);
-        font-weight: 500;
-        color: var(--apple-ink-secondary);
-
-        &.active {
-          background: var(--apple-surface);
-          color: var(--apple-ink);
-          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
-        }
-
-        &:hover:not(.active) {
-          color: var(--apple-ink);
-        }
-      }
-    }
-  }
-
-  .trend-card {
-    .trend-chart-container {
-      gap: var(--apple-spacing-lg);
-
-      .chart-wrapper {
-        padding: var(--apple-spacing-md);
-        background: var(--apple-surface);
-        border: 1px solid var(--apple-divider-soft);
-        border-radius: var(--apple-rounded-md);
-      }
-
-      .trend-summary {
-        gap: var(--apple-spacing-md);
-
-        .summary-item {
-          .summary-label {
-            margin-bottom: var(--apple-spacing-xxs);
-            font-size: var(--apple-fs-fine-print);
-            font-weight: 500;
-            color: var(--apple-ink-muted-48);
-            letter-spacing: 0;
-            text-transform: none;
-          }
-
-          .summary-value {
-            font-family: var(--apple-font-display);
-            font-size: var(--apple-fs-tagline);
-            font-weight: 600;
-
-            &.decreasing,
-            &.improvement {
-              color: var(--apple-success);
-            }
-            &.increasing {
-              color: var(--apple-danger);
-            }
-            &.stable {
-              color: var(--apple-ink-muted-48);
-            }
-            &.best {
-              color: var(--apple-primary);
-            }
-          }
-        }
-      }
-    }
-  }
-
-  .p5-trend-card {
-    .trend-empty {
-      padding: 64px 0;
-      color: var(--apple-ink-muted-48);
-      font-size: var(--apple-fs-caption);
-    }
-  }
-
-  .history-card {
-    .timeline-container {
-      .timeline {
-        &::before {
-          background: var(--apple-hairline);
-        }
-
-        .timeline-item {
-          .timeline-node {
-            border: 2px solid var(--apple-surface);
-          }
-
-          .timeline-line {
-            background: var(--apple-hairline);
-          }
-
-          .timeline-content {
-            .timeline-timestamp {
-              margin-bottom: 6px;
-              font-size: var(--apple-fs-fine-print);
-              font-weight: 500;
-              color: var(--apple-ink-muted-48);
-            }
-
-            .history-record {
-              padding: var(--apple-spacing-md);
-              background: var(--apple-surface);
-              border: 1px solid var(--apple-hairline);
-              border-radius: var(--apple-rounded-md);
-
-              &:hover {
-                border-color: var(--apple-hairline);
-              }
-
-              &:active {
-                transform: none;
-              }
-
-              &.current-version {
-                background: var(--apple-info-bg);
-                border-color: var(--apple-primary);
-              }
-
-              .record-header {
-                .version-info {
-                  gap: var(--apple-spacing-xs);
-
-                  :deep(.el-tag) {
-                    border-radius: var(--apple-rounded-pill);
-                    font-size: var(--apple-fs-fine-print);
-                    font-weight: 600;
-                  }
-
-                  .similarity-badge {
-                    padding: 3px 10px;
-                    border-radius: var(--apple-rounded-pill);
-                    font-size: var(--apple-fs-fine-print);
-                    font-weight: 600;
-                  }
-
-                  .similarity-badge {
-                    &.excellent {
-                      background: var(--apple-success-bg);
-                      color: var(--apple-success);
-                    }
-                    &.good {
-                      background: var(--apple-info-bg);
-                      color: var(--apple-primary);
-                    }
-                    &.warning {
-                      background: var(--apple-warning-bg);
-                      color: var(--apple-warning);
-                    }
-                    &.danger {
-                      background: var(--apple-danger-bg);
-                      color: var(--apple-danger);
-                    }
-                  }
-                }
-
-                .record-actions {
-                  gap: var(--apple-spacing-xxs);
-                }
-              }
-
-              .record-content {
-                .p5-metric-row {
-                  gap: var(--apple-spacing-md);
-                  margin-bottom: var(--apple-spacing-sm);
-
-                  .p5-metric-item {
-                    font-size: var(--apple-fs-fine-print);
-                    font-weight: 500;
-                    color: var(--apple-ink-muted-48);
-                  }
-                }
-
-                .changes-description {
-                  margin-bottom: var(--apple-spacing-sm);
-                  color: var(--apple-ink-secondary);
-                  font-size: var(--apple-fs-caption);
-
-                  .el-icon {
-                    color: var(--apple-primary);
-                  }
-                }
-
-                .improvement-info {
-                  gap: var(--apple-spacing-xs);
-                  margin-bottom: var(--apple-spacing-sm);
-                  color: var(--apple-ink-muted-48);
-                  font-size: var(--apple-fs-caption);
-
-                  .improvement-badge {
-                    padding: 3px 10px;
-                    border-radius: var(--apple-rounded-pill);
-                    font-size: var(--apple-fs-fine-print);
-                    font-weight: 600;
-
-                    &.improved {
-                      background: var(--apple-success-bg);
-                      color: var(--apple-success);
-                    }
-                    &.regressed {
-                      background: var(--apple-danger-bg);
-                      color: var(--apple-danger);
-                    }
-                    &.unchanged {
-                      background: var(--apple-divider-soft);
-                      color: var(--apple-ink-muted-48);
-                    }
-                  }
-                }
-
-                .section-changes {
-                  .section-change {
-                    padding: 6px 0;
-                    border-bottom-color: var(--apple-divider-soft);
-
-                    .section-name {
-                      font-size: var(--apple-fs-caption);
-                      color: var(--apple-ink-secondary);
-                    }
-
-                    .change-value {
-                      font-size: var(--apple-fs-caption);
-                      font-weight: 600;
-
-                      &.decreased {
-                        color: var(--apple-success);
-                      }
-                      &.increased {
-                        color: var(--apple-danger);
-                      }
-                      &.unchanged {
-                        color: var(--apple-ink-muted-48);
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  .compare-content {
-    .compare-header {
-      margin-bottom: var(--apple-spacing-lg);
-      padding-bottom: var(--apple-spacing-md);
-      border-bottom: 1px solid var(--apple-divider-soft);
-
-      .version-tags {
-        gap: var(--apple-spacing-sm);
-
-        .version-tag {
-          padding: 3px 12px;
-          border-radius: var(--apple-rounded-pill);
-          font-size: var(--apple-fs-caption);
-          font-weight: 600;
-
-          &.old {
-            background: var(--apple-divider-soft);
-            color: var(--apple-ink-secondary);
-          }
-          &.current {
-            background: var(--apple-primary);
-            color: var(--apple-on-primary);
-          }
-        }
-
-        .vs {
-          font-size: var(--apple-fs-fine-print);
-          font-weight: 600;
-          color: var(--apple-ink-muted-48);
-        }
-      }
-
-      .overall-change {
-        font-family: var(--apple-font-display);
-        font-size: var(--apple-fs-body-strong);
-        font-weight: 600;
-
-        &.improved {
-          color: var(--apple-success);
-        }
-        &.regressed {
-          color: var(--apple-danger);
-        }
-        &.unchanged {
-          color: var(--apple-ink-muted-48);
-        }
-      }
-    }
-
-    .compare-sections {
-      .section-compare-card {
-        padding: var(--apple-spacing-md);
-        margin-bottom: var(--apple-spacing-sm);
-        background: var(--apple-surface);
-        border: 1px solid var(--apple-hairline);
-        border-radius: var(--apple-rounded-md);
-
-        &:hover {
-          border-color: var(--apple-hairline);
-        }
-
-        .section-header {
-          margin-bottom: var(--apple-spacing-sm);
-
-          .section-name {
-            font-size: var(--apple-fs-caption);
-            font-weight: 600;
-            color: var(--apple-ink);
-          }
-
-          .change-tag {
-            padding: 3px 10px;
-            border-radius: var(--apple-rounded-pill);
-            font-size: var(--apple-fs-fine-print);
-            font-weight: 600;
-
-            &.success {
-              background: var(--apple-success-bg);
-              color: var(--apple-success);
-            }
-            &.danger {
-              background: var(--apple-danger-bg);
-              color: var(--apple-danger);
-            }
-            &.info {
-              background: var(--apple-divider-soft);
-              color: var(--apple-ink-muted-48);
-            }
-          }
-        }
-
-        .similarity-compare {
-          .similarity-item {
-            gap: var(--apple-spacing-sm);
-            margin-bottom: var(--apple-spacing-xs);
-
-            .version-label {
-              font-size: var(--apple-fs-fine-print);
-              font-weight: 500;
-              color: var(--apple-ink-muted-48);
-            }
-
-            .progress-container {
-              height: 6px;
-              background: var(--apple-divider-soft);
-              border-radius: var(--apple-rounded-pill);
-
-              .progress-bar {
-                border-radius: var(--apple-rounded-pill);
-              }
-            }
-
-            .similarity-value {
-              font-size: var(--apple-fs-caption);
-              font-weight: 600;
-              color: var(--apple-ink);
-            }
-          }
-        }
-      }
-    }
-  }
-
-  .stats-grid {
-    gap: var(--apple-spacing-sm);
-
-    .stat-card {
-      padding: var(--apple-spacing-md);
-      background: var(--apple-surface);
-      border: 1px solid var(--apple-hairline);
-      border-radius: var(--apple-rounded-lg);
-
-      &:hover {
-        border-color: var(--apple-hairline);
-      }
-
-      &:active {
-        transform: none;
-      }
-
-      .stat-content {
-        gap: var(--apple-spacing-sm);
-
-        .stat-icon {
-          width: 44px;
-          height: 44px;
-          border-radius: var(--apple-rounded-md);
-        }
-
-        .stat-info {
-          .stat-number {
-            margin-bottom: 2px;
-            font-family: var(--apple-font-display);
-            font-size: var(--apple-fs-lead-airy);
-            font-weight: 600;
-            color: var(--apple-ink);
-          }
-
-          .stat-label {
-            font-size: var(--apple-fs-fine-print);
-            font-weight: 500;
-            color: var(--apple-ink-muted-48);
-          }
-        }
-      }
-    }
-  }
-}
-
-@media (max-width: 768px) {
-  .check-history-page {
-    padding: var(--apple-spacing-sm);
-
-    .paper-info-card,
-    .trend-card,
-    .history-card {
-      padding: var(--apple-spacing-md);
-    }
-
-    .paper-info-card {
-      .paper-header {
-        .paper-title {
-          font-size: var(--apple-fs-tagline);
-        }
-      }
-    }
-
-    .history-card {
-      .timeline-container {
-        .timeline {
-          .timeline-item {
-            .timeline-content {
-              .history-record {
-                padding: var(--apple-spacing-sm);
-              }
-            }
-          }
-        }
-      }
-    }
-
-    .stats-grid {
+      
       .stat-card {
         padding: var(--apple-spacing-md);
       }

@@ -604,14 +604,15 @@ onMounted(async () => {
 <style lang="scss" scoped>
 .school-overview {
   padding: 0;
+  font-family: var(--apple-font-text);
 }
 
 .overview-cards {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--apple-spacing-md);
   
   .overview-card {
     border: none;
-    border-radius: 18px;
+    border-radius: var(--apple-rounded-lg);
     
     .card-content {
       display: flex;
@@ -623,8 +624,8 @@ onMounted(async () => {
         justify-content: center;
         width: 48px;
         height: 48px;
-        border-radius: 18px;
-        margin-right: 1rem;
+        border-radius: var(--apple-rounded-lg);
+        margin-right: var(--apple-spacing-md);
         
         &.bg-primary {
           background: var(--apple-primary);
@@ -652,16 +653,16 @@ onMounted(async () => {
         flex: 1;
         
         .card-value {
-          font-size: 1.75rem;
+          font-size: var(--apple-fs-lead);
           font-weight: 700;
           color: var(--apple-ink);
           line-height: 1;
         }
         
         .card-label {
-          font-size: 0.875rem;
+          font-size: var(--apple-fs-fine-print);
           color: var(--apple-ink-secondary);
-          margin: 0.25rem 0;
+          margin: var(--apple-spacing-xxs) 0;
         }
       }
     }
@@ -670,13 +671,13 @@ onMounted(async () => {
 
 .charts-section {
   .chart-card {
-    border-radius: 18px;
-    border: 1px solid var(--apple-surface-chip-translucent);
-    margin-bottom: 1rem;
+    border-radius: var(--apple-rounded-lg);
+    border: 1px solid var(--apple-hairline);
+    margin-bottom: var(--apple-spacing-sm);
     
     :deep(.el-card__header) {
-      padding: 1rem 1.25rem;
-      border-bottom: 1px solid var(--apple-surface-chip-translucent);
+      padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+      border-bottom: 1px solid var(--apple-hairline);
       
       .card-header {
         display: flex;
@@ -685,11 +686,13 @@ onMounted(async () => {
         .card-title {
           display: flex;
           align-items: center;
+          font-family: var(--apple-font-display);
+          font-size: var(--apple-fs-body-strong);
           font-weight: 600;
           color: var(--apple-ink);
           
           .el-icon {
-            margin-right: 0.5rem;
+            margin-right: var(--apple-spacing-xs);
             color: var(--apple-primary);
           }
         }
@@ -723,13 +726,13 @@ onMounted(async () => {
 }
 
 .info-card {
-  border-radius: 18px;
-  border: 1px solid var(--apple-surface-chip-translucent);
-  margin-bottom: 1rem;
+  border-radius: var(--apple-rounded-lg);
+  border: 1px solid var(--apple-hairline);
+  margin-bottom: var(--apple-spacing-sm);
   
   :deep(.el-card__header) {
-    padding: 1rem 1.25rem;
-    border-bottom: 1px solid var(--apple-surface-chip-translucent);
+    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+    border-bottom: 1px solid var(--apple-hairline);
     
     .card-header {
       display: flex;
@@ -738,11 +741,13 @@ onMounted(async () => {
       .card-title {
         display: flex;
         align-items: center;
+        font-family: var(--apple-font-display);
+        font-size: var(--apple-fs-body-strong);
         font-weight: 600;
         color: var(--apple-ink);
         
         .el-icon {
-          margin-right: 0.5rem;
+          margin-right: var(--apple-spacing-xs);
           color: var(--apple-primary);
         }
       }
@@ -755,20 +760,20 @@ onMounted(async () => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid var(--apple-canvas-parchment);
+    padding: var(--apple-spacing-sm) 0;
+    border-bottom: 1px solid var(--apple-divider-soft);
     
     &:last-child {
       border-bottom: none;
     }
     
     .stat-label {
-      font-size: 0.875rem;
+      font-size: var(--apple-fs-fine-print);
       color: var(--apple-ink-secondary);
     }
     
     .stat-value {
-      font-size: 1.25rem;
+      font-size: var(--apple-fs-tagline);
       font-weight: 700;
       color: var(--apple-ink);
     }
@@ -778,7 +783,7 @@ onMounted(async () => {
 @media (max-width: 768px) {
   .page-header {
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--apple-spacing-sm);
     
     .header-actions {
       width: 100%;
@@ -791,95 +796,14 @@ onMounted(async () => {
   
   .overview-cards {
     .el-col {
-      margin-bottom: 0.75rem;
+      margin-bottom: var(--apple-spacing-sm);
     }
   }
   
   .charts-section {
     .el-col {
-      margin-bottom: 1rem;
+      margin-bottom: var(--apple-spacing-sm);
     }
-  }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.school-overview {
-  font-family: var(--apple-font-text);
-}
-
-.overview-cards {
-  margin-bottom: var(--apple-spacing-md);
-
-  .overview-card {
-    border-radius: var(--apple-rounded-lg);
-
-    .card-content {
-      .card-icon {
-        width: 48px;
-        height: 48px;
-        margin-right: var(--apple-spacing-md);
-        border-radius: var(--apple-rounded-lg);
-      }
-
-      .card-info {
-        .card-value {
-          font-size: var(--apple-fs-lead);
-        }
-
-        .card-label {
-          margin: var(--apple-spacing-xxs) 0;
-          font-size: var(--apple-fs-fine-print);
-        }
-      }
-    }
-  }
-}
-
-.charts-section .chart-card,
-.info-card {
-  margin-bottom: var(--apple-spacing-sm);
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-lg);
-
-  :deep(.el-card__header) {
-    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-    border-bottom: 1px solid var(--apple-hairline);
-  }
-}
-
-.charts-section .chart-card .card-header,
-.info-card .card-header {
-  .card-title {
-    font-size: var(--apple-fs-body-strong);
-    font-family: var(--apple-font-display);
-
-    .el-icon {
-      margin-right: var(--apple-spacing-xs);
-    }
-  }
-}
-
-.realtime-stats .stat-item {
-  padding: var(--apple-spacing-sm) 0;
-  border-bottom: 1px solid var(--apple-divider-soft);
-
-  .stat-label {
-    font-size: var(--apple-fs-fine-print);
-  }
-
-  .stat-value {
-    font-size: var(--apple-fs-tagline);
-  }
-}
-
-@media (max-width: 768px) {
-  .page-header {
-    gap: var(--apple-spacing-sm);
-  }
-
-  .overview-cards .el-col,
-  .charts-section .el-col {
-    margin-bottom: var(--apple-spacing-sm);
   }
 }
 </style>

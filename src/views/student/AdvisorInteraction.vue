@@ -936,31 +936,38 @@ onMounted(() => {
 <style lang="scss" scoped>
 .advisor-interaction-page {
   padding: 0;
+  color: var(--apple-ink);
+  font-family: var(--apple-font-text);
 }
 
 .interaction-content {
   .el-card {
-    border-radius: 18px;
-    border: 1px solid var(--apple-slate-border);
-    margin-bottom: 1.5rem;
+    border-radius: var(--apple-rounded-lg);
+    border: 1px solid var(--apple-hairline);
+    background: var(--apple-surface);
+    margin-bottom: var(--apple-spacing-md);
     
     :deep(.el-card__header) {
-      padding: 1rem 1.25rem;
-      border-bottom: 1px solid var(--apple-slate-border);
+      padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+      border-bottom: 1px solid var(--apple-divider-soft);
       
       .card-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: var(--apple-spacing-xs);
         
         .card-title {
           display: flex;
           align-items: center;
+          gap: var(--apple-spacing-xs);
+          font-family: var(--apple-font-display);
+          font-size: var(--apple-fs-body-strong);
           font-weight: 600;
           color: var(--apple-ink);
           
           .el-icon {
-            margin-right: 0.5rem;
+            margin-right: 0;
             color: var(--apple-primary);
           }
         }
@@ -974,37 +981,38 @@ onMounted(() => {
   .advisor-dialog-header {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
+    gap: var(--apple-spacing-md);
+    margin-bottom: var(--apple-spacing-md);
+    padding-bottom: var(--apple-spacing-md);
     border-bottom: 1px solid var(--apple-divider-soft);
 
     .advisor-dialog-title {
       h3 {
-        margin: 0 0 0.25rem 0;
-        font-size: 1.2rem;
+        margin: 0 0 var(--apple-spacing-xxs) 0;
+        font-family: var(--apple-font-display);
+        font-size: var(--apple-fs-tagline);
         font-weight: 600;
         color: var(--apple-ink);
       }
 
       p {
-        margin: 0 0 0.25rem 0;
+        margin: 0 0 var(--apple-spacing-xxs) 0;
         color: var(--apple-primary);
         font-weight: 600;
-        font-size: 0.9rem;
+        font-size: var(--apple-fs-caption);
       }
 
       .advisor-dialog-field {
         margin: 0;
-        color: var(--apple-ink-secondary);
-        font-size: 0.85rem;
+        color: var(--apple-ink-muted-48);
+        font-size: var(--apple-fs-fine-print);
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: var(--apple-spacing-xs);
 
         .el-icon {
           color: var(--apple-primary);
-          font-size: 16px;
+          font-size: var(--apple-fs-caption);
         }
       }
     }
@@ -1013,27 +1021,27 @@ onMounted(() => {
   .advisor-dialog-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-    margin-bottom: 1.25rem;
+    gap: var(--apple-spacing-sm);
+    margin-bottom: var(--apple-spacing-md);
   }
 
   .advisor-dialog-bio {
-    padding: 1rem;
+    padding: var(--apple-spacing-md);
     background: var(--apple-canvas-parchment);
-    border-radius: 11px;
+    border-radius: var(--apple-rounded-md);
 
     h4 {
-      margin: 0 0 0.5rem 0;
-      font-size: 0.9rem;
+      margin: 0 0 var(--apple-spacing-xs) 0;
+      font-size: var(--apple-fs-caption);
       font-weight: 600;
       color: var(--apple-ink);
     }
 
     p {
       margin: 0;
-      font-size: 0.85rem;
+      font-size: var(--apple-fs-caption);
       line-height: 1.5;
-      color: var(--apple-ink-secondary);
+      color: var(--apple-ink-muted-48);
     }
   }
 }
@@ -1041,14 +1049,14 @@ onMounted(() => {
 .detail-item {
   display: flex;
   align-items: flex-start;
-  gap: 0.75rem;
-  padding: 0.75rem;
+  gap: var(--apple-spacing-sm);
+  padding: var(--apple-spacing-sm);
   background: var(--apple-canvas-parchment);
-  border-radius: 11px;
+  border-radius: var(--apple-rounded-md);
 
   .detail-icon {
     color: var(--apple-primary);
-    font-size: 16px;
+    font-size: var(--apple-fs-caption);
     margin-top: 2px;
   }
 
@@ -1057,14 +1065,14 @@ onMounted(() => {
 
     .detail-label {
       display: block;
-      font-size: 0.75rem;
-      color: var(--apple-ink-secondary);
-      margin-bottom: 2px;
+      font-size: var(--apple-fs-fine-print);
+      color: var(--apple-ink-muted-48);
+      margin-bottom: var(--apple-spacing-xxs);
     }
 
     .detail-value {
       display: block;
-      font-size: 0.85rem;
+      font-size: var(--apple-fs-caption);
       color: var(--apple-ink);
       word-break: break-all;
     }
@@ -1074,7 +1082,7 @@ onMounted(() => {
 .sessions-list {
   .session-item {
     display: flex;
-    padding: 12px 16px;
+    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
@@ -1089,18 +1097,18 @@ onMounted(() => {
     }
     
     &.session-active {
-      background-color: var(--apple-success-bg);
+      background-color: var(--apple-info-bg);
     }
     
     .session-avatar {
-      margin-right: 12px;
+      margin-right: var(--apple-spacing-sm);
       flex-shrink: 0;
       position: relative;
       
       .el-avatar {
         width: 40px;
         height: 40px;
-        border-radius: 11px;
+        border-radius: var(--apple-rounded-md);
       }
     }
     
@@ -1112,25 +1120,25 @@ onMounted(() => {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 4px;
+        margin-bottom: var(--apple-spacing-xxs);
         
         .session-name {
           font-weight: 600;
           color: var(--apple-ink);
-          font-size: 17px;
+          font-size: var(--apple-fs-caption);
         }
         
         .session-time {
-          font-size: 11px;
-          color: var(--apple-ink-secondary);
+          font-size: var(--apple-fs-fine-print);
+          color: var(--apple-ink-muted-48);
           flex-shrink: 0;
-          margin-left: 8px;
+          margin-left: var(--apple-spacing-xs);
         }
       }
       
       .session-preview {
-        font-size: 13px;
-        color: var(--apple-ink-secondary);
+        font-size: var(--apple-fs-fine-print);
+        color: var(--apple-ink-muted-48);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -1139,8 +1147,8 @@ onMounted(() => {
       
       .session-meta {
         position: absolute;
-        top: 12px;
-        right: 16px;
+        top: var(--apple-spacing-sm);
+        right: var(--apple-spacing-md);
         
         .el-tag {
           font-size: 10px;
@@ -1149,7 +1157,7 @@ onMounted(() => {
           padding: 0 6px;
           border-radius: 10px;
           background: var(--apple-danger);
-          color: white;
+          color: var(--apple-on-primary);
           font-weight: 600;
         }
       }
@@ -1160,29 +1168,29 @@ onMounted(() => {
 .chat-container {
   height: 500px;
   overflow-y: auto;
-  padding: 1.25rem;
+  padding: var(--apple-spacing-md);
   background: var(--apple-canvas-parchment);
-  border-radius: 18px;
+  border-radius: var(--apple-rounded-lg);
   position: relative;
   scrollbar-width: thin;
   scrollbar-color: var(--apple-surface-chip-translucent) var(--apple-canvas-parchment);
   
   .loading-more {
     text-align: center;
-    padding: 12px;
-    color: var(--apple-ink-secondary);
-    font-size: 13px;
+    padding: var(--apple-spacing-sm);
+    color: var(--apple-ink-muted-48);
+    font-size: var(--apple-fs-fine-print);
   }
   
   .quick-replies {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 16px;
-    padding: 12px;
-    background: var(--apple-canvas-parchment);
-    border-radius: 18px;
-    border: 1px solid var(--apple-slate-border);
+    gap: var(--apple-spacing-xs);
+    margin-bottom: var(--apple-spacing-sm);
+    padding: var(--apple-spacing-sm);
+    background: var(--apple-surface);
+    border-radius: var(--apple-rounded-lg);
+    border: 1px solid var(--apple-hairline);
 
     .el-tag {
       cursor: pointer;
@@ -1202,20 +1210,20 @@ onMounted(() => {
   .messages-area {
       .time-separator {
         display: inline-block;
-        margin: 10px auto;
+        margin: var(--apple-spacing-xs) auto;
         padding: 4px 10px;
-        background: var(--apple-info-bg);
-        color: var(--apple-slate-sub);
-        font-size: 12px;
-        border-radius: 18px;
+        background: var(--apple-surface);
+        color: var(--apple-ink-muted-48);
+        font-size: var(--apple-fs-fine-print);
+        border-radius: var(--apple-rounded-pill);
         text-align: center;
       }
     .message-item {
         display: flex;
-        margin-bottom: 1rem;
+        margin-bottom: var(--apple-spacing-sm);
         animation: messageSlideIn 0.18s ease-out;
         align-items: flex-end;
-        gap: 8px;
+        gap: var(--apple-spacing-xs);
       
         @keyframes messageSlideIn {
           from {
@@ -1242,12 +1250,12 @@ onMounted(() => {
 
         .message-bubble {
           background: var(--apple-primary);
-          color: white;
+          color: var(--apple-on-primary);
           border: none;
           position: relative;
           max-width: 80%;
-          border-radius: 14px 14px 8px 14px;
-          padding: 10px 14px;
+          border-radius: var(--apple-rounded-md);
+          padding: 9px 13px;
           
           &::after {
             content: '';
@@ -1265,7 +1273,7 @@ onMounted(() => {
             color: rgba(255, 255, 255, 0.7);
           }
           
-          .message-text { font-size: 17px; color: white; }
+          .message-text { font-size: var(--apple-fs-caption); color: var(--apple-on-primary); }
         }
       }
 
@@ -1287,8 +1295,8 @@ onMounted(() => {
           border: 1px solid var(--apple-hairline);
           position: relative;
           max-width: 80%;
-          border-radius: 14px 14px 14px 8px;
-          padding: 10px 14px;
+          border-radius: var(--apple-rounded-md);
+          padding: 9px 13px;
 
           &::after {
             content: '';
@@ -1303,7 +1311,7 @@ onMounted(() => {
             border-left: 1px solid var(--apple-hairline);
           }
 
-          .message-text { font-size: 17px; color: var(--apple-ink); }
+          .message-text { font-size: var(--apple-fs-caption); color: var(--apple-ink); }
         }
       }
 
@@ -1313,7 +1321,7 @@ onMounted(() => {
         border-radius: 50%;
         margin: 0 0.5rem;
         flex-shrink: 0;
-        border: 1px solid var(--apple-slate-border);
+        border: 1px solid var(--apple-hairline);
       }
       
       .message-content {
@@ -1323,16 +1331,16 @@ onMounted(() => {
         .message-info {
           display: flex;
           align-items: center;
-          margin-bottom: 4px;
-          font-size: 0.7rem;
-          color: var(--apple-ink-secondary);
+          margin-bottom: var(--apple-spacing-xxs);
+          font-size: var(--apple-fs-fine-print);
+          color: var(--apple-ink-muted-48);
           padding: 0 4px;
-          gap: 8px;
+          gap: var(--apple-spacing-xs);
           
           .message-sender {
             font-weight: 600;
-            color: var(--apple-ink-secondary);
-            font-size: 0.75rem;
+            color: var(--apple-ink-muted-48);
+            font-size: var(--apple-fs-fine-print);
           }
 
           /* 隐藏自己发送消息的用户名，WeChat 风格 */
@@ -1340,21 +1348,21 @@ onMounted(() => {
 
           .message-time {
             opacity: 0.7;
-            color: var(--apple-ink-secondary);
-            font-size: 0.65rem;
+            color: var(--apple-ink-muted-48);
+            font-size: var(--apple-fs-fine-print);
           }
         }
       }
 
       .message-bubble {
-        padding: 8px 12px;
-        border-radius: 18px;
+        padding: 9px 13px;
+        border-radius: var(--apple-rounded-md);
         margin-bottom: 4px;
         transition: all 0.2s ease;
         
         .message-text {
-          line-height: 1.4;
-          font-size: 15px;
+          line-height: 1.5;
+          font-size: var(--apple-fs-caption);
           word-break: break-word;
         }
       }
@@ -1365,10 +1373,10 @@ onMounted(() => {
         .attachment-item {
           display: flex;
           align-items: center;
-          gap: 8px;
-          padding: 8px;
+          gap: var(--apple-spacing-xs);
+          padding: var(--apple-spacing-xs);
           background: var(--apple-canvas-parchment);
-          border-radius: 11px;
+          border-radius: var(--apple-rounded-sm);
           margin-top: 4px;
           
           .el-icon {
@@ -1377,7 +1385,7 @@ onMounted(() => {
           
           span {
             flex: 1;
-            font-size: 13px;
+            font-size: var(--apple-fs-fine-print);
             color: var(--apple-ink);
             word-break: break-all;
           }
@@ -1396,7 +1404,7 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 18px;
+    border-radius: var(--apple-rounded-lg);
   }
 }
 
@@ -1408,42 +1416,42 @@ onMounted(() => {
 }
 
 .message-input {
-  margin-top: 1rem;
+  margin-top: var(--apple-spacing-sm);
   
   .input-toolbar {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 8px;
+    gap: var(--apple-spacing-sm);
+    margin-bottom: var(--apple-spacing-xs);
     
     .el-button {
-      font-size: 17px;
+      font-size: var(--apple-fs-caption);
     }
     
     .toolbar-tip {
-      font-size: 12px;
-      color: var(--apple-ink-secondary);
+      font-size: var(--apple-fs-fine-print);
+      color: var(--apple-ink-muted-48);
       margin-left: auto;
     }
   }
   
   .emoji-picker {
-    margin-bottom: 8px;
-    padding: 12px;
+    margin-bottom: var(--apple-spacing-xs);
+    padding: var(--apple-spacing-sm);
     background: var(--apple-canvas-parchment);
-    border-radius: 11px;
+    border-radius: var(--apple-rounded-md);
     
     .emoji-grid {
       display: grid;
       grid-template-columns: repeat(10, 1fr);
-      gap: 8px;
+      gap: var(--apple-spacing-xs);
       
       .emoji-item {
         font-size: 20px;
         cursor: pointer;
         text-align: center;
-        padding: 4px;
-        border-radius: 8px;
+        padding: var(--apple-spacing-xxs);
+        border-radius: var(--apple-rounded-sm);
         transition: all 0.2s ease;
         
         &:hover {
@@ -1455,8 +1463,8 @@ onMounted(() => {
   }
   
   :deep(.el-textarea__wrapper) {
-    border-radius: 11px;
-    border: 1px solid var(--apple-slate-border);
+    border-radius: var(--apple-rounded-md);
+    border: 1px solid var(--apple-hairline);
     
     &:hover {
       border-color: var(--apple-primary);
@@ -1472,20 +1480,20 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 8px;
+    margin-top: var(--apple-spacing-xs);
     
     .input-info {
       .attachment-count {
-        font-size: 12px;
+        font-size: var(--apple-fs-fine-print);
         color: var(--apple-primary);
         display: flex;
         align-items: center;
-        gap: 4px;
+        gap: var(--apple-spacing-xxs);
       }
     }
     
     .send-button {
-      border-radius: 11px;
+      border-radius: var(--apple-rounded-pill);
       background: var(--apple-primary);
       border-color: var(--apple-primary);
       
@@ -1493,360 +1501,6 @@ onMounted(() => {
         background: var(--apple-primary);
         border-color: var(--apple-primary);
       }
-    }
-  }
-}
-
-// ── 视觉统一（design-tokens 覆盖层） ────────────────────────
-.advisor-interaction-page {
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
-
-  .interaction-content {
-    .el-card {
-      margin-bottom: var(--apple-spacing-md);
-      background: var(--apple-surface);
-      border-color: var(--apple-hairline);
-      border-radius: var(--apple-rounded-lg);
-
-      :deep(.el-card__header) {
-        padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-        border-bottom: 1px solid var(--apple-divider-soft);
-
-        .card-header {
-          gap: var(--apple-spacing-xs);
-
-          .card-title {
-            gap: var(--apple-spacing-xs);
-            font-family: var(--apple-font-display);
-            font-size: var(--apple-fs-body-strong);
-            font-weight: 600;
-
-            .el-icon {
-              margin-right: 0;
-              color: var(--apple-primary);
-            }
-          }
-        }
-      }
-    }
-  }
-
-  .sessions-list {
-    .session-item {
-      padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-      border-bottom: 1px solid var(--apple-divider-soft);
-
-      &:hover {
-        background-color: var(--apple-canvas-parchment);
-      }
-
-      &.session-active {
-        background-color: var(--apple-info-bg);
-      }
-
-      .session-avatar {
-        margin-right: var(--apple-spacing-sm);
-
-        .el-avatar {
-          border-radius: var(--apple-rounded-md);
-        }
-      }
-
-      .session-content {
-        .session-header {
-          margin-bottom: var(--apple-spacing-xxs);
-
-          .session-name {
-            font-size: var(--apple-fs-caption);
-            color: var(--apple-ink);
-          }
-
-          .session-time {
-            margin-left: var(--apple-spacing-xs);
-            font-size: var(--apple-fs-fine-print);
-            color: var(--apple-ink-muted-48);
-          }
-        }
-
-        .session-preview {
-          font-size: var(--apple-fs-fine-print);
-          color: var(--apple-ink-muted-48);
-        }
-
-        .session-meta {
-          top: var(--apple-spacing-sm);
-          right: var(--apple-spacing-md);
-
-          .el-tag {
-            background: var(--apple-danger);
-            color: var(--apple-on-primary);
-            font-size: 10px;
-          }
-        }
-      }
-    }
-  }
-
-  .chat-container {
-    padding: var(--apple-spacing-md);
-    background: var(--apple-canvas-parchment);
-    border-radius: var(--apple-rounded-lg);
-
-    .loading-more {
-      padding: var(--apple-spacing-sm);
-      font-size: var(--apple-fs-fine-print);
-      color: var(--apple-ink-muted-48);
-    }
-
-    .quick-replies {
-      gap: var(--apple-spacing-xs);
-      margin-bottom: var(--apple-spacing-sm);
-      padding: var(--apple-spacing-sm);
-      background: var(--apple-surface);
-      border: 1px solid var(--apple-hairline);
-      border-radius: var(--apple-rounded-lg);
-    }
-
-    .messages-area {
-      .time-separator {
-        margin: var(--apple-spacing-xs) auto;
-        padding: 4px 10px;
-        background: var(--apple-surface);
-        color: var(--apple-ink-muted-48);
-        font-size: var(--apple-fs-fine-print);
-        border-radius: var(--apple-rounded-pill);
-      }
-
-      .message-item {
-        gap: var(--apple-spacing-xs);
-        margin-bottom: var(--apple-spacing-sm);
-
-        .message-avatar {
-          border-color: var(--apple-hairline);
-        }
-
-        .message-content {
-          .message-info {
-            gap: var(--apple-spacing-xs);
-            margin-bottom: var(--apple-spacing-xxs);
-            font-size: var(--apple-fs-fine-print);
-            color: var(--apple-ink-muted-48);
-
-            .message-sender,
-            .message-time {
-              font-size: var(--apple-fs-fine-print);
-              color: var(--apple-ink-muted-48);
-            }
-          }
-        }
-
-        .message-bubble {
-          padding: 9px 13px;
-          border-radius: var(--apple-rounded-md);
-
-          .message-text {
-            font-size: var(--apple-fs-caption);
-            line-height: 1.5;
-          }
-        }
-
-        &.message-sent {
-          .message-bubble {
-            background: var(--apple-primary);
-            color: var(--apple-on-primary);
-
-            .message-text {
-              color: var(--apple-on-primary);
-            }
-
-            .message-time {
-              color: rgba(255, 255, 255, 0.7);
-            }
-
-            &::after {
-              border-left-color: var(--apple-primary);
-            }
-          }
-        }
-
-        &.message-received {
-          .message-bubble {
-            background: var(--apple-surface);
-            border: 1px solid var(--apple-hairline);
-
-            .message-text {
-              color: var(--apple-ink);
-            }
-
-            &::after {
-              border-right-color: var(--apple-surface);
-            }
-          }
-        }
-
-        .message-attachments {
-          .attachment-item {
-            gap: var(--apple-spacing-xs);
-            padding: var(--apple-spacing-xs);
-            background: var(--apple-canvas-parchment);
-            border-radius: var(--apple-rounded-sm);
-
-            span {
-              font-size: var(--apple-fs-fine-print);
-              color: var(--apple-ink);
-            }
-          }
-        }
-      }
-    }
-
-    .loading-mask {
-      border-radius: var(--apple-rounded-lg);
-    }
-  }
-
-  .message-input {
-    margin-top: var(--apple-spacing-sm);
-
-    .input-toolbar {
-      gap: var(--apple-spacing-sm);
-      margin-bottom: var(--apple-spacing-xs);
-
-      .el-button {
-        font-size: var(--apple-fs-caption);
-      }
-
-      .toolbar-tip {
-        margin-left: auto;
-        font-size: var(--apple-fs-fine-print);
-        color: var(--apple-ink-muted-48);
-      }
-    }
-
-    .emoji-picker {
-      padding: var(--apple-spacing-sm);
-      margin-bottom: var(--apple-spacing-xs);
-      background: var(--apple-canvas-parchment);
-      border-radius: var(--apple-rounded-md);
-
-      .emoji-grid {
-        gap: var(--apple-spacing-xs);
-
-        .emoji-item {
-          padding: var(--apple-spacing-xxs);
-          border-radius: var(--apple-rounded-sm);
-        }
-      }
-    }
-
-    :deep(.el-textarea__wrapper) {
-      border-color: var(--apple-hairline);
-      border-radius: var(--apple-rounded-md);
-    }
-
-    .input-actions {
-      margin-top: var(--apple-spacing-xs);
-
-      .input-info {
-        .attachment-count {
-          gap: var(--apple-spacing-xxs);
-          font-size: var(--apple-fs-fine-print);
-          color: var(--apple-primary);
-        }
-      }
-
-      .send-button {
-        background: var(--apple-primary);
-        border-color: var(--apple-primary);
-        border-radius: var(--apple-rounded-pill);
-      }
-    }
-  }
-}
-
-// 导师信息对话框（弹窗内样式）
-.advisor-dialog-content {
-  .advisor-dialog-header {
-    gap: var(--apple-spacing-md);
-    margin-bottom: var(--apple-spacing-md);
-    padding-bottom: var(--apple-spacing-md);
-    border-bottom: 1px solid var(--apple-divider-soft);
-
-    .advisor-dialog-title {
-      h3 {
-        margin: 0 0 var(--apple-spacing-xxs);
-        font-family: var(--apple-font-display);
-        font-size: var(--apple-fs-tagline);
-        font-weight: 600;
-        color: var(--apple-ink);
-      }
-
-      p {
-        margin: 0 0 var(--apple-spacing-xxs);
-        font-size: var(--apple-fs-caption);
-        font-weight: 600;
-        color: var(--apple-primary);
-      }
-
-      .advisor-dialog-field {
-        gap: var(--apple-spacing-xs);
-        font-size: var(--apple-fs-fine-print);
-        color: var(--apple-ink-muted-48);
-
-        .el-icon {
-          font-size: var(--apple-fs-caption);
-          color: var(--apple-primary);
-        }
-      }
-    }
-  }
-
-  .advisor-dialog-grid {
-    gap: var(--apple-spacing-sm);
-    margin-bottom: var(--apple-spacing-md);
-  }
-
-  .advisor-dialog-bio {
-    padding: var(--apple-spacing-md);
-    background: var(--apple-canvas-parchment);
-    border-radius: var(--apple-rounded-md);
-
-    h4 {
-      margin: 0 0 var(--apple-spacing-xs);
-      font-size: var(--apple-fs-caption);
-      font-weight: 600;
-      color: var(--apple-ink);
-    }
-
-    p {
-      font-size: var(--apple-fs-caption);
-      line-height: 1.5;
-      color: var(--apple-ink-muted-48);
-    }
-  }
-}
-
-.detail-item {
-  gap: var(--apple-spacing-sm);
-  padding: var(--apple-spacing-sm);
-  background: var(--apple-canvas-parchment);
-  border-radius: var(--apple-rounded-md);
-
-  .detail-icon {
-    font-size: var(--apple-fs-caption);
-  }
-
-  .detail-content {
-    .detail-label {
-      margin-bottom: var(--apple-spacing-xxs);
-      font-size: var(--apple-fs-fine-print);
-      color: var(--apple-ink-muted-48);
-    }
-
-    .detail-value {
-      font-size: var(--apple-fs-caption);
-      color: var(--apple-ink);
     }
   }
 }
