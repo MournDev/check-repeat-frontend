@@ -16,7 +16,7 @@
         <template #icon><Refresh /></template>
         刷新任务列表
       </el-button>
-      <el-button @click="goToPaperSubmit" style="margin-left: 8px">
+      <el-button @click="goToPaperSubmit" style="margin-left: var(--app-space-2)">
         <template #icon><Upload /></template>
         提交新论文
       </el-button>
@@ -137,7 +137,7 @@
           <template #default="{ row }">
             <span v-if="row.checkRate != null">
               {{ row.checkRate }}%
-              <el-tag :type="getSimilarityTagType(row.checkRate)" size="small" style="margin-left: 4px">
+              <el-tag :type="getSimilarityTagType(row.checkRate)" size="small" style="margin-left: var(--app-space-1)">
                 {{ getRiskLevel(row.checkRate) }}
               </el-tag>
             </span>
@@ -196,7 +196,7 @@
               type="primary" 
               @click="startCheckTask(row.paperId)"
               :disabled="row.checkStatus === 'checking'"
-              style="margin-right: 8px"
+              style="margin-right: var(--app-space-2)"
               size="small"
             >
               开始查重
@@ -204,7 +204,7 @@
             <el-button 
               v-if="row.checkStatus === 'completed' && row.reportId" 
               @click="viewReport(row.reportId)"
-              style="margin-right: 8px"
+              style="margin-right: var(--app-space-2)"
               size="small"
             >
               查看报告
@@ -214,7 +214,7 @@
               type="primary"
               plain
               @click="viewSentenceDetail(row.taskId)"
-              style="margin-right: 8px"
+              style="margin-right: var(--app-space-2)"
               size="small"
             >
               查看检测明细
@@ -222,7 +222,7 @@
             <el-button 
               v-if="row.checkStatus === 'completed' && !row.reportId"
               @click="recheckPlagiarism(row.paperId)"
-              style="margin-right: 8px"
+              style="margin-right: var(--app-space-2)"
               size="small"
             >
               重新查重
@@ -764,14 +764,14 @@ onUnmounted(() => {
 .check-container {
 
   .action-bar {
-    margin-bottom: var(--apple-spacing-lg);
+    margin-bottom: var(--app-space-6);
     display: flex;
     align-items: center;
-    gap: var(--apple-spacing-xs);
-    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-    background: var(--apple-surface);
-    border: 1px solid var(--apple-hairline);
-    border-radius: var(--apple-rounded-lg);
+    gap: var(--app-space-2);
+    padding: var(--app-space-3) var(--app-space-4);
+    background: var(--app-color-card-bg);
+    border: 1px solid var(--app-color-border);
+    border-radius: var(--app-radius-lg);
   }
 
   .connection-status {
@@ -781,71 +781,70 @@ onUnmounted(() => {
 
   .task-stats {
     display: flex;
-    gap: var(--apple-spacing-md);
-    margin-bottom: var(--apple-spacing-lg);
+    gap: var(--app-space-4);
+    margin-bottom: var(--app-space-6);
   }
 
   .stat-card {
     flex: 1;
     min-width: 120px;
-    background: var(--apple-surface);
-    border: 1px solid var(--apple-hairline);
-    border-radius: var(--apple-rounded-lg);
+    background: var(--app-color-card-bg);
+    border: 1px solid var(--app-color-border);
+    border-radius: var(--app-radius-lg);
   }
 
   .rule-info-card {
-    margin-bottom: var(--apple-spacing-lg);
-    background: var(--apple-surface);
-    border: 1px solid var(--apple-hairline);
-    border-radius: var(--apple-rounded-lg);
+    margin-bottom: var(--app-space-6);
+    background: var(--app-color-card-bg);
+    border: 1px solid var(--app-color-border);
+    border-radius: var(--app-radius-lg);
   }
 
   // 一个论文类型一行：类型名在左、百分比标签在右，多类型时纵向排列不挤成一行
   .paper-type-threshold {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--app-space-2);
 
     & + .paper-type-threshold {
-      margin-top: 4px;
+      margin-top: var(--app-space-1);
     }
   }
 
   .paper-type-name {
-    font-size: var(--apple-fs-caption);
-    color: var(--apple-ink);
+    font-size: var(--app-fs-caption);
+    color: var(--app-color-ink);
   }
 
   .stat-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: var(--apple-spacing-md);
+    padding: var(--app-space-4);
   }
 
   .stat-label {
-    font-size: var(--apple-fs-fine-print);
-    color: var(--apple-ink-muted-48);
-    margin-bottom: var(--apple-spacing-xxs);
+    font-size: var(--app-fs-meta);
+    color: var(--app-color-text-muted);
+    margin-bottom: var(--app-space-1);
   }
 
   .stat-value {
-    font-family: var(--apple-font-display);
-    font-size: var(--apple-fs-display-md);
+    font-family: var(--app-font-family);
+    font-size: var(--app-fs-title);
     font-weight: 600;
-    line-height: var(--apple-lh-display-md);
-    letter-spacing: var(--apple-ls-display-md);
-    color: var(--apple-ink);
+    line-height: var(--app-lh-display);
+    color: var(--app-color-ink);
   }
 
   .table-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-family: var(--apple-font-display);
-    font-size: var(--apple-fs-body-strong);
+    font-family: var(--app-font-family);
+    font-size: var(--app-fs-body);
     font-weight: 600;
-    color: var(--apple-ink);
+    color: var(--app-color-ink);
   }
 
   .ellipsis {
@@ -856,12 +855,12 @@ onUnmounted(() => {
   }
 
   .fail-reason {
-    margin-top: 4px;
+    margin-top: var(--app-space-1);
   }
 
   .fail-text {
-    font-size: var(--apple-fs-fine-print);
-    color: var(--apple-danger);
+    font-size: var(--app-fs-meta);
+    color: var(--app-color-danger);
     word-break: break-all;
     max-width: 100%;
     display: block;
@@ -872,54 +871,54 @@ onUnmounted(() => {
     overflow-y: auto;
 
     h3 {
-      margin-bottom: var(--apple-spacing-sm);
-      font-family: var(--apple-font-display);
-      font-size: var(--apple-fs-body-strong);
-      color: var(--apple-ink);
+      margin-bottom: var(--app-space-3);
+      font-family: var(--app-font-family);
+      font-size: var(--app-fs-body);
+      color: var(--app-color-ink);
     }
 
     h4 {
-      margin: var(--apple-spacing-sm) 0 var(--apple-spacing-xs);
-      font-size: var(--apple-fs-caption);
-      color: var(--apple-ink);
+      margin: var(--app-space-3) 0 var(--app-space-2);
+      font-size: var(--app-fs-caption);
+      color: var(--app-color-ink);
     }
 
     h5 {
-      margin: var(--apple-spacing-xs) 0;
-      font-size: var(--apple-fs-fine-print);
-      color: var(--apple-ink-muted-48);
+      margin: var(--app-space-2) 0;
+      font-size: var(--app-fs-meta);
+      color: var(--app-color-text-muted);
     }
 
     p {
-      margin: var(--apple-spacing-xs) 0;
-      font-size: var(--apple-fs-caption);
-      color: var(--apple-ink-muted-80);
+      margin: var(--app-space-2) 0;
+      font-size: var(--app-fs-caption);
+      color: var(--app-color-text);
     }
 
     .report-sections,
     .report-recommendations {
-      margin: var(--apple-spacing-sm) 0;
-      padding: var(--apple-spacing-md);
-      background-color: var(--apple-canvas-parchment);
-      border-radius: var(--apple-rounded-md);
+      margin: var(--app-space-3) 0;
+      padding: var(--app-space-4);
+      background-color: var(--app-color-fill);
+      border-radius: var(--app-radius-md);
     }
 
     .similarity-info {
       display: flex;
       align-items: center;
-      margin: 8px 0;
+      margin: var(--app-space-2) 0;
 
       .similarity-value {
-        margin-left: 8px;
+        margin-left: var(--app-space-2);
         font-weight: bold;
       }
     }
 
     .repeated-fragments {
-      margin-top: 8px;
-      padding: var(--apple-spacing-xs);
-      background-color: var(--apple-danger-bg);
-      border-radius: var(--apple-rounded-md);
+      margin-top: var(--app-space-2);
+      padding: var(--app-space-2);
+      background-color: var(--app-color-danger-bg);
+      border-radius: var(--app-radius-md);
     }
   }
 
@@ -930,28 +929,28 @@ onUnmounted(() => {
   }
 
   .author-info {
-    font-size: var(--apple-fs-fine-print);
-    color: var(--apple-ink-muted-48);
+    font-size: var(--app-fs-meta);
+    color: var(--app-color-text-muted);
   }
 
   .segment-card {
-    margin-bottom: 16px;
+    margin-bottom: var(--app-space-4);
   }
 
   .fragment-item {
-    padding: var(--apple-spacing-xs);
-    background-color: var(--apple-surface);
-    border-radius: var(--apple-rounded-xs);
-    margin-bottom: 8px;
-    border-left: 3px solid var(--apple-danger);
+    padding: var(--app-space-2);
+    background-color: var(--app-color-card-bg);
+    border-radius: var(--app-radius-xs);
+    margin-bottom: var(--app-space-2);
+    border-left: 3px solid var(--app-color-danger);
   }
 
   .recommendation-item {
-    padding: var(--apple-spacing-xs);
-    background-color: var(--apple-success-bg);
-    border-radius: var(--apple-rounded-xs);
-    margin-bottom: 8px;
-    border-left: 3px solid var(--apple-success);
+    padding: var(--app-space-2);
+    background-color: var(--app-color-success-bg);
+    border-radius: var(--app-radius-xs);
+    margin-bottom: var(--app-space-2);
+    border-left: 3px solid var(--app-color-success);
   }
 
   .loading {
@@ -962,14 +961,14 @@ onUnmounted(() => {
   }
 
   .loading-text {
-    font-size: var(--apple-fs-caption);
-    color: var(--apple-ink-muted-48);
+    font-size: var(--app-fs-caption);
+    color: var(--app-color-text-muted);
   }
 }
 
 @media (max-width: 768px) {
   .check-container {
-    padding: var(--apple-spacing-sm);
+    padding: var(--app-space-3);
 
     .action-bar {
       flex-wrap: wrap;
@@ -977,7 +976,7 @@ onUnmounted(() => {
 
     .task-stats {
       flex-wrap: wrap;
-      gap: var(--apple-spacing-sm);
+      gap: var(--app-space-3);
     }
   }
 }
