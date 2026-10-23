@@ -137,7 +137,7 @@ onMounted(() => {
 .my-defense {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--apple-spacing-md);
   color: var(--apple-ink);
   font-family: var(--apple-font-text);
 }
@@ -146,36 +146,40 @@ onMounted(() => {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--apple-spacing-sm);
   flex-wrap: wrap;
 }
 
 .head-title {
-  margin: 0 0 6px;
+  margin: 0 0 var(--apple-spacing-xxs);
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 700;
+  font-family: var(--apple-font-display);
+  line-height: 1.2;
+  color: var(--apple-ink);
 }
 
 .head-desc {
   margin: 0;
-  font-size: 0.8125rem;
+  font-size: var(--apple-fs-caption);
   color: var(--apple-ink-muted-48);
 }
 
 .sep {
-  margin: 0 6px;
-  color: var(--apple-divider-soft);
+  margin: 0 var(--apple-spacing-xxs);
+  color: var(--apple-hairline);
 }
 
 .order-badge {
   display: inline-block;
   min-width: 26px;
   padding: 0 6px;
-  border-radius: 999px;
+  border-radius: var(--apple-rounded-pill);
   background: var(--apple-canvas-parchment);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   text-align: center;
+  color: var(--apple-ink);
 }
 
 .meet-link {
@@ -193,58 +197,12 @@ onMounted(() => {
 }
 
 .grade-text {
-  font-size: 0.8125rem;
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
 }
 
 .muted {
+  font-size: var(--apple-fs-caption);
   color: var(--apple-ink-muted-48);
-}
-
-// ── 视觉统一（design-tokens 覆盖层） ────────────────────────
-.my-defense {
-  gap: var(--apple-spacing-md);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
-
-  .head-row {
-    gap: var(--apple-spacing-sm);
-  }
-
-  .head-title {
-    margin: 0 0 var(--apple-spacing-xxs);
-    font-family: var(--apple-font-display);
-    font-size: 1.25rem;
-    font-weight: 700;
-    line-height: 1.2;
-    color: var(--apple-ink);
-  }
-
-  .head-desc {
-    font-size: var(--apple-fs-caption);
-    color: var(--apple-ink-muted-48);
-  }
-
-  .sep {
-    margin: 0 var(--apple-spacing-xxs);
-    color: var(--apple-hairline);
-  }
-
-  .order-badge {
-    padding: 0 6px;
-    background: var(--apple-canvas-parchment);
-    border-radius: var(--apple-rounded-pill);
-    color: var(--apple-ink);
-  }
-
-  .grade-text {
-    font-size: var(--apple-fs-fine-print);
-    color: var(--apple-ink-muted-48);
-  }
-
-  .muted {
-    font-size: var(--apple-fs-caption);
-    color: var(--apple-ink-muted-48);
-  }
 }
 </style>

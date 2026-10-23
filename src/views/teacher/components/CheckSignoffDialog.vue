@@ -210,8 +210,8 @@ defineExpose({ open })
 
 <style scoped>
 .signoff-paper-info {
-  padding: 12px 16px;
-  margin-bottom: 16px;
+  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+  margin-bottom: var(--apple-spacing-md);
   border-radius: var(--apple-rounded-md);
   background: var(--apple-canvas-parchment);
 }
@@ -222,26 +222,26 @@ defineExpose({ open })
 }
 
 .signoff-paper-student {
-  margin-top: 2px;
-  font-size: 0.8125rem;
+  margin-top: var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
 }
 
 .signoff-report-summary {
-  margin-bottom: 16px;
+  margin-bottom: var(--apple-spacing-md);
 }
 
 .summary-line {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 16px;
-  font-size: 0.8125rem;
+  gap: var(--apple-spacing-sm);
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink);
 }
 
 .summary-line + .summary-line {
-  margin-top: 4px;
+  margin-top: var(--apple-spacing-xxs);
 }
 
 .summary-item strong {
@@ -258,38 +258,9 @@ defineExpose({ open })
 }
 
 .form-tip-inline {
-  margin-left: 12px;
-  font-size: 0.75rem;
-  color: var(--apple-ink-muted-48);
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.signoff-paper-info {
-  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-  margin-bottom: var(--apple-spacing-md);
-}
-
-.signoff-paper-student {
-  margin-top: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-fine-print);
-}
-
-.signoff-report-summary {
-  margin-bottom: var(--apple-spacing-md);
-}
-
-.summary-line {
-  gap: var(--apple-spacing-sm);
-  font-size: var(--apple-fs-fine-print);
-}
-
-.summary-line + .summary-line {
-  margin-top: var(--apple-spacing-xxs);
-}
-
-.form-tip-inline {
   margin-left: var(--apple-spacing-sm);
   font-size: var(--apple-fs-fine-print);
+  color: var(--apple-ink-muted-48);
 }
 
 :deep(.el-form-item) {

@@ -21,17 +21,17 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: var(--apple-canvas-parchment); /* Slate-50 */
+  background: var(--apple-canvas-parchment);
   text-align: center;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  padding: 24px;
+  font-family: var(--apple-font-text);
+  padding: var(--apple-spacing-lg);
 }
 
 .not-found-content {
   background: var(--apple-surface);
-  border: 1px solid var(--apple-slate-border);
-  border-radius: 18px;
-  padding: 48px;
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-rounded-lg);
+  padding: var(--apple-spacing-xxl);
   transition: all 0.2s ease;
   max-width: 500px;
   width: 100%;
@@ -43,31 +43,32 @@
   h1 {
     font-size: 120px;
     margin: 0;
-    color: var(--apple-primary); /* Blue-500 */
+    color: var(--apple-primary);
     font-weight: 700;
   }
-  
+
   h2 {
-    font-size: 24px;
-    margin: 16px 0;
-    color: var(--apple-slate-ink); /* Slate-900 */
+    margin: var(--apple-spacing-md) 0;
+    font-size: var(--apple-fs-lead-airy);
+    font-family: var(--apple-font-display);
+    color: var(--apple-ink);
     font-weight: 600;
   }
-  
+
   p {
-    color: var(--apple-slate-sub); /* Slate-500 */
-    margin-bottom: 32px;
-    font-size: 1rem;
+    color: var(--apple-ink-muted-48);
+    margin-bottom: var(--apple-spacing-xl);
+    font-size: var(--apple-fs-body-strong);
     line-height: 1.5;
   }
-  
+
   .el-button {
-    border-radius: 8px;
+    border-radius: var(--apple-rounded-sm);
     transition: all 0.2s ease;
     border: 1px solid var(--apple-slate-border);
-    padding: 10px 24px;
-    font-size: 1rem;
-    
+    padding: var(--apple-spacing-xs) var(--apple-spacing-lg);
+    font-size: var(--apple-fs-caption);
+
     &:hover {
       filter: brightness(0.95);
     }
@@ -76,37 +77,6 @@
       transform: scale(0.95);
       transition: transform 0.15s ease;
     }
-  }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.not-found-container {
-  padding: var(--apple-spacing-lg);
-  font-family: var(--apple-font-text);
-}
-
-.not-found-content {
-  padding: var(--apple-spacing-xxl);
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--apple-rounded-lg);
-
-  h2 {
-    margin: var(--apple-spacing-md) 0;
-    font-size: var(--apple-fs-lead-airy);
-    font-family: var(--apple-font-display);
-    color: var(--apple-ink);
-  }
-
-  p {
-    margin-bottom: var(--apple-spacing-xl);
-    font-size: var(--apple-fs-body-strong);
-    color: var(--apple-ink-muted-48);
-  }
-
-  .el-button {
-    padding: var(--apple-spacing-xs) var(--apple-spacing-lg);
-    border-radius: var(--apple-rounded-sm);
-    font-size: var(--apple-fs-caption);
   }
 }
 

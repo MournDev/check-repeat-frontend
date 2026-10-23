@@ -936,10 +936,11 @@ watch(
 }
 
 .message-center {
-  padding: 20px;
-  background: white;
+  padding: var(--apple-spacing-lg);
+  background: var(--apple-surface);
   border-radius: 8px;
   min-height: 600px;
+  font-family: var(--apple-font-text);
 
   .header {
     display: flex;
@@ -1106,13 +1107,13 @@ watch(
   .batch-actions {
     position: sticky;
     bottom: 0;
-    background: white;
-    padding: 16px;
+    background: var(--apple-surface);
+    padding: var(--apple-spacing-md);
     border-top: 1px solid var(--apple-hairline);
     display: flex;
     align-items: center;
-    gap: 16px;
-    margin-top: 20px;
+    gap: var(--apple-spacing-md);
+    margin-top: var(--apple-spacing-lg);
 
     .selected-count {
       color: var(--apple-primary);
@@ -1123,22 +1124,22 @@ watch(
   .pagination {
     display: flex;
     justify-content: center;
-    margin-top: 24px;
+    margin-top: var(--apple-spacing-lg);
   }
 
   .empty-message {
-    padding: 60px 0;
+    padding: var(--apple-spacing-xxl) 0;
   }
 }
 
 @media (max-width: 768px) {
   .message-center {
-    padding: 16px;
+    padding: var(--apple-spacing-sm);
 
     .header {
       flex-direction: column;
       align-items: flex-start;
-      gap: 12px;
+      gap: var(--apple-spacing-sm);
 
       .header-actions {
         width: 100%;
@@ -1148,7 +1149,7 @@ watch(
 
     .stats-info {
       .el-col {
-        margin-bottom: 12px;
+        margin-bottom: var(--apple-spacing-sm);
       }
     }
 
@@ -1179,30 +1180,4 @@ watch(
   }
 }
 
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.message-center {
-  padding: var(--apple-spacing-lg);
-  font-family: var(--apple-font-text);
-
-  .batch-actions {
-    background: var(--apple-surface);
-    padding: var(--apple-spacing-md);
-    gap: var(--apple-spacing-md);
-    margin-top: var(--apple-spacing-lg);
-  }
-
-  .pagination { margin-top: var(--apple-spacing-lg); }
-
-  .empty-message { padding: var(--apple-spacing-xxl) 0; }
-}
-
-@media (max-width: 768px) {
-  .message-center {
-    padding: var(--apple-spacing-sm);
-
-    .header { gap: var(--apple-spacing-sm); }
-
-    .stats-info .el-col { margin-bottom: var(--apple-spacing-sm); }
-  }
-}
 </style>

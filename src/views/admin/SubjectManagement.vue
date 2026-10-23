@@ -352,9 +352,10 @@ onMounted(() => {
 <style scoped>
 .subject-management {
   padding: 0;
+  font-family: var(--apple-font-text);
 }
 .table-card {
-  margin-bottom: 16px;
+  margin-bottom: var(--apple-spacing-md);
 }
 .card-header {
   display: flex;
@@ -363,51 +364,25 @@ onMounted(() => {
 }
 .card-title {
   font-weight: 600;
-  font-size: 15px;
+  font-size: var(--apple-fs-caption);
+  font-family: var(--apple-font-display);
 }
 .header-actions {
   display: flex;
-  gap: 12px;
+  gap: var(--apple-spacing-sm);
   align-items: center;
 }
 .code-text {
   font-family: Consolas, Monaco, monospace;
 }
 .ref-zero {
-  color: var(--apple-info);
-}
-.form-tip {
-  font-size: 12px;
-  color: var(--apple-info);
-  line-height: 1.5;
-  margin-top: 4px;
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.subject-management {
-  font-family: var(--apple-font-text);
-}
-
-.table-card {
-  margin-bottom: var(--apple-spacing-md);
-}
-
-.card-title {
-  font-size: var(--apple-fs-caption);
-  font-family: var(--apple-font-display);
-}
-
-.header-actions {
-  gap: var(--apple-spacing-sm);
-}
-
-.ref-zero {
   color: var(--apple-ink-muted-48);
 }
-
 .form-tip {
-  margin-top: var(--apple-spacing-xxs);
   font-size: var(--apple-fs-fine-print);
+  color: var(--apple-info);
+  line-height: 1.5;
+  margin-top: var(--apple-spacing-xxs);
 }
 
 @media (max-width: 768px) {

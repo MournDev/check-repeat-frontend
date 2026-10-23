@@ -340,7 +340,7 @@ onMounted(() => {
 .check-policy {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--apple-spacing-md);
   color: var(--apple-ink);
   font-family: var(--apple-font-text);
 }
@@ -349,23 +349,24 @@ onMounted(() => {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--apple-spacing-md);
 }
 
 .head-title {
-  margin: 0 0 6px;
-  font-size: 1.25rem;
+  margin: 0 0 var(--apple-spacing-xxs);
+  font-size: var(--apple-fs-tagline);
   font-weight: 600;
+  font-family: var(--apple-font-display);
 }
 
 .head-desc {
   margin: 0;
-  font-size: 0.8125rem;
+  font-size: var(--apple-fs-fine-print);
   color: var(--apple-ink-muted-48);
 }
 
 .mechanism-alert {
-  margin-bottom: 16px;
+  margin-bottom: var(--apple-spacing-md);
 }
 
 .policy-table {
@@ -386,38 +387,10 @@ onMounted(() => {
 
 .form-tip {
   width: 100%;
-  margin-top: 4px;
-  font-size: 0.75rem;
-  line-height: 1.5;
-  color: var(--apple-ink-muted-48);
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.check-policy {
-  gap: var(--apple-spacing-md);
-}
-
-.head-row {
-  gap: var(--apple-spacing-md);
-}
-
-.head-title {
-  margin-bottom: var(--apple-spacing-xxs);
-  font-size: var(--apple-fs-tagline);
-  font-family: var(--apple-font-display);
-}
-
-.head-desc {
-  font-size: var(--apple-fs-fine-print);
-}
-
-.mechanism-alert {
-  margin-bottom: var(--apple-spacing-md);
-}
-
-.form-tip {
   margin-top: var(--apple-spacing-xxs);
   font-size: var(--apple-fs-fine-print);
+  line-height: 1.5;
+  color: var(--apple-ink-muted-48);
 }
 
 @media (max-width: 768px) {

@@ -296,62 +296,6 @@ onMounted(() => {
 <style lang="scss" scoped>
 .paper-assignment {
   padding: 0;
-}
-
-.stats-card {
-  margin-bottom: 1.5rem;
-  border-radius: 18px;
-  
-  :deep(.el-card__body) {
-    padding: 1.5rem;
-  }
-}
-
-.assignment-stats {
-  .el-col {
-    text-align: center;
-  }
-  
-  :deep(.el-statistic) {
-    .el-statistic__head {
-      font-size: 0.875rem;
-      color: var(--apple-ink-secondary);
-      margin-bottom: 0.5rem;
-    }
-    
-    .el-statistic__content {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--apple-ink);
-    }
-  }
-}
-
-.students-card {
-  border-radius: 18px;
-  
-  :deep(.el-card__header) {
-    padding: 1rem 1.25rem;
-    border-bottom: 1px solid var(--apple-surface-chip-translucent);
-  }
-  
-  :deep(.el-card__body) {
-    padding: 0;
-  }
-}
-
-@media (max-width: 768px) {
-  .assignment-stats {
-    :deep(.el-row) {
-      .el-col {
-        margin-bottom: 1rem;
-      }
-    }
-  }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.paper-assignment {
   font-family: var(--apple-font-text);
 }
 
@@ -365,14 +309,21 @@ onMounted(() => {
 }
 
 .assignment-stats {
+  .el-col {
+    text-align: center;
+  }
+
   :deep(.el-statistic) {
     .el-statistic__head {
-      margin-bottom: var(--apple-spacing-xs);
       font-size: var(--apple-fs-fine-print);
+      color: var(--apple-ink-secondary);
+      margin-bottom: var(--apple-spacing-xs);
     }
 
     .el-statistic__content {
       font-size: var(--apple-fs-lead);
+      font-weight: 700;
+      color: var(--apple-ink);
     }
   }
 }
@@ -383,6 +334,10 @@ onMounted(() => {
   :deep(.el-card__header) {
     padding: var(--apple-spacing-sm) var(--apple-spacing-md);
     border-bottom: 1px solid var(--apple-hairline);
+  }
+
+  :deep(.el-card__body) {
+    padding: 0;
   }
 }
 

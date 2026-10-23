@@ -100,19 +100,19 @@ defineEmits(['filter'])
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-bottom: 16px;
+  gap: var(--apple-spacing-sm);
+  margin-bottom: var(--apple-spacing-md);
 }
 
 .stat-card {
   background: var(--apple-surface);
   border: 1px solid var(--apple-hairline);
   border-radius: var(--apple-rounded-lg);
-  padding: 14px 16px;
+  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
   display: flex;
   align-items: center;
-  gap: 12px;
-  transition: border-color 0.2s ease;
+  gap: var(--apple-spacing-sm);
+  transition: border-color var(--apple-transition-normal);
 
   &.clickable {
     cursor: pointer;
@@ -139,11 +139,11 @@ defineEmits(['filter'])
   .stat-icon {
     width: 40px;
     height: 40px;
-    border-radius: 12px;
+    border-radius: var(--apple-rounded-md);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: var(--apple-fs-body-strong);
     flex-shrink: 0;
 
     &.total-icon {
@@ -172,15 +172,16 @@ defineEmits(['filter'])
     min-width: 0;
 
     .stat-value {
-      font-size: 1.375rem;
-      font-weight: 700;
+      font-family: var(--apple-font-display);
+      font-size: var(--apple-fs-tagline);
+      font-weight: 600;
       color: var(--apple-ink);
       line-height: 1.2;
       margin-bottom: 2px;
     }
 
     .stat-label {
-      font-size: 0.8125rem;
+      font-size: var(--apple-fs-fine-print);
       color: var(--apple-ink-muted-48);
     }
   }
@@ -195,46 +196,6 @@ defineEmits(['filter'])
 @media (max-width: 768px) {
   .stats-grid {
     grid-template-columns: 1fr;
-  }
-}
-
-/* ── 视觉统一（design-tokens 覆盖层） ──────────────────────── */
-.stats-grid {
-  gap: var(--apple-spacing-sm);
-  margin-bottom: var(--apple-spacing-md);
-}
-
-.stat-card {
-  gap: var(--apple-spacing-sm);
-  padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-  border-radius: var(--apple-rounded-lg);
-  transition: border-color var(--apple-transition-normal);
-
-  .stat-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: var(--apple-rounded-md);
-    font-size: var(--apple-fs-body-strong);
-  }
-
-  .stat-content {
-    .stat-value {
-      margin-bottom: 2px;
-      font-family: var(--apple-font-display);
-      font-size: var(--apple-fs-tagline);
-      font-weight: 600;
-      line-height: 1.2;
-    }
-
-    .stat-label {
-      font-size: var(--apple-fs-fine-print);
-      color: var(--apple-ink-muted-48);
-    }
-  }
-}
-
-@media (max-width: 768px) {
-  .stats-grid {
     gap: var(--apple-spacing-sm);
     margin-bottom: var(--apple-spacing-sm);
   }
