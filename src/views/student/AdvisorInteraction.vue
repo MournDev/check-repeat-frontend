@@ -936,39 +936,39 @@ onMounted(() => {
 <style lang="scss" scoped>
 .advisor-interaction-page {
   padding: 0;
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
+  color: var(--app-color-ink);
+  font-family: var(--app-font-family);
 }
 
 .interaction-content {
   .el-card {
-    border-radius: var(--apple-rounded-lg);
-    border: 1px solid var(--apple-hairline);
-    background: var(--apple-surface);
-    margin-bottom: var(--apple-spacing-md);
+    border-radius: var(--app-radius-lg);
+    border: 1px solid var(--app-color-border);
+    background: var(--app-color-card-bg);
+    margin-bottom: var(--app-space-4);
     
     :deep(.el-card__header) {
-      padding: var(--apple-spacing-sm) var(--apple-spacing-md);
-      border-bottom: 1px solid var(--apple-divider-soft);
+      padding: var(--app-space-3) var(--app-space-4);
+      border-bottom: 1px solid var(--app-color-divider);
       
       .card-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        gap: var(--apple-spacing-xs);
+        gap: var(--app-space-2);
         
         .card-title {
           display: flex;
           align-items: center;
-          gap: var(--apple-spacing-xs);
-          font-family: var(--apple-font-display);
-          font-size: var(--apple-fs-body-strong);
+          gap: var(--app-space-2);
+          font-family: var(--app-font-family);
+          font-size: var(--app-fs-body);
           font-weight: 600;
-          color: var(--apple-ink);
+          color: var(--app-color-ink);
           
           .el-icon {
             margin-right: 0;
-            color: var(--apple-primary);
+            color: var(--app-color-primary);
           }
         }
       }
@@ -981,38 +981,38 @@ onMounted(() => {
   .advisor-dialog-header {
     display: flex;
     align-items: center;
-    gap: var(--apple-spacing-md);
-    margin-bottom: var(--apple-spacing-md);
-    padding-bottom: var(--apple-spacing-md);
-    border-bottom: 1px solid var(--apple-divider-soft);
+    gap: var(--app-space-4);
+    margin-bottom: var(--app-space-4);
+    padding-bottom: var(--app-space-4);
+    border-bottom: 1px solid var(--app-color-divider);
 
     .advisor-dialog-title {
       h3 {
-        margin: 0 0 var(--apple-spacing-xxs) 0;
-        font-family: var(--apple-font-display);
-        font-size: var(--apple-fs-tagline);
+        margin: 0 0 var(--app-space-1) 0;
+        font-family: var(--app-font-family);
+        font-size: var(--app-fs-title);
         font-weight: 600;
-        color: var(--apple-ink);
+        color: var(--app-color-ink);
       }
 
       p {
-        margin: 0 0 var(--apple-spacing-xxs) 0;
-        color: var(--apple-primary);
+        margin: 0 0 var(--app-space-1) 0;
+        color: var(--app-color-primary);
         font-weight: 600;
-        font-size: var(--apple-fs-caption);
+        font-size: var(--app-fs-caption);
       }
 
       .advisor-dialog-field {
         margin: 0;
-        color: var(--apple-ink-muted-48);
-        font-size: var(--apple-fs-fine-print);
+        color: var(--app-color-text-muted);
+        font-size: var(--app-fs-meta);
         display: flex;
         align-items: center;
-        gap: var(--apple-spacing-xs);
+        gap: var(--app-space-2);
 
         .el-icon {
-          color: var(--apple-primary);
-          font-size: var(--apple-fs-caption);
+          color: var(--app-color-primary);
+          font-size: var(--app-fs-caption);
         }
       }
     }
@@ -1021,27 +1021,27 @@ onMounted(() => {
   .advisor-dialog-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--apple-spacing-sm);
-    margin-bottom: var(--apple-spacing-md);
+    gap: var(--app-space-3);
+    margin-bottom: var(--app-space-4);
   }
 
   .advisor-dialog-bio {
-    padding: var(--apple-spacing-md);
-    background: var(--apple-canvas-parchment);
-    border-radius: var(--apple-rounded-md);
+    padding: var(--app-space-4);
+    background: var(--app-color-fill);
+    border-radius: var(--app-radius-md);
 
     h4 {
-      margin: 0 0 var(--apple-spacing-xs) 0;
-      font-size: var(--apple-fs-caption);
+      margin: 0 0 var(--app-space-2) 0;
+      font-size: var(--app-fs-caption);
       font-weight: 600;
-      color: var(--apple-ink);
+      color: var(--app-color-ink);
     }
 
     p {
       margin: 0;
-      font-size: var(--apple-fs-caption);
+      font-size: var(--app-fs-caption);
       line-height: 1.5;
-      color: var(--apple-ink-muted-48);
+      color: var(--app-color-text-muted);
     }
   }
 }
@@ -1049,14 +1049,14 @@ onMounted(() => {
 .detail-item {
   display: flex;
   align-items: flex-start;
-  gap: var(--apple-spacing-sm);
-  padding: var(--apple-spacing-sm);
-  background: var(--apple-canvas-parchment);
-  border-radius: var(--apple-rounded-md);
+  gap: var(--app-space-3);
+  padding: var(--app-space-3);
+  background: var(--app-color-fill);
+  border-radius: var(--app-radius-md);
 
   .detail-icon {
-    color: var(--apple-primary);
-    font-size: var(--apple-fs-caption);
+    color: var(--app-color-primary);
+    font-size: var(--app-fs-caption);
     margin-top: 2px;
   }
 
@@ -1065,15 +1065,15 @@ onMounted(() => {
 
     .detail-label {
       display: block;
-      font-size: var(--apple-fs-fine-print);
-      color: var(--apple-ink-muted-48);
-      margin-bottom: var(--apple-spacing-xxs);
+      font-size: var(--app-fs-meta);
+      color: var(--app-color-text-muted);
+      margin-bottom: var(--app-space-1);
     }
 
     .detail-value {
       display: block;
-      font-size: var(--apple-fs-caption);
-      color: var(--apple-ink);
+      font-size: var(--app-fs-caption);
+      color: var(--app-color-ink);
       word-break: break-all;
     }
   }
@@ -1082,33 +1082,33 @@ onMounted(() => {
 .sessions-list {
   .session-item {
     display: flex;
-    padding: var(--apple-spacing-sm) var(--apple-spacing-md);
+    padding: var(--app-space-3) var(--app-space-4);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all var(--app-transition-normal);
     position: relative;
-    border-bottom: 1px solid var(--apple-divider-soft);
+    border-bottom: 1px solid var(--app-color-divider);
     
     &:last-child {
       border-bottom: none;
     }
     
     &:hover {
-      background-color: var(--apple-canvas-parchment);
+      background-color: var(--app-color-fill);
     }
     
     &.session-active {
-      background-color: var(--apple-info-bg);
+      background-color: var(--app-color-info-bg);
     }
     
     .session-avatar {
-      margin-right: var(--apple-spacing-sm);
+      margin-right: var(--app-space-3);
       flex-shrink: 0;
       position: relative;
       
       .el-avatar {
         width: 40px;
         height: 40px;
-        border-radius: var(--apple-rounded-md);
+        border-radius: var(--app-radius-md);
       }
     }
     
@@ -1120,25 +1120,25 @@ onMounted(() => {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: var(--apple-spacing-xxs);
+        margin-bottom: var(--app-space-1);
         
         .session-name {
           font-weight: 600;
-          color: var(--apple-ink);
-          font-size: var(--apple-fs-caption);
+          color: var(--app-color-ink);
+          font-size: var(--app-fs-caption);
         }
         
         .session-time {
-          font-size: var(--apple-fs-fine-print);
-          color: var(--apple-ink-muted-48);
+          font-size: var(--app-fs-meta);
+          color: var(--app-color-text-muted);
           flex-shrink: 0;
-          margin-left: var(--apple-spacing-xs);
+          margin-left: var(--app-space-2);
         }
       }
       
       .session-preview {
-        font-size: var(--apple-fs-fine-print);
-        color: var(--apple-ink-muted-48);
+        font-size: var(--app-fs-meta);
+        color: var(--app-color-text-muted);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -1147,8 +1147,8 @@ onMounted(() => {
       
       .session-meta {
         position: absolute;
-        top: var(--apple-spacing-sm);
-        right: var(--apple-spacing-md);
+        top: var(--app-space-3);
+        right: var(--app-space-4);
         
         .el-tag {
           font-size: 10px;
@@ -1156,8 +1156,8 @@ onMounted(() => {
           line-height: 16px;
           padding: 0 6px;
           border-radius: 10px;
-          background: var(--apple-danger);
-          color: var(--apple-on-primary);
+          background: var(--app-color-danger);
+          color: var(--app-color-on-primary);
           font-weight: 600;
         }
       }
@@ -1168,37 +1168,37 @@ onMounted(() => {
 .chat-container {
   height: 500px;
   overflow-y: auto;
-  padding: var(--apple-spacing-md);
-  background: var(--apple-canvas-parchment);
-  border-radius: var(--apple-rounded-lg);
+  padding: var(--app-space-4);
+  background: var(--app-color-fill);
+  border-radius: var(--app-radius-lg);
   position: relative;
   scrollbar-width: thin;
-  scrollbar-color: var(--apple-surface-chip-translucent) var(--apple-canvas-parchment);
+  scrollbar-color: var(--app-color-border-strong) var(--app-color-fill);
   
   .loading-more {
     text-align: center;
-    padding: var(--apple-spacing-sm);
-    color: var(--apple-ink-muted-48);
-    font-size: var(--apple-fs-fine-print);
+    padding: var(--app-space-3);
+    color: var(--app-color-text-muted);
+    font-size: var(--app-fs-meta);
   }
   
   .quick-replies {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--apple-spacing-xs);
-    margin-bottom: var(--apple-spacing-sm);
-    padding: var(--apple-spacing-sm);
-    background: var(--apple-surface);
-    border-radius: var(--apple-rounded-lg);
-    border: 1px solid var(--apple-hairline);
+    gap: var(--app-space-2);
+    margin-bottom: var(--app-space-3);
+    padding: var(--app-space-3);
+    background: var(--app-color-card-bg);
+    border-radius: var(--app-radius-lg);
+    border: 1px solid var(--app-color-border);
 
     .el-tag {
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all var(--app-transition-slow);
       border-width: 1.5px;
 
       &:hover {
-        border-color: var(--apple-primary);
+        border-color: var(--app-color-primary);
       }
 
       &:active {
@@ -1210,20 +1210,20 @@ onMounted(() => {
   .messages-area {
       .time-separator {
         display: inline-block;
-        margin: var(--apple-spacing-xs) auto;
-        padding: 4px 10px;
-        background: var(--apple-surface);
-        color: var(--apple-ink-muted-48);
-        font-size: var(--apple-fs-fine-print);
-        border-radius: var(--apple-rounded-pill);
+        margin: var(--app-space-2) auto;
+        padding: var(--app-space-1) 10px;
+        background: var(--app-color-card-bg);
+        color: var(--app-color-text-muted);
+        font-size: var(--app-fs-meta);
+        border-radius: var(--app-radius-pill);
         text-align: center;
       }
     .message-item {
         display: flex;
-        margin-bottom: var(--apple-spacing-sm);
+        margin-bottom: var(--app-space-3);
         animation: messageSlideIn 0.18s ease-out;
         align-items: flex-end;
-        gap: var(--apple-spacing-xs);
+        gap: var(--app-space-2);
       
         @keyframes messageSlideIn {
           from {
@@ -1240,7 +1240,7 @@ onMounted(() => {
         flex-direction: row-reverse;
 
         .message-avatar {
-          margin-left: 8px;
+          margin-left: var(--app-space-2);
           margin-right: 0;
         }
 
@@ -1249,8 +1249,8 @@ onMounted(() => {
         }
 
         .message-bubble {
-          background: var(--apple-primary);
-          color: var(--apple-on-primary);
+          background: var(--app-color-primary);
+          color: var(--app-color-on-primary);
           border: none;
           position: relative;
           max-width: 80%;
@@ -1263,16 +1263,13 @@ onMounted(() => {
             right: -8px;
             width: 0;
             height: 0;
-            border-left: 8px solid var(--apple-primary);
+            border-left: 8px solid var(--app-color-primary);
             border-top: 8px solid transparent;
             border-bottom: 8px solid transparent;
           }
           
-          .message-time {
-            color: rgba(255, 255, 255, 0.7);
-          }
           
-          .message-text { font-size: var(--apple-fs-caption); color: var(--apple-on-primary); }
+          .message-text { font-size: var(--app-fs-caption); color: var(--app-color-on-primary); }
         }
       }
 
@@ -1280,7 +1277,7 @@ onMounted(() => {
         flex-direction: row;
 
         .message-avatar {
-          margin-right: 8px;
+          margin-right: var(--app-space-2);
           margin-left: 0;
         }
 
@@ -1289,9 +1286,9 @@ onMounted(() => {
         }
 
         .message-bubble {
-          background: var(--apple-surface);
-          color: var(--apple-ink);
-          border: 1px solid var(--apple-hairline);
+          background: var(--app-color-card-bg);
+          color: var(--app-color-ink);
+          border: 1px solid var(--app-color-border);
           position: relative;
           max-width: 80%;
           padding: 9px 13px;
@@ -1303,13 +1300,13 @@ onMounted(() => {
             bottom: 8px;
             width: 0;
             height: 0;
-            border-right: 8px solid var(--apple-surface);
+            border-right: 8px solid var(--app-color-card-bg);
             border-top: 8px solid transparent;
             border-bottom: 8px solid transparent;
-            border-left: 1px solid var(--apple-hairline);
+            border-left: 1px solid var(--app-color-border);
           }
 
-          .message-text { font-size: var(--apple-fs-caption); color: var(--apple-ink); }
+          .message-text { font-size: var(--app-fs-caption); color: var(--app-color-ink); }
         }
       }
 
@@ -1317,9 +1314,9 @@ onMounted(() => {
         width: 36px;
         height: 36px;
         border-radius: 50%;
-        margin: 0 0.5rem;
+        margin: 0 var(--app-space-2);
         flex-shrink: 0;
-        border: 1px solid var(--apple-hairline);
+        border: 1px solid var(--app-color-border);
       }
       
       .message-content {
@@ -1329,16 +1326,16 @@ onMounted(() => {
         .message-info {
           display: flex;
           align-items: center;
-          margin-bottom: var(--apple-spacing-xxs);
-          font-size: var(--apple-fs-fine-print);
-          color: var(--apple-ink-muted-48);
-          padding: 0 4px;
-          gap: var(--apple-spacing-xs);
+          margin-bottom: var(--app-space-1);
+          font-size: var(--app-fs-meta);
+          color: var(--app-color-text-muted);
+          padding: 0 var(--app-space-1);
+          gap: var(--app-space-2);
           
           .message-sender {
             font-weight: 600;
-            color: var(--apple-ink-muted-48);
-            font-size: var(--apple-fs-fine-print);
+            color: var(--app-color-text-muted);
+            font-size: var(--app-fs-meta);
           }
 
           /* 隐藏自己发送消息的用户名，WeChat 风格 */
@@ -1346,46 +1343,45 @@ onMounted(() => {
 
           .message-time {
             opacity: 0.7;
-            color: var(--apple-ink-muted-48);
-            font-size: var(--apple-fs-fine-print);
+            color: var(--app-color-text-muted);
+            font-size: var(--app-fs-meta);
           }
         }
       }
 
       .message-bubble {
         padding: 9px 13px;
-        // 气泡圆角：控制台 8px（--apple-rounded-md 的 11px 属展示尺度）
+        // 气泡圆角：控制台 8px（--app-radius-md 的 11px 属展示尺度）
         border-radius: var(--app-radius-md);
-        margin-bottom: 4px;
-        transition: all 0.2s ease;
-        
+        margin-bottom: var(--app-space-1);
+
         .message-text {
           line-height: 1.5;
-          font-size: var(--apple-fs-caption);
+          font-size: var(--app-fs-caption);
           word-break: break-word;
         }
       }
 
       .message-attachments {
-        margin-top: 8px;
+        margin-top: var(--app-space-2);
         
         .attachment-item {
           display: flex;
           align-items: center;
-          gap: var(--apple-spacing-xs);
-          padding: var(--apple-spacing-xs);
-          background: var(--apple-canvas-parchment);
-          border-radius: var(--apple-rounded-sm);
-          margin-top: 4px;
+          gap: var(--app-space-2);
+          padding: var(--app-space-2);
+          background: var(--app-color-fill);
+          border-radius: var(--app-radius-md);
+          margin-top: var(--app-space-1);
           
           .el-icon {
-            color: var(--apple-primary);
+            color: var(--app-color-primary);
           }
           
           span {
             flex: 1;
-            font-size: var(--apple-fs-fine-print);
-            color: var(--apple-ink);
+            font-size: var(--app-fs-meta);
+            color: var(--app-color-ink);
             word-break: break-all;
           }
         }
@@ -1399,11 +1395,11 @@ onMounted(() => {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(var(--app-color-white-rgb), 0.7);
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: var(--apple-rounded-lg);
+    border-radius: var(--app-radius-lg);
   }
 }
 
@@ -1415,46 +1411,46 @@ onMounted(() => {
 }
 
 .message-input {
-  margin-top: var(--apple-spacing-sm);
+  margin-top: var(--app-space-3);
   
   .input-toolbar {
     display: flex;
     align-items: center;
-    gap: var(--apple-spacing-sm);
-    margin-bottom: var(--apple-spacing-xs);
+    gap: var(--app-space-3);
+    margin-bottom: var(--app-space-2);
     
     .el-button {
-      font-size: var(--apple-fs-caption);
+      font-size: var(--app-fs-caption);
     }
     
     .toolbar-tip {
-      font-size: var(--apple-fs-fine-print);
-      color: var(--apple-ink-muted-48);
+      font-size: var(--app-fs-meta);
+      color: var(--app-color-text-muted);
       margin-left: auto;
     }
   }
   
   .emoji-picker {
-    margin-bottom: var(--apple-spacing-xs);
-    padding: var(--apple-spacing-sm);
-    background: var(--apple-canvas-parchment);
-    border-radius: var(--apple-rounded-md);
+    margin-bottom: var(--app-space-2);
+    padding: var(--app-space-3);
+    background: var(--app-color-fill);
+    border-radius: var(--app-radius-md);
     
     .emoji-grid {
       display: grid;
       grid-template-columns: repeat(10, 1fr);
-      gap: var(--apple-spacing-xs);
+      gap: var(--app-space-2);
       
       .emoji-item {
         font-size: 20px;
         cursor: pointer;
         text-align: center;
-        padding: var(--apple-spacing-xxs);
-        border-radius: var(--apple-rounded-sm);
-        transition: all 0.2s ease;
+        padding: var(--app-space-1);
+        border-radius: var(--app-radius-sm);
+        transition: all var(--app-transition-normal);
         
         &:hover {
-          background: var(--apple-slate-border);
+          background: var(--app-color-border-soft);
           transform: scale(1.1);
         }
       }
@@ -1462,16 +1458,16 @@ onMounted(() => {
   }
   
   :deep(.el-textarea__wrapper) {
-    border-radius: var(--apple-rounded-md);
-    border: 1px solid var(--apple-hairline);
+    border-radius: var(--app-radius-md);
+    border: 1px solid var(--app-color-border);
     
     &:hover {
-      border-color: var(--apple-primary);
+      border-color: var(--app-color-primary);
     }
     
     &:focus-within {
-      border-color: var(--apple-primary);
-      box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+      border-color: var(--app-color-primary);
+      box-shadow: 0 0 0 3px rgba(var(--app-color-primary-rgb), 0.1);
     }
   }
   
@@ -1479,26 +1475,26 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: var(--apple-spacing-xs);
+    margin-top: var(--app-space-2);
     
     .input-info {
       .attachment-count {
-        font-size: var(--apple-fs-fine-print);
-        color: var(--apple-primary);
+        font-size: var(--app-fs-meta);
+        color: var(--app-color-primary);
         display: flex;
         align-items: center;
-        gap: var(--apple-spacing-xxs);
+        gap: var(--app-space-1);
       }
     }
     
     .send-button {
-      border-radius: var(--apple-rounded-pill);
-      background: var(--apple-primary);
-      border-color: var(--apple-primary);
+      border-radius: var(--app-radius-pill);
+      background: var(--app-color-primary);
+      border-color: var(--app-color-primary);
       
       &:hover {
-        background: var(--apple-primary);
-        border-color: var(--apple-primary);
+        background: var(--app-color-primary);
+        border-color: var(--app-color-primary);
       }
     }
   }
