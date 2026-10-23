@@ -16,19 +16,33 @@ export const CHECK_STATUS = {
 }
 
 export const CHECK_STATUS_META = {
-  pending: { label: '待查重', type: 'info' },
-  checking: { label: '查重中', type: 'warning' },
-  completed: { label: '已完成', type: 'success' },
-  failure: { label: '失败', type: 'danger' },
-  cancelled: { label: '已取消', type: 'info' },
+  pending: { label: '待查重', type: 'info', message: '准备开始查重检测...' },
+  checking: { label: '查重中', type: 'warning', message: '正在进行查重检测...' },
+  completed: { label: '已完成', type: 'success', message: '查重检测已完成' },
+  failure: { label: '失败', type: 'danger', message: '查重检测失败' },
+  cancelled: { label: '已取消', type: 'info', message: '查重检测已取消' },
+}
+
+// 兼容历史/第三方推送里的别名取值（页面旧代码用过 processing / failed）
+const CHECK_STATUS_ALIASES = {
+  processing: 'checking',
+  failed: 'failure',
+  success: 'completed',
+}
+
+export const normalizeCheckStatus = (status) => {
+  const key = String(status || '').toLowerCase()
+  return CHECK_STATUS_ALIASES[key] || key
 }
 
 export const getCheckStatusText = (status, fallback = '未知状态') => {
-  const key = String(status || '').toLowerCase()
-  return CHECK_STATUS_META[key]?.label || fallback
+  return CHECK_STATUS_META[normalizeCheckStatus(status)]?.label || fallback
 }
 
 export const getCheckStatusType = (status) => {
-  const key = String(status || '').toLowerCase()
-  return CHECK_STATUS_META[key]?.type || 'info'
+  return CHECK_STATUS_META[normalizeCheckStatus(status)]?.type || 'info'
+}
+
+export const getCheckStatusMessage = (status) => {
+  return CHECK_STATUS_META[normalizeCheckStatus(status)]?.message || '未知状态'
 }
