@@ -134,56 +134,55 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
+// 控制台密度令牌：尺度用 --app-*，颜色用 --app-color-*（1:1 映射，像素值不变）
 .my-defense {
   display: flex;
   flex-direction: column;
-  gap: var(--apple-spacing-md);
-  color: var(--apple-ink);
-  font-family: var(--apple-font-text);
+  gap: var(--app-space-4);
+  color: var(--app-color-ink);
 }
 
 .head-row {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--apple-spacing-sm);
+  gap: var(--app-space-3);
   flex-wrap: wrap;
 }
 
 .head-title {
-  margin: 0 0 var(--apple-spacing-xxs);
-  font-size: 1.25rem;
+  margin: 0 0 var(--app-space-1);
+  font-size: var(--app-fs-title);
   font-weight: 700;
-  font-family: var(--apple-font-display);
-  line-height: 1.2;
-  color: var(--apple-ink);
+  line-height: var(--app-lh-display);
+  color: var(--app-color-ink);
 }
 
 .head-desc {
   margin: 0;
-  font-size: var(--apple-fs-caption);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-caption);
+  color: var(--app-color-text-muted);
 }
 
 .sep {
-  margin: 0 var(--apple-spacing-xxs);
-  color: var(--apple-hairline);
+  margin: 0 var(--app-space-1);
+  color: var(--app-color-border);
 }
 
 .order-badge {
   display: inline-block;
   min-width: 26px;
   padding: 0 6px;
-  border-radius: var(--apple-rounded-pill);
-  background: var(--apple-canvas-parchment);
+  border-radius: var(--app-radius-pill);
+  background: var(--app-color-fill);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   text-align: center;
-  color: var(--apple-ink);
+  color: var(--app-color-ink);
 }
 
 .meet-link {
-  color: var(--apple-primary);
+  color: var(--app-color-primary);
   text-decoration: none;
 
   &:hover {
@@ -197,12 +196,12 @@ onMounted(() => {
 }
 
 .grade-text {
-  font-size: var(--apple-fs-fine-print);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
 }
 
 .muted {
-  font-size: var(--apple-fs-caption);
-  color: var(--apple-ink-muted-48);
+  font-size: var(--app-fs-caption);
+  color: var(--app-color-text-muted);
 }
 </style>
