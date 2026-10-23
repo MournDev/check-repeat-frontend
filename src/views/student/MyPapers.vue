@@ -237,9 +237,9 @@
             </div>
 
             <div class="paper-status">
-              <span class="status-badge" :class="getStatusType(paper.paperStatus)">
+              <el-tag :type="getStatusType(paper.paperStatus)" size="small" round>
                 {{ getStatusText(paper.paperStatus) }}
-              </span>
+              </el-tag>
               <span v-if="paper.feedback" class="feedback-brief">
                 {{ paper.feedback }}
               </span>
@@ -1623,34 +1623,6 @@ const batchDelete = async () => {
         gap: var(--app-space-2);
         flex-wrap: wrap;
         
-        .status-badge {
-          padding: 3px 10px;
-          border-radius: var(--app-radius-pill);
-          font-size: var(--app-fs-meta);
-          font-weight: 500;
-          
-          &.info {
-            background: var(--app-color-info-bg);
-            color: var(--app-color-primary);
-          }
-          &.warning {
-            background: var(--app-color-warning-bg);
-            color: var(--app-color-warning);
-          }
-          &.primary {
-            background: var(--app-color-info-bg);
-            color: var(--app-color-primary);
-          }
-          &.success {
-            background: var(--app-color-success-bg);
-            color: var(--app-color-success);
-          }
-          &.danger {
-            background: var(--app-color-danger-bg);
-            color: var(--app-color-danger);
-          }
-        }
-        
         .feedback-brief {
           color: var(--app-color-danger);
           font-size: var(--app-fs-meta);
@@ -1894,34 +1866,6 @@ const batchDelete = async () => {
         .detail-value {
           font-size: var(--app-fs-caption);
           color: var(--app-color-ink);
-          
-          .status-badge {
-            padding: var(--app-space-1) var(--app-space-3);
-            border-radius: 16px;
-            font-size: var(--app-fs-meta);
-            font-weight: 600;
-            
-            &.info {
-              background: var(--app-color-info-bg);
-              color: var(--app-color-primary);
-            }
-            &.warning {
-              background: var(--app-color-fill);
-              color: var(--app-color-warning);
-            }
-            &.primary {
-              background: var(--app-color-fill);
-              color: var(--app-color-primary);
-            }
-            &.success {
-              background: var(--app-color-fill);
-              color: var(--app-color-success);
-            }
-            &.danger {
-              background: var(--app-color-danger-bg);
-              color: var(--app-color-danger);
-            }
-          }
         }
         
         &.full-width {

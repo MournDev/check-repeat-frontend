@@ -45,9 +45,9 @@
           <div v-if="latestPaper && latestPaper.id" class="paper-body">
             <div class="paper-headline">
               <h2 class="paper-title">{{ latestPaper.title }}</h2>
-              <span class="status-badge" :class="getStatusClass(latestPaper.status)">
+              <el-tag :type="getStatusType(latestPaper.status)" size="small" round>
                 {{ getStatusText(latestPaper.status) }}
-              </span>
+              </el-tag>
             </div>
 
             <div class="paper-meta">
@@ -151,9 +151,9 @@
               <el-icon><DataLine /></el-icon>
               <span>论文处理进度</span>
             </div>
-            <span class="status-badge" :class="getProgressStatusClass(currentProgress)">
+            <el-tag :type="getProgressStatusType(currentProgress)" size="small" round>
               {{ getProgressStatusText(currentProgress) }}
-            </span>
+            </el-tag>
           </header>
 
           <div class="progress-body" v-loading="loading.progress">
@@ -1078,29 +1078,6 @@ const getCountdownClass = (targetDate) => {
   return 'success';
 };
 
-const getProgressStatusClass = (progress) => {
-  const classMap = {
-    0: 'status-info',
-    1: 'status-primary',
-    2: 'status-warning',
-    3: 'status-danger',
-    4: 'status-success'
-  };
-  return classMap[progress] || 'status-info';
-};
-
-const getStatusClass = (status) => {
-  const classMap = {
-    'submitted': 'status-primary',
-    'assigned': 'status-primary',
-    'auditing': 'status-warning',
-    'completed': 'status-success',
-    'rejected': 'status-danger',
-    'draft': 'status-info'
-  };
-  return classMap[status] || 'status-info';
-};
-
 const getSimilarityStatusClass = (similarity) => {
   if (!hasSimilarityData.value) return 'status-info'
   const map = {
@@ -1431,6 +1408,10 @@ const renderComparisonChart = () => {
   justify-content: space-between;
   gap: var(--app-space-3);
   margin-bottom: var(--app-space-3);
+
+  .el-tag {
+    flex-shrink: 0;
+  }
 }
 
 .paper-title {
@@ -1441,20 +1422,6 @@ const renderComparisonChart = () => {
   line-height: 1.3;
   color: var(--app-color-ink);
   word-break: break-word;
-}
-
-.status-badge {
-  flex-shrink: 0;
-  padding: 3px 10px;
-  border-radius: var(--app-radius-pill);
-  font-size: var(--app-fs-meta);
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.status-primary {
-  color: var(--app-color-primary);
-  background: var(--app-color-info-bg);
 }
 
 .status-success {
