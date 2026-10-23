@@ -298,28 +298,28 @@ onMounted(() => {
   .paper-title-cell {
     display: flex;
     align-items: center;
-    gap: var(--apple-spacing-xs);
+    gap: var(--app-space-2);
 
     .paper-title {
       font-weight: 600;
-      font-size: var(--apple-fs-caption);
-      color: var(--apple-ink);
+      font-size: var(--app-fs-caption);
+      color: var(--app-color-ink);
       cursor: pointer;
 
       &:hover {
-        color: var(--apple-primary);
+        color: var(--app-color-primary);
       }
     }
   }
 
-  .similarity-low { color: var(--apple-rate-low); }
-  .similarity-medium { color: var(--apple-rate-medium); }
-  .similarity-high { color: var(--apple-rate-high); }
+  .similarity-low { color: var(--app-color-rate-low); }
+  .similarity-medium { color: var(--app-color-rate-medium); }
+  .similarity-high { color: var(--app-color-rate-high); }
 }
 
 @media (max-width: 768px) {
   .check-history-list-page {
-    padding: var(--apple-spacing-sm);
+    padding: var(--app-space-3);
   }
 }
 </style>
