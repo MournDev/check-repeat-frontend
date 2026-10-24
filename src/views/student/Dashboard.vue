@@ -188,57 +188,6 @@
           </div>
         </section>
 
-        <!-- 数据分析 -->
-        <section class="dash-card charts-section">
-          <header class="dash-card-head">
-            <div class="dash-card-title">
-              <el-icon><DataAnalysis /></el-icon>
-              <span>数据分析</span>
-            </div>
-            <el-button text :icon="Refresh" @click="refreshData">刷新</el-button>
-          </header>
-
-          <div class="charts-grid">
-            <div class="chart-card">
-              <div class="chart-head">
-                <el-icon><DataAnalysis /></el-icon>
-                <span>个人能力评估</span>
-              </div>
-              <div v-if="hasRadarData" :ref="radarChart.chartRef" class="chart-container"></div>
-              <div v-else-if="!loading.radar" class="chart-empty">
-                <el-icon class="empty-icon"><DataAnalysis /></el-icon>
-                <p>暂无评估数据</p>
-              </div>
-              <div v-else class="chart-empty" v-loading="true"></div>
-            </div>
-
-            <div class="chart-card">
-              <div class="chart-head">
-                <el-icon><TrendCharts /></el-icon>
-                <span>总相似比变化趋势</span>
-              </div>
-              <div v-if="hasTrendData" :ref="trendChart.chartRef" class="chart-container"></div>
-              <div v-else-if="!loading.trend" class="chart-empty">
-                <el-icon class="empty-icon"><TrendCharts /></el-icon>
-                <p>暂无检测数据</p>
-              </div>
-              <div v-else class="chart-empty" v-loading="true"></div>
-            </div>
-          </div>
-
-          <div class="chart-card full-width">
-            <div class="chart-head">
-              <el-icon><Histogram /></el-icon>
-              <span>与专业平均水平对比</span>
-            </div>
-            <div v-if="hasComparisonData" :ref="comparisonChart.chartRef" class="chart-container-large"></div>
-            <div v-else-if="!loading.comparison" class="chart-empty">
-              <el-icon class="empty-icon"><Histogram /></el-icon>
-              <p>暂无专业对比数据</p>
-            </div>
-            <div v-else class="chart-empty" v-loading="true"></div>
-          </div>
-        </section>
       </div>
 
       <!-- 右列：节点 / 导师 / 通知 -->
@@ -419,6 +368,58 @@
           <div v-else class="card-empty compact" v-loading="true"></div>
         </section>
       </aside>
+
+      <!-- 数据分析：横跨两列，避免右栏底部留白 -->
+      <section class="dash-card charts-section">
+        <header class="dash-card-head">
+          <div class="dash-card-title">
+            <el-icon><DataAnalysis /></el-icon>
+            <span>数据分析</span>
+          </div>
+          <el-button text :icon="Refresh" @click="refreshData">刷新</el-button>
+        </header>
+
+        <div class="charts-grid">
+          <div class="chart-card">
+            <div class="chart-head">
+              <el-icon><DataAnalysis /></el-icon>
+              <span>个人能力评估</span>
+            </div>
+            <div v-if="hasRadarData" :ref="radarChart.chartRef" class="chart-container"></div>
+            <div v-else-if="!loading.radar" class="chart-empty">
+              <el-icon class="empty-icon"><DataAnalysis /></el-icon>
+              <p>暂无评估数据</p>
+            </div>
+            <div v-else class="chart-empty" v-loading="true"></div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-head">
+              <el-icon><TrendCharts /></el-icon>
+              <span>总相似比变化趋势</span>
+            </div>
+            <div v-if="hasTrendData" :ref="trendChart.chartRef" class="chart-container"></div>
+            <div v-else-if="!loading.trend" class="chart-empty">
+              <el-icon class="empty-icon"><TrendCharts /></el-icon>
+              <p>暂无检测数据</p>
+            </div>
+            <div v-else class="chart-empty" v-loading="true"></div>
+          </div>
+        </div>
+
+        <div class="chart-card full-width">
+          <div class="chart-head">
+            <el-icon><Histogram /></el-icon>
+            <span>与专业平均水平对比</span>
+          </div>
+          <div v-if="hasComparisonData" :ref="comparisonChart.chartRef" class="chart-container-large"></div>
+          <div v-else-if="!loading.comparison" class="chart-empty">
+            <el-icon class="empty-icon"><Histogram /></el-icon>
+            <p>暂无专业对比数据</p>
+          </div>
+          <div v-else class="chart-empty" v-loading="true"></div>
+        </div>
+      </section>
     </div>
   </div>
 </template>
@@ -1294,7 +1295,7 @@ const renderComparisonChart = () => {
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--app-space-3);
+  gap: var(--app-space-4);
   margin-bottom: var(--app-space-6);
 }
 
@@ -1324,9 +1325,14 @@ const renderComparisonChart = () => {
 // ── 布局 ────────────────────────────────────────────────────
 .dashboard-main {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) 320px;
   gap: var(--app-space-6);
   align-items: start;
+}
+
+// 宽图表独占一行，不参与左右分栏的高度竞争
+.charts-section {
+  grid-column: 1 / -1;
 }
 
 .dashboard-col,
@@ -1358,7 +1364,7 @@ const renderComparisonChart = () => {
   align-items: center;
   gap: var(--app-space-2);
   font-family: var(--app-font-family);
-  font-size: var(--app-fs-body);
+  font-size: var(--app-fs-heading);
   font-weight: 600;
   color: var(--app-color-ink);
 }
@@ -1972,10 +1978,6 @@ const renderComparisonChart = () => {
 }
 
 @media (max-width: 768px) {
-  .dashboard-page {
-    padding: var(--app-space-3);
-  }
-
   .kpi-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
