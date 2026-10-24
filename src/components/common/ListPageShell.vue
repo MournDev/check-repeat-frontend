@@ -172,5 +172,19 @@ defineEmits(['page-change', 'size-change'])
   .list-page__pagination {
     justify-content: center;
   }
+
+  /* Element 分页器默认 display:flex + white-space:nowrap，手机上会撑破卡片；
+     允许换行，并隐藏可选的每页条数/跳页，只保留总数与翻页 */
+  .list-page__pagination :deep(.el-pagination) {
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: var(--app-space-2);
+    white-space: normal;
+  }
+
+  .list-page__pagination :deep(.el-pagination__sizes),
+  .list-page__pagination :deep(.el-pagination__jump) {
+    display: none;
+  }
 }
 </style>
