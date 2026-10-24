@@ -1,18 +1,25 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+# 前端 CI：在 Node 20.x / 22.x 上执行干净安装与生产构建
 
 name: Frontend CI
 
 on:
   push:
     branches: [ "master" ]
-  
   pull_request:
     branches: [ "master" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: frontend-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     strategy:
       matrix:
