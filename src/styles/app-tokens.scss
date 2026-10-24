@@ -117,6 +117,7 @@
   --app-color-fill-strong: var(--apple-slate-bg);             // 稍深一级的填充（按钮 hover 等）
   --app-color-nav-bg: var(--apple-surface-tile-1);            // 顶栏/侧边栏深色底
   --app-color-nav-text: var(--apple-body-muted);              // 深色底正文
+  --app-color-nav-text-strong: var(--apple-body-on-dark);     // 深色底主文字/图标（系统名、用户名）
   --app-color-nav-text-muted: var(--apple-slate-faint);       // 深色底分组标签（原 #7a7a7a 对比度不足）
 
   // 描边与分隔

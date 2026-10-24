@@ -294,8 +294,10 @@ const activeMenu = computed(() => {
   return best
 })
 
-// 分组折叠：一级入口收敛为分组标题，默认只展开当前页面所在分组。
-const expandedGroups = ref([])
+// 分组折叠：默认全部展开，只记录用户主动收起的 key。
+// （此前用 expandedGroups 白名单，初始只展开当前页面所在分组，
+//   一登录侧栏就是大片空黑，二级菜单还需要多点一次才出现。）
+const collapsedGroups = ref([])
 
 const activeGroupKey = computed(() => {
   const group = sidebarMenu.value.groups.find(
@@ -304,17 +306,18 @@ const activeGroupKey = computed(() => {
   return group?.key || ''
 })
 
-const isGroupOpen = (group) => !group.label || expandedGroups.value.includes(group.key)
+const isGroupOpen = (group) => !group.label || !collapsedGroups.value.includes(group.key)
 
 const toggleGroup = (key) => {
-  expandedGroups.value = expandedGroups.value.includes(key)
-    ? expandedGroups.value.filter(k => k !== key)
-    : [...expandedGroups.value, key]
+  collapsedGroups.value = collapsedGroups.value.includes(key)
+    ? collapsedGroups.value.filter(k => k !== key)
+    : [...collapsedGroups.value, key]
 }
 
+// 深链/跳转进入被用户收起的所属分组时，自动把它重新展开
 watch(activeGroupKey, (key) => {
-  if (key && !expandedGroups.value.includes(key)) {
-    expandedGroups.value = [...expandedGroups.value, key]
+  if (key && collapsedGroups.value.includes(key)) {
+    collapsedGroups.value = collapsedGroups.value.filter(k => k !== key)
   }
 }, { immediate: true })
 
@@ -547,14 +550,18 @@ onUnmounted(() => {
   &:focus { top: var(--app-space-2); }
 }
 
-// ── Global Nav (44px, pure black) ────────────────────────
+// ── Global Nav (44px, 深色，与侧边栏同色) ─────────────────
+// 原背景引用 --app-color-card-bg-black（全项目未定义），退化为透明，
+// 露出 app-shell 的浅灰页底，而品牌名用的是白色 --app-color-card-bg，
+// 白字压浅灰几乎不可辨。改为与侧边栏统一取 --app-color-nav-bg，
+// 形成「深色顶栏 + 深色侧栏 + 浅色内容区」的包围结构。
 .global-nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: var(--app-global-nav-height);
   padding: 0 var(--app-space-6);
-  background: var(--app-color-card-bg-black);
+  background: var(--app-color-nav-bg);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -571,7 +578,7 @@ onUnmounted(() => {
   display: none;
   background: none;
   border: none;
-  color: var(--app-color-card-bg);
+  color: var(--app-color-nav-text-strong);
   padding: var(--app-space-1);
   cursor: pointer;
   font-size: 20px;
@@ -590,10 +597,10 @@ onUnmounted(() => {
 
 .brand-name {
   font-family: "SF Pro Text", "Inter", system-ui, sans-serif;
-  font-size: var(--app-fs-meta);
-  font-weight: 400;
+  font-size: var(--app-fs-body);
+  font-weight: 600;
   letter-spacing: 0;
-  color: var(--app-color-card-bg);
+  color: var(--app-color-nav-text-strong);
   white-space: nowrap;
 }
 
@@ -613,7 +620,7 @@ onUnmounted(() => {
   border-radius: var(--app-radius-sm);
   background: rgba(var(--app-color-white-rgb), 0.08);
   border: none;
-  color: var(--app-color-nav-text);
+  color: var(--app-color-nav-text-strong);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -622,7 +629,7 @@ onUnmounted(() => {
   font-size: var(--app-fs-heading);
   transition: color 0.2s ease, background-color 0.2s ease;
 
-  &:hover { color: var(--app-color-on-primary); background: rgba(var(--app-color-white-rgb), 0.15); }
+  &:hover { color: var(--app-color-nav-text-strong); background: rgba(var(--app-color-white-rgb), 0.16); }
   &:active { transform: scale(0.95); }
 }
 
@@ -634,12 +641,12 @@ onUnmounted(() => {
   border-radius: var(--app-radius-sm);
   background: rgba(var(--app-color-white-rgb), 0.08);
   border: none;
-  color: var(--app-color-nav-text);
+  color: var(--app-color-nav-text-strong);
   cursor: pointer;
   font-size: var(--app-fs-meta);
   transition: color 0.2s ease, background-color 0.2s ease;
 
-  &:hover { color: var(--app-color-on-primary); background: rgba(var(--app-color-white-rgb), 0.15); }
+  &:hover { color: var(--app-color-nav-text-strong); background: rgba(var(--app-color-white-rgb), 0.16); }
   &:active { transform: scale(0.95); }
 }
 
@@ -651,8 +658,8 @@ onUnmounted(() => {
   border-radius: var(--app-radius-pill);
 }
 
-.nav-user-name { font-size: var(--app-fs-meta); white-space: nowrap; }
-.nav-chevron { font-size: 10px; margin-left: 2px; }
+.nav-user-name { font-size: var(--app-fs-meta); font-weight: 600; color: var(--app-color-nav-text-strong); white-space: nowrap; }
+.nav-chevron { font-size: 10px; margin-left: 2px; color: var(--app-color-nav-text-strong); }
 
 // ── Sub Nav (48px, 白底，与页面底色分层) ────────────────────
 // 原为毛玻璃羊皮纸色（rgba(245,245,247,.8)），与页面底色同色，
@@ -700,7 +707,8 @@ onUnmounted(() => {
 .sub-nav-breadcrumb {
   :deep(.el-breadcrumb__item) {
     .el-breadcrumb__inner { color: var(--app-color-text-muted) !important; font-size: var(--app-fs-meta); }
-    .el-breadcrumb__separator { color: var(--app-color-text-on-dark) !important; }
+    // 分隔符原用 --app-color-text-on-dark(#ccc)，在白底 sub-nav 上几乎不可见
+    .el-breadcrumb__separator { color: var(--app-color-text-muted) !important; }
   }
 }
 
