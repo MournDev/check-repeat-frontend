@@ -77,7 +77,12 @@
                 <span v-if="source.matchedParagraphs">匹配段落 {{ source.matchedParagraphs }}</span>
               </span>
             </span>
-            <span class="source-rate">{{ formatPercent(source.maxSimilarity) }}</span>
+            <span
+              class="source-rate"
+              :style="{ color: getSimilarityColor(source.maxSimilarity) }"
+            >
+              {{ formatPercent(source.maxSimilarity) }}
+            </span>
             <el-icon class="source-arrow" :class="{ expanded: expandedId === String(source.sourceId) }">
               <ArrowRight />
             </el-icon>
@@ -181,7 +186,7 @@ watch(() => props.sources, () => {
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .check-report-panel {
   display: flex;
   flex-direction: column;
@@ -386,16 +391,27 @@ watch(() => props.sources, () => {
   border-bottom: 1px solid var(--app-color-divider);
 }
 
+/* 行高约 42px：单行来源名 + 单行辅助信息，接近表格密度 */
 .source-row {
   display: flex;
   align-items: center;
   gap: var(--app-space-2);
   width: 100%;
-  padding: var(--app-space-2) 2px;
+  padding: 5px 2px;
   background: transparent;
   border: none;
   text-align: left;
   cursor: pointer;
+  transition: background-color var(--app-transition-fast);
+
+  &:hover {
+    background: var(--app-color-fill);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--app-color-primary);
+    outline-offset: -2px;
+  }
 }
 
 .source-row:hover .source-name {
@@ -403,13 +419,14 @@ watch(() => props.sources, () => {
 }
 
 .source-index {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-size: var(--app-fs-meta);
+  line-height: 1;
   color: var(--app-color-text-muted);
   background: var(--app-color-fill);
   border-radius: var(--app-radius-pill);
@@ -423,6 +440,7 @@ watch(() => props.sources, () => {
 .source-name {
   display: block;
   font-size: var(--app-fs-caption);
+  line-height: 1.3;
   color: var(--app-color-ink);
   white-space: nowrap;
   overflow: hidden;
@@ -432,16 +450,23 @@ watch(() => props.sources, () => {
 .source-sub {
   display: flex;
   gap: var(--app-space-2);
-  margin-top: 2px;
   font-size: var(--app-fs-meta);
+  line-height: 1.3;
   color: var(--app-color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+
+  > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .source-rate {
   flex-shrink: 0;
-  font-size: var(--app-fs-meta);
+  font-size: var(--app-fs-caption);
   font-weight: 600;
-  color: var(--app-color-ink);
+  font-variant-numeric: tabular-nums;
 }
 
 .source-arrow {

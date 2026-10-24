@@ -8,26 +8,30 @@
       <el-button text size="small" :icon="Refresh" :loading="loading" @click="emit('refresh')">刷新</el-button>
     </header>
 
-    <el-input
-      v-model="keyword"
-      class="queue-search"
-      size="small"
-      clearable
-      :prefix-icon="Search"
-      placeholder="学生姓名 / 学号 / 论文标题"
-    />
+    <!-- 搜索与快捷筛选合并成一条紧凑工具栏，窄栏时自动换行 -->
+    <div class="queue-toolbar">
+      <el-input
+        v-model="keyword"
+        class="queue-search"
+        size="small"
+        clearable
+        :prefix-icon="Search"
+        placeholder="姓名 / 学号 / 标题"
+      />
 
-    <div class="queue-filters">
-      <button
-        v-for="item in quickFilters"
-        :key="item.value"
-        type="button"
-        class="filter-chip"
-        :class="{ active: quickFilter === item.value }"
-        @click="quickFilter = item.value"
-      >
-        {{ item.label }}
-      </button>
+      <div class="queue-filters" role="group" aria-label="按时限筛选">
+        <button
+          v-for="item in quickFilters"
+          :key="item.value"
+          type="button"
+          class="filter-chip"
+          :class="{ active: quickFilter === item.value }"
+          :aria-pressed="quickFilter === item.value"
+          @click="quickFilter = item.value"
+        >
+          {{ item.label }}
+        </button>
+      </div>
     </div>
 
     <div ref="listRef" class="queue-list" v-loading="loading">
@@ -44,14 +48,14 @@
           <span v-if="isOverdue(paper)" class="flag danger">已超时</span>
           <span v-else-if="isUrgent(paper)" class="flag warning">紧急</span>
         </div>
-        <div class="card-title">{{ paper.paperTitle || '未命名论文' }}</div>
+        <div class="card-title" :title="paper.paperTitle || '未命名论文'">{{ paper.paperTitle || '未命名论文' }}</div>
         <div class="card-meta">
           <span class="sim" :class="getSimilarityClass(Number(paper.similarity) || 0)">
             {{ formatPercent(paper.similarity) }}
           </span>
           <span>V{{ paper.version || 1 }}</span>
-          <span v-if="paper.deadline">{{ formatDateTime(paper.deadline, 'MM-DD HH:mm') }} 截止</span>
-          <span v-else>待审核</span>
+          <span v-if="paper.deadline" class="meta-deadline">{{ formatDateTime(paper.deadline, 'MM-DD HH:mm') }} 截止</span>
+          <span v-else class="meta-deadline">待审核</span>
         </div>
       </button>
 
@@ -146,7 +150,7 @@ watch(() => props.currentId, async () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--app-space-4) var(--app-space-4) var(--app-space-2);
+  padding: var(--app-space-3) var(--app-space-3) var(--app-space-1);
   flex-shrink: 0;
 }
 
@@ -171,12 +175,22 @@ watch(() => props.currentId, async () => {
   color: var(--app-color-text-muted);
 }
 
-.queue-search {
-  padding: 0 var(--app-space-4);
+/* 搜索 + 快捷筛选同一行；240px 窄栏时筛选自动落到下一行 */
+.queue-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--app-space-2);
+  padding: 0 var(--app-space-3) var(--app-space-2);
   flex-shrink: 0;
+}
+
+.queue-search {
+  flex: 1 1 132px;
+  min-width: 0;
 
   :deep(.el-input__wrapper) {
-    border-radius: var(--app-radius-md);
+    border-radius: var(--app-radius-sm);
     font-size: var(--app-fs-meta);
   }
 }
@@ -184,19 +198,24 @@ watch(() => props.currentId, async () => {
 .queue-filters {
   display: flex;
   gap: var(--app-space-1);
-  padding: var(--app-space-2) var(--app-space-4) var(--app-space-3);
   flex-shrink: 0;
 }
 
 .filter-chip {
-  padding: 3px var(--app-space-2);
+  padding: 2px var(--app-space-2);
   font-size: var(--app-fs-meta);
+  line-height: 18px;
   color: var(--app-color-text-muted);
   background: var(--app-color-fill);
   border: 1px solid transparent;
   border-radius: var(--app-radius-pill);
   cursor: pointer;
   transition: var(--app-transition-fast);
+
+  &:focus-visible {
+    outline: 2px solid var(--app-color-primary);
+    outline-offset: 1px;
+  }
 }
 
 .filter-chip:hover {
@@ -213,20 +232,21 @@ watch(() => props.currentId, async () => {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 0 var(--app-space-3) var(--app-space-4);
+  padding: 0 var(--app-space-3) var(--app-space-3);
   display: flex;
   flex-direction: column;
   gap: var(--app-space-2);
 }
 
+/* 单行标题 + 两行结构，行高稳定在 68px 左右，一屏可多看 2–3 条 */
 .queue-card {
   display: block;
   width: 100%;
-  padding: var(--app-space-2) var(--app-space-3);
+  padding: 6px 10px;
   text-align: left;
   background: var(--app-color-card-bg);
   border: 1px solid var(--app-color-border);
-  border-radius: var(--app-radius-md);
+  border-radius: var(--app-radius-sm);
   cursor: pointer;
   transition: var(--app-transition-fast);
 }
@@ -239,6 +259,7 @@ watch(() => props.currentId, async () => {
 .queue-card.active {
   border-color: var(--app-color-primary);
   background: var(--app-color-info-bg);
+  box-shadow: inset 2px 0 0 var(--app-color-primary);
 }
 
 .card-top {
@@ -248,6 +269,10 @@ watch(() => props.currentId, async () => {
 }
 
 .student-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: var(--app-fs-caption);
   font-weight: 600;
   color: var(--app-color-ink);
@@ -272,23 +297,28 @@ watch(() => props.currentId, async () => {
 }
 
 .card-title {
-  margin-top: var(--app-space-1);
+  margin-top: 2px;
   font-size: var(--app-fs-meta);
-  line-height: 1.4;
+  line-height: 1.35;
   color: var(--app-color-text);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .card-meta {
   display: flex;
   align-items: center;
   gap: var(--app-space-2);
-  margin-top: var(--app-space-1);
+  margin-top: 2px;
   font-size: var(--app-fs-meta);
+  line-height: 16px;
   color: var(--app-color-text-muted);
+}
+
+.meta-deadline {
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 .card-meta .sim {
@@ -348,8 +378,7 @@ watch(() => props.currentId, async () => {
     padding: var(--app-space-3);
   }
 
-  .queue-search,
-  .queue-filters,
+  .queue-toolbar,
   .queue-list {
     padding-left: var(--app-space-3);
     padding-right: var(--app-space-3);

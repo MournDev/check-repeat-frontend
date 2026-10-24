@@ -14,11 +14,9 @@
             <span class="status-tag" :class="getReviewResultClass(item.reviewStatus)">
               {{ item.reviewStatusDesc || getReviewResultText(item.reviewStatus) }}
             </span>
+            <span class="history-actor">审核教师：{{ item.reviewerName || '—' }}</span>
+            <span v-if="item.version" class="history-version">V{{ item.version }}</span>
             <span class="history-time">{{ formatDateTime(item.reviewTime, 'YYYY-MM-DD HH:mm') }}</span>
-          </div>
-          <div class="history-meta">
-            <span>审核教师：{{ item.reviewerName || '—' }}</span>
-            <span v-if="item.version">版本：V{{ item.version }}</span>
           </div>
           <p class="history-opinion">{{ item.reviewOpinion || '未填写审核意见' }}</p>
         </div>
@@ -72,7 +70,7 @@ watch(() => props.paperId, load, { immediate: true })
 
 <style scoped>
 .review-history-panel {
-  padding: var(--app-space-3) 0 var(--app-space-2);
+  padding: var(--app-space-2) 0;
   min-height: 200px;
   font-family: var(--app-font-family);
 }
@@ -109,6 +107,19 @@ watch(() => props.paperId, load, { immediate: true })
   list-style: none;
 }
 
+.history-item {
+  position: relative;
+  margin-bottom: var(--app-space-2);
+  padding-bottom: var(--app-space-2);
+  border-bottom: 1px solid var(--app-color-divider);
+}
+
+.history-item:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
 .history-list::before {
   content: '';
   position: absolute;
@@ -119,18 +130,9 @@ watch(() => props.paperId, load, { immediate: true })
   background: var(--app-color-border);
 }
 
-.history-item {
-  position: relative;
-  margin-bottom: var(--app-space-3);
-}
-
-.history-item:last-child {
-  margin-bottom: 0;
-}
-
 .timeline-dot {
   position: absolute;
-  top: 6px;
+  top: 5px;
   left: -16px;
   width: 9px;
   height: 9px;
@@ -152,24 +154,24 @@ watch(() => props.paperId, load, { immediate: true })
   background: var(--app-color-warning);
 }
 
+/* 去掉条目内层卡片，仅保留时间轴与行分割线 */
 .history-card {
-  padding: var(--app-space-2) var(--app-space-3);
-  border: 1px solid var(--app-color-border);
-  border-radius: var(--app-radius-sm);
-  background: var(--app-color-card-bg);
+  min-width: 0;
 }
 
 .history-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: var(--app-space-2);
+  min-width: 0;
 }
 
 .status-tag {
+  flex-shrink: 0;
   padding: 0 var(--app-space-2);
   font-size: var(--app-fs-meta);
   line-height: 18px;
+  white-space: nowrap;
   border-radius: var(--app-radius-xs);
   color: var(--app-color-text-muted);
   background: var(--app-color-fill);
@@ -190,24 +192,33 @@ watch(() => props.paperId, load, { immediate: true })
   background: var(--app-color-warning-bg);
 }
 
-.history-time {
+.history-actor {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: var(--app-fs-meta);
   color: var(--app-color-text-muted);
 }
 
-.history-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--app-space-1) var(--app-space-3);
-  margin-top: var(--app-space-1);
+.history-version {
+  flex-shrink: 0;
   font-size: var(--app-fs-meta);
   color: var(--app-color-text-muted);
+}
+
+.history-time {
+  flex-shrink: 0;
+  margin-left: auto;
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
+  font-variant-numeric: tabular-nums;
 }
 
 .history-opinion {
   margin: var(--app-space-1) 0 0;
   font-size: var(--app-fs-meta);
-  line-height: 1.6;
+  line-height: var(--app-lh-body);
   color: var(--app-color-text);
   white-space: pre-wrap;
 }
