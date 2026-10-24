@@ -1,6 +1,5 @@
 <template>
   <div class="my-papers-page">
-    <!-- 页面标题 -->
     <PageHeader description="管理您的所有论文提交记录">
       <template #actions>
         <el-button type="primary" :icon="UploadFilled" @click="goToPaperSubmit">提交新论文</el-button>
@@ -13,36 +12,40 @@
       title="论文列表"
       :icon="Document"
       :total="total"
-      :page-sizes="[5, 10, 20, 50]"
+      :page-sizes="[10, 20, 50, 100]"
       show-total
       total-suffix="篇论文"
       @size-change="handleSizeChange"
       @page-change="handleCurrentChange"
     >
-      <!-- 筛选和搜索 -->
+      <template #header-extra>
+        <template v-if="selectedPaperIds.length > 0">
+          <span class="selected-count">已选 {{ selectedPaperIds.length }} 篇</span>
+          <el-button :icon="Download" @click="batchDownload">批量下载</el-button>
+          <el-button :icon="Document" @click="batchCheckPlagiarism">批量查重</el-button>
+          <el-button type="danger" plain :icon="Delete" @click="batchDelete">批量删除</el-button>
+        </template>
+      </template>
+
       <template #filters>
-        <div class="filter-card list-scope">
-          <div class="filter-form list-scope">
-            <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">论文状态</label>
-            <select 
-              v-model="filterForm.paperStatus" 
-              class="form-select"
-              @change="fetchPapers"
+        <el-form :model="filterForm" inline class="papers-filter">
+          <el-form-item label="论文状态">
+            <el-select
+              v-model="filterForm.paperStatus"
+              placeholder="全部状态"
+              clearable
+              style="width: 140px"
+              @change="handleSearch"
             >
-              <option value="">全部状态</option>
-              <option 
-                v-for="item in paperStatusDictList" 
-                :key="item.dictValue" 
+              <el-option
+                v-for="item in paperStatusDictList"
+                :key="item.dictValue"
+                :label="item.dictLabel"
                 :value="item.dictValue"
-              >
-                {{ item.dictLabel }}
-              </option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">提交时间</label>
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="提交时间">
             <el-date-picker
               v-model="filterForm.dateRange"
               type="daterange"
@@ -50,282 +53,164 @@
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               value-format="YYYY-MM-DD"
-              @change="fetchPapers"
-              class="form-control"
+              style="width: 240px"
+              @change="handleSearch"
             />
-          </div>
-          <div class="form-group">
-            <label class="form-label">论文标题</label>
-            <div class="search-input">
-              <el-icon class="search-icon"><Search /></el-icon>
-              <el-input
-                v-model="filterForm.paperTitle"
-                placeholder="搜索论文标题..."
-                @keyup.enter="fetchPapers"
-                class="input-field"
-              />
-            </div>
-          </div>
-          <div class="form-actions">
-            <button class="primary-button" @click="fetchPapers">
-              <el-icon><Search /></el-icon>
-              <span>搜索</span>
-            </button>
-            <button class="secondary-button" @click="handleReset">
-              <el-icon><Refresh /></el-icon>
-              <span>重置</span>
-            </button>
-          </div>
-            </div>
-          </div>
-        </div>
+          </el-form-item>
+          <el-form-item label="论文标题">
+            <el-input
+              v-model="filterForm.paperTitle"
+              placeholder="搜索论文标题"
+              clearable
+              style="width: 220px"
+              @keyup.enter="handleSearch"
+              @clear="handleSearch"
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
+            <el-button :icon="Refresh" @click="handleReset">重置</el-button>
+          </el-form-item>
+        </el-form>
       </template>
 
-      <template #header-extra>
-        <div v-if="selectedPaperIds.length > 0" class="papers-card list-scope">
-          <div class="header-actions-group">
-            <!-- 批量操作工具栏 -->
-            <div class="batch-toolbar">
-              <span class="selected-count">
-                已选择 {{ selectedPaperIds.length }} 篇论文
-              </span>
-              <button class="primary-button" @click="batchDownload">
-                <el-icon><Download /></el-icon>
-                <span>批量下载</span>
-              </button>
-              <button class="success-button" @click="batchCheckPlagiarism">
-                <el-icon><Document /></el-icon>
-                <span>批量查重</span>
-              </button>
-              <button class="danger-button" @click="batchDelete">
-                <el-icon><Delete /></el-icon>
-                <span>批量删除</span>
-              </button>
-              <div class="divider"></div>
-              <label class="checkbox-label">
-                <input 
-                  type="checkbox" 
-                  v-model="selectAll" 
-                  @change="handleSelectAll"
-                  class="checkbox-input"
-                />
-                <span class="checkbox-text">全选</span>
-              </label>
-            </div>
-          </div>
-        </div>
-      </template>
+      <el-table
+        ref="tableRef"
+        class="papers-table"
+        :data="papers"
+        row-key="id"
+        size="default"
+        :max-height="tableMaxHeight"
+        v-loading="papersLoading"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column type="selection" width="44" />
 
-      <!-- 论文列表 -->
-      <div class="papers-card list-scope">
-        <div class="papers-list" v-loading="papersLoading">
-        <div
-          v-for="paper in papers"
-          :key="paper.id"
-          class="paper-item"
-          :class="{ 'paper-active': paper.id === activePaperId, 'paper-selected': selectedPaperIds.includes(paper.id) }"
-        >
-          <!-- 批量选择 -->
-          <div class="paper-select">
-            <label class="checkbox-label">
-              <input 
-                type="checkbox" 
-                v-model="selectedPaperIds" 
-                :value="paper.id" 
-                @change="handlePaperSelect"
-                class="checkbox-input"
-              />
-            </label>
-          </div>
-          <div class="paper-main">
-            <div class="paper-header">
-              <h4 class="paper-title">{{ paper.paperTitle }}</h4>
-              <div class="paper-actions">
-                <button
-                  v-if="paper.paperStatus === 'rejected'"
-                  class="action-button primary"
-                  @click="submitRevision(paper.id)"
-                >
-                  <el-icon><Upload /></el-icon>
-                  <span>提交修改</span>
-                </button>
-                <!-- 需要修改状态：重新提交 -->
-                <button
-                  v-if="paper.paperStatus === 'revision_needed'"
-                  class="action-button primary"
-                  @click="resubmitAfterRevision(paper)"
-                >
-                  <el-icon><Upload /></el-icon>
-                  <span>重新提交</span>
-                </button>
-                <!-- 重新编辑已撤回论文 -->
-                <button
-                  v-if="paper.paperStatus === 'withdrawn'"
-                  class="action-button primary"
-                  @click="resubmitPaper(paper)"
-                >
-                  <el-icon><EditPen /></el-icon>
-                  <span>重新编辑</span>
-                </button>
-                <!-- 撤回申请 -->
-                <button
-                  v-if="['pending', 'checking', 'auditing', 'revision_needed'].includes(paper.paperStatus)"
-                  class="action-button warning"
-                  @click="withdrawPaper(paper)"
-                >
-                  <el-icon><RefreshLeft /></el-icon>
-                  <span>申请撤回</span>
-                </button>
-                <!-- 申请修改 -->
-                <button
-                  v-if="paper.paperStatus === 'completed'"
-                  class="action-button info"
-                  @click="requestModification(paper)"
-                >
-                  <el-icon><EditPen /></el-icon>
-                  <span>申请修改</span>
-                </button>
-                <button class="action-button" @click="viewPaperDetail(paper)">
-                  <el-icon><View /></el-icon>
-                  <span>查看详情</span>
-                </button>
-                <button class="action-button" @click="downloadPaper(paper)">
-                  <el-icon><Download /></el-icon>
-                  <span>下载</span>
-                </button>
-                <!-- 查重功能按钮 -->
-                <button
-                  v-if="paper.paperStatus === 'completed' || paper.similarityRate != null"
-                  class="action-button"
-                  @click="viewPlagiarismReport(paper.id)"
-                >
-                  <el-icon><Document /></el-icon>
-                  <span>查重报告</span>
-                </button>
-                <button
-                  v-if="paper.paperStatus === 'checking'"
-                  class="action-button"
-                  @click="monitorCheckProgress(paper.id)"
-                >
-                  <el-icon><Monitor /></el-icon>
-                  <span>查重监控</span>
-                </button>
-                <button 
-                  class="action-button danger"
-                  @click="deletePaper(paper)"
-                  :disabled="paper.paperStatus !== 'pending' && paper.paperStatus !== 'withdrawn'"
-                >
-                  <el-icon><Delete /></el-icon>
-                  <span>删除</span>
-                </button>
-              </div>
-            </div>
-
-            <div class="paper-meta">
-              <div class="meta-item">
-                <el-icon><Calendar /></el-icon>
-                <span>提交时间：{{ formatDate(paper.submitTime, '-') }}</span>
-              </div>
-              <div class="meta-item">
-                <el-icon><User /></el-icon>
-                <span>论文类型：{{ getPaperTypeText(paper.paperType) }}</span>
-              </div>
-              <div class="meta-item">
-                <el-icon><Files /></el-icon>
-                <span>总相似比：{{ paper.similarityRate != null ? paper.similarityRate + '%' : '未检测' }}</span>
-              </div>
-            </div>
-
-            <div class="paper-status">
-              <el-tag :type="getStatusType(paper.paperStatus)" size="small" round>
-                {{ getStatusText(paper.paperStatus) }}
-              </el-tag>
-              <span v-if="paper.feedback" class="feedback-brief">
-                {{ paper.feedback }}
-              </span>
-            </div>
-          </div>
-
-          <!-- 版本历史 -->
-          <div v-if="paper.showVersions" class="paper-versions">
-            <div class="versions-header">
-              <h5>版本历史</h5>
-            </div>
-            <div class="timeline">
-              <div
-                v-for="version in paper.versions"
-                :key="version.id"
-                class="timeline-item"
-              >
-                <div class="timeline-node" :class="version.isCurrent ? 'current' : ''"></div>
-                <div class="timeline-content">
-                  <div class="timeline-timestamp">{{ formatDate(version.submitTime, '-') }}</div>
-                  <div class="version-item">
-                    <div class="version-header">
-                      <span class="version-title">版本 v{{ version.submitVersion }}</span>
-                      <span v-if="version.isCurrent" class="current-badge">当前版本</span>
-                    </div>
-                    <div class="version-actions">
-                      <label class="checkbox-label">
-                        <input
-                          type="checkbox"
-                          v-model="selectedVersionIds"
-                          :value="version.id"
-                          @change="handleVersionSelection"
-                          class="checkbox-input"
-                        />
-                        <span class="checkbox-text">对比</span>
-                      </label>
-                      <button
-                        class="version-button"
-                        @click="viewVersionDetail(version)"
-                      >
-                        <el-icon><View /></el-icon>
-                        <span>查看</span>
-                      </button>
-                      <button
-                        class="version-button"
-                        @click="downloadVersion(version)"
-                      >
-                        <el-icon><Download /></el-icon>
-                        <span>下载</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="paper-toggle">
+        <el-table-column label="论文标题" min-width="300">
+          <template #default="{ row }">
             <button
-              class="toggle-button"
-              @click="toggleVersions(paper.id)"
+              type="button"
+              class="paper-title-link"
+              :title="row.paperTitle"
+              @click="viewPaperDetail(row)"
             >
-              <el-icon :is="paper.showVersions ? 'ArrowUp' : 'ArrowDown'" />
-              <span>{{ paper.showVersions ? "收起" : "展开" }}版本历史</span>
+              {{ row.paperTitle }}
             </button>
-          </div>
-        </div>
-      </div>
+          </template>
+        </el-table-column>
 
-      <!-- 空状态（加载完成后才显示） -->
-      <div v-if="!papersLoading && papers.length === 0" class="empty-state">
-        <div class="empty-content">
-          <el-icon class="empty-icon"><Document /></el-icon>
-          <h3>暂无论文提交记录</h3>
-          <p>开始您的第一篇论文提交之旅</p>
-          <button class="primary-button" @click="goToPaperSubmit">
-            <el-icon><UploadFilled /></el-icon>
-            <span>立即提交论文</span>
-          </button>
-        </div>
-      </div>
-      </div>
+        <el-table-column label="提交时间" width="160">
+          <template #default="{ row }">{{ formatDate(row.submitTime, '-') }}</template>
+        </el-table-column>
+
+        <el-table-column label="总相似比" width="130" align="center">
+          <template #default="{ row }">
+            <span class="similarity-value" :class="getSimilarityClass(row.similarityRate)">
+              {{ similarityText(row.similarityRate) }}
+            </span>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="状态" width="120" align="center">
+          <template #default="{ row }">
+            <el-tag :type="getStatusType(row.paperStatus)" size="small" round>
+              {{ getStatusText(row.paperStatus) }}
+            </el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="操作" width="230" fixed="right">
+          <template #default="{ row }">
+            <div class="row-actions">
+              <el-button text size="small" type="primary" @click="viewPaperDetail(row)">
+                查看详情
+              </el-button>
+              <el-button text size="small" @click="openVersionDrawer(row)">版本</el-button>
+              <el-dropdown trigger="click" @command="(command) => handleMoreCommand(command, row)">
+                <el-button text size="small">
+                  更多<el-icon class="el-icon--right"><ArrowDown /></el-icon>
+                </el-button>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item command="download" :icon="Download">下载</el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="row.paperStatus === 'completed' || row.similarityRate != null"
+                      command="report"
+                      :icon="Document"
+                    >
+                      查重报告
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="row.paperStatus === 'checking'"
+                      command="monitor"
+                      :icon="Monitor"
+                    >
+                      查重监控
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="row.paperStatus === 'rejected'"
+                      command="revise"
+                      :icon="Upload"
+                      divided
+                    >
+                      提交修改
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="row.paperStatus === 'revision_needed'"
+                      command="resubmit"
+                      :icon="Upload"
+                    >
+                      重新提交
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="row.paperStatus === 'withdrawn'"
+                      command="reedit"
+                      :icon="EditPen"
+                    >
+                      重新编辑
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="row.paperStatus === 'completed'"
+                      command="request-modify"
+                      :icon="EditPen"
+                    >
+                      申请修改
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="canWithdraw(row)"
+                      command="withdraw"
+                      :icon="RefreshLeft"
+                      divided
+                    >
+                      申请撤回
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      command="delete"
+                      :icon="Delete"
+                      :disabled="!canDelete(row)"
+                      divided
+                    >
+                      删除
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </div>
+          </template>
+        </el-table-column>
+
+        <template #empty>
+          <div class="papers-empty">
+            <el-icon class="papers-empty-icon"><Document /></el-icon>
+            <p>暂无论文提交记录</p>
+            <el-button type="primary" @click="goToPaperSubmit">立即提交论文</el-button>
+          </div>
+        </template>
+      </el-table>
     </ListPageShell>
 
     <!-- 论文详情对话框 -->
-    <el-dialog v-model="detailDialogVisible" :title="paperTitle" width="800px">
+    <el-dialog v-model="detailDialogVisible" :title="currentPaper?.paperTitle || '论文详情'" width="800px">
       <div v-if="currentPaper" class="paper-detail">
         <el-descriptions :column="2" border>
           <el-descriptions-item label="论文标题">
@@ -349,7 +234,7 @@
             {{ getPaperTypeText(currentPaper.paperType) }}
           </el-descriptions-item>
           <el-descriptions-item label="总相似比">
-            {{ currentPaper.similarityRate != null ? currentPaper.similarityRate + '%' : '—' }}
+            {{ similarityText(currentPaper.similarityRate) }}
           </el-descriptions-item>
           <el-descriptions-item label="单篇最大">
             {{ currentPaper.maxPerSource != null ? currentPaper.maxPerSource + '%' : '—' }}
@@ -378,35 +263,97 @@
               <el-icon><Document /></el-icon>
               <span class="file-name">{{ file.name }}</span>
               <span class="file-size">{{ formatFileSize(file.size) }}</span>
-              <button 
-                class="attachment-button"
-                @click="downloadAttachment(file)"
-              >
-                <el-icon><Download /></el-icon>
-                <span>下载</span>
-              </button>
+              <el-button text size="small" :icon="Download" @click="downloadAttachment(file)">
+                下载
+              </el-button>
             </div>
+            <p v-if="!currentPaper.attachments || currentPaper.attachments.length === 0" class="attachment-empty">
+              暂无附件
+            </p>
           </div>
         </div>
       </div>
 
       <template #footer>
-        <button class="secondary-button" @click="detailDialogVisible = false">关闭</button>
-        <button
+        <el-button @click="detailDialogVisible = false">关闭</el-button>
+        <el-button
           v-if="currentPaper?.paperStatus === 'rejected'"
-          class="primary-button"
+          type="primary"
           @click="submitRevision(currentPaper.id)"
         >
-          <el-icon><Upload /></el-icon>
-          <span>提交修改版本</span>
-        </button>
+          提交修改版本
+        </el-button>
       </template>
     </el-dialog>
 
+    <!-- 版本历史抽屉 -->
+    <el-drawer v-model="versionDrawerVisible" size="min(520px, 92vw)" :close-on-click-modal="true">
+      <template #header>
+        <div class="drawer-header">
+          <span class="drawer-title">版本历史</span>
+          <span class="drawer-sub">{{ versionPaper?.paperTitle || '—' }}</span>
+        </div>
+      </template>
+
+      <div class="version-drawer" v-loading="versionsLoading">
+        <div class="version-summary">
+          <span>共 {{ versions.length }} 个版本</span>
+          <span>勾选两个版本可对比</span>
+        </div>
+
+        <el-empty
+          v-if="!versionsLoading && versions.length === 0"
+          description="暂无版本记录"
+          :image-size="80"
+        />
+
+        <ul v-else class="version-list">
+          <li v-for="version in versions" :key="version.id" class="version-item">
+            <el-checkbox
+              v-model="selectedVersionIds"
+              :value="version.id"
+              class="version-check"
+              @change="handleVersionSelection"
+            />
+            <div class="version-body">
+              <div class="version-top">
+                <span class="version-name">V{{ version.submitVersion ?? version.version ?? '—' }}</span>
+                <el-tag v-if="version.isCurrent" size="small" type="primary" round>当前版本</el-tag>
+                <span class="version-time">{{ formatDate(version.submitTime, '-') }}</span>
+              </div>
+              <div class="version-meta">
+                <span>
+                  相似比
+                  <strong :class="getSimilarityClass(version.similarityRate)">
+                    {{ similarityText(version.similarityRate) }}
+                  </strong>
+                </span>
+                <span>字数 {{ version.wordCount ?? '—' }}</span>
+              </div>
+              <p v-if="version.changes" class="version-note">{{ version.changes }}</p>
+            </div>
+            <div class="version-actions">
+              <el-button text size="small" @click="viewVersionDetail(version)">查看</el-button>
+              <el-button text size="small" @click="downloadVersion(version)">下载</el-button>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <template #footer>
+        <div class="drawer-footer">
+          <el-button :disabled="selectedVersionIds.length !== 2" @click="openVersionCompare">
+            对比所选版本（{{ selectedVersionIds.length }}/2）
+          </el-button>
+          <el-button @click="versionDrawerVisible = false">关闭</el-button>
+        </div>
+      </template>
+    </el-drawer>
+
     <!-- 版本对比对话框 -->
-    <el-dialog 
-      v-model="versionCompareDialogVisible" 
-      title="版本对比" 
+    <el-dialog
+      v-model="versionCompareDialogVisible"
+      title="版本对比"
       width="900px"
       :close-on-click-modal="false"
     >
@@ -420,7 +367,6 @@
 
         <div class="compare-content">
           <div class="version-columns">
-            <!-- 左侧：版本 A -->
             <div class="version-column">
               <h4>版本 A (v{{ compareVersions[0]?.version }})</h4>
               <div class="version-info">
@@ -430,7 +376,7 @@
                 </div>
                 <div class="info-item">
                   <div class="info-label">总相似比</div>
-                  <div class="info-value">{{ compareVersions[0]?.similarityRate != null ? compareVersions[0]?.similarityRate + '%' : '—' }}</div>
+                  <div class="info-value">{{ similarityText(compareVersions[0]?.similarityRate) }}</div>
                 </div>
                 <div class="info-item">
                   <div class="info-label">字数</div>
@@ -439,7 +385,6 @@
               </div>
             </div>
 
-            <!-- 右侧：版本 B -->
             <div class="version-column">
               <h4>版本 B (v{{ compareVersions[1]?.version }})</h4>
               <div class="version-info">
@@ -449,7 +394,7 @@
                 </div>
                 <div class="info-item">
                   <div class="info-label">总相似比</div>
-                  <div class="info-value">{{ compareVersions[1]?.similarityRate != null ? compareVersions[1]?.similarityRate + '%' : '—' }}</div>
+                  <div class="info-value">{{ similarityText(compareVersions[1]?.similarityRate) }}</div>
                 </div>
                 <div class="info-item">
                   <div class="info-label">字数</div>
@@ -459,7 +404,6 @@
             </div>
           </div>
 
-          <!-- 差异对比区域 -->
           <div class="diff-section">
             <h4>主要变化</h4>
             <div class="diff-table">
@@ -469,8 +413,8 @@
                 <div class="table-cell after">版本 B</div>
                 <div class="table-cell change">变化</div>
               </div>
-              <div 
-                v-for="(row, index) in getDiffData()" 
+              <div
+                v-for="(row, index) in getDiffData()"
                 :key="index"
                 class="table-row"
               >
@@ -489,30 +433,30 @@
       </div>
 
       <template #footer>
-        <button class="secondary-button" @click="versionCompareDialogVisible = false">关闭</button>
-        <button class="primary-button" @click="downloadCompareReport">
-          <el-icon><Download /></el-icon>
-          <span>下载对比报告</span>
-        </button>
+        <el-button @click="versionCompareDialogVisible = false">关闭</el-button>
+        <el-button type="primary" :icon="Download" @click="downloadCompareReport">
+          下载对比报告
+        </el-button>
       </template>
     </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, watch, h } from "vue";
+import { ref, reactive, onMounted, onBeforeUnmount, watch, nextTick } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { ElMessage, ElMessageBox, ElSelect, ElOption, ElInput } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 import { getDictDataByType } from "@/api/user.js";
 // 论文类型统一走共享模块（真相源是后端 PaperTypeEnum），本页不再自持一份映射
 import { loadPaperTypes, getPaperTypeText } from "@/utils/paperType.js";
 import { getStatusText, getStatusType } from '@/utils/reviewStatus.js';
+import { getSimilarityClass, normalizeSimilarity } from '@/utils/similarity.js';
 import PageHeader from '@/components/common/PageHeader.vue';
 import ListPageShell from '@/components/common/ListPageShell.vue';
 import { formatDate, formatDateTime } from '@/utils/dataType.js';
-import { 
-  getStudentPaperPage, 
-  withdrawPaper as withdrawPaperApi, 
+import {
+  getStudentPaperPage,
+  withdrawPaper as withdrawPaperApi,
   requestModification as requestModificationApi,
   downloadPaper as downloadPaperApi,
   deletePaper as deletePaperApi,
@@ -524,9 +468,7 @@ import {
   downloadVersionCompare,
   downloadVersion as downloadVersionApi,
   downloadAttachment as downloadAttachmentApi,
-  getSimpleCheckReport,
-  createBatchCheckTasks,
-  getCheckTaskDetail
+  createBatchCheckTasks
 } from "@/api/student.js";
 import { useUserStore } from "@/stores/user";
 
@@ -537,16 +479,12 @@ import {
   Refresh,
   Document,
   Monitor,
-  Calendar,
-  User,
-  Files,
-  View,
   Download,
   Upload,
-  ArrowUp,
   ArrowDown,
   RefreshLeft,
   EditPen,
+  Delete,
   InfoFilled
 } from "@element-plus/icons-vue";
 
@@ -564,25 +502,39 @@ const paperStatusDictList = ref([]);
 
 const pagination = reactive({
   current: 1,
-  size: 5
-})
+  size: 10
+});
 const total = ref(0);
 const papers = ref([]);
 const papersLoading = ref(false);
-const activePaperId = ref(null);
+const tableRef = ref();
+const tableMaxHeight = ref(480);
 const detailDialogVisible = ref(false);
 const currentPaper = ref(null);
 
-// 版本对比相关
+// 版本抽屉
+const versionDrawerVisible = ref(false);
+const versionPaper = ref(null);
+const versions = ref([]);
+const versionsLoading = ref(false);
+
+// 版本对比
 const selectedVersionIds = ref([]);
 const versionCompareDialogVisible = ref(false);
 const compareVersions = ref([]);
 
-// 批量操作相关
+// 批量操作
 const selectedPaperIds = ref([]);
-const selectAll = ref(false);
+
+// 表格高度随视口自适应，保留表头固定后的可视行区域
+const updateTableHeight = () => {
+  tableMaxHeight.value = Math.max(260, window.innerHeight - 380);
+};
 
 onMounted(async () => {
+  updateTableHeight();
+  window.addEventListener('resize', updateTableHeight);
+
   try {
     // 调用接口：获取论文状态字典（后端 dictType 是 "paper_status"）
     const res = await getDictDataByType("paper_status");
@@ -596,13 +548,16 @@ onMounted(async () => {
   fetchPapers();
 });
 
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', updateTableHeight);
+});
+
 // 监听路由变化，当从查重相关页面返回时刷新数据
 watch(
   () => route.name,
   (newRouteName, oldRouteName) => {
-    // 如果是从查重报告或查重监控页面返回
     if (
-      oldRouteName === 'PlagiarismReport' || 
+      oldRouteName === 'PlagiarismReport' ||
       oldRouteName === 'CheckMonitor' ||
       oldRouteName === 'CheckHistory'
     ) {
@@ -611,32 +566,35 @@ watch(
   }
 );
 
-// 方法
+// ── 相似度展示 ───────────────────────────────────────────
+const similarityText = (value) => {
+  const percent = normalizeSimilarity(value);
+  return percent === null ? '未检测' : `${percent}%`;
+};
+
+// ── 列表查询 ─────────────────────────────────────────────
 const fetchPapers = async () => {
   papersLoading.value = true;
   try {
     const queryParams = {
       studentId: userStore.userInfo?.userId,
-      paperStatus: filterForm.paperStatus || "", // 空状态则查全部
+      paperStatus: filterForm.paperStatus || "",
       paperTitle: filterForm.paperTitle || "",
-      startTime: filterForm.dateRange[0] || "",
-      endTime: filterForm.dateRange[1] || "",
+      startTime: filterForm.dateRange?.[0] || "",
+      endTime: filterForm.dateRange?.[1] || "",
       pageNum: pagination.current,
       pageSize: pagination.size
     };
-    // 调用真实后端接口
     const res = await getStudentPaperPage(queryParams);
     if (res.data && res.data.records) {
-      papers.value = res.data.records; // 论文列表数据
-      total.value = Number(res.data.total); // 转换为数字类型
-      // 同步更新分页信息
+      papers.value = res.data.records;
+      total.value = Number(res.data.total);
       if (res.data.current) {
         pagination.current = Number(res.data.current);
       }
       if (res.data.size) {
         pagination.size = Number(res.data.size);
       }
-      // 列表加载属常规刷新，不弹「查询成功」提示（提交论文跳回列表必弹，属噪音）
     } else {
       papers.value = [];
       total.value = 0;
@@ -648,13 +606,22 @@ const fetchPapers = async () => {
     total.value = 0;
   } finally {
     papersLoading.value = false;
+    nextTick(clearSelection);
   }
 };
 
-// 分页相关方法
+const clearSelection = () => {
+  selectedPaperIds.value = [];
+  tableRef.value?.clearSelection();
+};
+
+const handleSelectionChange = (rows) => {
+  selectedPaperIds.value = rows.map(row => row.id);
+};
+
 const handleSizeChange = (newSize) => {
   pagination.size = newSize;
-  pagination.current = 1; // 页数重置为第一页
+  pagination.current = 1;
   fetchPapers();
 };
 
@@ -664,7 +631,7 @@ const handleCurrentChange = (newPage) => {
 };
 
 const handleSearch = () => {
-  pagination.current = 1; // 搜索时回到第一页
+  pagination.current = 1;
   fetchPapers();
 };
 
@@ -672,6 +639,7 @@ const handleReset = () => {
   Object.keys(filterForm).forEach((key) => {
     filterForm[key] = key === "dateRange" ? [] : "";
   });
+  pagination.current = 1;
   fetchPapers();
   ElMessage.success("已重置筛选条件，显示全部论文");
 };
@@ -685,17 +653,55 @@ const viewPaperDetail = (paper) => {
   detailDialogVisible.value = true;
 };
 
+// ── 行内动作 ─────────────────────────────────────────────
+const canWithdraw = (paper) =>
+  ['pending', 'checking', 'auditing', 'revision_needed'].includes(paper.paperStatus);
+
+const canDelete = (paper) =>
+  paper.paperStatus === 'pending' || paper.paperStatus === 'withdrawn';
+
+const handleMoreCommand = (command, paper) => {
+  switch (command) {
+    case 'download':
+      downloadPaper(paper);
+      break;
+    case 'report':
+      viewPlagiarismReport(paper.id);
+      break;
+    case 'monitor':
+      monitorCheckProgress(paper.id);
+      break;
+    case 'revise':
+      submitRevision(paper.id);
+      break;
+    case 'resubmit':
+      resubmitAfterRevision(paper);
+      break;
+    case 'reedit':
+      resubmitPaper(paper);
+      break;
+    case 'request-modify':
+      requestModification(paper);
+      break;
+    case 'withdraw':
+      withdrawPaper(paper);
+      break;
+    case 'delete':
+      deletePaper(paper);
+      break;
+    default:
+      break;
+  }
+};
+
 const downloadPaper = async (paper) => {
   try {
     await ElMessageBox.confirm("确定要下载这篇论文吗？", "下载确认", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
     });
-    
-    // 调用下载接口
+
     const res = await downloadPaperApi(paper.id);
-    
-    // 创建下载链接
     const blob = res.data instanceof Blob ? res.data : new Blob([res.data], { type: 'application/octet-stream' });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -703,7 +709,7 @@ const downloadPaper = async (paper) => {
     link.download = `${paper.paperTitle}.pdf`;
     link.click();
     window.URL.revokeObjectURL(url);
-    
+
     ElMessage.success('下载开始，请稍候...');
   } catch (error) {
     if (error !== 'cancel') {
@@ -719,7 +725,6 @@ const submitRevision = (paperId) => {
 };
 
 const resubmitPaper = (paper) => {
-  // 跳转到论文提交页面，带上论文ID用于重新编辑
   router.push({
     path: '/student/paper-submit',
     query: { paperId: paper.id, action: 'resubmit' }
@@ -727,38 +732,11 @@ const resubmitPaper = (paper) => {
 };
 
 const resubmitAfterRevision = (paper) => {
-  // 跳转到论文提交页面，带上论文ID和revision标记
   router.push({
     path: '/student/paper-submit',
     query: { paperId: paper.id, action: 'revision' }
   });
 };
-
-const toggleVersions = async (paperId) => {
-  const paper = papers.value.find((p) => String(p.id) === String(paperId));
-  if (!paper) return;
-  if (!paper.showVersions) {
-    // 展开：加载版本列表
-    try {
-      const res = await getPaperVersions(paperId)
-      if (res.code === 200) {
-        paper.versions = res.data || []
-      } else {
-        paper.versions = []
-      }
-    } catch (error) {
-      console.error('加载版本列表失败:', error)
-      paper.versions = []
-    }
-  }
-  paper.showVersions = !paper.showVersions;
-};
-
-// 论文状态文案与标签色统一走 utils/reviewStatus.js（与 DB 字典 paper_status 对齐）
-
-// 论文类型文案改由 utils/paperType.js 提供（见顶部 import）。
-// 原先这里有一份硬编码映射，且未命中时返回 "其他" —— 会把未知/脏值
-// 伪装成一个合法类型；共享模块未命中时返回原始 code，一眼能看出数据有问题。
 
 const formatFileSize = (bytes) => {
   if (bytes === 0) return "0 B";
@@ -771,15 +749,14 @@ const formatFileSize = (bytes) => {
 // 撤回论文（一步对话框）
 const withdrawPaper = async (paper) => {
   try {
-    // 在同一个 prompt 里同时确认操作并收集理由
     const { value: reason } = await ElMessageBox.prompt(
-      `确定要撤回论文《${paper.paperTitle}》吗？\\n请简要说明撤回理由：`,
+      `确定要撤回论文《${paper.paperTitle}》吗？\n请简要说明撤回理由：`,
       '撤回论文',
       {
         confirmButtonText: '提交',
         cancelButtonText: '取消',
         type: 'warning',
-        inputPattern: /.+/, // 不允许空
+        inputPattern: /.+/,
         inputErrorMessage: '请输入撤回理由',
         inputPlaceholder: '例如：上传文件有误，需要重新提交',
         textarea: true,
@@ -790,7 +767,6 @@ const withdrawPaper = async (paper) => {
       }
     );
 
-    // 调用撤回接口，后端接口已扩展接受原因参数
     const res = await withdrawPaperApi(paper.id, 'OTHER', reason);
 
     if (res.code === 200) {
@@ -798,6 +774,7 @@ const withdrawPaper = async (paper) => {
 
       papers.value = papers.value.filter(p => p.id !== paper.id);
       total.value = Math.max(0, total.value - 1);
+      clearSelection();
 
       if (papers.value.length === 0 && pagination.current > 1) {
         pagination.current--;
@@ -829,10 +806,9 @@ const requestModification = async (paper) => {
         inputPlaceholder: '请简要说明需要修改的内容和原因'
       }
     );
-    
-    // 调用申请修改接口
+
     const res = await requestModificationApi(paper.id, reason);
-    
+
     if (res.code === 200) {
       ElMessage.success('修改申请已提交，等待导师审核');
     } else {
@@ -848,50 +824,48 @@ const requestModification = async (paper) => {
 
 // 查重功能相关方法
 const viewPlagiarismReport = (paperId) => {
-  // PlagiarismReport页面会自动获取最新报告，无需此处重复请求
-  router.push(`/student/plagiarism-report/${paperId}`)
+  router.push(`/student/plagiarism-report/${paperId}`);
 };
 
 const monitorCheckProgress = (paperId) => {
   router.push(`/student/check-monitor/${paperId}`);
 };
 
-// 版本对比相关方法
-const handleVersionSelection = () => {
-  // 限制只能选择两个版本进行对比
-  if (selectedVersionIds.value.length > 2) {
-    selectedVersionIds.value.pop();
-    ElMessage.warning('最多只能选择两个版本进行对比');
+// ── 版本历史抽屉 ─────────────────────────────────────────
+const openVersionDrawer = async (paper) => {
+  versionPaper.value = paper;
+  versionDrawerVisible.value = true;
+  selectedVersionIds.value = [];
+  versions.value = [];
+  versionsLoading.value = true;
+  try {
+    const res = await getPaperVersions(paper.id);
+    versions.value = res.code === 200 ? (res.data || []) : [];
+  } catch (error) {
+    console.error('加载版本列表失败:', error);
+    versions.value = [];
+  } finally {
+    versionsLoading.value = false;
   }
-  
-  // 当选择了两个版本时，自动打开对比对话框
-  if (selectedVersionIds.value.length === 2) {
-    openVersionCompare();
+};
+
+const handleVersionSelection = () => {
+  if (selectedVersionIds.value.length > 2) {
+    selectedVersionIds.value = selectedVersionIds.value.slice(0, 2);
+    ElMessage.warning('最多只能选择两个版本进行对比');
   }
 };
 
 const openVersionCompare = async () => {
+  const paperId = versionPaper.value?.id;
+  if (!paperId || selectedVersionIds.value.length !== 2) {
+    ElMessage.warning('请选择两个版本进行对比');
+    return;
+  }
+
   try {
-    if (selectedVersionIds.value.length !== 2) {
-      ElMessage.warning('请选择两个版本进行对比');
-      return;
-    }
-    
-    // 获取当前论文的 ID（从选中的版本中获取）
-    // 注意：selectedVersionIds 存的是 paper_submit 主键 id（后端详情/对比接口均按主键查询），
-    // 不是 submitVersion 版本号——此前按版本号传给 selectById 必然查不到，报「版本不存在」
-    const paperId = papers.value.find(p =>
-      p.versions?.some(v => selectedVersionIds.value.includes(v.id))
-    )?.id;
-
-    if (!paperId) {
-      ElMessage.error('无法获取论文信息');
-      return;
-    }
-
-    // 调用版本对比接口
     const res = await comparePaperVersions(paperId, selectedVersionIds.value);
-    
+
     if (res.code === 200) {
       compareVersions.value = [res.data.versionA, res.data.versionB];
       versionCompareDialogVisible.value = true;
@@ -908,12 +882,10 @@ const openVersionCompare = async () => {
 // 获取差异数据（使用接口返回的 diffData）
 const getDiffData = () => {
   if (compareVersions.value.length < 2) return [];
-  
-  // 如果有接口返回的 diffData，直接使用
-  // 否则手动计算差异
+
   const v1 = compareVersions.value[0];
   const v2 = compareVersions.value[1];
-  
+
   return [
     {
       field: '总相似比',
@@ -931,23 +903,16 @@ const getDiffData = () => {
 };
 
 const downloadCompareReport = async () => {
+  const paperId = versionPaper.value?.id;
+  if (!paperId || selectedVersionIds.value.length !== 2) {
+    ElMessage.warning('请选择两个版本进行对比');
+    return;
+  }
+
   try {
     ElMessage.info('对比报告生成中...');
-    
-    // 获取论文 ID
-    const paperId = papers.value.find(p =>
-      p.versions?.some(v => selectedVersionIds.value.includes(v.id))
-    )?.id;
-    
-    if (!paperId) {
-      ElMessage.error('无法获取论文信息');
-      return;
-    }
-    
-    // 调用下载对比报告接口
+
     const res = await downloadVersionCompare(paperId, selectedVersionIds.value);
-    
-    // 创建下载链接
     const blob = res.data instanceof Blob ? res.data : new Blob([res.data], { type: 'application/pdf' });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -955,7 +920,7 @@ const downloadCompareReport = async () => {
     link.download = `版本对比报告_${new Date().getTime()}.pdf`;
     link.click();
     window.URL.revokeObjectURL(url);
-    
+
     ElMessage.success('对比报告已下载');
   } catch (error) {
     console.error('下载对比报告失败:', error);
@@ -963,28 +928,22 @@ const downloadCompareReport = async () => {
   }
 };
 
-// 查看版本详情
 const viewVersionDetail = async (version) => {
+  const paperId = versionPaper.value?.id;
+  if (!paperId) {
+    ElMessage.error('无法获取论文信息');
+    return;
+  }
+
   try {
-    // 获取论文 ID（按主键 id 匹配，与列表返回的 version.id 一致）
-    const paperId = papers.value.find(p =>
-      p.versions?.some(v => v.id === version.id)
-    )?.id;
-
-    if (!paperId) {
-      ElMessage.error('无法获取论文信息');
-      return;
-    }
-
-    // 调用获取版本详情接口（versionId 为 paper_submit 主键，非版本号）
     const res = await getVersionDetail(paperId, version.id);
-    
+
     if (res.code === 200) {
       ElMessageBox.alert(
         `<div style="text-align: left;">
           <p><strong>版本号：</strong>V${res.data.version}</p>
           <p><strong>提交时间：</strong>${formatDateTime(res.data.submitTime, 'YYYY-MM-DD HH:mm:ss', '-')}</p>
-          <p><strong>总相似比：</strong>${res.data.similarityRate != null ? res.data.similarityRate + '%' : '—'}</p>
+          <p><strong>总相似比：</strong>${similarityText(res.data.similarityRate)}</p>
           <p><strong>字数：</strong>${res.data.wordCount}字</p>
           <p><strong>修改说明：</strong>${res.data.changes || '无'}</p>
         </div>`,
@@ -1003,26 +962,23 @@ const viewVersionDetail = async (version) => {
   }
 };
 
-// 下载版本
 const downloadVersion = async (version) => {
+  const label = version.submitVersion ?? version.version ?? '';
   try {
-    await ElMessageBox.confirm(`确定要下载版本 V${version.submitVersion} 吗？`, '下载确认', {
+    await ElMessageBox.confirm(`确定要下载版本 V${label} 吗？`, '下载确认', {
       confirmButtonText: '确定',
       cancelButtonText: '取消'
     });
-    
-    // 调用下载版本接口
+
     const res = await downloadVersionApi(version.id);
-    
-    // 创建下载链接
     const blob = res.data instanceof Blob ? res.data : new Blob([res.data], { type: 'application/octet-stream' });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `论文版本_V${version.version}.pdf`;
+    link.download = `论文版本_V${label}.pdf`;
     link.click();
     window.URL.revokeObjectURL(url);
-    
+
     ElMessage.success('下载开始，请稍候...');
   } catch (error) {
     if (error !== 'cancel') {
@@ -1032,13 +988,9 @@ const downloadVersion = async (version) => {
   }
 };
 
-// 下载附件
 const downloadAttachment = async (attachment) => {
   try {
-    // 调用下载附件接口
     const res = await downloadAttachmentApi(attachment.id);
-    
-    // 创建下载链接
     const blob = res.data instanceof Blob ? res.data : new Blob([res.data], { type: 'application/octet-stream' });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -1046,7 +998,7 @@ const downloadAttachment = async (attachment) => {
     link.download = attachment.name;
     link.click();
     window.URL.revokeObjectURL(url);
-    
+
     ElMessage.success('下载开始，请稍候...');
   } catch (error) {
     console.error('下载附件失败:', error);
@@ -1054,7 +1006,7 @@ const downloadAttachment = async (attachment) => {
   }
 };
 
-// 删除单个论文
+// ── 删除与批量操作 ──────────────────────────────────────
 const deletePaper = async (paper) => {
   try {
     await ElMessageBox.confirm(
@@ -1066,16 +1018,15 @@ const deletePaper = async (paper) => {
         type: 'danger'
       }
     );
-    
-    // 调用删除接口
+
     const res = await deletePaperApi(paper.id);
-    
+
     if (res.code === 200) {
       ElMessage.success('论文删除成功');
-      // 从列表中移除删除的论文
       papers.value = papers.value.filter(p => p.id !== paper.id);
       total.value = Math.max(0, total.value - 1);
-      
+      clearSelection();
+
       if (papers.value.length === 0 && pagination.current > 1) {
         pagination.current--;
         fetchPapers();
@@ -1091,28 +1042,11 @@ const deletePaper = async (paper) => {
   }
 };
 
-// 批量操作相关方法
-const handleSelectAll = (checked) => {
-  if (checked) {
-    selectedPaperIds.value = papers.value.map(p => p.id);
-  } else {
-    selectedPaperIds.value = [];
-  }
-};
-
-const handlePaperSelect = () => {
-  // 更新全选状态
-  selectAll.value = selectedPaperIds.value.length === papers.value.length;
-};
-
 const batchDownload = async () => {
   try {
     ElMessage.success(`正在下载 ${selectedPaperIds.value.length} 篇论文...`);
-    
-    // 调用批量下载接口
+
     const res = await batchDownloadPapers(selectedPaperIds.value);
-    
-    // 创建下载链接
     const blob = res.data instanceof Blob ? res.data : new Blob([res.data], { type: 'application/zip' });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -1120,10 +1054,9 @@ const batchDownload = async () => {
     link.download = `批量论文下载_${new Date().getTime()}.zip`;
     link.click();
     window.URL.revokeObjectURL(url);
-    
+
     ElMessage.success('打包下载已开始，请稍候...');
-    selectedPaperIds.value = [];
-    selectAll.value = false;
+    clearSelection();
   } catch (error) {
     console.error('批量下载失败:', error);
     ElMessage.error('批量下载失败，请稍后重试');
@@ -1141,14 +1074,12 @@ const batchCheckPlagiarism = async () => {
         type: 'warning'
       }
     );
-    
-    // 调用批量查重接口（已在 student.js 中定义）
+
     const res = await createBatchCheckTasks(selectedPaperIds.value);
-    
+
     if (res.code === 200) {
       ElMessage.success(`批量查重任务已提交，共 ${res.data?.totalCount || selectedPaperIds.value.length} 篇论文`);
-      selectedPaperIds.value = [];
-      selectAll.value = false;
+      clearSelection();
     } else {
       ElMessage.error(res.message || '批量查重失败');
     }
@@ -1162,15 +1093,14 @@ const batchCheckPlagiarism = async () => {
 
 const batchDelete = async () => {
   try {
-    // 检查选中的论文是否都是待分配状态或撤回状态
     const selectedPapers = papers.value.filter(paper => selectedPaperIds.value.includes(paper.id));
-    const invalidPapers = selectedPapers.filter(paper => paper.paperStatus !== 'pending' && paper.paperStatus !== 'withdrawn');
-    
+    const invalidPapers = selectedPapers.filter(paper => !canDelete(paper));
+
     if (invalidPapers.length > 0) {
       ElMessage.error('只能删除待分配状态和撤回状态的论文');
       return;
     }
-    
+
     await ElMessageBox.confirm(
       `确定要删除选中的 ${selectedPaperIds.value.length} 篇论文吗？此操作不可恢复！`,
       '批量删除',
@@ -1180,15 +1110,13 @@ const batchDelete = async () => {
         type: 'danger'
       }
     );
-    
-    // 调用批量删除接口
+
     const res = await batchDeletePapers(selectedPaperIds.value);
-    
+
     if (res.code === 200) {
       const deletedCount = res.data?.deletedCount || selectedPaperIds.value.length;
       ElMessage.success(`成功删除 ${deletedCount} 篇论文`);
-      selectedPaperIds.value = [];
-      selectAll.value = false;
+      clearSelection();
       fetchPapers();
     } else {
       ElMessage.error(res.message || '批量删除失败');
@@ -1203,680 +1131,203 @@ const batchDelete = async () => {
 </script>
 
 <style lang="scss" scoped>
-// 骨架迁移：原 .filter-card / .papers-card 仅作为 scoped 样式的选择器前缀保留，
-// display: contents 让其不再生成额外卡片盒子，避免与 ListPageShell 的卡片重复。
-.list-scope {
-  display: contents;
+// ── 表格 ──────────────────────────────────────────────────
+.papers-table {
+  width: 100%;
 }
 
-// 全局样式
-
-// 筛选卡片
-.filter-card {
-  max-width: 1200px;
-  margin: 0 auto var(--app-space-6);
+.paper-title-link {
+  display: block;
+  width: 100%;
   padding: 0;
-  
-  .filter-form {
-    background: var(--app-color-card-bg);
-    border: 1px solid var(--app-color-border);
-    border-radius: var(--app-radius-lg);
-    padding: var(--app-space-6);
-    transition: border-color var(--app-transition-normal), background-color var(--app-transition-normal);
-    
-    &:hover {
-      border-color: var(--app-color-border);
-    }
-    
-    .form-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: var(--app-space-4);
-      align-items: end;
-      
-      .form-group {
-        .form-label {
-          display: block;
-          font-size: var(--app-fs-meta);
-          font-weight: 600;
-          color: var(--app-color-text-muted);
-          margin-bottom: 6px;
-          text-transform: none;
-          letter-spacing: 0;
-        }
-        
-        .form-select {
-          width: 100%;
-          padding: var(--app-space-2) var(--app-space-3);
-          border: 1px solid var(--app-color-border);
-          border-radius: var(--app-radius-md);
-          font-size: var(--app-fs-caption);
-          color: var(--app-color-ink);
-          transition: border-color var(--app-transition-normal), background-color var(--app-transition-normal);
-          
-          &:hover {
-            border-color: var(--app-color-text-muted);
-          }
-          
-          &:focus {
-            outline: none;
-            border-color: var(--app-color-primary);
-            box-shadow: 0 0 0 3px rgba(var(--app-color-primary-rgb), 0.12);
-          }
-        }
-        
-        .form-control {
-          width: 100%;
-          
-          :deep(.el-input__wrapper) {
-            border-radius: var(--app-radius-md);
-            
-            &:hover {
-              box-shadow: none;
-              border-color: var(--app-color-border-strong);
-            }
-            
-            &.is-focus {
-              box-shadow: 0 0 0 3px rgba(var(--app-color-primary-rgb), 0.1);
-            }
-          }
-        }
-        
-        .search-input {
-          position: relative;
-          
-          .search-icon {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--app-color-text-secondary);
-          }
-          
-          .input-field {
-            width: 100%;
-            padding-left: 36px;
-            
-            :deep(.el-input__wrapper) {
-              border-radius: var(--app-radius-md);
-              
-              &:hover {
-                box-shadow: none;
-                border-color: var(--app-color-border-strong);
-              }
-              
-              &.is-focus {
-                box-shadow: 0 0 0 3px rgba(var(--app-color-primary-rgb), 0.1);
-              }
-            }
-          }
-        }
-      }
-      
-      .form-actions {
-        display: flex;
-        gap: var(--app-space-3);
-        
-        .primary-button {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          padding: 9px var(--app-space-4);
-          background: var(--app-color-primary);
-          color: var(--app-color-on-primary);
-          border: none;
-          border-radius: var(--app-radius-md);
-          font-size: var(--app-fs-caption);
-          font-weight: 600;
-          cursor: pointer;
-          transition: background-color var(--app-transition-normal), border-color var(--app-transition-normal), color var(--app-transition-normal);
-          
-          &:hover {
-            background: var(--app-color-primary-hover);
-          }
-        }
-        
-        .secondary-button {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          padding: 9px var(--app-space-4);
-          background: var(--app-color-card-bg);
-          color: var(--app-color-text-secondary);
-          border: 1px solid var(--app-color-border);
-          border-radius: var(--app-radius-md);
-          font-size: var(--app-fs-caption);
-          font-weight: 600;
-          cursor: pointer;
-          transition: background-color var(--app-transition-normal), border-color var(--app-transition-normal), color var(--app-transition-normal);
-          
-          &:hover {
-            border-color: var(--app-color-border);
-            background: var(--app-color-fill);
-            color: var(--app-color-ink);
-          }
-        }
-      }
-    }
-  }
-}
-
-// 论文卡片
-.papers-card {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0;
-  background: var(--app-color-card-bg);
-  border: 1px solid var(--app-color-border);
-  border-radius: var(--app-radius-lg);
+  border: 0;
+  background: none;
+  font-family: var(--app-font-family);
+  font-size: var(--app-fs-caption);
+  font-weight: 500;
+  color: var(--app-color-ink);
+  text-align: left;
+  cursor: pointer;
   overflow: hidden;
-  
-  .header-actions-group {
-    display: flex;
-    align-items: center;
-    gap: var(--app-space-4);
-    
-    .batch-toolbar {
-      display: flex;
-      align-items: center;
-      gap: var(--app-space-2);
-      
-      .selected-count {
-        padding: var(--app-space-1) 10px;
-        background: var(--app-color-fill);
-        color: var(--app-color-text-muted);
-        border-radius: var(--app-radius-pill);
-        font-size: var(--app-fs-meta);
-        font-weight: 600;
-      }
-      
-      .primary-button,
-      .success-button,
-      .danger-button {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        padding: 6px 11px;
-        border: none;
-        border-radius: var(--app-radius-md);
-        font-size: var(--app-fs-meta);
-        font-weight: 600;
-        cursor: pointer;
-      }
-      
-      .primary-button {
-        background: var(--app-color-primary);
-        color: white;
-        
-        &:hover {
-          background: var(--app-color-primary-hover);
-        }
-      }
-      
-      .success-button {
-        background: var(--app-color-success);
-        color: white;
-        
-        &:hover {
-          background: var(--app-color-success);
-        }
-      }
-      
-      .danger-button {
-        background: var(--app-color-danger);
-        color: white;
-        
-        &:hover {
-          background: var(--app-color-danger);
-        }
-      }
-      
-      .divider {
-        width: 1px;
-        height: 20px;
-        background: var(--app-color-border);
-      }
-      
-      .checkbox-label {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        cursor: pointer;
-        
-        .checkbox-input {
-          width: 16px;
-          height: 16px;
-        }
-        
-        .checkbox-text {
-          font-size: var(--app-fs-meta);
-          color: var(--app-color-text-secondary);
-        }
-      }
-    }
-  }
-  
-  .papers-list {
-    background: transparent;
-    border: none;
-    border-top: none;
-    border-radius: 0;
-    padding: var(--app-space-4) var(--app-space-6) var(--app-space-6);
-    
-    .paper-item {
-      border: 1px solid var(--app-color-border);
-      border-radius: var(--app-radius-md);
-      margin-bottom: var(--app-space-3);
-      transition: border-color var(--app-transition-normal), background-color var(--app-transition-normal);
-      display: flex;
-      gap: var(--app-space-4);
-      background: var(--app-color-card-bg);
-      
-      &:hover {
-        border-color: var(--app-color-text-muted);
-      }
-      
-      &.paper-selected {
-        border-color: var(--app-color-primary);
-        background: var(--app-color-info-bg);
-      }
-      
-      .paper-select {
-        display: flex;
-        align-items: center;
-        flex-shrink: 0;
-        padding-top: var(--app-space-5);
-        padding-left: var(--app-space-5);
-        
-        .checkbox-label {
-          cursor: pointer;
-          
-          .checkbox-input {
-            width: 16px;
-            height: 16px;
-          }
-        }
-      }
-      
-      .paper-main {
-        padding: var(--app-space-4);
-        flex: 1;
-      }
-      
-      .paper-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: var(--app-space-4);
-        
-        .paper-title {
-          margin: 0;
-          font-family: var(--app-font-family);
-          color: var(--app-color-ink);
-          font-size: var(--app-fs-body);
-          font-weight: 600;
-          flex: 1;
-          margin-right: var(--app-space-4);
-        }
-        
-        .paper-actions {
-          display: flex;
-          gap: 6px;
-          flex-wrap: wrap;
-          
-          .action-button {
-            display: flex;
-            align-items: center;
-            gap: var(--app-space-1);
-            padding: 5px 10px;
-            border: 1px solid var(--app-color-border);
-            border-radius: var(--app-radius-sm);
-            background: var(--app-color-card-bg);
-            color: var(--app-color-text-secondary);
-            font-size: var(--app-fs-meta);
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color var(--app-transition-normal), border-color var(--app-transition-normal), color var(--app-transition-normal);
-            
-            &:hover {
-              background: var(--app-color-fill);
-              border-color: var(--app-color-text-muted);
-              color: var(--app-color-ink);
-            }
-            
-            &.primary {
-              background: var(--app-color-primary);
-              color: white;
-              border-color: var(--app-color-primary);
-              
-              &:hover {
-                background: var(--app-color-primary-hover);
-              }
-            }
-            
-            &.warning {
-              background: var(--app-color-warning);
-              color: white;
-              border-color: var(--app-color-warning);
-              
-              &:hover {
-                background: var(--app-color-warning);
-              }
-            }
-            
-            &.info {
-              background: var(--app-color-primary);
-              color: white;
-              border-color: var(--app-color-primary);
-              
-              &:hover {
-                background: var(--app-color-primary);
-              }
-            }
-            
-            &.danger {
-              background: var(--app-color-danger);
-              color: white;
-              border-color: var(--app-color-danger);
-              
-              &:hover {
-                background: var(--app-color-danger);
-              }
-              
-              &:disabled {
-                background: var(--app-color-danger-border);
-                border-color: var(--app-color-danger-border);
-                cursor: not-allowed;
-                
-                &:hover {
-                  transform: none;
-                  box-shadow: none;
-                }
-              }
-            }
-          }
-        }
-      }
-      
-      .paper-meta {
-        display: flex;
-        gap: var(--app-space-4);
-        margin-bottom: var(--app-space-3);
-        flex-wrap: wrap;
-        
-        .meta-item {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          color: var(--app-color-text-muted);
-          font-size: var(--app-fs-meta);
-          
-          .el-icon {
-            color: var(--app-color-text-muted);
-          }
-        }
-      }
-      
-      .paper-status {
-        display: flex;
-        align-items: center;
-        gap: var(--app-space-2);
-        flex-wrap: wrap;
-        
-        .feedback-brief {
-          color: var(--app-color-danger);
-          font-size: var(--app-fs-meta);
-          font-style: normal;
-        }
-      }
-      
-      .paper-versions {
-        border-top: 1px solid var(--app-color-divider);
-        padding: var(--app-space-4) var(--app-space-6);
-        background: var(--app-color-fill);
-        
-        .versions-header {
-          margin-bottom: var(--app-space-4);
-          
-          h5 {
-            margin: 0;
-            font-family: var(--app-font-family);
-            color: var(--app-color-ink);
-            font-size: var(--app-fs-caption);
-            font-weight: 600;
-          }
-        }
-        
-        .timeline {
-          position: relative;
-          padding-left: var(--app-space-6);
-          
-          &::before {
-            content: '';
-            position: absolute;
-            left: 8px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: var(--app-color-border);
-          }
-          
-          .timeline-item {
-            position: relative;
-            margin-bottom: var(--app-space-6);
-            
-            &:last-child {
-              margin-bottom: 0;
-            }
-            
-            .timeline-node {
-              position: absolute;
-              left: -24px;
-              top: 4px;
-              width: 16px;
-              height: 16px;
-              border-radius: 50%;
-              background: var(--app-color-border);
-              border: 2px solid var(--app-color-card-bg);
-              
-              &.current {
-                background: var(--app-color-primary);
-              }
-            }
-            
-            .timeline-content {
-              .timeline-timestamp {
-                font-size: var(--app-fs-meta);
-                color: var(--app-color-text-muted);
-                margin-bottom: var(--app-space-2);
-              }
-              
-              .version-item {
-                .version-header {
-                  display: flex;
-                  align-items: center;
-                  gap: var(--app-space-3);
-                  margin-bottom: var(--app-space-2);
-                  
-                  .version-title {
-                    font-weight: 600;
-                    color: var(--app-color-ink);
-                    font-size: var(--app-fs-meta);
-                  }
-                  
-                  .current-badge {
-                    padding: 2px var(--app-space-2);
-                    background: var(--app-color-info-bg);
-                    color: var(--app-color-primary);
-                    border-radius: var(--app-radius-pill);
-                    font-size: var(--app-fs-meta);
-                    font-weight: 500;
-                  }
-                }
-                
-                .version-actions {
-                  display: flex;
-                  gap: var(--app-space-3);
-                  
-                  .checkbox-label {
-                    display: flex;
-                    align-items: center;
-                    gap: 6px;
-                    cursor: pointer;
-                    
-                    .checkbox-input {
-                      width: 14px;
-                      height: 14px;
-                    }
-                    
-                    .checkbox-text {
-                      font-size: var(--app-fs-meta);
-                      color: var(--app-color-text-secondary);
-                    }
-                  }
-                  
-                  .version-button {
-                    display: flex;
-                    align-items: center;
-                    gap: var(--app-space-1);
-                    padding: 5px 10px;
-                    border: 1px solid var(--app-color-border);
-                    border-radius: var(--app-radius-sm);
-                    background: var(--app-color-card-bg);
-                    color: var(--app-color-text-secondary);
-                    font-size: var(--app-fs-meta);
-                    cursor: pointer;
-                    transition: background-color var(--app-transition-normal), border-color var(--app-transition-normal), color var(--app-transition-normal);
-                    
-                    &:hover {
-                      color: var(--app-color-ink);
-                      border-color: var(--app-color-text-muted);
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-      
-      .paper-toggle {
-        border-top: 1px solid var(--app-color-divider);
-        padding: var(--app-space-3) var(--app-space-6);
-        text-align: center;
-        background: var(--app-color-card-bg);
-        
-        .toggle-button {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          padding: 6px var(--app-space-3);
-          background: transparent;
-          border: none;
-          color: var(--app-color-text-muted);
-          font-size: var(--app-fs-meta);
-          font-weight: 500;
-          cursor: pointer;
-          transition: background-color var(--app-transition-normal), border-color var(--app-transition-normal), color var(--app-transition-normal);
-          
-          &:hover {
-            color: var(--app-color-ink);
-            background: var(--app-color-fill);
-            border-radius: var(--app-radius-sm);
-          }
-        }
-      }
-    }
-  }
-  
-  .empty-state {
-    background: transparent;
-    border: none;
-    border-top: none;
-    border-radius: 0;
-    padding: var(--app-space-12) var(--app-space-6);
-    text-align: center;
-    
-    .empty-content {
-      .empty-icon {
-        font-size: 36px;
-        color: var(--app-color-text-muted);
-        margin-bottom: var(--app-space-3);
-      }
-      
-      h3 {
-        margin: 0 0 var(--app-space-2) 0;
-        font-family: var(--app-font-family);
-        color: var(--app-color-ink);
-        font-size: var(--app-fs-body);
-        font-weight: 600;
-      }
-      
-      p {
-        margin: 0 0 var(--app-space-6) 0;
-        color: var(--app-color-text-muted);
-        font-size: var(--app-fs-caption);
-      }
-      
-      .primary-button {
-        display: flex;
-        align-items: center;
-        gap: var(--app-space-2);
-        padding: 9px var(--app-space-4);
-        background: var(--app-color-primary);
-        color: var(--app-color-on-primary);
-        border: none;
-        border-radius: var(--app-radius-md);
-        font-size: var(--app-fs-caption);
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color var(--app-transition-normal), border-color var(--app-transition-normal), color var(--app-transition-normal);
-        
-        &:hover {
-          background: var(--app-color-primary-hover);
-        }
-      }
-    }
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &:hover {
+    color: var(--app-color-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 }
 
-// 论文详情
-.paper-detail {
-  .detail-section {
-    .detail-row {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: var(--app-space-4);
-      margin-bottom: var(--app-space-4);
-      
-      &.full-width {
-        grid-template-columns: 1fr;
-      }
-      
-      .detail-item {
-        .detail-label {
-          font-size: var(--app-fs-meta);
-          font-weight: 600;
-          color: var(--app-color-text-muted);
-          margin-bottom: 6px;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-        }
-        
-        .detail-value {
-          font-size: var(--app-fs-caption);
-          color: var(--app-color-ink);
-        }
-        
-        &.full-width {
-          .detail-value {
-            line-height: 1.5;
-          }
-        }
-      }
-    }
+// 关键数据提权：20px / 600 / 语义色（颜色由全局 .similarity-* 类提供）
+.similarity-value {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  font-family: var(--app-font-family);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+
+  &.similarity-unknown {
+    font-size: var(--app-fs-caption);
+    font-weight: 500;
   }
-  
+}
+
+.row-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-1);
+  white-space: nowrap;
+
+  :deep(.el-button + .el-button) {
+    margin-left: 0;
+  }
+}
+
+.selected-count {
+  font-size: var(--app-fs-caption);
+  color: var(--app-color-text-muted);
+}
+
+.papers-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--app-space-2);
+  padding: var(--app-space-10) var(--app-space-6);
+  color: var(--app-color-text-muted);
+
+  p {
+    margin: 0;
+    font-size: var(--app-fs-caption);
+  }
+}
+
+.papers-empty-icon {
+  font-size: 28px;
+  color: var(--app-color-text-secondary);
+}
+
+// ── 版本抽屉 ─────────────────────────────────────────────
+.drawer-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.drawer-title {
+  font-family: var(--app-font-family);
+  font-size: var(--app-fs-heading);
+  font-weight: 600;
+  color: var(--app-color-ink);
+}
+
+.drawer-sub {
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.version-drawer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-3);
+  min-height: 120px;
+}
+
+.version-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--app-space-3);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
+}
+
+.version-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.version-item {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--app-space-3);
+  padding: var(--app-space-3) 0;
+  border-bottom: 1px solid var(--app-color-divider);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.version-body {
+  min-width: 0;
+}
+
+.version-top {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--app-space-2);
+}
+
+.version-name {
+  font-size: var(--app-fs-body);
+  font-weight: 600;
+  color: var(--app-color-ink);
+}
+
+.version-time {
+  margin-left: auto;
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.version-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-4);
+  margin-top: var(--app-space-1);
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
+
+  strong {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.version-note {
+  margin: var(--app-space-1) 0 0;
+  font-size: var(--app-fs-meta);
+  line-height: var(--app-lh-body);
+  color: var(--app-color-text-secondary);
+}
+
+.version-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.drawer-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--app-space-2);
+}
+
+// ── 详情弹窗 ─────────────────────────────────────────────
+.paper-detail {
   .feedback-content {
     background: var(--app-color-fill);
     padding: var(--app-space-4);
@@ -1884,78 +1335,66 @@ const batchDelete = async () => {
     border-left: 4px solid var(--app-color-primary);
     font-size: var(--app-fs-caption);
     color: var(--app-color-ink);
-    line-height: 1.5;
+    line-height: var(--app-lh-body);
   }
-  
+
   .file-attachments {
     margin-top: var(--app-space-6);
-    
+
     h4 {
-      margin: 0 0 var(--app-space-4) 0;
-      color: var(--app-color-ink);
-      font-size: 1rem;
+      margin: 0 0 var(--app-space-3);
+      font-family: var(--app-font-family);
+      font-size: var(--app-fs-body);
       font-weight: 600;
+      color: var(--app-color-ink);
     }
-    
-    .attachment-list {
-      .attachment-item {
-        display: flex;
-        align-items: center;
-        gap: var(--app-space-3);
-        padding: var(--app-space-3);
-        border: 1px solid var(--app-color-border);
-        border-radius: var(--app-radius-md);
-        margin-bottom: var(--app-space-2);
-        background: var(--app-color-card-bg);
-        transition: border-color var(--app-transition-normal), background-color var(--app-transition-normal);
-        
-        &:hover {
-          border-color: var(--app-color-text-muted);
-        }
-        
-        .el-icon {
-          color: var(--app-color-text-muted);
-        }
-        
-        .file-name {
-          flex: 1;
-          color: var(--app-color-ink);
-          font-size: var(--app-fs-caption);
-        }
-        
-        .file-size {
-          color: var(--app-color-text-muted);
-          font-size: var(--app-fs-meta);
-        }
-        
-        .attachment-button {
-          display: flex;
-          align-items: center;
-          gap: var(--app-space-1);
-          padding: var(--app-space-1) var(--app-space-2);
-          border: 1px solid var(--app-color-border);
-          border-radius: var(--app-radius-sm);
-          background: var(--app-color-card-bg);
-          color: var(--app-color-text-secondary);
-          font-size: var(--app-fs-meta);
-          cursor: pointer;
-          transition: background-color var(--app-transition-normal), border-color var(--app-transition-normal), color var(--app-transition-normal);
-          
-          &:hover {
-            border-color: var(--app-color-text-muted);
-            color: var(--app-color-ink);
-          }
-        }
-      }
+  }
+
+  .attachment-item {
+    display: flex;
+    align-items: center;
+    gap: var(--app-space-3);
+    padding: var(--app-space-2) 0;
+    border-bottom: 1px solid var(--app-color-divider);
+
+    &:last-child {
+      border-bottom: none;
     }
+
+    .el-icon {
+      color: var(--app-color-text-muted);
+    }
+
+    .file-name {
+      flex: 1;
+      min-width: 0;
+      color: var(--app-color-ink);
+      font-size: var(--app-fs-caption);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .file-size {
+      color: var(--app-color-text-muted);
+      font-size: var(--app-fs-meta);
+      font-variant-numeric: tabular-nums;
+    }
+  }
+
+  .attachment-empty {
+    margin: 0;
+    padding: var(--app-space-3) 0;
+    font-size: var(--app-fs-meta);
+    color: var(--app-color-text-muted);
   }
 }
 
-// 版本对比
+// ── 版本对比弹窗 ─────────────────────────────────────────
 .version-compare-container {
   .compare-header {
     margin-bottom: var(--app-space-6);
-    
+
     .alert-info {
       display: flex;
       align-items: center;
@@ -1963,129 +1402,127 @@ const batchDelete = async () => {
       padding: var(--app-space-3) var(--app-space-4);
       background: var(--app-color-info-bg);
       color: var(--app-color-primary);
-      border-radius: 11px;
-      
+      border-radius: var(--app-radius-md);
+
       .el-icon {
         font-size: 16px;
       }
     }
   }
-  
-  .compare-content {
-    .version-columns {
+
+  .version-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--app-space-6);
+    margin-bottom: var(--app-space-6);
+  }
+
+  .version-column {
+    background: var(--app-color-card-bg);
+    border: 1px solid var(--app-color-border);
+    border-radius: var(--app-radius-md);
+    padding: var(--app-space-5);
+
+    h4 {
+      margin: 0 0 var(--app-space-3);
+      font-family: var(--app-font-family);
+      color: var(--app-color-ink);
+      font-size: var(--app-fs-caption);
+      font-weight: 600;
+    }
+  }
+
+  .info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--app-space-2) 0;
+    border-bottom: 1px solid var(--app-color-border-soft);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .info-label {
+      font-size: var(--app-fs-caption);
+      color: var(--app-color-text-muted);
+    }
+
+    .info-value {
+      font-size: var(--app-fs-caption);
+      color: var(--app-color-ink);
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+  }
+
+  .diff-section {
+    h4 {
+      margin: 0 0 var(--app-space-3);
+      color: var(--app-color-ink);
+      font-size: var(--app-fs-body);
+      font-weight: 600;
+    }
+  }
+
+  .diff-table {
+    background: var(--app-color-card-bg);
+    border: 1px solid var(--app-color-border);
+    border-radius: var(--app-radius-md);
+    overflow: hidden;
+
+    .table-header,
+    .table-row {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--app-space-6);
-      margin-bottom: var(--app-space-6);
-      
-      .version-column {
-        background: white;
-        border: 1px solid var(--app-color-border);
-        border-radius: var(--app-radius-md);
-        padding: var(--app-space-5);
-        
-        h4 {
-          margin: 0 0 var(--app-space-4) 0;
-          font-family: var(--app-font-family);
-          color: var(--app-color-ink);
-          font-size: var(--app-fs-caption);
+      grid-template-columns: 120px 1fr 1fr 100px;
+      padding: var(--app-space-3) var(--app-space-4);
+    }
+
+    .table-header {
+      background: var(--app-color-fill);
+      border-bottom: 1px solid var(--app-color-border);
+
+      .table-cell {
+        font-size: var(--app-fs-meta);
+        font-weight: 600;
+        color: var(--app-color-text-muted);
+      }
+    }
+
+    .table-row {
+      border-bottom: 1px solid var(--app-color-divider);
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .table-cell {
+        font-size: var(--app-fs-caption);
+        color: var(--app-color-ink);
+
+        &.field {
           font-weight: 600;
         }
-        
-        .version-info {
-          .info-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: var(--app-space-2) 0;
-            border-bottom: 1px solid var(--app-color-border-soft);
-            
-            &:last-child {
-              border-bottom: none;
-            }
-            
-            .info-label {
-              font-size: var(--app-fs-caption);
-              color: var(--app-color-text-muted);
-            }
-            
-            .info-value {
-              font-size: var(--app-fs-caption);
-              color: var(--app-color-ink);
-              font-weight: 600;
-            }
-          }
-        }
-      }
-    }
-    
-    .diff-section {
-      h4 {
-        margin: 0 0 var(--app-space-4) 0;
-        color: var(--app-color-ink);
-        font-size: 1rem;
-        font-weight: 600;
-      }
-      
-      .diff-table {
-        background: white;
-        border: 1px solid var(--app-color-border);
-        border-radius: var(--app-radius-md);
-        overflow: hidden;
-        
-        .table-header {
-          display: grid;
-          grid-template-columns: 120px 1fr 1fr 100px;
-          background: var(--app-color-fill);
-          padding: var(--app-space-3) var(--app-space-4);
-          border-bottom: 1px solid var(--app-color-border);
-          
-          .table-cell {
+
+        &.change {
+          display: flex;
+          align-items: center;
+
+          .change-badge {
+            padding: 2px var(--app-space-2);
+            border-radius: var(--app-radius-pill);
             font-size: var(--app-fs-meta);
             font-weight: 600;
-            color: var(--app-color-text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-          }
-        }
-        
-        .table-row {
-          display: grid;
-          grid-template-columns: 120px 1fr 1fr 100px;
-          padding: var(--app-space-3) var(--app-space-4);
-          border-bottom: 1px solid var(--app-color-divider);
-          
-          &:last-child {
-            border-bottom: none;
-          }
-          
-          .table-cell {
-            font-size: var(--app-fs-caption);
-            color: var(--app-color-ink);
-            
-            &.field {
-              font-weight: 600;
+            font-variant-numeric: tabular-nums;
+
+            &.increase {
+              background: var(--app-color-danger-bg);
+              color: var(--app-color-danger);
             }
-            
-            &.change {
-              display: flex;
-              align-items: center;
-              
-              .change-badge {
-                padding: 2px var(--app-space-2);
-                border-radius: 18px;
-                font-size: var(--app-fs-meta);
-                font-weight: 600;
-                
-                &.increase {
-                  background: var(--app-color-danger-bg);
-                  color: var(--app-color-danger);
-                }
-                &.decrease {
-                  background: var(--app-color-fill);
-                  color: var(--app-color-success);
-                }
-              }
+
+            &.decrease {
+              background: var(--app-color-fill);
+              color: var(--app-color-success);
             }
           }
         }
@@ -2094,127 +1531,29 @@ const batchDelete = async () => {
   }
 }
 
-// 响应式设计
 @media (max-width: 768px) {
-  .my-papers-page {
-    padding: var(--app-space-3);
+  .similarity-value {
+    font-size: 18px;
   }
 
-  .filter-card {
-    margin-bottom: var(--app-space-6);
-    
-    .filter-form {
-      padding: var(--app-space-6);
-      
-      .form-row {
-        grid-template-columns: 1fr;
-        
-        .form-actions {
-          flex-direction: column;
-          
-          .primary-button,
-          .secondary-button {
-            width: 100%;
-            justify-content: center;
-          }
-        }
-      }
-    }
+  .version-item {
+    grid-template-columns: 20px minmax(0, 1fr);
   }
-  
-  .papers-card {
-    .papers-list {
-      padding: var(--app-space-3);
-      
-      .paper-item {
-        flex-direction: column;
-        gap: var(--app-space-2);
-        
-        .paper-select {
-          padding: var(--app-space-4) var(--app-space-4) 0;
-        }
-        
-        .paper-main {
-          padding: var(--app-space-4);
-        }
-        
-        .paper-header {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: var(--app-space-3);
-          
-          .paper-title {
-            margin-right: 0;
-          }
-          
-          .paper-actions {
-            width: 100%;
-            flex-wrap: wrap;
-            
-            .action-button {
-              flex: 1;
-              min-width: calc(50% - 4px);
-              justify-content: center;
-            }
-          }
-        }
-        
-        .paper-meta {
-          flex-direction: column;
-          gap: var(--app-space-2);
-        }
-        
-        .paper-versions {
-          padding: var(--app-space-4) var(--app-space-6);
-        }
-        
-        .paper-toggle {
-          padding: var(--app-space-3) var(--app-space-6);
-        }
-      }
-    }
+
+  .version-actions {
+    grid-column: 2;
+    justify-content: flex-end;
   }
-  
-  .version-compare-container {
-    .compare-content {
-      .version-columns {
-        grid-template-columns: 1fr;
-      }
-      
-      .diff-section {
-        .diff-table {
-          .table-header,
-          .table-row {
-            grid-template-columns: 100px 1fr;
-            
-            .table-cell.field {
-              grid-column: 1;
-            }
-            .table-cell.before {
-              grid-column: 2;
-              grid-row: 1;
-            }
-            .table-cell.after {
-              grid-column: 2;
-              grid-row: 2;
-            }
-            .table-cell.change {
-              grid-column: 1;
-              grid-row: 2;
-            }
-          }
-        }
-      }
-    }
+
+  .version-columns {
+    grid-template-columns: 1fr;
   }
-  
-  .paper-detail {
-    .detail-section {
-      .detail-row {
-        grid-template-columns: 1fr;
-      }
+
+  .diff-table {
+    .table-header,
+    .table-row {
+      grid-template-columns: 100px 1fr;
     }
   }
 }
-
 </style>
