@@ -271,7 +271,7 @@ const handleCurrentChange = (newPage) => {
 }
 
 const viewCheckHistory = (paperId) => {
-  router.push(`/student/check-history/${paperId}`)
+  router.push(`/student/my-papers/check-history/${paperId}`)
 }
 
 // 论文类型的属性与文案不再由本页维护：getPaperTypeTagType / getPaperTypeText

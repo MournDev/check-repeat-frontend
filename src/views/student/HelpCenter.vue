@@ -1,5 +1,8 @@
 <template>
   <div class="knowledge-base">
+    <!-- 帮助文档 + 学术诚信二合一，学术诚信不再是独立菜单 -->
+    <el-tabs v-model="activeTab" class="route-tabs">
+      <el-tab-pane label="帮助文档" name="docs">
     <!-- 搜索栏 -->
     <div class="search-bar">
       <el-input
@@ -111,11 +114,19 @@
         </template>
       </main>
     </div>
+      </el-tab-pane>
+
+      <el-tab-pane label="学术诚信" name="integrity" lazy>
+        <AcademicIntegrity embedded />
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, nextTick } from 'vue'
+import { useRoute } from 'vue-router'
+import AcademicIntegrity from '@/views/student/AcademicIntegrity.vue'
 import {
   Search, Notebook, View, Clock, ArrowLeft, User,
   Document, QuestionFilled, Service, Upload
@@ -127,6 +138,9 @@ import { renderMarkdown } from '@/utils/markdown'
 import { formatDate } from '@/utils/dataType.js'
 
 // 状态
+// 旧地址 /student/academic-integrity 会带 ?tab=integrity 跳进来
+const route = useRoute()
+const activeTab = ref(route.query.tab === 'integrity' ? 'integrity' : 'docs')
 const keyword = ref('')
 const categories = ref([])
 const articles = ref([])

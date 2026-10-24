@@ -1,7 +1,7 @@
 <template>
   <div class="academic-integrity-page">
-    <!-- 页面头部 -->
-    <PageHeader description="提升学术素养，规范引用行为" />
+    <!-- 页面头部：嵌入帮助中心页签时不再重复渲染 -->
+    <PageHeader v-if="!embedded" description="提升学术素养，规范引用行为" />
 
     <!-- 导航Tabs -->
     <el-card class="navigation-card" shadow="never">
@@ -436,6 +436,14 @@ import {
   ChatLineSquare, Phone, Message, Reading, Link, VideoPlay, School
 } from '@element-plus/icons-vue'
 import PageHeader from '@/components/common/PageHeader.vue'
+
+// 嵌入「帮助中心」页签时隐藏页头
+defineProps({
+  embedded: {
+    type: Boolean,
+    default: false
+  }
+})
 
 const userStore = useUserStore()
 
