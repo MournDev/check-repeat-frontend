@@ -1,11 +1,5 @@
 <template>
   <div class="template-management">
-    <PageHeader description="管理系统通知的消息模板，支持变量渲染预览">
-      <template #actions>
-        <el-button type="primary" @click="handleAdd">新增模板</el-button>
-      </template>
-    </PageHeader>
-
     <ListPageShell
       v-model:page="currentPage"
       v-model:page-size="pageSize"
@@ -27,6 +21,11 @@
           <el-button @click="resetFilter">重置</el-button>
         </el-form-item>
       </el-form>
+      </template>
+
+      <!-- 主操作放列表工具栏：本页已并入「系统公告与维护」页签，不再有独立页头 -->
+      <template #header-extra>
+        <el-button type="primary" @click="handleAdd">新增模板</el-button>
       </template>
 
       <el-table :data="templateList" v-loading="loading" stripe style="width: 100%">
@@ -114,7 +113,6 @@
 import { ref, reactive, onMounted, nextTick } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getTemplateList, createTemplate, updateTemplate, deleteTemplate, toggleTemplateStatus, renderTemplate } from '@/api/admin/templates'
-import PageHeader from '@/components/common/PageHeader.vue'
 import ListPageShell from '@/components/common/ListPageShell.vue'
 import { formatDateTime } from '@/utils/dataType.js'
 

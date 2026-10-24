@@ -67,6 +67,35 @@
           </div>
         </el-card>
       </el-col>
+
+      <!-- 原「运营概览」的两项核心指标并入此盘 -->
+      <el-col :xs="12" :sm="6">
+        <el-card class="overview-card" shadow="never">
+          <div class="card-content">
+            <div class="card-icon bg-warning">
+              <el-icon><Clock /></el-icon>
+            </div>
+            <div class="card-info">
+              <div class="card-value">{{ overviewStats.unassignedCount || 0 }}</div>
+              <div class="card-label">待分配论文</div>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+
+      <el-col :xs="12" :sm="6">
+        <el-card class="overview-card" shadow="never">
+          <div class="card-content">
+            <div class="card-icon bg-success">
+              <el-icon><CircleCheck /></el-icon>
+            </div>
+            <div class="card-info">
+              <div class="card-value">{{ overviewStats.systemHealth == null ? '—' : overviewStats.systemHealth + '%' }}</div>
+              <div class="card-label">系统健康度</div>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
     </el-row>
 
     <!-- 图表区域 -->
@@ -190,13 +219,15 @@ import {
   getRealtimeStats,
   exportSchoolReport
 } from '@/api/admin/school'
+// 原「运营概览」的待分配 / 系统健康度指标来自该接口，现并入本盘
+import { getDashboardStats } from '@/api/admin/dashboard'
 import { useChart } from '@/composables/useChart'
 import PageHeader from '@/components/common/PageHeader.vue'
 
 // 图标导入（模板中其余图标依赖 main.js 的全局注册，无需在此导入）
 import {
   Refresh, Download, User, Document, Warning, Monitor,
-  DataAnalysis, Histogram, TrendCharts
+  DataAnalysis, Histogram, TrendCharts, Clock, CircleCheck
 } from '@element-plus/icons-vue'
 
 // 响应式数据
@@ -264,17 +295,21 @@ const loadOverviewData = async () => {
   overviewLoading.value = true
   try {
     // 并行加载多个API数据
-    const [overviewResponse, realtimeResponse] = await Promise.all([
+    const [overviewResponse, realtimeResponse, dashboardResponse] = await Promise.all([
       getSchoolOverview(),
-      getRealtimeStats()
+      getRealtimeStats(),
+      getDashboardStats()
     ])
     
     
     // 处理学校概览数据：后端未提供增长率/健康度字段，不再编造，卡片只展示真实值
+    const dashboard = dashboardResponse?.data || {}
     overviewStats.value = {
       totalUsers: overviewResponse.data.totalUsers || 0,
       totalPapers: overviewResponse.data.totalPapers || 0,
-      highSimilarity: overviewResponse.data.highSimilarityPapers || 0
+      highSimilarity: overviewResponse.data.highSimilarityPapers || 0,
+      unassignedCount: dashboard.unassignedCount ?? null,
+      systemHealth: dashboard.systemHealth ?? null
     }
 
     // 从概览接口优先获取人员分布统计（避免单独的实时接口不包含汇总）

@@ -208,6 +208,11 @@
           </el-form>
         </el-card>
       </el-tab-pane>
+
+      <!-- ============ 页签 4：消息模板（原独立菜单，现并入本页） ============ -->
+      <el-tab-pane label="消息模板" name="templates" lazy>
+        <MessageTemplateManagement />
+      </el-tab-pane>
     </el-tabs>
 
     <!-- 详情对话框 -->
@@ -236,7 +241,9 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import MessageTemplateManagement from '@/views/admin/MessageTemplateManagement.vue'
 import { getNoticeList, getNoticeStats, markAsRead, batchMarkAsRead, markAllAsRead, deleteNotice, batchDeleteNotice, clearAllNotice, broadcastNotice } from '@/api/admin/notices'
 import { updateMaintenance } from '@/api/admin/systemStatus'
 import { useUserStore } from '@/stores/user'
@@ -249,7 +256,9 @@ import { formatDateTime } from '@/utils/dataType.js'
 const userStore = useUserStore()
 const messageStore = useMessageStore()
 const maintenanceStore = useMaintenanceStore()
-const activeTab = ref('list')
+// 旧地址 /admin/message-template-management 会带 ?tab=templates 跳进来
+const route = useRoute()
+const activeTab = ref(route.query.tab === 'templates' ? 'templates' : 'list')
 
 const loading = ref(false)
 const noticeList = ref([])
