@@ -89,7 +89,7 @@
         <el-select v-model="recordFilters.result" placeholder="结论" clearable class="filter-item" @change="handleRecordSearch">
           <el-option v-for="o in resultOpts" :key="o.value" :label="o.label" :value="o.value" />
         </el-select>
-        <el-button @click="handleRecordSearch">
+        <el-button class="filter-search" @click="handleRecordSearch">
           <el-icon><Search /></el-icon>
           查询
         </el-button>
@@ -653,6 +653,10 @@ onMounted(() => {
   gap: var(--app-space-3);
   flex-wrap: wrap;
   margin-bottom: var(--app-space-4);
+
+  .filter-search {
+    margin-left: auto;
+  }
 }
 
 .filter-item {
