@@ -29,7 +29,7 @@
           </template>
           
           <el-form :model="algorithmConfig" label-width="120px" class="config-form">
-            <el-row :gutter="20">
+            <el-row :gutter="16">
               <el-col :span="12">
                 <el-form-item label="分配策略">
                   <el-select v-model="algorithmConfig.strategy" style="width: 100%">
@@ -52,7 +52,7 @@
               </el-col>
             </el-row>
             
-            <el-row :gutter="20">
+            <el-row :gutter="16">
               <el-col :span="12">
                 <el-form-item label="专业匹配权重">
                   <el-slider 
@@ -75,7 +75,7 @@
               </el-col>
             </el-row>
             
-            <el-row :gutter="20">
+            <el-row :gutter="16">
               <el-col :span="12">
                 <el-form-item label="负载均衡权重">
                   <el-slider 

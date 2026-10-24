@@ -1,7 +1,7 @@
 <template>
   <div class="student-panel">
     <!-- 学生布局：左资料卡 + 右表单 -->
-    <el-row :gutter="20" class="profile-content">
+    <el-row :gutter="24" class="profile-content">
       <el-col :xs="24" :lg="8">
         <el-card class="profile-card" shadow="never">
           <template #header>
@@ -71,15 +71,15 @@
             </div>
           </template>
           <el-form ref="profileFormRef" :model="profileForm" :rules="profileRules" label-width="100px" label-position="left">
-            <el-row :gutter="20">
+            <el-row :gutter="24">
               <el-col :xs="24" :sm="12"><el-form-item label="真实姓名" prop="realName"><el-input v-model="profileForm.realName" :disabled="!isEditing" /></el-form-item></el-col>
               <el-col :xs="24" :sm="12"><el-form-item label="用户名" prop="username"><el-input v-model="profileForm.username" :disabled="!isEditing" /></el-form-item></el-col>
             </el-row>
-            <el-row :gutter="20">
+            <el-row :gutter="24">
               <el-col :xs="24" :sm="12"><el-form-item label="电子邮箱" prop="email"><el-input v-model="profileForm.email" :disabled="!isEditing" /></el-form-item></el-col>
               <el-col :xs="24" :sm="12"><el-form-item label="手机号码" prop="phone"><el-input v-model="profileForm.phone" :disabled="!isEditing" /></el-form-item></el-col>
             </el-row>
-            <el-row :gutter="20">
+            <el-row :gutter="24">
               <!-- 学院在前、专业在后：专业列表按学院过滤，顺序反了就是在让人先挑一个还够不着的专业 -->
               <el-col :xs="24" :sm="12">
                 <el-form-item label="学院" prop="collegeId">
@@ -99,7 +99,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row :gutter="20">
+            <el-row :gutter="24">
               <el-col :xs="24" :sm="12"><el-form-item label="年级" prop="grade"><el-input v-model="profileForm.grade" :disabled="!isEditing" /></el-form-item></el-col>
               <el-col :xs="24" :sm="12"><el-form-item label="班级" prop="className"><el-input v-model="profileForm.className" :disabled="!isEditing" /></el-form-item></el-col>
             </el-row>

@@ -22,7 +22,7 @@
     >
       <template #filters>
         <el-form :model="filterForm" label-width="auto">
-          <el-row :gutter="20">
+          <el-row :gutter="16">
             <el-col :xs="24" :sm="12" :md="8" :lg="6">
               <el-form-item label="学生姓名">
                 <el-input 

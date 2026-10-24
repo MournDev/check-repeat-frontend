@@ -14,7 +14,7 @@
     </PageHeader>
 
     <!-- 统计信息 -->
-    <el-row :gutter="20" style="margin: 20px 0;">
+    <el-row :gutter="16" style="margin: var(--app-space-4) 0;">
       <el-col :span="6">
         <el-card shadow="never" class="stat-card">
           <div class="stat-item">
@@ -148,7 +148,7 @@
       top="20px"
     >
       <div class="report-detail">
-        <el-row :gutter="20">
+        <el-row :gutter="24">
           <el-col :span="12">
             <el-card shadow="never">
               <template #header>

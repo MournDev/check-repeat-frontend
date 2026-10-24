@@ -3,7 +3,7 @@
     <!-- 页面标题 -->
     <PageHeader description="与指导老师沟通交流，获取论文指导" />
 
-    <el-row :gutter="20" class="interaction-content">
+    <el-row :gutter="24" class="interaction-content">
       <!-- 左侧：消息会话列表 -->
       <el-col :xs="24" :lg="8">
         <!-- 消息会话列表 -->

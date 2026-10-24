@@ -8,7 +8,7 @@
       <el-tabs v-model="activeTab" class="guide-tabs">
         <el-tab-pane label="基础知识" name="basics">
           <div class="tab-content">
-            <el-row :gutter="20">
+            <el-row :gutter="24">
               <el-col :span="12">
                 <el-card class="content-card" shadow="hover">
                   <template #header>
@@ -86,7 +86,7 @@
 
         <el-tab-pane label="引用规范" name="citation">
           <div class="tab-content">
-            <el-row :gutter="20">
+            <el-row :gutter="24">
               <el-col :span="16">
                 <el-card class="content-card" shadow="hover">
                   <template #header>
@@ -96,7 +96,7 @@
                     </div>
                   </template>
                   <div class="content-body">
-                    <el-row :gutter="20">
+                    <el-row :gutter="16">
                       <el-col :span="12">
                         <div class="comparison-section good">
                           <h3><el-icon color="var(--app-color-success)"><SuccessFilled /></el-icon> 合理引用</h3>
@@ -184,7 +184,7 @@
 
         <el-tab-pane label="个人指导" name="personal">
           <div class="tab-content">
-            <el-row :gutter="20">
+            <el-row :gutter="24">
               <el-col :span="16">
                 <el-card class="content-card personal-guide" shadow="hover" v-loading="loading">
                   <template #header>
@@ -284,7 +284,7 @@
 
         <el-tab-pane label="案例分析" name="cases">
           <div class="tab-content">
-            <el-row :gutter="20">
+            <el-row :gutter="24">
               <el-col :span="12">
                 <el-card class="case-card" shadow="hover">
                   <template #header>
@@ -357,7 +357,7 @@
 
         <el-tab-pane label="常见问题" name="faq">
           <div class="tab-content">
-            <el-row :gutter="20">
+            <el-row :gutter="24">
               <el-col :span="16">
                 <el-collapse v-model="activeFAQ" accordion>
                   <el-collapse-item

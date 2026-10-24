@@ -14,14 +14,14 @@
               </div>
             </div>
             <el-form :model="formData" :rules="formRules" ref="settingsForm" label-width="100px" class="settings-form">
-              <el-row :gutter="20">
+              <el-row :gutter="24">
                 <el-col :span="12"><el-form-item label="姓名" prop="realName"><el-input v-model="formData.realName" /></el-form-item></el-col>
                 <el-col :span="12"><el-form-item :label="role==='ADMIN'?'用户名':'工号'" prop="username"><el-input v-model="formData.username" disabled /></el-form-item></el-col>
               </el-row>
 
               <!-- ADMIN fields -->
               <template v-if="role === 'ADMIN'">
-                <el-row :gutter="20">
+                <el-row :gutter="24">
                   <el-col :span="12"><el-form-item label="职位" prop="position"><el-input v-model="formData.position" /></el-form-item></el-col>
                   <el-col :span="12"><el-form-item label="所属部门" prop="department"><el-input v-model="formData.department" /></el-form-item></el-col>
                 </el-row>
@@ -29,7 +29,7 @@
 
               <!-- TEACHER fields -->
               <template v-if="role === 'TEACHER'">
-                <el-row :gutter="20">
+                <el-row :gutter="24">
                   <el-col :span="12">
                     <el-form-item label="职称" prop="title">
                       <el-select v-model="formData.title" placeholder="请选择职称">
@@ -71,7 +71,7 @@
             <div class="section-header"><el-icon><Phone /></el-icon><span>联系方式</span></div>
           </template>
           <el-form :model="formData" :rules="contactRules" ref="contactForm" label-width="100px">
-            <el-row :gutter="20">
+            <el-row :gutter="24">
               <el-col :span="12"><el-form-item label="手机号码" prop="phone"><el-input v-model="formData.phone" /></el-form-item></el-col>
               <el-col :span="12"><el-form-item label="邮箱" prop="email"><el-input v-model="formData.email" /></el-form-item></el-col>
             </el-row>
