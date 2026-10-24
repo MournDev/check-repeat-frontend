@@ -173,13 +173,14 @@
           >
             批量第三方查重
           </el-button>
+          <!-- 审核结论归导师；管理员只能「代审」，且必须填写原因留痕 -->
           <el-button
-            type="primary"
+            type="warning"
             :icon="Stamp"
             :disabled="auditableSelected.length === 0"
             @click="showBatchAuditDialog"
           >
-            批量审核
+            批量代审
           </el-button>
           <el-button
             :icon="Download"
@@ -222,11 +223,20 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="paperStatus" label="状态" width="100">
+        <el-table-column prop="paperStatus" label="状态" width="130">
           <template #default="{ row }">
             <el-tag :type="getStatusLabelType(row.paperStatus)">
               {{ getStatusText(row.paperStatus) }}
             </el-tag>
+            <el-tooltip
+              v-if="isAdminAudited(row)"
+              :content="getProxyReason(row) || '代审原因见审核意见'"
+              placement="top"
+            >
+              <el-tag type="warning" size="small" class="proxy-audit-tag">
+                管理员代审
+              </el-tag>
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column prop="allocationStatus" label="分配状态" width="100">
@@ -289,9 +299,10 @@
             </el-button>
             <el-button
               v-if="row.paperStatus === 'auditing'"
-              size="small" type="primary" text @click="showAuditDialog(row)"
+              size="small" type="warning" text @click="showAuditDialog(row)"
+              title="管理员代审：须填写代审原因，结论将同步给学生并留痕"
             >
-              审核
+              代审
             </el-button>
             <el-button size="small" type="warning" text @click="handleRecomputeScore(row)">
               重算总评
@@ -424,6 +435,12 @@
           </el-descriptions-item>
           <el-descriptions-item label="提交时间">{{ formatDateTime(currentPaper.submitTime) }}</el-descriptions-item>
           <el-descriptions-item label="字数">{{ currentPaper.wordCount }}字</el-descriptions-item>
+          <el-descriptions-item v-if="isAdminAudited(currentPaper)" label="审核来源">
+            <el-tag type="warning" size="small">管理员代审</el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item v-if="getProxyReason(currentPaper)" label="代审原因" :span="2">
+            {{ getProxyReason(currentPaper) }}
+          </el-descriptions-item>
         </el-descriptions>
 
         <div class="section" v-if="currentPaper.paperAbstract">
@@ -485,8 +502,21 @@
       </template>
     </el-dialog>
 
-    <!-- 审核对话框 -->
-    <el-dialog v-model="auditDialogVisible" :title="isBatchAudit ? '批量审核' : '论文审核'" width="500px" destroy-on-close>
+    <!-- 代审对话框：审核结论归导师，管理员仅在异常场景代出结论 -->
+    <el-dialog
+      v-model="auditDialogVisible"
+      :title="isBatchAudit ? '批量代审' : '管理员代审'"
+      width="520px"
+      destroy-on-close
+    >
+      <el-alert
+        type="warning"
+        :closable="false"
+        show-icon
+        class="proxy-audit-alert"
+        title="代审会替代导师的初审结论，并直接同步给学生"
+        description="请写明必须由管理员代审的原因；该原因将随审核意见一并留痕，用于事后追责。"
+      />
       <el-form :model="auditForm" label-width="100px">
         <el-form-item label="审核结果">
           <el-radio-group v-model="auditForm.auditResult">
@@ -494,13 +524,36 @@
             <el-radio value="rejected">不通过</el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item label="代审原因" required>
+          <el-input
+            v-model="auditForm.proxyReason"
+            type="textarea"
+            :rows="3"
+            maxlength="200"
+            show-word-limit
+            placeholder="例如：导师已离职 / 导师超期未处理，由管理员代为出结论"
+          />
+        </el-form-item>
         <el-form-item label="审核意见">
-          <el-input v-model="auditForm.auditComment" type="textarea" :rows="4" placeholder="请输入审核意见" />
+          <el-input
+            v-model="auditForm.auditComment"
+            type="textarea"
+            :rows="3"
+            maxlength="300"
+            show-word-limit
+            placeholder="将同步给学生（可选）"
+          />
         </el-form-item>
       </el-form>
       <template #footer>
         <el-button @click="auditDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="submitAudit">确定</el-button>
+        <el-button
+          type="primary"
+          :disabled="!auditForm.proxyReason.trim()"
+          @click="submitAudit"
+        >
+          确认代审
+        </el-button>
       </template>
     </el-dialog>
   </div>
@@ -552,6 +605,7 @@ const paperList = ref([])
 const selectedPapers = ref([])
 // 审核阶段门：后端状态机仅接受 auditing → completed/rejected，其余流转返回 40305。
 // 单条审核按钮按行隐藏，批量入口只统计待审核的选中项，从入口挡住非法流转。
+// 管理员侧的「审核」一律是代审：必须填原因，原因以固定前缀写入审核意见留痕。
 const auditableSelected = computed(() => selectedPapers.value.filter(p => p.paperStatus === 'auditing'))
 const uploadDialogVisible = ref(false)
 const detailDialogVisible = ref(false)
@@ -563,8 +617,29 @@ const isBatchAudit = ref(false)
 const currentAuditPaper = ref(null)
 const auditForm = reactive({
   auditResult: 'approved',
-  auditComment: ''
+  auditComment: '',
+  proxyReason: ''
 })
+
+// 代审标识以服务端返回为准：优先 auditSource / proxyReason（后端新增字段），
+// 旧数据回落到审核意见里的固定前缀（feedback = audit_comment）。
+const PROXY_AUDIT_MARK = '【管理员代审】'
+const isAdminAudited = (row) => {
+  if (!row) return false
+  if (String(row.auditSource || '').toUpperCase().includes('ADMIN')) return true
+  if (row.proxyReason) return true
+  const comment = row.auditComment || row.feedback || row.reviewComment || ''
+  return String(comment).includes(PROXY_AUDIT_MARK)
+}
+
+// 代审原因：优先后端独立字段，旧数据从前缀里取出（截到「；审核意见」为止）
+const getProxyReason = (row) => {
+  if (!row) return ''
+  if (row.proxyReason) return row.proxyReason
+  const comment = String(row.auditComment || row.feedback || '')
+  const matched = comment.match(/【管理员代审】(.*?)(?:；审核意见|$)/)
+  return matched ? matched[1].trim() : ''
+}
 
 // 统计数据
 const libraryStats = ref({
@@ -1113,6 +1188,7 @@ const showAuditDialog = (paper) => {
   currentAuditPaper.value = paper
   auditForm.auditResult = 'approved'
   auditForm.auditComment = ''
+  auditForm.proxyReason = ''
   auditDialogVisible.value = true
 }
 
@@ -1128,27 +1204,44 @@ const showBatchAuditDialog = () => {
   currentAuditPaper.value = null
   auditForm.auditResult = 'approved'
   auditForm.auditComment = ''
+  auditForm.proxyReason = ''
   auditDialogVisible.value = true
 }
 
 const submitAudit = async () => {
+  const reason = auditForm.proxyReason.trim()
+  if (!reason) {
+    ElMessage.warning('请填写代审原因')
+    return
+  }
+
+  const auditComment = [
+    `${PROXY_AUDIT_MARK}${reason}`,
+    auditForm.auditComment.trim() ? `审核意见：${auditForm.auditComment.trim()}` : ''
+  ].filter(Boolean).join('；')
+  const auditedIds = isBatchAudit.value
+    ? auditableSelected.value.map(p => p.id)
+    : [currentAuditPaper.value?.id].filter(Boolean)
+
   try {
     let res
     if (isBatchAudit.value) {
-      const paperIds = auditableSelected.value.map(p => p.id)
       res = await batchAuditPapers({
-        paperIds,
+        paperIds: auditedIds,
         auditResult: auditForm.auditResult,
-        auditComment: auditForm.auditComment
+        auditComment,
+        // 独立字段与意见前缀同时提交：后端已支持则该字段为准，未支持时前缀兜底留痕
+        proxyReason: reason
       })
     } else {
       res = await auditPaper(currentAuditPaper.value.id, {
         auditResult: auditForm.auditResult,
-        auditComment: auditForm.auditComment
+        auditComment,
+        proxyReason: reason
       })
     }
     if (res.code === 200) {
-      ElMessage.success(res.message || '审核成功')
+      ElMessage.success(res.message || '代审成功')
       auditDialogVisible.value = false
       // 批量审核：后端返回 {total, success, skipped, skipReasons[]}，
       // 有跳过时逐条展示原因（如论文已被教师先审完）
@@ -1406,6 +1499,15 @@ onMounted(async () => {
       }
     }
   }
+}
+
+// 代审标识：与状态标签并排，用间距而非分隔符区分
+.proxy-audit-tag {
+  margin-left: var(--app-space-1);
+}
+
+.proxy-audit-alert {
+  margin-bottom: var(--app-space-4);
 }
 
 @media (max-width: 768px) {

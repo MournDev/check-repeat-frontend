@@ -1,7 +1,11 @@
 <template>
   <div class="user-management">
     <!-- 页面说明：去白卡后只保留一行说明，主操作移入列表卡工具栏 -->
-    <PageHeader description="统一管理系统内所有人员账号（学生/教师）" />
+    <PageHeader
+      :description="userStore.isSuperAdmin
+        ? '统一管理系统内所有账号（学生 / 教师 / 管理员）'
+        : '管理学生与教师账号；管理员及超级管理员账号由超级管理员维护'"
+    />
 
     <ListPageShell
       v-model:page="pagination.currentPage"
@@ -26,7 +30,8 @@
           <el-select v-model="filterForm.userType" placeholder="请选择人员类型" clearable>
             <el-option label="学生" value="STUDENT"></el-option>
             <el-option label="教师" value="TEACHER"></el-option>
-            <el-option label="管理员" value="ADMIN"></el-option>
+            <!-- 管理员账号仅超管可筛可管，业务管理员只能维护学生/教师 -->
+            <el-option v-if="userStore.isSuperAdmin" label="管理员" value="ADMIN"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="状态">
