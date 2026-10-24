@@ -2,12 +2,15 @@
   <div class="review-workbench">
     <aside class="wb-queue">
       <ReviewQueue
+        ref="queueRef"
         :papers="papers"
         :current-id="currentPaperId"
         :loading="loading"
         @select="selectPaper"
         @refresh="refreshQueue"
         @filtered-change="onFilteredChange"
+        @batch-approve="openBatchDialog('approve', $event)"
+        @batch-reject="openBatchDialog('reject', $event)"
       />
     </aside>
 
@@ -169,11 +172,65 @@
         </el-button>
       </template>
     </el-dialog>
+
+    <!-- 批量结论：一次填写统一意见；未完成合格签核的论文会被自动排除 -->
+    <el-dialog
+      v-model="batchDialog.visible"
+      :title="batchDialog.action === 'approve' ? '批量通过' : '批量退回'"
+      width="560px"
+      append-to-body
+      :close-on-click-modal="false"
+    >
+      <div class="reject-dialog">
+        <el-alert
+          type="warning"
+          :closable="false"
+          show-icon
+          :title="`将对 ${batchDialog.targets.length} 篇论文执行批量${batchDialog.action === 'approve' ? '通过' : '退回'}`"
+          description="仅查重签核已合格的论文会被执行，其余将自动排除并在完成后提示。"
+        />
+
+        <div v-if="templatesLoading" class="template-tip">正在加载意见模板…</div>
+        <div v-else-if="rejectTemplates.length" class="template-chips">
+          <button
+            v-for="template in rejectTemplates"
+            :key="template.id"
+            type="button"
+            class="template-chip"
+            :title="template.content"
+            @click="applyBatchTemplate(template)"
+          >
+            {{ template.title }}
+          </button>
+        </div>
+
+        <el-input
+          v-model="batchDialog.opinion"
+          type="textarea"
+          :rows="5"
+          maxlength="500"
+          show-word-limit
+          placeholder="请填写统一的审核意见（将同步给全部选中学生）"
+        />
+      </div>
+
+      <template #footer>
+        <el-button @click="batchDialog.visible = false">取消</el-button>
+        <el-button
+          :type="batchDialog.action === 'approve' ? 'primary' : 'danger'"
+          :loading="batchSubmitting"
+          :disabled="!batchDialog.opinion.trim()"
+          @click="submitBatch"
+        >
+          确认{{ batchDialog.action === 'approve' ? '通过' : '退回' }}
+        </el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import ReviewQueue from './components/workbench/ReviewQueue.vue'
@@ -191,6 +248,7 @@ const route = useRoute()
 const router = useRouter()
 
 const { papers, loading, refreshList } = usePendingPapers()
+const queueRef = ref(null)
 
 const activeTab = ref('report')
 const currentPaperId = ref(route.query.paperId ? String(route.query.paperId) : '')
@@ -368,6 +426,76 @@ const handleApprove = async () => {
   } catch (e) {
     if (e === 'cancel' || e === 'close') return
     console.error('通过初审失败:', e)
+  }
+}
+
+// ── 批量结论 ────────────────────────────────────────────────
+const batchDialog = reactive({ visible: false, action: 'approve', opinion: '', targets: [] })
+const batchSubmitting = ref(false)
+
+const openBatchDialog = (action, targets) => {
+  if (!Array.isArray(targets) || targets.length === 0) return
+  batchDialog.action = action
+  batchDialog.targets = targets
+  batchDialog.opinion = ''
+  batchDialog.visible = true
+  loadRejectTemplates()
+}
+
+const applyBatchTemplate = (template) => {
+  const content = template?.content
+  if (!content) return
+  const current = batchDialog.opinion.trim()
+  batchDialog.opinion = (current ? `${current}\n${content}` : content).slice(0, 500)
+}
+
+// 只保留查重签核合格的论文：单个结论由 canApprove 拦，批量必须在前端先筛，
+// 否则会把未签核的论文一起推进状态
+const filterQualifiedPapers = async (targets) => {
+  const checks = await Promise.all(targets.map(async (paper) => {
+    try {
+      const res = await getCheckSignoff(paper.paperId)
+      return res?.code === 200 && res.data?.qualified === 1 ? paper : null
+    } catch (e) {
+      return null
+    }
+  }))
+  return checks.filter(Boolean)
+}
+
+const submitBatch = async () => {
+  const opinion = batchDialog.opinion.trim()
+  if (!opinion || batchSubmitting.value) return
+
+  batchSubmitting.value = true
+  try {
+    const qualified = await filterQualifiedPapers(batchDialog.targets)
+    const excluded = batchDialog.targets.length - qualified.length
+    if (!qualified.length) {
+      ElMessage.warning('所选论文均未完成合格的查重签核，无法批量操作')
+      return
+    }
+    if (excluded > 0) {
+      ElMessage.warning(`${excluded} 篇未完成合格签核，已从批量操作中排除`)
+    }
+
+    const res = await doReview({
+      paperIds: qualified.map(paper => paper.paperId),
+      reviewStatus: batchDialog.action === 'approve' ? 3 : 4,
+      reviewOpinion: opinion
+    })
+    if (res?.code === 200) {
+      ElMessage.success(`已批量${batchDialog.action === 'approve' ? '通过' : '退回'} ${qualified.length} 篇`)
+      batchDialog.visible = false
+      queueRef.value?.clearSelection()
+      await refreshList()
+      if (papers.value.length) selectPaper(papers.value[0])
+    }
+  } catch (e) {
+    // 响应拦截器已按后端 message 提示
+    console.error('批量提交审核结论失败:', e)
+  } finally {
+    batchSubmitting.value = false
   }
 }
 

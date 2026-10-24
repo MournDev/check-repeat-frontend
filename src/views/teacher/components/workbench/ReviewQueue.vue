@@ -34,30 +34,60 @@
       </div>
     </div>
 
+    <!-- 批量操作：全选只针对当前筛选结果，批量动作由父级处理 -->
+    <div v-if="papers.length" class="queue-batch">
+      <el-checkbox
+        :model-value="allSelected"
+        :indeterminate="someSelected && !allSelected"
+        @change="toggleSelectAll"
+      >
+        全选
+      </el-checkbox>
+      <span class="batch-count">{{ selectedIds.length ? `已选 ${selectedIds.length}` : '未选择' }}</span>
+      <div class="batch-actions">
+        <el-button size="small" type="primary" :disabled="!selectedIds.length" @click="emitBatch('approve')">
+          批量通过
+        </el-button>
+        <el-button size="small" type="danger" plain :disabled="!selectedIds.length" @click="emitBatch('reject')">
+          批量退回
+        </el-button>
+      </div>
+    </div>
+
     <div ref="listRef" class="queue-list" v-loading="loading">
-      <button
+      <div
         v-for="paper in filteredPapers"
         :key="paper.paperId"
-        type="button"
-        class="queue-card"
-        :class="{ active: String(paper.paperId) === String(currentId) }"
-        @click="emit('select', paper)"
+        class="queue-row"
       >
-        <div class="card-top">
-          <span class="student-name">{{ paper.studentName || '未命名学生' }}</span>
-          <span v-if="isOverdue(paper)" class="flag danger">已超时</span>
-          <span v-else-if="isUrgent(paper)" class="flag warning">紧急</span>
-        </div>
-        <div class="card-title" :title="paper.paperTitle || '未命名论文'">{{ paper.paperTitle || '未命名论文' }}</div>
-        <div class="card-meta">
-          <span class="sim" :class="getSimilarityClass(Number(paper.similarity) || 0)">
-            {{ formatPercent(paper.similarity) }}
-          </span>
-          <span>V{{ paper.version || 1 }}</span>
-          <span v-if="paper.deadline" class="meta-deadline">{{ formatDateTime(paper.deadline, 'MM-DD HH:mm') }} 截止</span>
-          <span v-else class="meta-deadline">待审核</span>
-        </div>
-      </button>
+        <el-checkbox
+          class="queue-check"
+          :model-value="isSelected(paper)"
+          :aria-label="`选择 ${paper.studentName || '该论文'}`"
+          @change="(checked) => toggleSelect(paper, checked)"
+        />
+        <button
+          type="button"
+          class="queue-card"
+          :class="{ active: String(paper.paperId) === String(currentId) }"
+          @click="emit('select', paper)"
+        >
+          <div class="card-top">
+            <span class="student-name">{{ paper.studentName || '未命名学生' }}</span>
+            <span v-if="isOverdue(paper)" class="flag danger">已超时</span>
+            <span v-else-if="isUrgent(paper)" class="flag warning">紧急</span>
+          </div>
+          <div class="card-title" :title="paper.paperTitle || '未命名论文'">{{ paper.paperTitle || '未命名论文' }}</div>
+          <div class="card-meta">
+            <span class="sim" :class="getSimilarityClass(Number(paper.similarity) || 0)">
+              {{ formatPercent(paper.similarity) }}
+            </span>
+            <span>V{{ paper.version || 1 }}</span>
+            <span v-if="paper.deadline" class="meta-deadline">{{ formatDateTime(paper.deadline, 'MM-DD HH:mm') }} 截止</span>
+            <span v-else class="meta-deadline">待审核</span>
+          </div>
+        </button>
+      </div>
 
       <div v-if="!loading && filteredPapers.length === 0" class="queue-empty">
         <el-icon class="empty-icon"><Document /></el-icon>
@@ -89,7 +119,7 @@ const props = defineProps({
   loading: { type: Boolean, default: false }
 })
 
-const emit = defineEmits(['select', 'refresh', 'filtered-change'])
+const emit = defineEmits(['select', 'refresh', 'filtered-change', 'batch-approve', 'batch-reject'])
 
 const listRef = ref(null)
 
@@ -124,6 +154,53 @@ const resetLocalFilter = () => {
   keyword.value = ''
   quickFilter.value = 'all'
 }
+
+// ── 批量选择 ────────────────────────────────────────────────
+// 只保存 id：队列刷新后按 id 与最新数据对齐，避免持有过期对象
+const selectedIds = ref([])
+
+const isSelected = (paper) => selectedIds.value.includes(String(paper?.paperId))
+
+const toggleSelect = (paper, checked) => {
+  const id = String(paper?.paperId ?? '')
+  if (!id) return
+  if (checked) {
+    if (!selectedIds.value.includes(id)) selectedIds.value = [...selectedIds.value, id]
+  } else {
+    selectedIds.value = selectedIds.value.filter(item => item !== id)
+  }
+}
+
+const allSelected = computed(() =>
+  filteredPapers.value.length > 0
+  && filteredPapers.value.every(paper => isSelected(paper))
+)
+
+const someSelected = computed(() => selectedIds.value.length > 0)
+
+const toggleSelectAll = (checked) => {
+  selectedIds.value = checked
+    ? filteredPapers.value.map(paper => String(paper.paperId))
+    : []
+}
+
+const selectedPapers = computed(() =>
+  (props.papers || []).filter(paper => isSelected(paper))
+)
+
+const emitBatch = (action) => {
+  if (!selectedPapers.value.length) return
+  emit(action === 'approve' ? 'batch-approve' : 'batch-reject', selectedPapers.value)
+}
+
+// 队列刷新后剔除已不在待审列表中的选择，避免批量操作打到已审完的论文
+watch(() => props.papers, (list) => {
+  if (!selectedIds.value.length) return
+  const alive = new Set((list || []).map(paper => String(paper.paperId)))
+  selectedIds.value = selectedIds.value.filter(id => alive.has(id))
+}, { deep: false })
+
+defineExpose({ clearSelection: () => { selectedIds.value = [] } })
 
 // 把筛选后的顺序交给父级，键盘 J/K 才能与用户看到的队列保持一致
 watch(filteredPapers, (list) => emit('filtered-change', list), { immediate: true })
@@ -226,6 +303,48 @@ watch(() => props.currentId, async () => {
   color: var(--app-color-primary);
   background: var(--app-color-info-bg);
   border-color: var(--app-color-info-border);
+}
+
+/* 批量条：与搜索工具栏同宽，按钮靠右 */
+.queue-batch {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--app-space-2);
+  padding: 0 var(--app-space-3) var(--app-space-2);
+  flex-shrink: 0;
+
+  :deep(.el-checkbox__label) {
+    font-size: var(--app-fs-meta);
+  }
+}
+
+.batch-count {
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
+}
+
+.batch-actions {
+  display: flex;
+  gap: var(--app-space-1);
+  margin-left: auto;
+}
+
+.queue-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.queue-check {
+  flex-shrink: 0;
+  margin-top: 8px;
+  height: auto;
+}
+
+.queue-row .queue-card {
+  flex: 1;
+  min-width: 0;
 }
 
 .queue-list {
