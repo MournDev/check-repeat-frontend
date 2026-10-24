@@ -30,7 +30,7 @@
           <el-select v-model="filters.status" placeholder="批次状态" clearable class="filter-item" @change="handleSearch">
             <el-option v-for="o in batchStatusOpts" :key="o.value" :label="o.label" :value="Number(o.value)" />
           </el-select>
-          <el-button @click="handleSearch">
+          <el-button class="filter-search" @click="handleSearch">
             <el-icon><Search /></el-icon>
             查询
           </el-button>
@@ -385,6 +385,10 @@ onMounted(async () => {
   align-items: center;
   gap: var(--app-space-3);
   flex-wrap: wrap;
+
+  .filter-search {
+    margin-left: auto;
+  }
 }
 
 .filter-item {

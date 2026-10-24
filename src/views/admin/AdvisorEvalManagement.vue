@@ -210,7 +210,7 @@
           <el-option label="3 - 4 分" value="3-4" />
           <el-option label="4 - 5 分" value="4-5" />
         </el-select>
-        <el-button :icon="Refresh" @click="resetFilters">重置</el-button>
+        <el-button class="filter-reset" :icon="Refresh" @click="resetFilters">重置</el-button>
       </div>
       </template>
 
@@ -611,6 +611,10 @@ onMounted(() => {
   flex-wrap: wrap;
   gap: var(--app-space-3);
   margin-bottom: var(--app-space-4);
+
+  .filter-reset {
+    margin-left: auto;
+  }
 
   .filter-item {
     width: 200px;

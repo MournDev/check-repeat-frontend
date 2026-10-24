@@ -951,6 +951,10 @@ onMounted(() => {
       gap: var(--app-space-3);
       align-items: center;
       flex-wrap: wrap;
+
+      > .el-button:first-of-type {
+        margin-left: auto;
+      }
     }
   }
 }
