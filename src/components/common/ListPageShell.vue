@@ -138,6 +138,11 @@ defineEmits(['page-change', 'size-change'])
   margin: 0;
 }
 
+/* 最后一个表单项视为筛选操作区（搜索/重置），始终贴右 */
+.list-page__filters :deep(.el-form--inline .el-form-item:last-child) {
+  margin-left: auto;
+}
+
 .list-page__divider {
   --el-border-color: var(--app-color-divider);
   margin: var(--app-space-3) 0 var(--app-space-4);
