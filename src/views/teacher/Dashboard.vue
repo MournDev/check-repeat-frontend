@@ -1,6 +1,6 @@
 <template>
   <div class="teacher-dashboard">
-    <!-- 页面标题和快速操作 -->
+    <!-- 页面标题与操作 -->
     <div class="welcome-section">
       <div class="welcome-content">
         <div class="welcome-left">
@@ -31,6 +31,10 @@
         <div class="today-stat-item">
           <div class="stat-value">{{ stats.todayStats.todayNewSubmissions || 0 }}</div>
           <div class="stat-label">新提交</div>
+        </div>
+        <div class="today-stat-item">
+          <div class="stat-value">{{ stats.todayStats.averageReviewTime || 0 }}<span class="stat-unit">分钟</span></div>
+          <div class="stat-label">平均审核用时</div>
         </div>
       </div>
     </div>
@@ -128,8 +132,8 @@
     <div class="main-content">
       <!-- 左侧：待办事项和学生进度 -->
       <div class="main-left">
-        <!-- 待审核论文 -->
-        <div class="card" v-loading="loading.pending">
+        <!-- 待审核论文：首屏主任务，视觉层级最高 -->
+        <div class="card focus-card" v-loading="loading.pending">
           <div class="card-header">
             <div class="card-title">
               <el-icon><Document /></el-icon>
@@ -289,7 +293,7 @@
         </div>
       </div>
 
-      <!-- 右侧：学生统计和快速操作 -->
+      <!-- 右侧：学生状态 -->
       <div class="main-right">
         <!-- 学生状态统计 -->
         <div class="card" v-loading="loading.student">
@@ -366,87 +370,6 @@
             </div>
           </div>
         </div>
-
-        <!-- 快速操作 -->
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">
-              <el-icon><Operation /></el-icon>
-              快速操作
-            </div>
-          </div>
-          
-          <div class="action-buttons">
-            <button 
-              class="action-button primary"
-              @click="goToPaperReview"
-            >
-              <el-icon><EditPen /></el-icon>
-              论文审核
-            </button>
-            <button 
-              class="action-button"
-              @click="goToStudentManagement"
-            >
-              <el-icon><UserFilled /></el-icon>
-              学生管理
-            </button>
-            <button 
-              class="action-button"
-              @click="goToStatistics"
-            >
-              <el-icon><TrendCharts /></el-icon>
-              数据统计
-            </button>
-            <button 
-              class="action-button"
-              @click="exportData"
-            >
-              <el-icon><Download /></el-icon>
-              导出数据
-            </button>
-            <button 
-              class="action-button"
-              @click="goToMessageCenter"
-            >
-              <el-icon><Message /></el-icon>
-              消息中心
-            </button>
-          </div>
-        </div>
-
-        <!-- 审核效率 -->
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">
-              <el-icon><Timer /></el-icon>
-              审核效率
-            </div>
-          </div>
-          
-          <div class="efficiency-stats" v-if="stats.todayStats">
-            <div class="efficiency-item">
-              <div class="efficiency-label">平均审核时间</div>
-              <div class="efficiency-value">{{ stats.todayStats.averageReviewTime || 0 }}分钟</div>
-            </div>
-            <div class="efficiency-item">
-              <div class="efficiency-label">今日审核量</div>
-              <div class="efficiency-value">{{ stats.todayStats.todayReviewed || 0 }}篇</div>
-            </div>
-            <div class="efficiency-item">
-              <div class="efficiency-label">审核通过率</div>
-              <div class="efficiency-value">
-                {{ stats.todayStats.todayReviewed > 0 ? Math.round((stats.todayStats.todayPassed / stats.todayStats.todayReviewed) * 100) : 0 }}%
-              </div>
-            </div>
-          </div>
-          <div class="empty-state" v-else>
-            <div class="empty-icon">
-              <el-icon><Timer /></el-icon>
-            </div>
-            <p>暂无效率数据</p>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -466,7 +389,6 @@ import {
   getPendingReviewList,
   getStudentStats,
   downloadPaper,
-  exportTeacherData,
   getReviewStatusDistribution,
   getCollegeDistribution
 } from '@/api/teacher.js'
@@ -476,8 +398,8 @@ import { useChart } from '@/composables/useChart'
 import {
   EditPen, Refresh, UserFilled, Clock, Check, TrendCharts,
   Document, More, User, Files, View, Download, DataLine,
-  Operation, Histogram, ArrowUp, ArrowDown, Bell,
-  Timer, Reading, Message
+  Histogram, ArrowUp, ArrowDown, Bell,
+  Timer, Reading
 } from '@element-plus/icons-vue'
 
 const router = useRouter()
@@ -646,20 +568,6 @@ const goToPaperReview = () => {
   router.push('/teacher/review-workbench')
 }
 
-const goToStudentManagement = () => {
-  router.push({
-    name: 'StudentList'  // 使用路由名称而不是路径
-  })
-}
-
-const goToStatistics = () => {
-  router.push('/teacher/data-statistics')
-}
-
-const goToMessageCenter = () => {
-  router.push('/message-center')
-}
-
 const reviewPaper = (paperId) => {
   router.push(`/teacher/review-workbench?paperId=${paperId}`)
 }
@@ -678,30 +586,6 @@ const downloadPaperFile = async (paperId) => {
   } catch (error) {
     console.error('下载失败:', error)
     ElMessage.error(`论文下载失败: ${error.message || '网络错误'}`)
-  }
-}
-
-const exportData = async () => {
-  try {
-    const teacherId = userStore.userInfo?.userId
-    if (!teacherId) {
-      ElMessage.warning('未获取到教师信息，请重新登录')
-      return
-    }
-    
-    const response = await exportTeacherData({ teacherId })
-    // 处理文件下载
-    const blob = response.data instanceof Blob ? response.data : new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
-    const url = window.URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `教师数据统计_${new Date().toISOString().slice(0, 10)}.xlsx`
-    link.click()
-    window.URL.revokeObjectURL(url)
-    ElMessage.success('数据导出成功')
-  } catch (error) {
-    console.error('导出失败:', error)
-    ElMessage.error(`数据导出失败: ${error.message || '网络错误'}`)
   }
 }
 
@@ -874,6 +758,13 @@ onMounted(() => {
         font-weight: 700;
         color: var(--app-color-ink);
         margin-bottom: var(--app-space-2);
+      }
+
+      .stat-unit {
+        margin-left: 2px;
+        font-size: var(--app-fs-caption);
+        font-weight: 400;
+        color: var(--app-color-text-muted);
       }
 
       .stat-label {
@@ -1097,10 +988,11 @@ onMounted(() => {
   }
 }
 
-// 主要内容区域：右栏固定 320，与管理员工作台保持一致
+// 主要内容区域：右栏收窄至 300，两栏按内容自然撑开，禁止等高拉伸
 .main-content {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  align-items: start;
   gap: var(--app-space-6);
 
   @media (max-width: 1200px) {
@@ -1153,6 +1045,16 @@ onMounted(() => {
         }
       }
     }
+  }
+}
+
+// 待审核论文为首屏主任务，用主色描边与轻投影提升层级
+.card.focus-card {
+  border-color: rgba(var(--app-color-primary-rgb), 0.28);
+  box-shadow: 0 6px 20px rgba(var(--app-color-primary-rgb), 0.08);
+
+  .card-header {
+    margin-bottom: var(--app-space-4);
   }
 }
 
@@ -1353,7 +1255,7 @@ onMounted(() => {
   
   .echarts-container {
     width: 100%;
-    height: 300px;
+    height: 220px;
     margin-bottom: var(--app-space-4);
   }
   
@@ -1459,25 +1361,26 @@ onMounted(() => {
     }
   }
   
+  // 双图并排时单图无数据，空态按紧凑行高呈现，避免撑高整张卡片
   .empty-chart {
-    padding: var(--app-space-10) 0;
+    padding: var(--app-space-6) 0;
     text-align: center;
     
     .empty-icon {
-      font-size: 48px;
+      font-size: 32px;
       color: var(--app-color-text-muted);
-      margin-bottom: var(--app-space-4);
-    }
-    
-    .empty-text {
-      font-size: var(--app-fs-heading);
-      font-weight: 600;
-      color: var(--app-color-ink);
       margin-bottom: var(--app-space-2);
     }
     
-    .empty-subtext {
+    .empty-text {
       font-size: var(--app-fs-caption);
+      font-weight: 600;
+      color: var(--app-color-ink);
+      margin-bottom: var(--app-space-1);
+    }
+    
+    .empty-subtext {
+      font-size: var(--app-fs-meta);
       color: var(--app-color-text-muted);
     }
   }
@@ -1524,79 +1427,6 @@ onMounted(() => {
       color: var(--app-color-text-muted);
       text-align: center;
       line-height: 6px;
-    }
-  }
-}
-
-// 快速操作
-.action-buttons {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--app-space-3);
-
-  .action-button {
-    display: flex;
-    align-items: center;
-    gap: var(--app-space-2);
-    padding: var(--app-space-3) var(--app-space-4);
-    border-radius: 11px;
-    font-size: var(--app-fs-caption);
-    font-weight: 400;
-    transition: border-color var(--app-transition-normal);
-
-    &:active {
-      transform: scale(0.985);
-    }
-    
-    &.primary {
-      background: var(--app-color-primary);
-      color: var(--app-color-on-primary);
-      border: none;
-      
-      &:hover {
-        background: var(--app-color-primary-hover);
-      }
-    }
-    
-    &:not(.primary) {
-      background: var(--app-color-fill);
-      color: var(--app-color-ink);
-      border: 1px solid var(--app-color-border);
-      
-      &:hover {
-        background: var(--app-color-fill);
-        border-color: var(--app-color-border);
-      }
-    }
-    
-    .el-icon {
-      font-size: var(--app-fs-heading);
-    }
-  }
-}
-
-// 审核效率
-.efficiency-stats {
-  display: grid;
-  gap: var(--app-space-4);
-  
-  .efficiency-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--app-space-4);
-    background: var(--app-color-fill);
-    border-radius: 11px;
-    
-    .efficiency-label {
-      font-size: var(--app-fs-caption);
-      color: var(--app-color-text-muted);
-    }
-    
-    .efficiency-value {
-      font-size: var(--app-fs-heading);
-      font-weight: 700;
-      color: var(--app-color-ink);
     }
   }
 }
@@ -1718,7 +1548,7 @@ onMounted(() => {
   }
   
   .today-stats {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
   
   .pending-item {
