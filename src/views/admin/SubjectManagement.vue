@@ -4,20 +4,19 @@
       description="学科领域只支持两级：一级门类与二级学科。论文的学科领域、相似度阈值、教师研究方向都用这一套取值域。"
     />
 
-    <el-card class="table-card" shadow="never">
-      <template #header>
-        <div class="card-header">
-          <span class="card-title">学科领域列表</span>
-          <div class="header-actions">
-            <el-input
-              v-model="keyword"
-              placeholder="按名称或编码筛选"
-              clearable
-              style="width: 200px"
-            />
-            <el-button type="primary" @click="openCreateDialog">新增学科领域</el-button>
-          </div>
-        </div>
+    <ListPageShell title="学科领域列表" :show-pagination="false">
+      <template #toolbar>
+        <el-button type="primary" :icon="Plus" @click="openCreateDialog">新增学科领域</el-button>
+      </template>
+
+      <template #filters>
+        <el-input
+          v-model="keyword"
+          placeholder="按名称或编码筛选"
+          clearable
+          :prefix-icon="Search"
+          style="width: 220px"
+        />
       </template>
 
       <el-table
@@ -67,7 +66,7 @@
           </template>
         </el-table-column>
       </el-table>
-    </el-card>
+    </ListPageShell>
 
     <el-dialog
       v-model="dialogVisible"
@@ -145,7 +144,9 @@ import {
   setSubjectEnabled,
   deleteSubject
 } from '@/api/admin/subject'
+import { Plus, Search } from '@element-plus/icons-vue'
 import PageHeader from '@/components/common/PageHeader.vue'
+import ListPageShell from '@/components/common/ListPageShell.vue'
 
 const loading = ref(false)
 const submitting = ref(false)
@@ -354,24 +355,6 @@ onMounted(() => {
   padding: 0;
   font-family: var(--app-font-family);
 }
-.table-card {
-  margin-bottom: var(--app-space-4);
-}
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.card-title {
-  font-weight: 600;
-  font-size: var(--app-fs-caption);
-  font-family: var(--app-font-family);
-}
-.header-actions {
-  display: flex;
-  gap: var(--app-space-3);
-  align-items: center;
-}
 .code-text {
   font-family: Consolas, Monaco, monospace;
 }
@@ -385,13 +368,4 @@ onMounted(() => {
   margin-top: var(--app-space-1);
 }
 
-@media (max-width: 768px) {
-  .card-header {
-    gap: var(--app-space-3);
-  }
-
-  .header-actions {
-    gap: var(--app-space-2);
-  }
-}
 </style>

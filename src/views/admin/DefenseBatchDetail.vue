@@ -67,17 +67,20 @@
     </el-card>
 
     <!-- 记录列表 -->
-    <el-card class="console-card" shadow="never">
-      <template #header>
-        <div class="section-head">
-          <span class="section-title">批次内答辩记录</span>
-          <el-button :loading="exporting" @click="handleExport">
-            <el-icon><Download /></el-icon>
-            导出
-          </el-button>
-        </div>
+    <ListPageShell
+      v-model:page="recordPagination.current"
+      v-model:page-size="recordPagination.size"
+      title="批次内答辩记录"
+      :total="recordTotal"
+      :page-sizes="[10, 20, 50]"
+      @size-change="fetchRecords(1)"
+      @page-change="fetchRecords()"
+    >
+      <template #toolbar>
+        <el-button :loading="exporting" :icon="Download" @click="handleExport">导出</el-button>
       </template>
 
+      <template #filters>
       <div class="filter-row">
         <el-input
           v-model="recordFilters.studentId"
@@ -95,6 +98,7 @@
         </el-button>
         <el-button @click="handleRecordReset">重置</el-button>
       </div>
+      </template>
 
       <el-table :data="records" v-loading="recordLoading" row-key="id">
         <el-table-column prop="defenseOrder" label="顺序号" width="80" align="center">
@@ -137,19 +141,7 @@
         </template>
       </el-table>
 
-      <div class="pager-row">
-        <el-pagination
-          v-model:current-page="recordPagination.current"
-          v-model:page-size="recordPagination.size"
-          :total="recordTotal"
-          :page-sizes="[10, 20, 50]"
-          layout="total, sizes, prev, pager, next, jumper"
-          background
-          @size-change="fetchRecords(1)"
-          @current-change="fetchRecords()"
-        />
-      </div>
-    </el-card>
+    </ListPageShell>
 
     <!-- 分配答辩组弹窗 -->
     <el-dialog v-model="assignDialog.visible" title="分配答辩组" width="520px" destroy-on-close>
@@ -249,7 +241,8 @@
 import { computed, h, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ArrowLeft } from '@element-plus/icons-vue'
+import { ArrowLeft, UserFilled, Plus, Download, Search, InfoFilled } from '@element-plus/icons-vue'
+import ListPageShell from '@/components/common/ListPageShell.vue'
 import {
   getDefenseBatchDetail,
   assignDefenseMembers,
@@ -618,18 +611,6 @@ onMounted(() => {
   color: var(--app-color-text-muted);
 }
 
-.section-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.section-title {
-  font-family: var(--app-font-family);
-  font-size: var(--app-fs-caption);
-  font-weight: 600;
-}
-
 .members-line {
   display: flex;
   align-items: center;
@@ -652,7 +633,6 @@ onMounted(() => {
   align-items: center;
   gap: var(--app-space-3);
   flex-wrap: wrap;
-  margin-bottom: var(--app-space-4);
 
   .filter-search {
     margin-left: auto;
