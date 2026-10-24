@@ -14,6 +14,9 @@
 //   roles  覆盖「谁能看到这一项」；缺省依次继承路由自身 meta.roles、
 //          父路由 meta.roles
 //   hidden true 表示该路由刻意不进菜单（详情页、容器路由等），仅作文档标注
+//   合并页（容器 + el-tabs）只在父路由写 menu，子路由不写 menu 即自动隐藏，
+//   因此「三合一/六合一」不会在侧边栏多出子入口（见 student/MyPapersCenter、
+//   teacher/TeacherStatistics、admin/CheckConfigCenter）
 //   activeMatch 附加高亮路径数组：隐藏路由（如审核工作台）打开时点亮所属菜单项
 //   spacer 在这一项之前渲染一段留白（各角色菜单尾部设置项前）
 //   badge  角标数据源标识；目前支持 'chat'（聊天未读，由 messageStore.chatUnread
