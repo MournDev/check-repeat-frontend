@@ -324,8 +324,10 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .file-manager {
-  height: calc(100vh - 120px);
-  min-height: 600px;
+  // 高度按导航令牌与内容区留白推导，不再写死 100vh - 120px；移动端媒体查询里改为 auto
+  height: calc(100vh - var(--app-global-nav-height) - var(--app-subnav-height) - (var(--app-page-gutter) * 2));
+  height: calc(100dvh - var(--app-global-nav-height) - var(--app-subnav-height) - (var(--app-page-gutter) * 2));
+  min-height: 0;
 }
 
 .fm-layout {
@@ -531,5 +533,89 @@ onMounted(() => {
   margin-top: var(--app-space-3);
   padding-top: var(--app-space-3);
   border-top: 1px solid var(--app-color-border);
+}
+
+// ── Responsive ─────────────────────────────────────────────
+// 1024px：侧栏收窄，给右侧文件区留出可读宽度
+@media (max-width: 1024px) {
+  .fm-sidebar {
+    width: 220px;
+  }
+}
+
+// 768px：上下堆叠，会话列表改为横向滚动条，取消固定高度
+@media (max-width: 768px) {
+  .file-manager {
+    height: auto;
+    min-height: 0;
+  }
+
+  .fm-layout {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .fm-sidebar {
+    width: 100%;
+    max-height: 220px;
+    border-right: none;
+    border-bottom: 1px solid var(--app-color-border);
+  }
+
+  .fm-sidebar-header {
+    padding: var(--app-space-3) var(--app-space-4);
+  }
+
+  .fm-session-list {
+    display: flex;
+    gap: var(--app-space-2);
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: var(--app-space-2) var(--app-space-3);
+  }
+
+  .fm-session-item {
+    flex-shrink: 0;
+    min-width: 170px;
+
+    & + & {
+      margin-top: 0;
+    }
+  }
+
+  .fm-main {
+    min-height: 360px;
+  }
+
+  .fm-toolbar {
+    padding: var(--app-space-3);
+    gap: var(--app-space-2);
+  }
+
+  .fm-toolbar-left {
+    width: 100%;
+  }
+
+  .fm-toolbar-left :deep(.el-input) {
+    width: 100% !important;
+  }
+
+  .fm-toolbar-right {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .fm-files-area {
+    padding: var(--app-space-3);
+  }
+
+  .fm-files-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--app-space-3);
+  }
+
+  .fm-file-card {
+    padding: var(--app-space-4);
+  }
 }
 </style>
