@@ -74,7 +74,7 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :xs="24" :sm="24" :md="8" :lg="12">
+            <el-col :xs="24" :sm="24" :md="24" :lg="24">
               <div class="filter-actions">
                 <el-button type="primary" :icon="Search" @click="handleSearch">
                   查询
@@ -449,6 +449,7 @@ onMounted(() => {
 
 .filter-actions {
   display: flex;
+  justify-content: flex-end;
   gap: var(--app-space-3);
   padding-top: var(--app-space-1);
 }

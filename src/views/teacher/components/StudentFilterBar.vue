@@ -47,7 +47,7 @@
         />
       </el-select>
 
-      <el-button :icon="RefreshLeft" @click="$emit('reset')">
+      <el-button class="filter-reset" :icon="RefreshLeft" @click="$emit('reset')">
         重置
       </el-button>
     </div>
@@ -93,6 +93,10 @@ defineEmits(['update:keyword', 'update:status', 'update:college', 'reset'])
   align-items: center;
   flex-wrap: wrap;
   gap: var(--app-space-3);
+}
+
+.filter-reset {
+  margin-left: auto;
 }
 
 .filter-search {
