@@ -681,7 +681,7 @@ onUnmounted(() => {
 
 .sub-nav-breadcrumb {
   :deep(.el-breadcrumb__item) {
-    .el-breadcrumb__inner { color: var(--app-color-text-muted) !important; font-size: 11px; }
+    .el-breadcrumb__inner { color: var(--app-color-text-muted) !important; font-size: var(--app-fs-meta); }
     .el-breadcrumb__separator { color: var(--app-color-text-on-dark) !important; }
   }
 }
@@ -705,7 +705,7 @@ onUnmounted(() => {
   font-weight: 400;
   letter-spacing: -0.224px;
   color: var(--app-color-text-muted);
-  padding: 6px 1var(--app-space-1);
+  padding: var(--app-space-1) var(--app-space-3);
   background: var(--app-color-fill-light);
   border-radius: 11px;
   border: 1px solid var(--app-color-divider);
