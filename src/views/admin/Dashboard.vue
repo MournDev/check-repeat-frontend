@@ -90,12 +90,6 @@
               <div class="metric-item">
                 <div class="metric-value">{{ systemMonitorData.todayVisits }}</div>
                 <div class="metric-label">今日访问</div>
-                <el-progress
-                  :percentage="clampPct(systemMonitorData.todayVisits / 2)"
-                  :stroke-width="6"
-                  :show-text="false"
-                  color="var(--app-color-primary)"
-                />
               </div>
             </div>
             
