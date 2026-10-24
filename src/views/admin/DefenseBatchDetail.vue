@@ -1,7 +1,7 @@
 <template>
   <div class="batch-detail">
     <!-- 页头：批次概要 -->
-    <el-card class="console-card console-page-head-card" shadow="never" v-loading="loading">
+    <el-card class="console-card" shadow="never" v-loading="loading">
       <div class="head-row">
         <div class="head-left">
           <el-button link @click="goBack">

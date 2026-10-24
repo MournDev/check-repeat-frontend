@@ -59,7 +59,7 @@
 
     <!-- ==================== 批次会议详情 ==================== -->
     <template v-else>
-      <el-card class="console-card console-page-head-card" shadow="never" v-loading="detailLoading">
+      <el-card class="console-card" shadow="never" v-loading="detailLoading">
         <div class="head-row">
           <div class="head-left">
             <el-button link @click="backToList">
