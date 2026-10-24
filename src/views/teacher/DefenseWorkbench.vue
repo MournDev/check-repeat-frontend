@@ -4,7 +4,7 @@
     <template v-if="view === 'list'">
       <PageHeader description="我参与的中期/终期答辩批次：作为组长可提交答辩结论，成员与秘书可查看会议信息与答辩记录。" />
 
-      <el-card class="console-card" shadow="never">
+      <ListPageShell title="我的批次" :show-pagination="false">
         <el-table :data="batches" v-loading="loading" row-key="id">
           <el-table-column prop="batchNo" label="批次编号" min-width="140" show-overflow-tooltip />
           <el-table-column label="类型" width="100">
@@ -54,7 +54,7 @@
             <el-empty description="暂未参与任何答辩批次" />
           </template>
         </el-table>
-      </el-card>
+      </ListPageShell>
     </template>
 
     <!-- ==================== 批次会议详情 ==================== -->
@@ -242,6 +242,8 @@
 
 <script setup>
 import PageHeader from '@/components/common/PageHeader.vue'
+import ListPageShell from '@/components/common/ListPageShell.vue'
+import { ArrowLeft, Upload } from '@element-plus/icons-vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores/user'
