@@ -1,13 +1,14 @@
 <template>
   <div class="student-groups">
-    <!-- 页面头部 -->
-    <PageHeader description="创建和管理学生分组，方便批量操作">
-      <template #actions>
-        <el-button type="primary" :icon="Plus" @click="showGroupDialog">
-          新建分组
-        </el-button>
-      </template>
-    </PageHeader>
+    <!-- 页面头部：嵌入「学生管理」分组抽屉时不再重复渲染 -->
+    <PageHeader v-if="!embedded" description="创建和管理学生分组，方便批量操作" />
+
+    <!-- 主操作独立于页头：嵌入抽屉时页头被隐藏，按钮不能跟着消失 -->
+    <div class="groups-toolbar">
+      <el-button type="primary" :icon="Plus" @click="showGroupDialog">
+        新建分组
+      </el-button>
+    </div>
 
     <!-- 分组列表 -->
     <div class="groups-list">
@@ -161,6 +162,14 @@ import { ref, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import PageHeader from '@/components/common/PageHeader.vue'
 import { formatDate } from '@/utils/dataType.js'
+
+// 嵌入「学生管理」分组抽屉时隐藏页头
+defineProps({
+  embedded: {
+    type: Boolean,
+    default: false
+  }
+})
 
 // 图标导入
 import {
@@ -399,6 +408,12 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .student-groups {
+  .groups-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: var(--app-space-3);
+  }
+
   .groups-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));

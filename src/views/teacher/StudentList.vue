@@ -24,6 +24,8 @@
     >
       <!-- 建号与导入归管理员（/admin/user-management）：教师端只做查阅、跟踪与批量沟通 -->
       <template #toolbar>
+        <!-- 分组管理不再占一级菜单，收进学生列表的分组抽屉 -->
+        <el-button :icon="UserFilled" @click="groupDrawerVisible = true">分组管理</el-button>
         <el-button :icon="Download" @click="exportData">导出数据</el-button>
         <el-button text :icon="Refresh" @click="refreshList">刷新</el-button>
       </template>
@@ -55,6 +57,11 @@
         @batch-delete="batchDelete"
       />
     </ListPageShell>
+
+    <!-- 分组管理抽屉：沿用原「学生分组管理」页面，不再占一级菜单 -->
+    <el-drawer v-model="groupDrawerVisible" title="学生分组管理" size="min(960px, 92vw)">
+      <StudentGroups embedded />
+    </el-drawer>
 
     <!-- 论文预览对话框 -->
     <el-dialog
@@ -207,12 +214,13 @@ import { getPreviewUrl, downloadFileBlob } from '@/utils/filePreview'
 import StudentStats from './components/StudentStats.vue'
 import StudentFilterBar from './components/StudentFilterBar.vue'
 import StudentTable from './components/StudentTable.vue'
+import StudentGroups from './StudentGroups.vue'
 import PageHeader from '@/components/common/PageHeader.vue'
 import ListPageShell from '@/components/common/ListPageShell.vue'
 
 // 图标引入
 import {
-  Download, Refresh, Document, List
+  Download, Refresh, Document, List, UserFilled
 } from '@element-plus/icons-vue'
 
 const userStore = useUserStore()
@@ -243,6 +251,8 @@ const filterCollege = ref('')
 
 // 学院列表：供筛选栏与（只读的）学生信息展示使用
 const colleges = ref([])
+// 分组管理抽屉（原独立菜单页收编到此）
+const groupDrawerVisible = ref(false)
 
 // 论文预览相关数据
 const previewVisible = ref(false)

@@ -17,6 +17,15 @@
         </div>
       </div>
       <div class="global-nav-right">
+        <!-- 师生在线聊天：教师专用，入口从侧边栏移到顶栏，避免占用一级菜单 -->
+        <el-tooltip v-if="userStore.role === 'TEACHER'" content="在线聊天" placement="bottom">
+          <el-badge :value="chatUnread" :max="99" :hidden="chatUnread === 0" class="nav-badge">
+            <button class="nav-icon-btn" aria-label="在线聊天" @click="router.push('/teacher/chat-center')">
+              <el-icon><ChatDotRound /></el-icon>
+            </button>
+          </el-badge>
+        </el-tooltip>
+
         <!-- Notifications -->
         <el-dropdown trigger="click" placement="bottom-end" @visible-change="handleNotificationDropdownChange">
           <el-badge :value="totalUnread" :max="99" :hidden="totalUnread === 0" class="nav-badge">
