@@ -245,7 +245,7 @@
         type="info"
         :closable="false"
         show-icon
-        title="暂无 ZIP 打包接口，所选数据将逐项下载 Excel；查重统计为全量报表，其余三项按学期导出。"
+        title="将打包为一个 ZIP：包含所选数据的 Excel 与 manifest.json（记录学期、生成时间与各文件行数）。"
       />
 
       <template #footer>
@@ -282,10 +282,8 @@ import { useChart } from '@/composables/useChart'
 import PageHeader from '@/components/common/PageHeader.vue'
 import LifecycleFunnel from '@/views/admin/components/LifecycleFunnel.vue'
 import OverdueAlertPanel from '@/views/admin/components/OverdueAlertPanel.vue'
-// 学期数据包：论文清单 / 审核记录 / 答辩结论支持学期参数；查重统计为全量报表
-import { exportPapers } from '@/api/admin/papers'
-import { exportAdminReviews, exportDefenseConclusions } from '@/api/admin/exports'
-import { exportStatReport } from '@/api/p5'
+// 学期数据包：后端已提供 ZIP 打包接口，单次下载
+import { exportSemesterPackage as exportSemesterPackageApi } from '@/api/admin/exports'
 
 // 图标导入（模板中其余图标依赖 main.js 的全局注册，无需在此导入）
 import {
@@ -375,54 +373,42 @@ const saveBlob = (payload, filename) => {
   window.URL.revokeObjectURL(url)
 }
 
-// 无 ZIP 打包接口：逐项下载，单项失败不影响其他项，最后统一汇总
+// 优先使用响应头里的文件名（后端为 UTF-8 编码的「学期数据包_学期_时间.zip」）
+const resolveDownloadName = (response, fallback) => {
+  const disposition = response?.headers?.['content-disposition']
+  if (!disposition) return fallback
+  const utf8 = disposition.match(/filename\*=UTF-8''([^;]+)/i)
+  if (utf8) {
+    try {
+      return decodeURIComponent(utf8[1])
+    } catch (error) {
+      return fallback
+    }
+  }
+  const plain = disposition.match(/filename="?([^";]+)"?/i)
+  return plain ? plain[1] : fallback
+}
+
+// 单次请求下载 ZIP：后端先在内存里生成全部文件再写流，不会出现半个压缩包
 const exportSemesterPackage = async () => {
   const semester = semesterOptions.value.find(item => item.value === exportForm.semester)
   if (!semester) return
 
   exportingPackage.value = true
-  const downloaded = []
-  const failed = []
-  const params = {
-    semester: semester.value,
-    startDate: semester.start,
-    endDate: semester.end
-  }
-
-  const runItem = async (label, request, filename) => {
-    try {
-      const res = await request()
-      saveBlob(res.data || res, filename)
-      downloaded.push(label)
-    } catch (error) {
-      console.error(`导出${label}失败:`, error)
-      failed.push(label)
-    }
-  }
-
   try {
-    if (exportForm.items.includes('papers')) {
-      await runItem('论文清单', () => exportPapers(params), `论文清单_${semester.value}.xlsx`)
-    }
-    if (exportForm.items.includes('checks')) {
-      await runItem('查重统计', () => exportStatReport(), '查重统计_全量.xlsx')
-    }
-    if (exportForm.items.includes('reviews')) {
-      await runItem('审核记录', () => exportAdminReviews(params), `审核记录_${semester.value}.xlsx`)
-    }
-    if (exportForm.items.includes('defense')) {
-      await runItem('答辩结论', () => exportDefenseConclusions(params), `答辩结论_${semester.value}.xlsx`)
-    }
-
-    if (downloaded.length) {
-      ElMessage.success(`已下载：${downloaded.join('、')}`)
-    }
-    if (failed.length) {
-      ElMessage.warning(`导出失败：${failed.join('、')}，请稍后重试`)
-    }
-    if (!failed.length) {
-      exportDialogVisible.value = false
-    }
+    const res = await exportSemesterPackageApi({
+      semester: semester.value,
+      startDate: semester.start,
+      endDate: semester.end,
+      items: exportForm.items.join(',')
+    })
+    const fallback = `学期数据包_${semester.value}.zip`
+    saveBlob(res.data || res, resolveDownloadName(res, fallback))
+    ElMessage.success('学期数据包已开始下载')
+    exportDialogVisible.value = false
+  } catch (error) {
+    console.error('导出学期数据包失败:', error)
+    ElMessage.error('导出失败，请稍后重试')
   } finally {
     exportingPackage.value = false
   }

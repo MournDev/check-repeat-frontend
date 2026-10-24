@@ -1,19 +1,12 @@
 import request from '../request'
 
-// 审核记录导出（review_record + paper_info + sys_user）
-export const exportAdminReviews = (params) => {
+// 学期数据包 ZIP（单次下载）
+// params: { semester?: '2026-2027-1', startDate?: 'yyyy-MM-dd', endDate?: 'yyyy-MM-dd',
+//           items?: 'papers,checks,reviews,defense'（为空表示全部） }
+// 包内含对应 xlsx 与 manifest.json；响应头带 UTF-8 文件名
+export const exportSemesterPackage = (params) => {
   return request({
-    url: '/api/admin/reviews/export',
-    method: 'get',
-    params,
-    responseType: 'blob'
-  })
-}
-
-// 答辩结论导出（全校，非单批次）
-export const exportDefenseConclusions = (params) => {
-  return request({
-    url: '/api/admin/defense/conclusions/export',
+    url: '/api/admin/semester-package/export',
     method: 'get',
     params,
     responseType: 'blob'
