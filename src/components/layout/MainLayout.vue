@@ -79,7 +79,7 @@
 
     <!-- Sub Nav (frosted parchment, context title) -->
     <div class="sub-nav">
-      <div class="sub-nav-inner">
+      <div :class="['sub-nav-inner', { 'sub-nav-inner--full': route.meta.fullBleed }]">
         <div class="sub-nav-left">
           <el-breadcrumb separator="/" class="sub-nav-breadcrumb">
             <el-breadcrumb-item v-for="(item, index) in breadcrumbItems" :key="index" :to="item.path || undefined">
@@ -96,11 +96,13 @@
 
     <!-- Main Layout: Sidebar + Content -->
     <div class="app-body">
+      <!-- Mobile overlay 必须是 aside 的兄弟节点：
+           移动端 aside 带 transform，会成为 fixed 子元素的包含块，
+           放在 aside 内会让遮罩只覆盖抽屉自身，菜单点击会被遮罩拦截 -->
+      <div v-if="isMobile && sidebarVisible" class="sidebar-overlay" @click="toggleSidebar"></div>
+
       <!-- Sidebar (near-black, Apple-style) -->
       <aside :class="['sidebar', { 'sidebar-open': sidebarVisible, 'sidebar-closed': !sidebarVisible && isMobile }]">
-        <!-- Mobile overlay -->
-        <div v-if="isMobile && sidebarVisible" class="sidebar-overlay" @click="toggleSidebar"></div>
-
         <nav class="sidebar-nav">
           <!-- 菜单项从路由表（asyncRoutes 的 meta.menu）按角色派生，见 src/utils/menu.js -->
           <div class="sidebar-section">
@@ -258,7 +260,9 @@ const handleAnnouncementFrame = (payload) => {
 
 const notificationDropdown = ref()
 const previewNotifications = ref([])
-const isMobile = ref(window.innerWidth <= 833)
+// 与 CSS 的 @media (max-width: 1024px) 保持一致：iPad 竖屏/横屏统一走抽屉模式
+const MOBILE_BREAKPOINT = 1024
+const isMobile = ref(window.innerWidth <= MOBILE_BREAKPOINT)
 const sidebarVisible = ref(false)
 
 const totalUnread = computed(() => messageStore.totalUnread)
@@ -379,6 +383,12 @@ const currentPageTitle = computed(() => {
 
 const toggleSidebar = () => { sidebarVisible.value = !sidebarVisible.value }
 
+// 移动端点击菜单完成路由跳转后自动收起抽屉：
+// router-link 没有点击回调，统一监听路由变化兜底，避免抽屉继续遮挡内容
+watch(() => route.fullPath, () => {
+  if (isMobile.value) sidebarVisible.value = false
+})
+
 const settingsPath = computed(() => {
   const r = userStore.role.toLowerCase()
   if (r === 'super_admin') return '/admin/settings'
@@ -478,7 +488,7 @@ const handleNotificationClick = async (notification) => {
 const goToMessageCenter = () => { router.push('/message-center') }
 
 const handleResize = () => {
-  isMobile.value = window.innerWidth <= 833
+  isMobile.value = window.innerWidth <= MOBILE_BREAKPOINT
   if (!isMobile.value) sidebarVisible.value = false
 }
 
@@ -513,6 +523,8 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  // 移动浏览器地址栏会吞掉 100vh 的底部，dvh 取真实可视高度
+  height: 100dvh;
   background: var(--app-color-page-bg);
   font-family: var(--app-font-family);
 }
@@ -670,6 +682,12 @@ onUnmounted(() => {
   margin: 0 auto;
   padding-left: calc(var(--app-sidebar-width) + var(--app-page-gutter));
   padding-right: var(--app-page-gutter);
+}
+
+// fullBleed 页面（ReviewWorkbench）使用更宽的内容上限，子导航同步放宽，
+// 避免超宽屏下标题比内容左边缘向右偏移
+.sub-nav-inner--full {
+  max-width: calc(var(--app-content-max-wide) + var(--app-sidebar-width));
 }
 
 .sub-nav-left {
@@ -892,9 +910,10 @@ onUnmounted(() => {
   padding: var(--app-page-gutter);
 }
 
-// 工作台类页面（route.meta.fullBleed）突破 1440 上限，让三栏用满可用宽度
+// 工作台类页面（route.meta.fullBleed）突破 1440 上限，但保留 1920 上限，
+// 避免 4K/超宽屏下三栏与论文预览被无限拉伸
 .content-inner--full {
-  max-width: none;
+  max-width: var(--app-content-max-wide);
 }
 
 // ── Footer (page bg, dense) ──────────────────────────────
@@ -969,8 +988,8 @@ onUnmounted(() => {
   border-top: 1px solid var(--app-color-divider);
 }
 
-// ── Responsive: Tablet (≤833px) ───────────────────────────
-@media (max-width: 833px) {
+// ── Responsive: Tablet / iPad (≤1024px) ───────────────────
+@media (max-width: 1024px) {
   .nav-menu-toggle { display: flex; }
   .nav-user-name { display: none; }
 

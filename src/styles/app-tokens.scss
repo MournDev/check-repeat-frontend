@@ -57,6 +57,7 @@
   --app-page-gutter: 24px; // 内容区左右/上下留白
   --app-page-gutter-mobile: 12px;
   --app-content-max: 1440px; // 超宽屏内容最大宽度，避免表格/表单被无限拉伸
+  --app-content-max-wide: 1920px; // 工作台类 fullBleed 页面的最大宽度，兼顾超宽屏与可读性
   --app-card-padding: 16px; // 卡片内边距
   --app-card-padding-sm: 12px; // 紧凑卡片
   --app-card-gap: 16px; // 卡片间距
