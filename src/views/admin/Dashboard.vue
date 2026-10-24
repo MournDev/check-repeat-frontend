@@ -1,19 +1,11 @@
 <template>
   <div class="admin-dashboard">
-    <!-- 页面标题和快速操作 -->
-    <div class="welcome-section">
-      <div class="welcome-content">
-        <div class="welcome-left">
-          <p class="welcome-subtitle">欢迎回来，{{ userStore.userInfo?.realName || '管理员' }}！这里是业务数据总览</p>
-        </div>
-        <div class="welcome-actions">
-          <el-button @click="refreshData">
-            <el-icon><Refresh /></el-icon>
-            刷新数据
-          </el-button>
-        </div>
-      </div>
-    </div>
+    <!-- 页面说明：与其它工作台统一使用去白卡后的 PageHeader -->
+    <PageHeader :description="`欢迎回来，${userStore.userInfo?.realName || '管理员'}！这里是业务数据总览`">
+      <template #actions>
+        <el-button :icon="Refresh" @click="refreshData">刷新数据</el-button>
+      </template>
+    </PageHeader>
 
     <!-- 系统统计卡片 -->
     <div class="stats-grid" v-loading="overviewLoading">
@@ -261,6 +253,7 @@ import { ElMessage } from 'element-plus'
 // 导入管理员API
 import { getDashboardStats, getBusinessMetrics, getResponseTimeTrend } from '@/api/admin/dashboard'
 import { useChart } from '@/composables/useChart'
+import PageHeader from '@/components/common/PageHeader.vue'
 import { getUserList } from '@/api/admin/users'
 import { getPaperList } from '@/api/admin/papers'
 import { getAssignmentStats } from '@/api/admin/assignment'
@@ -484,38 +477,20 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 
-// 欢迎区域
-.welcome-section {
-  margin-bottom: var(--app-space-8);
-  
-  .welcome-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: var(--app-space-6);
-    
-    .welcome-left {
-
-      .welcome-subtitle {
-        font-size: var(--app-fs-caption);
-        color: var(--app-color-text-secondary);
-        margin: 0;
-      }
-    }
-    
-    .welcome-actions {
-      display: flex;
-      gap: var(--app-space-3);
-    }
-  }
-}
-
-// 统计卡片
+// 统计卡片：4 列等宽，断点与其它工作台一致
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--app-space-4);
-  margin-bottom: var(--app-space-8);
+  margin-bottom: var(--app-space-6);
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (max-width: 640px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .stat-card {
@@ -526,16 +501,6 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: var(--app-space-4);
-  transition: border-color var(--app-transition-normal), background-color var(--app-transition-normal);
-  
-  &:hover {
-    border-color: var(--app-color-border-strong);
-  }
-
-  &:active {
-    transform: scale(0.95);
-    transition: transform var(--app-transition-fast);
-  }
 
   .stat-icon {
     width: 48px;
@@ -586,15 +551,32 @@ onMounted(() => {
   }
 }
 
-// 主要内容区域
+// 主要内容区域：左右两栏等高，右栏用垂直居中填满，避免底部留白
 .main-content {
   display: grid;
-  grid-template-columns: 1fr 320px;
+  grid-template-columns: minmax(0, 1fr) 320px;
   gap: var(--app-space-6);
-  
+  margin-bottom: var(--app-space-6);
+
   @media (max-width: 1200px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
+}
+
+.main-left,
+.main-right {
+  display: flex;
+}
+
+.main-left > .card,
+.main-right > .card {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.main-right > .card {
+  display: flex;
+  flex-direction: column;
 }
 
 // 通用卡片样式
@@ -603,12 +585,7 @@ onMounted(() => {
   border: 1px solid var(--app-color-border-soft);
   border-radius: var(--app-radius-lg);
   padding: var(--app-space-6);
-  margin-bottom: var(--app-space-6);
-  transition: border-color var(--app-transition-normal), background-color var(--app-transition-normal);
-  
-  &:hover {
-    border-color: var(--app-color-border-strong);
-  }
+  margin-bottom: 0;
 
   .card-header {
     display: flex;
@@ -621,7 +598,7 @@ onMounted(() => {
       align-items: center;
       gap: var(--app-space-2);
       font-family: var(--app-font-family);
-      font-size: var(--app-fs-body);
+      font-size: var(--app-fs-heading);
       font-weight: 600;
       color: var(--app-color-ink);
       
@@ -645,13 +622,7 @@ onMounted(() => {
     padding: var(--app-space-4);
     background: var(--app-color-fill);
     border-radius: var(--app-radius-sm);
-    transition: border-color var(--app-transition-normal), background-color var(--app-transition-normal);
-    
-    &:hover {
-      background: var(--app-color-fill);
-      border-color: var(--app-color-border-strong);
-    }
-    
+
     .metric-value {
       font-size: var(--app-fs-display);
       font-weight: 700;
@@ -702,15 +673,17 @@ onMounted(() => {
   }
 }
 
-// 用户分布
+// 用户分布：卡片被拉伸后，内容垂直居中分布，填满右侧高度
 .users-distribution {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--app-space-6);
+
   .distribution-item {
-    margin-bottom: var(--app-space-4);
-    
-    &:last-child {
-      margin-bottom: 0;
-    }
-    
+    margin-bottom: 0;
+
     .dist-info {
       display: flex;
       justify-content: space-between;
@@ -791,30 +764,6 @@ onMounted(() => {
 
 // 响应式设计
 @media (max-width: 768px) {
-  .admin-dashboard {
-    padding: var(--app-space-3);
-  }
-  
-  .welcome-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--app-space-3);
-  }
-  
-  .welcome-actions {
-    width: 100%;
-    
-    .primary-button,
-    .secondary-button {
-      flex: 1;
-      justify-content: center;
-    }
-  }
-  
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
   .metrics-grid {
     grid-template-columns: 1fr;
   }
@@ -825,10 +774,6 @@ onMounted(() => {
 }
 
 @media (max-width: 480px) {
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-  
   .card {
     padding: var(--app-space-5);
   }
