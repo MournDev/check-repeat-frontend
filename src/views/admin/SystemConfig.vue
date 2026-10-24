@@ -691,10 +691,6 @@ onMounted(() => {
 }
 
 @media (max-width: 768px) {
-  .system-config {
-    padding: var(--app-space-3);
-  }
-  
   :deep(.el-row) {
     flex-direction: column;
     

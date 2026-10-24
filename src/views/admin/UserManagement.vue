@@ -806,9 +806,4 @@ const rowKey = (row) => {
   margin-top: var(--app-space-1);
 }
 
-@media (max-width: 768px) {
-  .user-management {
-    padding: var(--app-space-3);
-  }
-}
 </style>

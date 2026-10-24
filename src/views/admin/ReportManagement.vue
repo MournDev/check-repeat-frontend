@@ -687,10 +687,6 @@ onMounted(() => {
 }
 
 @media (max-width: 768px) {
-  .admin-report-management {
-    padding: var(--app-space-3);
-  }
-  
   .search-form {
     flex-direction: column;
     align-items: stretch;
