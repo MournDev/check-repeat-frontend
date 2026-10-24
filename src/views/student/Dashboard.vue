@@ -372,7 +372,11 @@
               v-for="item in sortedTodos"
               :key="item.id"
               class="todo-item"
-              :class="{ 'is-done': item.completed }"
+              :class="{ 'is-done': item.completed, 'is-clickable': !item.completed }"
+              :role="item.completed ? null : 'button'"
+              :tabindex="item.completed ? null : 0"
+              @click="goTodo(item)"
+              @keyup.enter="goTodo(item)"
             >
               <span class="todo-dot" :class="getPriorityClass(item.priority)"></span>
               <div class="todo-main">
@@ -380,6 +384,7 @@
                 <div v-if="item.description" class="todo-desc">{{ item.description }}</div>
                 <span v-if="item.dueDate" class="todo-due">{{ formatDateTime(item.dueDate) }}</span>
               </div>
+              <el-icon v-if="!item.completed" class="todo-arrow"><ArrowRight /></el-icon>
             </div>
 
             <div v-if="sortedTodos.length === 0 && !todosLoading" class="card-empty compact">
@@ -411,7 +416,7 @@ import {
   Message, ChatDotRound, Lightning, CircleCheck,
   OfficeBuilding, ChatLineRound, TrendCharts, PieChart as PieChartIcon, Calendar, QuestionFilled,
   Delete, Setting, Files, Warning, Trophy, ScaleToOriginal, Star, Timer,
-  Collection, Plus, DataAnalysis, User, Histogram, Microphone
+  Collection, Plus, DataAnalysis, User, Histogram, Microphone, ArrowRight
 } from '@element-plus/icons-vue'
 import { getAvatarUrl } from '@/utils/avatar'
 import { handleSimilarity, getPaperStatusText, getPaperStatusType, formatDateTime } from '@/utils/dataType'
@@ -832,6 +837,20 @@ const viewPaperDetails = () => {
       query: { id: latestPaper.value.id }
     })
   }
+}
+
+// 待办跳转：退回/需修改类直达「修改重提」，其余直达当前论文详情。
+const goTodo = (item) => {
+  if (!item || item.completed) return
+  const needsRevision = /修改|重提|退回/.test(item.title || '')
+  const paperId = item.paperId || item.relatedId || item.bizId || latestPaper.value?.id
+  if (!paperId) {
+    router.push('/student/my-papers')
+    return
+  }
+  router.push(needsRevision
+    ? { path: '/student/paper-submit', query: { paperId, action: 'revision' } }
+    : { path: '/student/paper-details', query: { id: paperId } })
 }
 
 const contactAdvisor = () => {
@@ -1590,6 +1609,26 @@ const renderComparisonChart = () => {
     text-decoration: line-through;
     color: var(--app-color-text-muted);
   }
+
+  &.is-clickable {
+    cursor: pointer;
+  }
+
+  &.is-clickable:hover .todo-title {
+    color: var(--app-color-primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--app-color-primary);
+    outline-offset: 2px;
+    border-radius: var(--app-radius-sm);
+  }
+}
+
+.todo-arrow {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--app-color-text-muted);
 }
 
 .todo-dot {

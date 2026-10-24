@@ -147,20 +147,15 @@
                     >
                       查重监控
                     </el-dropdown-item>
+                    <!-- rejected 与 revision_needed 是同一件事的两种历史取值，
+                         统一叫「继续修改」并走同一个重提入口，避免学生辨认两套说法 -->
                     <el-dropdown-item
-                      v-if="row.paperStatus === 'rejected'"
+                      v-if="needsRevision(row.paperStatus)"
                       command="revise"
                       :icon="Upload"
                       divided
                     >
-                      提交修改
-                    </el-dropdown-item>
-                    <el-dropdown-item
-                      v-if="row.paperStatus === 'revision_needed'"
-                      command="resubmit"
-                      :icon="Upload"
-                    >
-                      重新提交
+                      继续修改
                     </el-dropdown-item>
                     <el-dropdown-item
                       v-if="row.paperStatus === 'withdrawn'"
@@ -277,11 +272,11 @@
       <template #footer>
         <el-button @click="detailDialogVisible = false">关闭</el-button>
         <el-button
-          v-if="currentPaper?.paperStatus === 'rejected'"
+          v-if="needsRevision(currentPaper?.paperStatus)"
           type="primary"
-          @click="submitRevision(currentPaper.id)"
+          @click="goRevise(currentPaper)"
         >
-          提交修改版本
+          继续修改
         </el-button>
       </template>
     </el-dialog>
@@ -672,10 +667,7 @@ const handleMoreCommand = (command, paper) => {
       monitorCheckProgress(paper.id);
       break;
     case 'revise':
-      submitRevision(paper.id);
-      break;
-    case 'resubmit':
-      resubmitAfterRevision(paper);
+      goRevise(paper);
       break;
     case 'reedit':
       resubmitPaper(paper);
@@ -719,22 +711,24 @@ const downloadPaper = async (paper) => {
   }
 };
 
-const submitRevision = (paperId) => {
-  ElMessage.info(`提交论文 ${paperId} 的修改版本`);
-  // 跳转到提交修改页面
+// 退回 / 需修改：两个历史状态值共用「修改重提」模式。
+// 此前 rejected 走的是只弹提示、不跳转的空实现，revision_needed 才真跳转，
+// 导致被退回的学生点「提交修改版本」后原地不动。
+const REVISION_STATUSES = ['rejected', 'revision_needed'];
+const needsRevision = (status) => REVISION_STATUSES.includes(status);
+
+const goRevise = (paper) => {
+  if (!paper?.id) return;
+  router.push({
+    path: '/student/paper-submit',
+    query: { paperId: paper.id, action: 'revision' }
+  });
 };
 
 const resubmitPaper = (paper) => {
   router.push({
     path: '/student/paper-submit',
     query: { paperId: paper.id, action: 'resubmit' }
-  });
-};
-
-const resubmitAfterRevision = (paper) => {
-  router.push({
-    path: '/student/paper-submit',
-    query: { paperId: paper.id, action: 'revision' }
   });
 };
 
