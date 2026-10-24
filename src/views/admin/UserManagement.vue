@@ -1,17 +1,7 @@
 <template>
   <div class="user-management">
-    <!-- 页面头部 -->
-    <PageHeader description="统一管理系统内所有人员账号（学生/教师）">
-      <template #actions>
-        <el-button type="primary" :icon="Plus" @click="showAddUserDialog">
-          新增用户
-        </el-button>
-        <el-button :icon="Refresh" @click="refreshData">
-          刷新
-        </el-button>
-        <el-switch v-model="fetchAllUsers" active-text="全部显示" inactive-text="分页显示" style="margin-left:12px" />
-      </template>
-    </PageHeader>
+    <!-- 页面说明：去白卡后只保留一行说明，主操作移入列表卡工具栏 -->
+    <PageHeader description="统一管理系统内所有人员账号（学生/教师）" />
 
     <ListPageShell
       v-model:page="pagination.currentPage"
@@ -23,6 +13,15 @@
       @size-change="handleSizeChange"
       @page-change="handleCurrentChange"
     >
+      <template #toolbar>
+        <el-button type="primary" :icon="Plus" @click="showAddUserDialog">
+          新增用户
+        </el-button>
+        <el-button :icon="Refresh" @click="refreshData">
+          刷新
+        </el-button>
+        <el-switch v-model="fetchAllUsers" active-text="全部显示" inactive-text="分页显示" />
+      </template>
       <template #filters>
         <el-form :model="filterForm" label-width="80px" inline>
         <el-form-item label="人员类型">

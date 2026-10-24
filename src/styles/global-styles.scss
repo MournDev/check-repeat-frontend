@@ -313,15 +313,14 @@ button:focus-visible,
   border-radius: var(--app-radius-lg);
 }
 
-// 页头白卡（两页 header-content 复用）
+// 实体详情页头卡片（DefenseWorkbench / DefenseBatchDetail 的 el-card 复用）：
+// 外观由 .el-card.console-card 提供，这里只负责横向排布与内边距。
+// 页面级 PageHeader 已去白卡化，不再引用本类。
 .console-page-head-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--app-space-3);
-  background: var(--apple-surface);
-  border: 1px solid var(--apple-hairline);
-  border-radius: var(--app-radius-lg);
   padding: var(--app-space-3) var(--app-space-4);
 }
