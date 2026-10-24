@@ -9,7 +9,6 @@
       title="用户列表"
       :icon="User"
       :total="pagination.total"
-      :show-pagination="!fetchAllUsers"
       @size-change="handleSizeChange"
       @page-change="handleCurrentChange"
     >
@@ -20,7 +19,6 @@
         <el-button :icon="Refresh" @click="refreshData">
           刷新
         </el-button>
-        <el-switch v-model="fetchAllUsers" active-text="全部显示" inactive-text="分页显示" />
       </template>
       <template #filters>
         <el-form :model="filterForm" label-width="80px" inline>
@@ -82,9 +80,9 @@
         v-loading="loading"
       >
         <el-table-column type="selection" width="55" :selectable="canManage"></el-table-column>
-        <el-table-column prop="username" label="用户名" width="120"></el-table-column>
-        <el-table-column prop="realName" label="真实姓名" width="100"></el-table-column>
-        <el-table-column prop="roleName" label="人员类型" width="100">
+        <el-table-column prop="username" label="用户名" min-width="120" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="realName" label="真实姓名" min-width="100" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="roleName" label="人员类型" width="110">
           <template #default="{ row }">
             <el-tag 
               :type="getRoleTagType(row.roleCode)"
@@ -95,7 +93,7 @@
           </template>
         </el-table-column>
         <!-- 已移除按角色显示的字段：学号/专业/指导老师/所属院系/职称/指导学生数 -->
-        <el-table-column prop="email" label="邮箱" width="180"></el-table-column>
+        <el-table-column prop="email" label="邮箱" min-width="220" show-overflow-tooltip></el-table-column>
         <el-table-column prop="phone" label="手机号" width="120"></el-table-column>
         <el-table-column prop="createTime" label="创建时间" width="160">
           <template #default="{ row }">
@@ -299,8 +297,6 @@ const detailDialogVisible = ref(false)
 const userDialogVisible = ref(false)
 const isEdit = ref(false)
 const currentUser = ref({})
-// 是否一次性获取全部用户（true=获取全部，false=分页获取）
-const fetchAllUsers = ref(false)
 
 // 筛选表单
 const filterForm = reactive({
@@ -393,6 +389,7 @@ const handleSelectionChange = (selection) => {
 
 const handleSizeChange = (val) => {
   pagination.pageSize = val
+  pagination.currentPage = 1
   loadUserList()
 }
 
@@ -406,7 +403,7 @@ const loadUserList = async () => {
   try {
     const params = {
       page: pagination.currentPage,
-      size: fetchAllUsers.value ? 1000000 : pagination.pageSize,
+      size: pagination.pageSize,
       userType: filterForm.userType,
       status: filterForm.status ? toStatusNumber(filterForm.status) : '',
       keyword: filterForm.keyword
@@ -441,21 +438,6 @@ const loadUserList = async () => {
       total = response.total ?? list.length
     }
 
-    // 如果用户选择一次性获取全部，但后端仍按分页返回（pages>1），则尝试用 total 拉取全部
-    if (fetchAllUsers.value && response?.data?.pages > 1 && response.data.total) {
-      const fullResp = await getUserList({ ...params, page: 1, size: response.data.total })
-      console.debug('getUserList full response:', fullResp)
-      if (fullResp?.data?.records) {
-        list = fullResp.data.records
-        total = fullResp.data.total ?? list.length
-        current = fullResp.data.current ?? 1
-        size = fullResp.data.size ?? list.length
-      } else if (Array.isArray(fullResp?.data)) {
-        list = fullResp.data
-        total = fullResp.total ?? list.length
-      }
-    }
-
     userList.value = (list || []).map(user => ({
       ...user,
       // 确保 status 字段为数字 0/1 格式
@@ -474,8 +456,8 @@ const loadUserList = async () => {
       )
     }
     // 更新分页信息
-    pagination.currentPage = fetchAllUsers.value ? 1 : (Number(current) || pagination.currentPage)
-    pagination.pageSize = fetchAllUsers.value ? (list.length || pagination.pageSize) : (Number(size) || pagination.pageSize)
+    pagination.currentPage = Number(current) || pagination.currentPage
+    pagination.pageSize = Number(size) || pagination.pageSize
     pagination.total = Number(total) || Number(list.length) || 0
     loading.value = false
   } catch (error) {
