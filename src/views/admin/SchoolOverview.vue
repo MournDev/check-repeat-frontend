@@ -6,6 +6,7 @@
     >
       <template #actions>
         <el-button :icon="Refresh" @click="refreshAllData(false)">刷新数据</el-button>
+        <el-button :icon="FolderOpened" @click="exportDialogVisible = true">导出学期数据包</el-button>
         <el-button type="primary" :icon="Download" @click="exportReport">导出报告</el-button>
       </template>
     </PageHeader>
@@ -203,11 +204,67 @@
         </el-card>
       </el-col>
     </el-row>
+
+    <!-- 论文全生命周期漏斗 + 超期预警 -->
+    <el-row :gutter="16" class="lifecycle-row">
+      <el-col :xs="24" :lg="13">
+        <LifecycleFunnel />
+      </el-col>
+      <el-col :xs="24" :lg="11">
+        <OverdueAlertPanel />
+      </el-col>
+    </el-row>
+
+    <!-- 学期数据包导出：后端暂无 ZIP 打包接口，按项逐一下载 -->
+    <el-dialog v-model="exportDialogVisible" title="导出学期数据包" width="560px">
+      <el-form label-width="90px">
+        <el-form-item label="学期">
+          <el-select v-model="exportForm.semester" style="width: 100%">
+            <el-option
+              v-for="item in semesterOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="数据范围">
+          <el-checkbox-group v-model="exportForm.items">
+            <el-checkbox
+              v-for="item in EXPORT_ITEMS"
+              :key="item.value"
+              :value="item.value"
+            >
+              {{ item.label }}
+            </el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
+      </el-form>
+
+      <el-alert
+        type="info"
+        :closable="false"
+        show-icon
+        title="后端暂未提供 ZIP 打包接口：所选数据将逐项下载 Excel；未接入的项会明确提示。"
+      />
+
+      <template #footer>
+        <el-button @click="exportDialogVisible = false">取消</el-button>
+        <el-button
+          type="primary"
+          :loading="exportingPackage"
+          :disabled="exportForm.items.length === 0"
+          @click="exportSemesterPackage"
+        >
+          开始导出
+        </el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, reactive, computed, onMounted, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
 
 // 导入管理员 API
@@ -223,11 +280,16 @@ import {
 import { getDashboardStats } from '@/api/admin/dashboard'
 import { useChart } from '@/composables/useChart'
 import PageHeader from '@/components/common/PageHeader.vue'
+import LifecycleFunnel from '@/views/admin/components/LifecycleFunnel.vue'
+import OverdueAlertPanel from '@/views/admin/components/OverdueAlertPanel.vue'
+// 学期数据包：复用已有的论文清单 / 统计报表导出接口
+import { exportPapers } from '@/api/admin/papers'
+import { exportStatReport } from '@/api/p5'
 
 // 图标导入（模板中其余图标依赖 main.js 的全局注册，无需在此导入）
 import {
   Refresh, Download, User, Document, Warning, Monitor,
-  DataAnalysis, Histogram, TrendCharts, Clock, CircleCheck
+  DataAnalysis, Histogram, TrendCharts, Clock, CircleCheck, FolderOpened
 } from '@element-plus/icons-vue'
 
 // 响应式数据
@@ -253,6 +315,100 @@ const collegeChart = useChart()
 const trendChart = useChart()
 const similarityChart = useChart()
 const roleChart = useChart()
+
+// ── 学期数据包导出 ──────────────────────────────────────────
+const EXPORT_ITEMS = [
+  { value: 'papers', label: '论文清单' },
+  { value: 'checks', label: '查重统计' },
+  { value: 'reviews', label: '审核记录' },
+  { value: 'defense', label: '答辩结论' }
+]
+
+const exportDialogVisible = ref(false)
+const exportingPackage = ref(false)
+const exportForm = reactive({
+  semester: '',
+  items: EXPORT_ITEMS.map(item => item.value)
+})
+
+const semesterOptions = computed(() => {
+  const now = new Date()
+  const startYear = now.getMonth() >= 7 ? now.getFullYear() : now.getFullYear() - 1
+  const options = []
+  for (let offset = 0; offset < 3; offset++) {
+    const y = startYear - offset
+    options.push({
+      value: `${y}-${y + 1}-1`,
+      label: `${y}–${y + 1} 学年 · 第一学期`,
+      start: `${y}-09-01`,
+      end: `${y + 1}-01-31`
+    })
+    options.push({
+      value: `${y}-${y + 1}-2`,
+      label: `${y}–${y + 1} 学年 · 第二学期`,
+      start: `${y + 1}-02-01`,
+      end: `${y + 1}-07-31`
+    })
+  }
+  return options
+})
+
+// 默认落到当前学期：9-1 月为第一学期，2-7 月为第二学期
+const currentSemester = (() => {
+  const now = new Date()
+  const y = now.getMonth() >= 7 ? now.getFullYear() : now.getFullYear() - 1
+  const firstTerm = now.getMonth() >= 7 || now.getMonth() === 0
+  return `${y}-${y + 1}-${firstTerm ? 1 : 2}`
+})()
+exportForm.semester = currentSemester
+
+const saveBlob = (payload, filename) => {
+  const blob = payload instanceof Blob ? payload : new Blob([payload])
+  const url = window.URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  window.URL.revokeObjectURL(url)
+}
+
+// 后端没有 ZIP 打包接口：能导的逐项下载，导不了的明确告知，不静默失败
+const exportSemesterPackage = async () => {
+  const semester = semesterOptions.value.find(item => item.value === exportForm.semester)
+  if (!semester) return
+  exportingPackage.value = true
+  const downloaded = []
+  const pending = []
+  try {
+    if (exportForm.items.includes('papers')) {
+      const res = await exportPapers({ semester: semester.value, startDate: semester.start, endDate: semester.end })
+      saveBlob(res.data || res, `论文清单_${semester.value}.xlsx`)
+      downloaded.push('论文清单')
+    }
+    if (exportForm.items.includes('checks')) {
+      const res = await exportStatReport()
+      saveBlob(res.data || res, `查重统计_${semester.value}.xlsx`)
+      downloaded.push('查重统计')
+    }
+    if (exportForm.items.includes('reviews')) pending.push('审核记录')
+    if (exportForm.items.includes('defense')) pending.push('答辩结论')
+
+    if (downloaded.length) {
+      ElMessage.success(`已下载：${downloaded.join('、')}`)
+      exportDialogVisible.value = false
+    }
+    if (pending.length) {
+      ElMessage.warning(`${pending.join('、')}：后端暂未提供按学期的导出接口，已记录需求`)
+    }
+  } catch (error) {
+    console.error('学期数据包导出失败:', error)
+    ElMessage.error('导出失败，请稍后重试')
+  } finally {
+    exportingPackage.value = false
+  }
+}
 
 // 方法
 // 全量刷新 = 概览数据 + 全部四张图表；silent 用于首屏加载不弹「数据已刷新」。
@@ -701,6 +857,16 @@ onMounted(async () => {
         }
       }
     }
+  }
+}
+
+.lifecycle-row {
+  margin-top: var(--app-space-4);
+}
+
+@media (max-width: 1200px) {
+  .lifecycle-row > .el-col {
+    margin-bottom: var(--app-space-3);
   }
 }
 
