@@ -509,11 +509,17 @@ watch(
 </script>
 
 <style lang="scss" scoped>
+// 聊天页为满屏工作区，隐藏全局页脚避免页面纵向滚动
+:global(.main-content:has(.chat-center) .app-footer) {
+  display: none;
+}
+
 .chat-center {
-  padding: var(--app-space-6);
-  background: var(--app-color-card-bg);
-  border-radius: var(--app-radius-lg);
-  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-4);
+  height: calc(100vh - var(--app-global-nav-height) - var(--app-subnav-height) - (var(--app-page-gutter) * 2));
+  height: calc(100dvh - var(--app-global-nav-height) - var(--app-subnav-height) - (var(--app-page-gutter) * 2));
   font-family: var(--app-font-family);
 
   .header {
@@ -521,9 +527,7 @@ watch(
     justify-content: flex-end;
     align-items: center;
     gap: var(--app-space-4);
-    margin-bottom: var(--app-space-6);
-    padding-bottom: var(--app-space-4);
-    border-bottom: 1px solid var(--app-color-border);
+    flex-shrink: 0;
 
     .header-actions {
       display: flex;
@@ -533,7 +537,9 @@ watch(
 
   .chat-container {
     display: flex;
-    height: 600px;
+    flex: 1;
+    min-height: 0;
+    background: var(--app-color-card-bg);
     border: 1px solid var(--app-color-border);
     border-radius: var(--app-radius-lg);
     overflow: hidden;
@@ -760,11 +766,12 @@ watch(
 
 @media (max-width: 768px) {
   .chat-center {
+    height: auto;
+
     .header {
       flex-direction: column;
       align-items: flex-start;
       gap: var(--app-space-3);
-      margin-bottom: var(--app-space-4);
 
       .header-actions {
         width: 100%;
@@ -774,8 +781,9 @@ watch(
     }
 
     .chat-container {
+      flex: none;
       flex-direction: column;
-      height: 500px;
+      height: auto;
 
       .session-list {
         width: 100%;
@@ -814,7 +822,8 @@ watch(
       }
 
       .chat-window {
-        flex: 1;
+        flex: none;
+        min-height: 480px;
 
         .chat-input {
           flex-direction: column;
