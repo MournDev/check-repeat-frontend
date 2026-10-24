@@ -604,25 +604,38 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .academic-integrity-page {
 
-  .navigation-card,
-  .content-card,
-  .sidebar-card,
-  .case-card,
-  .contact-card {
+  .navigation-card {
     background: var(--app-color-card-bg);
     border: 1px solid var(--app-color-border);
     border-radius: var(--app-radius-lg);
-  }
-
-  .navigation-card {
     overflow: hidden;
-    
+
     :deep(.el-tabs__content) {
       padding: var(--app-space-6) var(--app-space-4);
     }
   }
 
   .tab-content {
+    /* 外层已是卡片壳，内层卡片统一拍平为「标题 + 分割线 + 内容」 */
+    .content-card,
+    .sidebar-card,
+    .resource-card,
+    .case-card,
+    .contact-card {
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+
+      :deep(.el-card__header) {
+        padding: 0 0 var(--app-space-2);
+        border-bottom: 1px solid var(--app-color-divider);
+      }
+
+      :deep(.el-card__body) {
+        padding: var(--app-space-3) 0 0;
+      }
+    }
+
     .content-card {
       height: 100%;
       
