@@ -537,10 +537,6 @@ onMounted(() => {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-  .teacher-review {
-    padding: var(--app-space-3);
-  }
-
   .filter-actions {
     flex-wrap: wrap;
     gap: var(--app-space-2);

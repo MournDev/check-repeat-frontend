@@ -1197,10 +1197,6 @@ onMounted(async () => {
 }
 
 @media (max-width: 768px) {
-  .student-management {
-    padding: var(--app-space-4) var(--app-space-3);
-  }
-
   .paper-preview-dialog .preview-container {
     height: 60vh;
   }

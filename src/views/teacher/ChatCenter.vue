@@ -760,8 +760,6 @@ watch(
 
 @media (max-width: 768px) {
   .chat-center {
-    padding: var(--app-space-3);
-
     .header {
       flex-direction: column;
       align-items: flex-start;
