@@ -833,18 +833,18 @@ onMounted(() => {
 
 // 欢迎区域
 .welcome-section {
-  margin-bottom: var(--app-space-8);
+  margin-bottom: var(--app-space-6);
   
   .welcome-content {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: var(--app-space-6);
+    margin-bottom: var(--app-space-4);
     
     .welcome-left {
 
       .welcome-subtitle {
-        font-size: var(--app-fs-body);
+        font-size: var(--app-fs-caption);
         color: var(--app-color-text-muted);
         margin: 0;
       }
@@ -887,15 +887,15 @@ onMounted(() => {
 // 统计卡片
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--app-space-4);
-  margin-bottom: var(--app-space-8);
+  margin-bottom: var(--app-space-6);
 
   @media (max-width: 1200px) {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  @media (max-width: 600px) {
-    grid-template-columns: 1fr;
+  @media (max-width: 640px) {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -907,14 +907,6 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: var(--app-space-4);
-  transition: border-color var(--app-transition-normal);
-
-  &:hover {
-    border-color: var(--app-color-border);
-  }
-  &:active {
-    transform: scale(0.985);
-  }
 
   .stat-icon {
     width: 48px;
@@ -987,7 +979,7 @@ onMounted(() => {
 
 // 通用区域样式
 .section {
-  margin-bottom: var(--app-space-8);
+  margin-bottom: var(--app-space-6);
   
   .section-header {
     display: flex;
@@ -1105,18 +1097,22 @@ onMounted(() => {
   }
 }
 
-// 主要内容区域
+// 主要内容区域：右栏固定 320，与管理员工作台保持一致
 .main-content {
   display: grid;
-  grid-template-columns: 1fr 300px;
+  grid-template-columns: minmax(0, 1fr) 320px;
   gap: var(--app-space-6);
 
-  @media (max-width: 1400px) {
-    grid-template-columns: 1fr 280px;
-  }
   @media (max-width: 1200px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
+}
+
+.main-left,
+.main-right {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-6);
 }
 
 // 通用卡片样式
@@ -1124,14 +1120,9 @@ onMounted(() => {
   background: var(--app-color-card-bg);
   border: 1px solid var(--app-color-border);
   border-radius: var(--app-radius-lg);
-  padding: var(--app-space-8);
-  margin-bottom: var(--app-space-8);
-  transition: border-color var(--app-transition-normal);
+  padding: var(--app-space-6);
+  margin-bottom: 0;
 
-  &:hover {
-    border-color: var(--app-color-border);
-  }
-  
   .card-header {
     display: flex;
     justify-content: space-between;
@@ -1141,8 +1132,8 @@ onMounted(() => {
     .card-title {
       display: flex;
       align-items: center;
-      gap: var(--app-space-3);
-      font-size: var(--app-fs-title);
+      gap: var(--app-space-2);
+      font-size: var(--app-fs-heading);
       font-weight: 600;
       color: var(--app-color-ink);
 
@@ -1349,10 +1340,10 @@ onMounted(() => {
 .chart-card {
   
   .chart-title {
-    font-size: var(--app-fs-heading);
+    font-size: var(--app-fs-caption);
     font-weight: 600;
     color: var(--app-color-ink);
-    margin-bottom: var(--app-space-4);
+    margin-bottom: var(--app-space-3);
   }
   
   .chart-container {
@@ -1705,10 +1696,6 @@ onMounted(() => {
 
 // 响应式设计
 @media (max-width: 768px) {
-  .teacher-dashboard {
-    padding: var(--app-space-4);
-  }
-  
   .welcome-content {
     flex-direction: column;
     align-items: flex-start;
@@ -1760,7 +1747,7 @@ onMounted(() => {
   }
   
   .card {
-    padding: var(--app-space-5);
+    padding: var(--app-card-padding);
   }
 }
 </style>
