@@ -39,7 +39,12 @@
               <el-icon><Document /></el-icon>
               <span>当前论文</span>
             </div>
-            <el-button v-if="latestPaper && latestPaper.id" text @click="goToPaperStatus">论文状态</el-button>
+            <div class="head-actions">
+              <el-button v-if="latestPaper && latestPaper.id" text @click="goToPaperStatus">论文状态</el-button>
+              <el-button v-if="latestPaper && latestPaper.id" type="primary" size="small" @click="viewPaperDetails">
+                查看详情
+              </el-button>
+            </div>
           </header>
 
           <div v-if="latestPaper && latestPaper.id" class="paper-body">
@@ -72,25 +77,6 @@
               </span>
             </div>
 
-            <div class="paper-similarity">
-              <div class="similarity-top">
-                <span class="similarity-label">总相似比</span>
-                <span class="similarity-value" :class="getSimilarityStatusClass(latestPaperSimilarity)">
-                  {{ hasSimilarityData ? latestPaperSimilarity + '%' : '未检测' }}
-                </span>
-              </div>
-              <div v-if="hasSimilarityData" class="similarity-track">
-                <div
-                  class="similarity-fill"
-                  :class="getSimilarityClass(latestPaperSimilarity)"
-                  :style="{ width: Math.min(latestPaperSimilarity, 100) + '%' }"
-                ></div>
-              </div>
-              <p class="similarity-note">
-                {{ hasSimilarityData ? getSimilarityLabel(latestPaperSimilarity) : '该论文暂未生成查重结果' }}
-              </p>
-            </div>
-
             <div v-if="latestPaper.feedback" class="paper-feedback">
               <div class="feedback-title">
                 <el-icon><ChatLineRound /></el-icon>
@@ -99,8 +85,63 @@
               <p class="feedback-text">{{ latestPaper.feedback }}</p>
             </div>
 
-            <div class="paper-actions">
-              <el-button type="primary" :icon="View" @click="viewPaperDetails">查看详情</el-button>
+            <!-- 处理进度：标题下方紧跟查重核心指标，首屏即可看到结果 -->
+            <div class="progress-block" v-loading="loading.progress">
+              <div class="progress-block-head">
+                <div class="progress-block-title">
+                  <el-icon><DataLine /></el-icon>
+                  <span>论文处理进度</span>
+                </div>
+                <el-tag :type="getProgressStatusType(currentProgress)" size="small" round>
+                  {{ getProgressStatusText(currentProgress) }}
+                </el-tag>
+              </div>
+
+              <div class="similarity-highlight" :class="getSimilarityStatusClass(latestPaperSimilarity)">
+                <div class="highlight-main">
+                  <span class="highlight-label">总相似比</span>
+                  <span class="highlight-value">
+                    {{ hasSimilarityData ? latestPaperSimilarity + '%' : '未检测' }}
+                  </span>
+                </div>
+                <div class="highlight-side">
+                  <span class="highlight-badge">
+                    {{ hasSimilarityData ? getSimilarityLabel(latestPaperSimilarity) : '暂无查重结果' }}
+                  </span>
+                  <span class="highlight-note">
+                    {{ hasSimilarityData ? '查重已完成，结果已生成' : '查重完成后将在此展示结果' }}
+                  </span>
+                </div>
+              </div>
+
+              <ol class="progress-steps">
+                <li
+                  v-for="(step, index) in progressSteps"
+                  :key="index"
+                  class="progress-step"
+                  :class="{
+                    'step-done': index < currentProgress,
+                    'step-current': index === currentProgress
+                  }"
+                >
+                  <span class="step-index">{{ index + 1 }}</span>
+                  <div class="step-text">
+                    <div class="step-title">{{ step.title }}</div>
+                    <div class="step-desc">{{ step.description }}</div>
+                  </div>
+                </li>
+              </ol>
+
+              <div class="progress-summary">
+                <span class="summary-item">
+                  <el-icon><Timer /></el-icon>
+                  预计完成：{{ estimatedCompletion }}
+                </span>
+                <span class="summary-item">
+                  <el-icon><Lightning /></el-icon>
+                  处理速度：{{ processingSpeed }}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -143,55 +184,85 @@
             </div>
           </div>
         </section>
+      </div>
 
-        <!-- 论文处理进度 -->
+      <!-- 右列：导师 / 节点 / 通知，固定宽度独立侧栏 -->
+      <aside class="dashboard-aside">
+        <!-- 指导老师：与左栏当前论文顶部齐平 -->
         <section class="dash-card">
           <header class="dash-card-head">
             <div class="dash-card-title">
-              <el-icon><DataLine /></el-icon>
-              <span>论文处理进度</span>
+              <el-icon><UserFilled /></el-icon>
+              <span>我的指导老师</span>
             </div>
-            <el-tag :type="getProgressStatusType(currentProgress)" size="small" round>
-              {{ getProgressStatusText(currentProgress) }}
-            </el-tag>
+            <el-button v-if="hasAdvisor" text @click="contactAdvisor">联系</el-button>
           </header>
 
-          <div class="progress-body" v-loading="loading.progress">
-            <ol class="progress-steps">
-              <li
-                v-for="(step, index) in progressSteps"
-                :key="index"
-                class="progress-step"
-                :class="{
-                  'step-done': index < currentProgress,
-                  'step-current': index === currentProgress
-                }"
+          <div v-if="hasAdvisor" class="advisor-profile">
+            <div class="advisor-avatar-section">
+              <div
+                class="advisor-avatar"
+                :style="{ backgroundImage: `url(${getAvatarUrl(advisorInfo.avatar)})` }"
               >
-                <span class="step-index">{{ index + 1 }}</span>
-                <div class="step-text">
-                  <div class="step-title">{{ step.title }}</div>
-                  <div class="step-desc">{{ step.description }}</div>
-                </div>
-              </li>
-            </ol>
+                {{ advisorInfo.name?.charAt(0) }}
+              </div>
+              <div class="advisor-status">
+                <span class="status-indicator" :class="advisorOnlineStatus.className"></span>
+                <span>{{ advisorOnlineStatus.text }}</span>
+              </div>
+            </div>
 
-            <div class="progress-summary">
-              <span class="summary-item">
-                <el-icon><Timer /></el-icon>
-                预计完成：{{ estimatedCompletion }}
-              </span>
-              <span class="summary-item">
-                <el-icon><Lightning /></el-icon>
-                处理速度：{{ processingSpeed }}
-              </span>
+            <div class="advisor-info">
+              <h3 class="advisor-name">{{ advisorInfo.name }}</h3>
+              <p class="advisor-title">{{ advisorInfo.title || '暂无' }}</p>
+              <div v-if="advisorInfo.expertise && advisorInfo.expertise.length" class="advisor-expertise">
+                <span v-for="field in advisorInfo.expertise" :key="field" class="expertise-tag">
+                  {{ field }}
+                </span>
+              </div>
+              <div class="advisor-contact">
+                <div class="contact-item">
+                  <el-icon><Phone /></el-icon>
+                  <span>{{ advisorInfo.phone || '暂无' }}</span>
+                </div>
+                <div class="contact-item">
+                  <el-icon><Message /></el-icon>
+                  <span>{{ advisorInfo.email || '暂无' }}</span>
+                </div>
+                <div class="contact-item">
+                  <el-icon><OfficeBuilding /></el-icon>
+                  <span>{{ advisorInfo.office || '暂无' }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="advisor-stats">
+              <div class="advisor-stat">
+                <div class="stat-number">{{ advisorInfo.guidedPapersCount ?? '暂无' }}</div>
+                <div class="stat-label">指导论文</div>
+              </div>
+              <div class="advisor-stat">
+                <div class="stat-number">
+                  {{ advisorInfo.approvalRate != null ? advisorInfo.approvalRate + '%' : '暂无' }}
+                </div>
+                <div class="stat-label">通过率</div>
+              </div>
+              <div class="advisor-stat">
+                <div class="stat-number">{{ advisorInfo.averageScore ?? '暂无' }}</div>
+                <div class="stat-label">评分</div>
+              </div>
             </div>
           </div>
+
+          <div v-else-if="!loading.advisor" class="card-empty">
+            <el-icon class="empty-icon"><UserFilled /></el-icon>
+            <p>暂未分配指导老师</p>
+            <span class="empty-hint">系统将在论文提交后自动为您分配指导老师</span>
+            <el-button type="primary" @click="goToPaperSubmit">立即提交论文</el-button>
+          </div>
+          <div v-else class="card-empty" v-loading="true"></div>
         </section>
 
-      </div>
-
-      <!-- 右列：节点 / 导师 / 通知 -->
-      <aside class="dashboard-aside">
         <!-- 重要时间节点 -->
         <section class="dash-card">
           <header class="dash-card-head">
@@ -267,81 +338,6 @@
           </ul>
         </section>
 
-        <!-- 指导老师 -->
-        <section class="dash-card">
-          <header class="dash-card-head">
-            <div class="dash-card-title">
-              <el-icon><UserFilled /></el-icon>
-              <span>我的指导老师</span>
-            </div>
-            <el-button v-if="hasAdvisor" text @click="contactAdvisor">联系</el-button>
-          </header>
-
-          <div v-if="hasAdvisor" class="advisor-profile">
-            <div class="advisor-avatar-section">
-              <div
-                class="advisor-avatar"
-                :style="{ backgroundImage: `url(${getAvatarUrl(advisorInfo.avatar)})` }"
-              >
-                {{ advisorInfo.name?.charAt(0) }}
-              </div>
-              <div class="advisor-status">
-                <span class="status-indicator" :class="advisorOnlineStatus.className"></span>
-                <span>{{ advisorOnlineStatus.text }}</span>
-              </div>
-            </div>
-
-            <div class="advisor-info">
-              <h3 class="advisor-name">{{ advisorInfo.name }}</h3>
-              <p class="advisor-title">{{ advisorInfo.title || '暂无' }}</p>
-              <div v-if="advisorInfo.expertise && advisorInfo.expertise.length" class="advisor-expertise">
-                <span v-for="field in advisorInfo.expertise" :key="field" class="expertise-tag">
-                  {{ field }}
-                </span>
-              </div>
-              <div class="advisor-contact">
-                <div class="contact-item">
-                  <el-icon><Phone /></el-icon>
-                  <span>{{ advisorInfo.phone || '暂无' }}</span>
-                </div>
-                <div class="contact-item">
-                  <el-icon><Message /></el-icon>
-                  <span>{{ advisorInfo.email || '暂无' }}</span>
-                </div>
-                <div class="contact-item">
-                  <el-icon><OfficeBuilding /></el-icon>
-                  <span>{{ advisorInfo.office || '暂无' }}</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="advisor-stats">
-              <div class="advisor-stat">
-                <div class="stat-number">{{ advisorInfo.guidedPapersCount ?? '暂无' }}</div>
-                <div class="stat-label">指导论文</div>
-              </div>
-              <div class="advisor-stat">
-                <div class="stat-number">
-                  {{ advisorInfo.approvalRate != null ? advisorInfo.approvalRate + '%' : '暂无' }}
-                </div>
-                <div class="stat-label">通过率</div>
-              </div>
-              <div class="advisor-stat">
-                <div class="stat-number">{{ advisorInfo.averageScore ?? '暂无' }}</div>
-                <div class="stat-label">评分</div>
-              </div>
-            </div>
-          </div>
-
-          <div v-else-if="!loading.advisor" class="card-empty">
-            <el-icon class="empty-icon"><UserFilled /></el-icon>
-            <p>暂未分配指导老师</p>
-            <span class="empty-hint">系统将在论文提交后自动为您分配指导老师</span>
-            <el-button type="primary" @click="goToPaperSubmit">立即提交论文</el-button>
-          </div>
-          <div v-else class="card-empty" v-loading="true"></div>
-        </section>
-
         <!-- 通知消息 -->
         <section class="dash-card">
           <header class="dash-card-head">
@@ -352,8 +348,8 @@
             <el-button text @click="viewAllNotifications">查看全部</el-button>
           </header>
 
-          <div v-if="notifications.length > 0" class="notification-list">
-            <div v-for="(item, index) in notifications" :key="item.id ?? index" class="notification-item">
+          <div v-if="displayNotifications.length > 0" class="notification-list">
+            <div v-for="(item, index) in displayNotifications" :key="item.id ?? index" class="notification-item">
               <div class="notification-title">{{ item.title || '系统通知' }}</div>
               <div v-if="item.content || item.message" class="notification-content">
                 {{ item.content || item.message }}
@@ -437,7 +433,7 @@ import PageHeader from '@/components/common/PageHeader.vue'
 // 图标导入
 import {
   UploadFilled, Download, Document, Clock, Check, EditPen,
-  DataLine, Refresh, View, Edit, List, UserFilled, Phone,
+  DataLine, Refresh, Edit, List, UserFilled, Phone,
   Message, ChatDotRound, Bell, Lightning, CircleCheck,
   OfficeBuilding, ChatLineRound, TrendCharts, PieChart as PieChartIcon, Calendar, QuestionFilled,
   Delete, Setting, Files, Warning, Trophy, ScaleToOriginal, Star, Timer,
@@ -445,7 +441,7 @@ import {
 } from '@element-plus/icons-vue'
 import { getAvatarUrl } from '@/utils/avatar'
 import { handleSimilarity, getPaperStatusText, getPaperStatusType, formatDateTime } from '@/utils/dataType'
-import { getSimilarityClass, getSimilarityLabel, getSimilarityLevel } from '@/utils/similarity.js'
+import { getSimilarityLabel, getSimilarityLevel } from '@/utils/similarity.js'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -627,6 +623,9 @@ const sortedTodos = computed(() => {
     })
     .slice(0, 5)
 })
+
+// 右栏通知最多展示 3 条，其余走「查看全部」，控制侧栏高度
+const displayNotifications = computed(() => notifications.value.slice(0, 3))
 
 // 趋势图是否有数据
 const hasTrendData = computed(() => {
@@ -1323,6 +1322,7 @@ const renderComparisonChart = () => {
 }
 
 // ── 布局 ────────────────────────────────────────────────────
+// 左右两列各自按内容高度排布：align-items: start 禁止等高拉伸
 .dashboard-main {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 320px;
@@ -1371,6 +1371,13 @@ const renderComparisonChart = () => {
 
 .dash-card-title .el-icon {
   color: var(--app-color-text-muted);
+}
+
+.head-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-1);
+  flex-shrink: 0;
 }
 
 .dash-card-hint {
@@ -1465,56 +1472,71 @@ const renderComparisonChart = () => {
   color: var(--app-color-text-muted);
 }
 
-.paper-similarity {
-  padding: var(--app-space-3) var(--app-space-4);
-  background: var(--app-color-fill);
-  border-radius: var(--app-radius-md);
-}
-
-.similarity-top {
+// 查重核心指标：高亮块，首屏直接可见
+.similarity-highlight {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
-  margin-bottom: 6px;
+  gap: var(--app-space-4);
+  margin-top: var(--app-space-3);
+  padding: var(--app-space-3) var(--app-space-4);
+  border-radius: var(--app-radius-md);
+  background: var(--app-color-fill);
+
+  &.status-success { background: var(--app-color-success-bg); }
+  &.status-warning { background: var(--app-color-warning-bg); }
+  &.status-danger { background: var(--app-color-danger-bg); }
+  &.status-info { background: var(--app-color-fill); }
 }
 
-.similarity-label {
-  font-size: var(--app-fs-caption);
+.highlight-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.highlight-label {
+  font-size: var(--app-fs-meta);
   color: var(--app-color-text-muted);
 }
 
-.similarity-value {
+.highlight-value {
   font-family: var(--app-font-family);
-  font-size: var(--app-fs-title);
+  font-size: var(--app-fs-metric);
   font-weight: 600;
+  line-height: 1.05;
   font-variant-numeric: tabular-nums;
 
-  &.status-success { color: var(--app-color-success); }
-  &.status-warning { color: var(--app-color-warning); }
-  &.status-danger { color: var(--app-color-danger); }
-  &.status-info { color: var(--app-color-text-secondary); }
+  .status-success & { color: var(--app-color-success); }
+  .status-warning & { color: var(--app-color-warning); }
+  .status-danger & { color: var(--app-color-danger); }
+  .status-info & { color: var(--app-color-text-secondary); }
 }
 
-.similarity-track {
-  height: 6px;
+.highlight-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--app-space-1);
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.highlight-badge {
+  padding: 2px var(--app-space-2);
   border-radius: var(--app-radius-pill);
-  background: var(--app-color-border);
-  overflow: hidden;
+  background: var(--app-color-card-bg);
+  font-size: var(--app-fs-meta);
+  font-weight: 600;
+
+  .status-success & { color: var(--app-color-success); }
+  .status-warning & { color: var(--app-color-warning); }
+  .status-danger & { color: var(--app-color-danger); }
+  .status-info & { color: var(--app-color-text-secondary); }
 }
 
-.similarity-fill {
-  height: 100%;
-  border-radius: var(--app-radius-pill);
-  transition: width var(--app-transition-slow);
-
-  &.similarity-low { background: var(--app-color-rate-low); }
-  &.similarity-medium { background: var(--app-color-rate-medium); }
-  &.similarity-high { background: var(--app-color-rate-high); }
-  &.similarity-neutral { background: var(--app-color-border); }
-}
-
-.similarity-note {
-  margin: 6px 0 0;
+.highlight-note {
   font-size: var(--app-fs-meta);
   color: var(--app-color-text-secondary);
 }
@@ -1541,12 +1563,6 @@ const renderComparisonChart = () => {
   font-size: var(--app-fs-caption);
   line-height: var(--app-lh-body);
   color: var(--app-color-ink);
-}
-
-.paper-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: var(--app-space-4);
 }
 
 // ── 待办 ────────────────────────────────────────────────────
@@ -1611,11 +1627,37 @@ const renderComparisonChart = () => {
 }
 
 // ── 进度 ────────────────────────────────────────────────────
+.progress-block {
+  margin-top: var(--app-space-4);
+  padding-top: var(--app-space-3);
+  border-top: 1px solid var(--app-color-divider);
+}
+
+.progress-block-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--app-space-3);
+}
+
+.progress-block-title {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-2);
+  font-size: var(--app-fs-body);
+  font-weight: 600;
+  color: var(--app-color-ink);
+
+  .el-icon {
+    color: var(--app-color-text-muted);
+  }
+}
+
 .progress-steps {
   display: flex;
   flex-direction: column;
-  gap: var(--app-space-3);
-  margin: 0;
+  gap: var(--app-space-1);
+  margin: var(--app-space-3) 0 0;
   padding: 0;
   list-style: none;
 }
@@ -1623,7 +1665,8 @@ const renderComparisonChart = () => {
 .progress-step {
   display: flex;
   align-items: flex-start;
-  gap: var(--app-space-3);
+  gap: var(--app-space-2);
+  padding: 2px 0;
   opacity: 0.55;
 }
 
@@ -1659,19 +1702,21 @@ const renderComparisonChart = () => {
 .step-title {
   font-size: var(--app-fs-caption);
   font-weight: 500;
+  line-height: 1.35;
 }
 
 .step-desc {
   font-size: var(--app-fs-meta);
+  line-height: 1.35;
   color: var(--app-color-text-secondary);
 }
 
 .progress-summary {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--app-space-3) var(--app-space-6);
-  margin-top: var(--app-space-4);
-  padding-top: var(--app-space-3);
+  gap: var(--app-space-2) var(--app-space-6);
+  margin-top: var(--app-space-3);
+  padding-top: var(--app-space-2);
   border-top: 1px solid var(--app-color-divider);
 }
 
@@ -1932,13 +1977,17 @@ const renderComparisonChart = () => {
 }
 
 // ── 通知 ────────────────────────────────────────────────────
+// 右栏固定高度上限，超出部分在卡片内部滚动，避免把整页高度撑大
 .notification-list {
   display: flex;
   flex-direction: column;
+  max-height: calc(100vh - 400px);
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .notification-item {
-  padding: var(--app-space-3) 0;
+  padding: var(--app-space-2) 0;
   border-bottom: 1px solid var(--app-color-divider);
 
   &:last-child {
@@ -1988,6 +2037,16 @@ const renderComparisonChart = () => {
 
   .paper-headline {
     flex-direction: column;
+  }
+
+  .similarity-highlight {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .highlight-side {
+    align-items: flex-start;
+    text-align: left;
   }
 }
 
