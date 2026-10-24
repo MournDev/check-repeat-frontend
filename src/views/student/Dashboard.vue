@@ -77,6 +77,21 @@
               </span>
             </div>
 
+            <!-- 主行动：按当前论文状态只给一个下一步动作，避免学生自己判断流程 -->
+            <div class="primary-action">
+              <el-button
+                :type="primaryAction.type"
+                size="large"
+                :icon="primaryAction.icon"
+                :disabled="primaryAction.disabled"
+                class="primary-action-btn"
+                @click="primaryAction.onClick?.()"
+              >
+                {{ primaryAction.label }}
+              </el-button>
+              <span v-if="primaryAction.hint" class="primary-action-hint">{{ primaryAction.hint }}</span>
+            </div>
+
             <div v-if="latestPaper.feedback" class="paper-feedback">
               <div class="feedback-title">
                 <el-icon><ChatLineRound /></el-icon>
@@ -839,6 +854,72 @@ const viewPaperDetails = () => {
   }
 }
 
+// 主行动：状态 → 唯一建议动作。
+// 只做导航与文案，不改变任何业务状态；等待中的状态给禁用按钮，避免学生误以为可操作。
+const REVISION_STATUSES = ['draft', 'rejected', 'revision_needed', 'need_revision', 'revised']
+
+const goRevise = () => {
+  const paperId = latestPaper.value?.id
+  if (!paperId) return
+  router.push({ path: '/student/paper-submit', query: { paperId, action: 'revision' } })
+}
+
+const primaryAction = computed(() => {
+  const paper = latestPaper.value
+  if (!paper?.id) {
+    return { label: '提交第一篇论文', type: 'primary', icon: UploadFilled, disabled: false, onClick: goToPaperSubmit, hint: '' }
+  }
+  const status = String(paper.status || '').toLowerCase()
+
+  if (REVISION_STATUSES.includes(status)) {
+    return {
+      label: '继续修改并重提', type: 'primary', icon: UploadFilled, disabled: false, onClick: goRevise,
+      hint: '导师已退回，按反馈修改后可重新提交'
+    }
+  }
+  if (status === 'checking') {
+    return {
+      label: '查看查重进度', type: 'primary', icon: DataLine, disabled: false,
+      onClick: () => router.push(`/student/check-monitor/${paper.id}`),
+      hint: '查重任务进行中，可实时查看进度'
+    }
+  }
+  if (status === 'auditing') {
+    return {
+      label: '等待导师审核', type: 'info', icon: Clock, disabled: true, onClick: null,
+      hint: '已进入导师审核队列，结果会通过消息中心通知'
+    }
+  }
+  if (['completed', 'reviewing', 'approved'].includes(status)) {
+    return {
+      label: '去参加答辩', type: 'success', icon: Trophy, disabled: false,
+      onClick: () => router.push('/student/my-defense'),
+      hint: '初审已通过，请关注答辩批次与时间安排'
+    }
+  }
+  if (['mid_defense', 'final_defense'].includes(status)) {
+    return {
+      label: '查看答辩安排', type: 'success', icon: Trophy, disabled: false,
+      onClick: () => router.push('/student/my-defense'),
+      hint: '答辩批次已安排，请按时参加'
+    }
+  }
+  if (status === 'defense_passed') {
+    return {
+      label: '查看答辩结论', type: 'success', icon: Trophy, disabled: false,
+      onClick: () => router.push('/student/my-defense'),
+      hint: '答辩已通过，等待定稿与归档'
+    }
+  }
+  if (['finalized', 'archived'].includes(status)) {
+    return {
+      label: '查看归档结果', type: 'info', icon: Document, disabled: false, onClick: viewPaperDetails,
+      hint: status === 'archived' ? '材料已归档' : '已定稿，待归档'
+    }
+  }
+  return { label: '查看论文详情', type: 'primary', icon: Document, disabled: false, onClick: viewPaperDetails, hint: '' }
+})
+
 // 待办跳转：退回/需修改类直达「修改重提」，其余直达当前论文详情。
 const goTodo = (item) => {
   if (!item || item.completed) return
@@ -1561,6 +1642,29 @@ const renderComparisonChart = () => {
 }
 
 .highlight-note {
+  font-size: var(--app-fs-caption);
+  color: var(--app-color-text-secondary);
+}
+
+// 主行动：全宽强调条，一眼看到"下一步该做什么"
+.primary-action {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--app-space-2) var(--app-space-4);
+  margin-top: var(--app-space-4);
+  padding: var(--app-space-3) var(--app-space-4);
+  background: var(--app-color-info-bg);
+  border: 1px solid var(--app-color-info-border);
+  border-radius: var(--app-radius-md);
+}
+
+.primary-action-btn {
+  min-width: 200px;
+  font-weight: 600;
+}
+
+.primary-action-hint {
   font-size: var(--app-fs-caption);
   color: var(--app-color-text-secondary);
 }
