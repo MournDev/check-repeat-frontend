@@ -359,13 +359,12 @@
         </section>
 
         <!-- 待办事项：置于侧栏底部，与左栏图表高度平衡 -->
-        <section class="dash-card">
+        <section class="dash-card todo-card">
           <header class="dash-card-head">
             <div class="dash-card-title">
               <el-icon><List /></el-icon>
               <span>待办事项</span>
             </div>
-            <span class="dash-card-hint">按完成状态与截止时间排序</span>
           </header>
 
           <div class="todo-list" v-loading="todosLoading">
@@ -1081,6 +1080,15 @@ const addAllToCalendar = () => {
   ElMessage.success('日历文件已下载')
 };
 
+// 图表文字统一走应用字体与辅助色：
+// ECharts 默认使用 12px sans-serif + 浅灰，和页面字体、对比度都不一致
+const chartTextColor = '#6b6b70'
+const chartTextStyle = {
+  fontFamily: getComputedStyle(document.documentElement).getPropertyValue('--app-font-family').trim() || 'sans-serif',
+  fontSize: 12,
+  color: chartTextColor
+}
+
 // 图表渲染方法
 const renderRadarChart = () => {
   if (!hasRadarData.value) {
@@ -1089,6 +1097,7 @@ const renderRadarChart = () => {
   }
 
   radarChart.render({
+    textStyle: chartTextStyle,
     tooltip: {},
     radar: {
       indicator: [
@@ -1099,7 +1108,11 @@ const renderRadarChart = () => {
         { name: '按时提交', max: 100 },
         { name: '导师评分', max: 100 }
       ],
-      radius: '65%'
+      radius: '72%',
+      axisName: {
+        color: chartTextColor,
+        fontSize: 12
+      }
     },
     series: [{
       name: '个人能力评估',
@@ -1138,6 +1151,7 @@ const renderTrendChart = () => {
   }
 
   trendChart.render({
+    textStyle: chartTextStyle,
     tooltip: {
       trigger: 'axis'
     },
@@ -1150,13 +1164,25 @@ const renderTrendChart = () => {
     xAxis: {
       type: 'category',
       boundaryGap: false,
-      data: similarityTrendData.versions
+      data: similarityTrendData.versions,
+      axisLabel: {
+        color: chartTextColor,
+        fontSize: 12
+      }
     },
     yAxis: {
       type: 'value',
       name: '总相似比 (%)',
       min: 0,
-      max: 100
+      max: 100,
+      nameTextStyle: {
+        color: chartTextColor,
+        fontSize: 12
+      },
+      axisLabel: {
+        color: chartTextColor,
+        fontSize: 12
+      }
     },
     series: [{
       name: '总相似比',
@@ -1191,6 +1217,7 @@ const renderComparisonChart = () => {
   }
 
   comparisonChart.render({
+    textStyle: chartTextStyle,
     tooltip: {
       trigger: 'axis',
       axisPointer: {
@@ -1198,7 +1225,11 @@ const renderComparisonChart = () => {
       }
     },
     legend: {
-      data: ['我的水平', '专业平均']
+      data: ['我的水平', '专业平均'],
+      textStyle: {
+        color: chartTextColor,
+        fontSize: 12
+      }
     },
     grid: {
       left: '3%',
@@ -1208,12 +1239,20 @@ const renderComparisonChart = () => {
     },
     xAxis: {
       type: 'category',
-      data: majorComparisonData.dimensions
+      data: majorComparisonData.dimensions,
+      axisLabel: {
+        color: chartTextColor,
+        fontSize: 12
+      }
     },
     yAxis: {
       type: 'value',
       min: 0,
-      max: 100
+      max: 100,
+      axisLabel: {
+        color: chartTextColor,
+        fontSize: 12
+      }
     },
     series: [
       {
@@ -1295,6 +1334,25 @@ const renderComparisonChart = () => {
   min-width: 0;
 }
 
+// 右栏拉伸到与左栏同高，只拉右栏、不拉左栏：
+// 多出的高度由待办卡内部吸收，避免图表旁出现大片灰底空档
+.dashboard-aside {
+  align-self: stretch;
+}
+
+.dashboard-aside > .todo-card {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.dashboard-aside > .todo-card .todo-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
 // ── 卡片 ────────────────────────────────────────────────────
 .dash-card {
   background: var(--app-color-card-bg);
@@ -1330,11 +1388,6 @@ const renderComparisonChart = () => {
   align-items: center;
   gap: var(--app-space-1);
   flex-shrink: 0;
-}
-
-.dash-card-hint {
-  font-size: var(--app-fs-meta);
-  color: var(--app-color-text-secondary);
 }
 
 .card-empty {
@@ -1449,7 +1502,7 @@ const renderComparisonChart = () => {
 }
 
 .highlight-label {
-  font-size: var(--app-fs-meta);
+  font-size: var(--app-fs-caption);
   color: var(--app-color-text-muted);
 }
 
@@ -1489,7 +1542,7 @@ const renderComparisonChart = () => {
 }
 
 .highlight-note {
-  font-size: var(--app-fs-meta);
+  font-size: var(--app-fs-caption);
   color: var(--app-color-text-secondary);
 }
 
@@ -1564,7 +1617,7 @@ const renderComparisonChart = () => {
 
 .todo-desc {
   margin-top: 2px;
-  font-size: var(--app-fs-meta);
+  font-size: var(--app-fs-caption);
   color: var(--app-color-text-secondary);
   overflow: hidden;
   white-space: nowrap;
@@ -1659,7 +1712,7 @@ const renderComparisonChart = () => {
 }
 
 .step-desc {
-  font-size: var(--app-fs-meta);
+  font-size: var(--app-fs-caption);
   line-height: 1.35;
   color: var(--app-color-text-secondary);
 }
@@ -1682,6 +1735,11 @@ const renderComparisonChart = () => {
 }
 
 // ── 图表 ────────────────────────────────────────────────────
+// 压缩图表卡整体高度：图表区从 749px 降到约 620px，减少整页长度与右栏尾差
+.charts-section .dash-card-head {
+  margin-bottom: var(--app-space-3);
+}
+
 .charts-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1692,7 +1750,7 @@ const renderComparisonChart = () => {
   min-width: 0;
 
   &.full-width {
-    margin-top: var(--app-space-4);
+    margin-top: var(--app-space-3);
   }
 }
 
@@ -1707,12 +1765,12 @@ const renderComparisonChart = () => {
 
 .chart-container {
   width: 100%;
-  height: 280px;
+  height: 220px;
 }
 
 .chart-container-large {
   width: 100%;
-  height: 300px;
+  height: 240px;
 }
 
 .chart-empty {
@@ -1721,11 +1779,15 @@ const renderComparisonChart = () => {
   align-items: center;
   justify-content: center;
   gap: var(--app-space-2);
-  height: 280px;
+  height: 220px;
   color: var(--app-color-text-muted);
   font-size: var(--app-fs-meta);
   background: var(--app-color-fill);
   border-radius: var(--app-radius-md);
+}
+
+.chart-card.full-width .chart-empty {
+  height: 240px;
 }
 
 .chart-empty .empty-icon {
@@ -1775,7 +1837,7 @@ const renderComparisonChart = () => {
 }
 
 .deadline-label {
-  font-size: var(--app-fs-meta);
+  font-size: var(--app-fs-caption);
   color: var(--app-color-text-muted);
 }
 
