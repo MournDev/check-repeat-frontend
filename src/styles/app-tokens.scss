@@ -83,6 +83,7 @@
   // 主色
   --app-color-primary: var(--apple-primary);
   --app-color-primary-hover: var(--apple-primary-active);
+  --app-color-primary-focus: var(--apple-primary-focus);
   --app-color-primary-on-dark: var(--apple-primary-on-dark);
   --app-color-on-primary: var(--apple-on-primary);
   // 主色 RGB 分量，供 rgba(var(--app-color-primary-rgb), 0.08) 这类半透明底色使用
@@ -112,6 +113,7 @@
   --app-color-card-bg: var(--apple-canvas);                   // 卡片/表格/弹窗内容底
   --app-color-fill: var(--apple-canvas-parchment);            // 表头底、hover 行、内嵌块
   --app-color-fill-light: var(--apple-surface-pearl);         // 更浅一级的填充
+  --app-color-fill-strong: var(--apple-slate-bg);             // 稍深一级的填充（按钮 hover 等）
   --app-color-nav-bg: var(--apple-surface-tile-1);            // 顶栏/侧边栏深色底
   --app-color-nav-text: var(--apple-body-muted);              // 深色底正文
   --app-color-nav-text-muted: var(--apple-slate-faint);       // 深色底分组标签（原 #7a7a7a 对比度不足）

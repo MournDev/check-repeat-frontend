@@ -11,19 +11,19 @@
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 var(--apple-spacing-md);
+  padding: 0 var(--app-space-4);
 }
 
 // ── Card: hairline border, no shadow, no lift hover ──────
 .card {
-  background: var(--apple-canvas);
-  border: 1px solid var(--apple-hairline);
+  background: var(--app-color-card-bg);
+  border: 1px solid var(--app-color-border);
   border-radius: var(--app-radius-lg);
   padding: var(--app-card-padding);
-  transition: border-color var(--apple-transition-normal);
+  transition: border-color var(--app-transition-normal);
 
   &:hover {
-    border-color: var(--apple-surface-chip-translucent);
+    border-color: var(--app-color-border-strong);
   }
 }
 
@@ -38,38 +38,38 @@
   font-weight: 400;
   border: none;
   cursor: pointer;
-  transition: transform var(--apple-transition-fast), background-color var(--apple-transition-normal);
+  transition: transform var(--app-transition-fast), background-color var(--app-transition-normal);
 
   &:active {
     transform: scale(0.95);
   }
 
   &.btn-primary {
-    background: var(--apple-primary);
-    color: var(--apple-on-primary);
+    background: var(--app-color-primary);
+    color: var(--app-color-on-primary);
 
     &:hover {
-      background: var(--apple-primary-active);
+      background: var(--app-color-primary-hover);
     }
   }
 
   &.btn-secondary {
-    background: var(--apple-canvas-parchment);
-    color: var(--apple-ink);
-    border: 1px solid var(--apple-hairline);
+    background: var(--app-color-fill);
+    color: var(--app-color-ink);
+    border: 1px solid var(--app-color-border);
 
     &:hover {
-      background: var(--apple-slate-bg);
+      background: var(--app-color-fill-strong);
     }
   }
 
   &.btn-text {
     background: transparent;
-    color: var(--apple-ink-muted-80);
+    color: var(--app-color-text);
 
     &:hover {
-      background: var(--apple-canvas-parchment);
-      color: var(--apple-ink);
+      background: var(--app-color-fill);
+      color: var(--app-color-ink);
     }
   }
 }
@@ -78,26 +78,26 @@
 .input {
   width: 100%;
   padding: var(--app-space-2) var(--app-space-3);
-  border: 1px solid var(--apple-hairline);
+  border: 1px solid var(--app-color-border);
   border-radius: var(--app-radius-sm);
   font-size: var(--app-fs-body);
   height: var(--app-control-h);
-  transition: border-color var(--apple-transition-normal);
+  transition: border-color var(--app-transition-normal);
 
   &:focus {
-    outline: 2px solid var(--apple-primary-focus);
+    outline: 2px solid var(--app-color-primary-focus);
     outline-offset: -2px;
     border-color: transparent;
   }
 
   &:hover {
-    border-color: var(--apple-surface-chip-translucent);
+    border-color: var(--app-color-border-strong);
   }
 }
 
 // ── Paragraph ─────────────────────────────────────────────
 p {
-  color: var(--apple-ink-muted-80);
+  color: var(--app-color-text);
   margin-bottom: var(--app-space-3);
   font-size: var(--app-fs-body);
   line-height: var(--app-lh-body);
@@ -107,41 +107,41 @@ p {
 .tag {
   display: inline-flex;
   align-items: center;
-  gap: var(--apple-spacing-xxs);
+  gap: var(--app-space-1);
   padding: 4px 12px;
-  border-radius: 9999px;
+  border-radius: var(--app-radius-pill);
   font-size: 12px;
   font-weight: 400;
 
-  &.tag-success { background: var(--apple-success-bg); color: var(--apple-success); }
-  &.tag-warning { background: var(--apple-warning-bg); color: var(--apple-warning); }
-  &.tag-danger  { background: var(--apple-danger-bg); color: var(--apple-danger); }
-  &.tag-info    { background: var(--apple-info-bg); color: var(--apple-primary); }
+  &.tag-success { background: var(--app-color-success-bg); color: var(--app-color-success); }
+  &.tag-warning { background: var(--app-color-warning-bg); color: var(--app-color-warning); }
+  &.tag-danger  { background: var(--app-color-danger-bg); color: var(--app-color-danger); }
+  &.tag-info    { background: var(--app-color-info-bg); color: var(--app-color-primary); }
 }
 
 // ── Progress Bar ──────────────────────────────────────────
 .progress-bar {
   height: 6px;
-  background: var(--apple-hairline);
+  background: var(--app-color-border);
   border-radius: 3px;
   overflow: hidden;
 
   .progress-fill {
     height: 100%;
     border-radius: 3px;
-    transition: width var(--apple-transition-slow);
+    transition: width var(--app-transition-slow);
 
-    &.progress-success { background: var(--apple-success); }
-    &.progress-warning { background: var(--apple-warning); }
-    &.progress-danger  { background: var(--apple-danger); }
-    &.progress-info    { background: var(--apple-primary); }
+    &.progress-success { background: var(--app-color-success); }
+    &.progress-warning { background: var(--app-color-warning); }
+    &.progress-danger  { background: var(--app-color-danger); }
+    &.progress-info    { background: var(--app-color-primary); }
   }
 }
 
 // ── Grid ──────────────────────────────────────────────────
 .grid {
   display: grid;
-  gap: var(--apple-spacing-md);
+  gap: var(--app-space-4);
 
   &.grid-cols-1 { grid-template-columns: 1fr; }
   &.grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
@@ -158,9 +158,9 @@ p {
   &.flex-center { align-items: center; justify-content: center; }
   &.flex-between { align-items: center; justify-content: space-between; }
   &.flex-start { align-items: flex-start; }
-  &.gap-sm { gap: var(--apple-spacing-xs); }
-  &.gap-md { gap: var(--apple-spacing-md); }
-  &.gap-lg { gap: var(--apple-spacing-lg); }
+  &.gap-sm { gap: var(--app-space-2); }
+  &.gap-md { gap: var(--app-space-4); }
+  &.gap-lg { gap: var(--app-space-6); }
 }
 
 // ── Animation: fade-in only, no translateY ───────────────
@@ -170,7 +170,7 @@ p {
 }
 
 .fade-in {
-  animation: fadeIn var(--apple-transition-slow) ease-out;
+  animation: fadeIn var(--app-transition-slow) ease-out;
 }
 
 // ── Utilities ─────────────────────────────────────────────
@@ -195,7 +195,7 @@ p {
 a:focus-visible,
 button:focus-visible,
 [tabindex]:focus-visible {
-  outline: 2px solid var(--apple-primary-focus);
+  outline: 2px solid var(--app-color-primary-focus);
   outline-offset: 2px;
 }
 
@@ -210,15 +210,15 @@ button:focus-visible,
     scroll-behavior: auto !important;
   }
 }
-.mt-sm { margin-top: var(--apple-spacing-xs); }
-.mt-md { margin-top: var(--apple-spacing-md); }
-.mt-lg { margin-top: var(--apple-spacing-lg); }
-.mb-sm { margin-bottom: var(--apple-spacing-xs); }
-.mb-md { margin-bottom: var(--apple-spacing-md); }
-.mb-lg { margin-bottom: var(--apple-spacing-lg); }
-.p-sm { padding: var(--apple-spacing-xs); }
-.p-md { padding: var(--apple-spacing-md); }
-.p-lg { padding: var(--apple-spacing-lg); }
+.mt-sm { margin-top: var(--app-space-2); }
+.mt-md { margin-top: var(--app-space-4); }
+.mt-lg { margin-top: var(--app-space-6); }
+.mb-sm { margin-bottom: var(--app-space-2); }
+.mb-md { margin-bottom: var(--app-space-4); }
+.mb-lg { margin-bottom: var(--app-space-6); }
+.p-sm { padding: var(--app-space-2); }
+.p-md { padding: var(--app-space-4); }
+.p-lg { padding: var(--app-space-6); }
 
 // ── Responsive ────────────────────────────────────────────
 @media (max-width: 1068px) {
@@ -261,8 +261,8 @@ button:focus-visible,
   overflow: hidden;
 
   .el-dialog__header {
-    background: var(--apple-canvas-parchment);
-    border-bottom: 1px solid var(--apple-hairline);
+    background: var(--app-color-fill);
+    border-bottom: 1px solid var(--app-color-border);
     padding: 16px 24px;
     margin-right: 0;
   }
@@ -270,7 +270,7 @@ button:focus-visible,
   .el-dialog__title {
     font-size: 16px;
     font-weight: 600;
-    color: var(--apple-ink);
+    color: var(--app-color-ink);
   }
 
   .el-dialog__headerbtn {
@@ -278,10 +278,10 @@ button:focus-visible,
 
     .el-dialog__close {
       font-size: 18px;
-      color: var(--apple-ink-muted-48);
+      color: var(--app-color-text-muted);
 
       &:hover {
-        color: var(--apple-ink);
+        color: var(--app-color-ink);
       }
     }
   }
@@ -297,15 +297,15 @@ button:focus-visible,
   justify-content: flex-end;
   gap: 12px;
   padding: 16px 24px;
-  border-top: 1px solid var(--apple-hairline);
-  background: var(--apple-canvas-parchment);
+  border-top: 1px solid var(--app-color-border);
+  background: var(--app-color-fill);
 }
 
 // ── 教师控制台公共卡片语言（ReviewWorkbench / AuditRecords 复用）──────────
 // 双类名（.el-card.console-card）保证压过 Element 主题的默认卡片边框
 .el-card.console-card {
-  background: var(--apple-surface);
-  border: 1px solid var(--apple-hairline);
+  background: var(--app-color-card-bg);
+  border: 1px solid var(--app-color-border);
   border-radius: var(--app-radius-lg);
 }
 
