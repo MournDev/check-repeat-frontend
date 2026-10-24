@@ -744,8 +744,9 @@ onBeforeUnmount(() => {
   }
 }
 
-/* 再窄就放弃三栏，改为纵向堆叠，避免预览区被挤成细条 */
-@media (max-width: 1100px) {
+/* 再窄就放弃三栏，改为纵向堆叠，避免预览区被挤成细条。
+   1200px 折叠：1101–1200 区间三栏时中间预览仅 233–332px，已不可读 */
+@media (max-width: 1200px) {
   .review-workbench {
     grid-template-columns: 1fr;
     height: auto;
