@@ -823,7 +823,11 @@ watch(
 
       .chat-window {
         flex: none;
-        min-height: 480px;
+        // 手机端给聊天窗一个明确高度，消息区才能恢复内部滚动；
+        // 否则父级 auto 高度会把输入框一路推到页面底部
+        height: 60vh;
+        height: 60dvh;
+        min-height: 360px;
 
         .chat-input {
           flex-direction: column;

@@ -1990,4 +1990,16 @@ const renderComparisonChart = () => {
     flex-direction: column;
   }
 }
+
+// 手机端收紧卡片内边距：内容区本身已有 12px gutter，
+// 卡片再保留 24px 会导致正文可用宽度只剩 303px（375px 屏）
+@media (max-width: 640px) {
+  .dash-card {
+    padding: var(--app-card-padding);
+  }
+
+  .kpi-card {
+    padding: var(--app-space-3) var(--app-space-4);
+  }
+}
 </style>
