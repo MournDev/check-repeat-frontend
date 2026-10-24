@@ -1332,7 +1332,8 @@ onMounted(() => {
   grid-template-columns: 1fr 1fr;
   gap: var(--app-space-6);
   
-  @media (max-width: 768px) {
+  // iPad 竖屏/横屏区间宽度不足，两张图并排会压到 250px 左右，提前转单列
+  @media (max-width: 992px) {
     grid-template-columns: 1fr;
   }
 }

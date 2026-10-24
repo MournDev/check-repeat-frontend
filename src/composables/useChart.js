@@ -2,7 +2,9 @@ import { ref, shallowRef, onUnmounted, nextTick } from 'vue'
 import * as echarts from 'echarts'
 
 // 全站共享一个 window resize 监听：每个 useChart 实例把 resize 函数注册进集合，
-// 避免 N 张图挂 N 个 window listener（此前各页面自行 add/removeEventListener）
+// 避免 N 张图挂 N 个 window listener（此前各页面自行 add/removeEventListener）。
+// 另外每张图再用 ResizeObserver 监听容器自身尺寸：窗口不变但布局变化
+// （如侧栏折叠、栅格切换）时也能重绘，window resize 只覆盖前者。
 const resizers = new Set()
 let resizeListenerBound = false
 
@@ -40,13 +42,30 @@ export function useChart() {
   const chartRef = shallowRef(null)
   const empty = ref(false)
   let instance = null
+  let observer = null
 
   const resize = () => {
     if (instance) instance.resize()
   }
 
+  const disconnectObserver = () => {
+    if (observer) {
+      observer.disconnect()
+      observer = null
+    }
+  }
+
+  const observeContainer = () => {
+    if (observer || !chartRef.value || typeof ResizeObserver === 'undefined') return
+    observer = new ResizeObserver(() => {
+      if (instance) instance.resize()
+    })
+    observer.observe(chartRef.value)
+  }
+
   const dispose = () => {
     resizers.delete(resize)
+    disconnectObserver()
     if (instance) {
       instance.dispose()
       instance = null
@@ -68,6 +87,7 @@ export function useChart() {
     instance.setOption(option)
     ensureGlobalResizeListener()
     resizers.add(resize)
+    observeContainer()
   }
 
   /**
@@ -101,6 +121,7 @@ export function useChart() {
       instance = echarts.init(chartRef.value)
       ensureGlobalResizeListener()
       resizers.add(resize)
+      observeContainer()
     }
     instance.setOption(option, true)
   }
