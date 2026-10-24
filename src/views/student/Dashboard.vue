@@ -153,40 +153,60 @@
           <div v-else class="card-empty" v-loading="true"></div>
         </section>
 
-        <!-- 待办事项 -->
-        <section class="dash-card">
+        <!-- 数据分析：紧接当前论文，向上提权并填满左栏 -->
+        <section class="dash-card charts-section">
           <header class="dash-card-head">
             <div class="dash-card-title">
-              <el-icon><List /></el-icon>
-              <span>待办事项</span>
+              <el-icon><DataAnalysis /></el-icon>
+              <span>数据分析</span>
             </div>
-            <span class="dash-card-hint">按完成状态与截止时间排序</span>
+            <el-button text :icon="Refresh" @click="refreshData">刷新</el-button>
           </header>
 
-          <div class="todo-list" v-loading="todosLoading">
-            <div
-              v-for="item in sortedTodos"
-              :key="item.id"
-              class="todo-item"
-              :class="{ 'is-done': item.completed }"
-            >
-              <span class="todo-dot" :class="getPriorityClass(item.priority)"></span>
-              <div class="todo-main">
-                <div class="todo-title">{{ item.title }}</div>
-                <div v-if="item.description" class="todo-desc">{{ item.description }}</div>
+          <div class="charts-grid">
+            <div class="chart-card">
+              <div class="chart-head">
+                <el-icon><DataAnalysis /></el-icon>
+                <span>个人能力评估</span>
               </div>
-              <span v-if="item.dueDate" class="todo-due">{{ formatDateTime(item.dueDate) }}</span>
+              <div v-if="hasRadarData" :ref="radarChart.chartRef" class="chart-container"></div>
+              <div v-else-if="!loading.radar" class="chart-empty">
+                <el-icon class="empty-icon"><DataAnalysis /></el-icon>
+                <p>暂无评估数据</p>
+              </div>
+              <div v-else class="chart-empty" v-loading="true"></div>
             </div>
 
-            <div v-if="sortedTodos.length === 0 && !todosLoading" class="card-empty compact">
-              <el-icon class="empty-icon"><CircleCheck /></el-icon>
-              <p>暂无待办事项</p>
+            <div class="chart-card">
+              <div class="chart-head">
+                <el-icon><TrendCharts /></el-icon>
+                <span>总相似比变化趋势</span>
+              </div>
+              <div v-if="hasTrendData" :ref="trendChart.chartRef" class="chart-container"></div>
+              <div v-else-if="!loading.trend" class="chart-empty">
+                <el-icon class="empty-icon"><TrendCharts /></el-icon>
+                <p>暂无检测数据</p>
+              </div>
+              <div v-else class="chart-empty" v-loading="true"></div>
             </div>
+          </div>
+
+          <div class="chart-card full-width">
+            <div class="chart-head">
+              <el-icon><Histogram /></el-icon>
+              <span>与专业平均水平对比</span>
+            </div>
+            <div v-if="hasComparisonData" :ref="comparisonChart.chartRef" class="chart-container-large"></div>
+            <div v-else-if="!loading.comparison" class="chart-empty">
+              <el-icon class="empty-icon"><Histogram /></el-icon>
+              <p>暂无专业对比数据</p>
+            </div>
+            <div v-else class="chart-empty" v-loading="true"></div>
           </div>
         </section>
       </div>
 
-      <!-- 右列：导师 / 节点 / 通知，固定宽度独立侧栏 -->
+      <!-- 右列：导师 / 时间节点 / 待办，固定宽度独立侧栏 -->
       <aside class="dashboard-aside">
         <!-- 指导老师：与左栏当前论文顶部齐平 -->
         <section class="dash-card">
@@ -338,84 +358,39 @@
           </ul>
         </section>
 
-        <!-- 通知消息 -->
+        <!-- 待办事项：置于侧栏底部，与左栏图表高度平衡 -->
         <section class="dash-card">
           <header class="dash-card-head">
             <div class="dash-card-title">
-              <el-icon><Bell /></el-icon>
-              <span>通知消息</span>
+              <el-icon><List /></el-icon>
+              <span>待办事项</span>
             </div>
-            <el-button text @click="viewAllNotifications">查看全部</el-button>
+            <span class="dash-card-hint">按完成状态与截止时间排序</span>
           </header>
 
-          <div v-if="displayNotifications.length > 0" class="notification-list">
-            <div v-for="(item, index) in displayNotifications" :key="item.id ?? index" class="notification-item">
-              <div class="notification-title">{{ item.title || '系统通知' }}</div>
-              <div v-if="item.content || item.message" class="notification-content">
-                {{ item.content || item.message }}
+          <div class="todo-list" v-loading="todosLoading">
+            <div
+              v-for="item in sortedTodos"
+              :key="item.id"
+              class="todo-item"
+              :class="{ 'is-done': item.completed }"
+            >
+              <span class="todo-dot" :class="getPriorityClass(item.priority)"></span>
+              <div class="todo-main">
+                <div class="todo-title">{{ item.title }}</div>
+                <div v-if="item.description" class="todo-desc">{{ item.description }}</div>
+                <span v-if="item.dueDate" class="todo-due">{{ formatDateTime(item.dueDate) }}</span>
               </div>
-              <div class="notification-time">{{ formatDateTime(item.createTime || item.createdAt) }}</div>
+            </div>
+
+            <div v-if="sortedTodos.length === 0 && !todosLoading" class="card-empty compact">
+              <el-icon class="empty-icon"><CircleCheck /></el-icon>
+              <p>暂无待办事项</p>
             </div>
           </div>
-          <div v-else-if="!loading.notifications" class="card-empty compact">
-            <el-icon class="empty-icon"><Bell /></el-icon>
-            <p>暂无通知消息</p>
-          </div>
-          <div v-else class="card-empty compact" v-loading="true"></div>
         </section>
       </aside>
 
-      <!-- 数据分析：横跨两列，避免右栏底部留白 -->
-      <section class="dash-card charts-section">
-        <header class="dash-card-head">
-          <div class="dash-card-title">
-            <el-icon><DataAnalysis /></el-icon>
-            <span>数据分析</span>
-          </div>
-          <el-button text :icon="Refresh" @click="refreshData">刷新</el-button>
-        </header>
-
-        <div class="charts-grid">
-          <div class="chart-card">
-            <div class="chart-head">
-              <el-icon><DataAnalysis /></el-icon>
-              <span>个人能力评估</span>
-            </div>
-            <div v-if="hasRadarData" :ref="radarChart.chartRef" class="chart-container"></div>
-            <div v-else-if="!loading.radar" class="chart-empty">
-              <el-icon class="empty-icon"><DataAnalysis /></el-icon>
-              <p>暂无评估数据</p>
-            </div>
-            <div v-else class="chart-empty" v-loading="true"></div>
-          </div>
-
-          <div class="chart-card">
-            <div class="chart-head">
-              <el-icon><TrendCharts /></el-icon>
-              <span>总相似比变化趋势</span>
-            </div>
-            <div v-if="hasTrendData" :ref="trendChart.chartRef" class="chart-container"></div>
-            <div v-else-if="!loading.trend" class="chart-empty">
-              <el-icon class="empty-icon"><TrendCharts /></el-icon>
-              <p>暂无检测数据</p>
-            </div>
-            <div v-else class="chart-empty" v-loading="true"></div>
-          </div>
-        </div>
-
-        <div class="chart-card full-width">
-          <div class="chart-head">
-            <el-icon><Histogram /></el-icon>
-            <span>与专业平均水平对比</span>
-          </div>
-          <div v-if="hasComparisonData" :ref="comparisonChart.chartRef" class="chart-container-large"></div>
-          <div v-else-if="!loading.comparison" class="chart-empty">
-            <el-icon class="empty-icon"><Histogram /></el-icon>
-            <p>暂无专业对比数据</p>
-          </div>
-          <div v-else class="chart-empty" v-loading="true"></div>
-        </div>
-      </section>
     </div>
   </div>
 </template>
@@ -426,7 +401,7 @@ import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
-import { getLatestPaper, getAdvisorInfo, getStudentDashboardStats, getDashboardDeadlines, getAbilityRadarData, getSimilarityTrendChart, getMajorComparisonData, getNotifications, getProgressTracking, exportDashboardStats, getTodoList } from "@/api/student.js"
+import { getLatestPaper, getAdvisorInfo, getStudentDashboardStats, getDashboardDeadlines, getAbilityRadarData, getSimilarityTrendChart, getMajorComparisonData, getProgressTracking, exportDashboardStats, getTodoList } from "@/api/student.js"
 import { useChart } from '@/composables/useChart'
 import PageHeader from '@/components/common/PageHeader.vue'
 
@@ -434,7 +409,7 @@ import PageHeader from '@/components/common/PageHeader.vue'
 import {
   UploadFilled, Download, Document, Clock, Check, EditPen,
   DataLine, Refresh, Edit, List, UserFilled, Phone,
-  Message, ChatDotRound, Bell, Lightning, CircleCheck,
+  Message, ChatDotRound, Lightning, CircleCheck,
   OfficeBuilding, ChatLineRound, TrendCharts, PieChart as PieChartIcon, Calendar, QuestionFilled,
   Delete, Setting, Files, Warning, Trophy, ScaleToOriginal, Star, Timer,
   Collection, Plus, DataAnalysis, User, Histogram, Microphone
@@ -456,7 +431,6 @@ const stats = reactive({
 })
 const latestPaper = ref(null)
 const advisorInfo = ref(null)
-const notifications = ref([])
 const todos = ref([])
 const todosLoading = ref(false)
 const loading = reactive({
@@ -467,7 +441,6 @@ const loading = reactive({
   radar: false,
   trend: false,
   comparison: false,
-  notifications: false,
   progress: false
 })
 
@@ -624,9 +597,6 @@ const sortedTodos = computed(() => {
     .slice(0, 5)
 })
 
-// 右栏通知最多展示 3 条，其余走「查看全部」，控制侧栏高度
-const displayNotifications = computed(() => notifications.value.slice(0, 3))
-
 // 趋势图是否有数据
 const hasTrendData = computed(() => {
   return Array.isArray(similarityTrendData.similarities) && similarityTrendData.similarities.length > 0
@@ -697,7 +667,7 @@ const loadDashboardData = async () => {
   
   try {
     // 并行请求所有数据
-    const [statsRes, paperRes, advisorRes, deadlinesRes, radarRes, trendRes, comparisonRes, notifRes, progressRes] = await Promise.all([
+    const [statsRes, paperRes, advisorRes, deadlinesRes, radarRes, trendRes, comparisonRes, progressRes] = await Promise.all([
       getStudentDashboardStats(),
       getLatestPaper(),
       getAdvisorInfo(),
@@ -705,7 +675,6 @@ const loadDashboardData = async () => {
       getAbilityRadarData(),
       getSimilarityTrendChart(),
       getMajorComparisonData(),
-      getNotifications(5),
       getProgressTracking()
     ])
     
@@ -795,14 +764,6 @@ const loadDashboardData = async () => {
     }
     loading.comparison = false
     
-    // 处理通知消息
-    if (notifRes.code === 200) {
-      notifications.value = notifRes.data || []
-    } else {
-      ElMessage.error(notifRes.message || '获取通知消息失败')
-    }
-    loading.notifications = false
-    
     // 处理进度跟踪数据
     if (progressRes.code === 200) {
       Object.assign(progressTrackingData, progressRes.data || {})
@@ -886,10 +847,6 @@ const contactAdvisor = () => {
       }
     )
   }
-}
-
-const viewAllNotifications = () => {
-  router.push('/message-center')
 }
 
 const getStatusType = (status) => {
@@ -1330,11 +1287,6 @@ const renderComparisonChart = () => {
   align-items: start;
 }
 
-// 宽图表独占一行，不参与左右分栏的高度竞争
-.charts-section {
-  grid-column: 1 / -1;
-}
-
 .dashboard-col,
 .dashboard-aside {
   display: flex;
@@ -1620,7 +1572,8 @@ const renderComparisonChart = () => {
 }
 
 .todo-due {
-  flex-shrink: 0;
+  display: block;
+  margin-top: 2px;
   font-size: var(--app-fs-meta);
   color: var(--app-color-text-muted);
   font-variant-numeric: tabular-nums;
@@ -1974,49 +1927,6 @@ const renderComparisonChart = () => {
 .advisor-stat .stat-label {
   font-size: var(--app-fs-meta);
   color: var(--app-color-text-muted);
-}
-
-// ── 通知 ────────────────────────────────────────────────────
-// 右栏固定高度上限，超出部分在卡片内部滚动，避免把整页高度撑大
-.notification-list {
-  display: flex;
-  flex-direction: column;
-  max-height: calc(100vh - 400px);
-  overflow-y: auto;
-  padding-right: 4px;
-}
-
-.notification-item {
-  padding: var(--app-space-2) 0;
-  border-bottom: 1px solid var(--app-color-divider);
-
-  &:last-child {
-    border-bottom: none;
-  }
-}
-
-.notification-title {
-  font-size: var(--app-fs-caption);
-  font-weight: 500;
-  color: var(--app-color-ink);
-}
-
-.notification-content {
-  margin-top: 2px;
-  font-size: var(--app-fs-meta);
-  line-height: 1.5;
-  color: var(--app-color-text-secondary);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.notification-time {
-  margin-top: var(--app-space-1);
-  font-size: var(--app-fs-meta);
-  color: var(--app-color-text-muted);
-  font-variant-numeric: tabular-nums;
 }
 
 // ── 响应式 ──────────────────────────────────────────────────
