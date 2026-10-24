@@ -155,7 +155,7 @@ export const asyncRoutes = [
       // order 7 插在学生分组(6)与学生评价汇总(8)之间（P5 指导进度看板）
       { path: "guidance-progress", name: "TeacherGuidanceProgress", component: () => import("@/views/teacher/GuidanceProgress.vue"), meta: { title: "指导进度看板", menu: { icon: "Odometer", group: "学生管理", order: 7 } } },
       // 待审核论文统一入口（原 paper-review/pending 已下线）
-      { path: "review-workbench", name: "TeacherReviewWorkbench", component: () => import("@/views/teacher/ReviewWorkbench.vue"), meta: { title: "待审核论文", menu: { icon: "Clock", label: "待审核论文", group: "论文管理", order: 3 } } },
+      { path: "review-workbench", name: "TeacherReviewWorkbench", component: () => import("@/views/teacher/ReviewWorkbench.vue"), meta: { title: "待审核论文", fullBleed: true, menu: { icon: "Clock", label: "待审核论文", group: "论文管理", order: 3 } } },
       // order 8 排在与学生相关的最后一项（学生评价汇总）
       { path: "advisor-eval-summary", name: "AdvisorEvalSummary", component: () => import("@/views/teacher/AdvisorEvalSummary.vue"), meta: { title: "学生评价汇总", menu: { icon: "Star", group: "学生管理", order: 8 } } },
       { path: "profile", name: "TeacherProfile", component: () => import("@/views/teacher/Profile.vue"), meta: { title: "个人设置", menu: { icon: "Setting", label: "个人设置", group: "设置与支持", order: 11, spacer: true } } },

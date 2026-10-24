@@ -154,7 +154,7 @@
           </div>
         </div>
         <template v-else>
-          <div class="content-inner">
+          <div :class="['content-inner', { 'content-inner--full': route.meta.fullBleed }]">
             <router-view v-slot="{ Component }">
               <component :is="Component" />
             </router-view>
@@ -890,6 +890,11 @@ onUnmounted(() => {
   max-width: var(--app-content-max);
   margin: 0 auto;
   padding: var(--app-page-gutter);
+}
+
+// 工作台类页面（route.meta.fullBleed）突破 1440 上限，让三栏用满可用宽度
+.content-inner--full {
+  max-width: none;
 }
 
 // ── Footer (page bg, dense) ──────────────────────────────

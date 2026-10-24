@@ -457,8 +457,10 @@ onBeforeUnmount(() => {
 .review-workbench {
   display: grid;
   grid-template-columns: 300px minmax(0, 1fr) 400px;
-  height: calc(100vh - 160px);
-  min-height: 560px;
+  /* 高度由导航与内容区留白令牌推导，避免写死 160px */
+  height: calc(100vh - var(--app-global-nav-height) - var(--app-subnav-height) - (var(--app-page-gutter) * 2));
+  height: calc(100dvh - var(--app-global-nav-height) - var(--app-subnav-height) - (var(--app-page-gutter) * 2));
+  min-height: 520px;
   overflow: hidden;
   background: var(--app-color-card-bg);
   border: 1px solid var(--app-color-border);
@@ -729,13 +731,21 @@ onBeforeUnmount(() => {
   background: var(--app-color-info-bg);
 }
 
-@media (max-width: 1200px) {
+/* 中等宽度先收窄两侧栏，保证中间论文预览仍有可读宽度 */
+@media (max-width: 1440px) {
   .review-workbench {
-    grid-template-columns: 240px minmax(0, 1fr) 360px;
+    grid-template-columns: 280px minmax(0, 1fr) 380px;
   }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1280px) {
+  .review-workbench {
+    grid-template-columns: 240px minmax(0, 1fr) 340px;
+  }
+}
+
+/* 再窄就放弃三栏，改为纵向堆叠，避免预览区被挤成细条 */
+@media (max-width: 1100px) {
   .review-workbench {
     grid-template-columns: 1fr;
     height: auto;
