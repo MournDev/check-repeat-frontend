@@ -103,8 +103,8 @@
   // 文字（按信息层级从强到弱）
   --app-color-ink: var(--apple-ink);                          // 标题/主数据
   --app-color-text: var(--apple-ink-muted-80);                // 正文/表格
-  --app-color-text-secondary: var(--apple-ink-secondary);     // 次级说明（≥14px 使用）
-  --app-color-text-muted: var(--apple-ink-muted-48);          // 弱提示/占位说明
+  --app-color-text-secondary: var(--apple-ink-secondary-strong); // 次级说明，页底 AA ≈4.7:1
+  --app-color-text-muted: var(--apple-ink-muted-strong);         // 12px 元信息，页底 AA ≈4.9:1
   --app-color-text-placeholder: var(--apple-body-muted);      // 表单 placeholder
   --app-color-text-on-dark: var(--apple-body-muted);          // 深色导航上的文字
 
