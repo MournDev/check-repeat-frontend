@@ -173,9 +173,8 @@ export const asyncRoutes = [
     // （如「查重规则」：ADMIN 无分组、超管归「系统运维」组），差异写在
     // menu 下以角色名为 key 的覆盖块里，buildMenus 按当前角色合并。
     children: [
-      // 论文业务管理只进 ADMIN 菜单。menu.roles 仅控菜单露出，路由 roles 仍含
-      // SUPER_ADMIN（超管可 URL 直达）；缺了这层会继承父路由双角色而泄漏进超管菜单
-      { path: "user-management", name: "UserManagement", component: () => import("@/views/admin/UserManagement.vue"), meta: { title: "用户管理", menu: { icon: "UserFilled", roles: ["SUPER_ADMIN"], group: "用户与权限", order: 1 } } },
+      // 用户管理归业务管理员与超管共有：账号与组织归属是管理员的职责，
+      { path: "user-management", name: "UserManagement", component: () => import("@/views/admin/UserManagement.vue"), meta: { title: "用户管理", menu: { icon: "UserFilled", roles: ["SUPER_ADMIN", "ADMIN"], group: "用户与权限", SUPER_ADMIN: { order: 1 }, ADMIN: { order: 7.5 } } } },
       // 论文分配四页合一：容器挂 Tabs，菜单只露出「论文分配」一项，子页 URL 不变
       { path: "paper-assignment", name: "PaperAssignmentCenter", component: () => import("@/views/admin/PaperAssignmentCenter.vue"), meta: { title: "论文分配", menu: { roles: ["ADMIN"], icon: "Connection", group: "论文管理", order: 5 } }, children: [
         { path: "", name: "PaperAssignment", component: () => import("@/views/admin/PaperAssignment.vue"), meta: { title: "分配总览" } },

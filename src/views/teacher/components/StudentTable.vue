@@ -123,9 +123,7 @@
     <!-- 批量操作：分页由外层 ListPageShell 统一承载 -->
     <div v-if="selectedCount > 0" class="table-footer">
       <span class="batch-summary">已选择 {{ selectedCount }} 个学生（跨页保留）</span>
-      <el-button type="primary" size="small" @click="$emit('batch-assign-advisor')">
-        批量分配导师
-      </el-button>
+      <!-- 导师分配归管理员「论文分配」模块，教师端只保留沟通与导出类批量动作 -->
       <el-button size="small" @click="$emit('batch-send-message')">
         批量发送消息
       </el-button>
@@ -173,7 +171,6 @@ const emit = defineEmits([
   'assign-tutor',
   'message',
   'delete',
-  'batch-assign-advisor',
   'batch-send-message',
   'batch-export',
   'batch-delete'

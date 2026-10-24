@@ -22,9 +22,8 @@
       @page-change="handlePageChange"
       @size-change="handleSizeChange"
     >
+      <!-- 建号与导入归管理员（/admin/user-management）：教师端只做查阅、跟踪与批量沟通 -->
       <template #toolbar>
-        <el-button type="primary" :icon="Plus" @click="addNewStudent">添加学生</el-button>
-        <el-button :icon="Upload" @click="importStudents">批量导入</el-button>
         <el-button :icon="Download" @click="exportData">导出数据</el-button>
         <el-button text :icon="Refresh" @click="refreshList">刷新</el-button>
       </template>
@@ -51,83 +50,11 @@
         @assign-tutor="handleAssignTutor"
         @message="handleMessage"
         @delete="deleteStudent"
-        @batch-assign-advisor="handleBatchAssignAdvisor"
         @batch-send-message="handleBatchSendMessage"
         @batch-export="batchExport"
         @batch-delete="batchDelete"
       />
     </ListPageShell>
-
-    <!-- 添加学生对话框 -->
-    <el-dialog v-model="dialogVisible" title="添加学生" width="500px" :before-close="() => { dialogVisible = false }">
-      <el-form
-        :model="studentForm"
-        :rules="formRules"
-        ref="studentFormRef"
-        label-width="80px"
-        label-position="left"
-      >
-        <el-form-item label="学号" prop="username">
-          <el-input v-model="studentForm.username" placeholder="请输入10位学号" />
-        </el-form-item>
-
-        <el-form-item label="姓名" prop="studentName">
-          <el-input v-model="studentForm.studentName" placeholder="请输入学生姓名" />
-        </el-form-item>
-
-        <el-form-item label="学院" prop="collegeName">
-          <el-select
-            v-model="studentForm.collegeName"
-            placeholder="请选择学院"
-            @change="handleCollegeChange"
-            style="width: 100%"
-          >
-            <el-option
-              v-for="college in colleges"
-              :key="college.collegeCode"
-              :label="college.collegeName"
-              :value="college.collegeCode"
-            />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="专业" prop="major">
-          <el-select
-            v-model="studentForm.major"
-            placeholder="请选择专业"
-            style="width: 100%"
-          >
-            <el-option
-              v-for="major in majors"
-              :key="major.majorCode"
-              :label="major.majorName"
-              :value="major.majorCode"
-            />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="年级" prop="grade">
-          <el-input v-model="studentForm.grade" placeholder="请输入入学年份，如2021" />
-        </el-form-item>
-
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="studentForm.email" placeholder="请输入邮箱地址" />
-        </el-form-item>
-
-        <el-form-item label="手机" prop="phone">
-          <el-input v-model="studentForm.phone" placeholder="请输入手机号码" />
-        </el-form-item>
-      </el-form>
-
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button @click="dialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="submitStudentForm(studentFormRef)">
-            确定添加
-          </el-button>
-        </div>
-      </template>
-    </el-dialog>
 
     <!-- 论文预览对话框 -->
     <el-dialog
@@ -266,14 +193,10 @@ import {
   getStudentStats,
   assignAdvisor as assignAdvisorApi,
   sendSystemMessage as sendMessageApi,
-  batchAssignAdvisor,
   batchSendMessage,
   batchDeleteStudents,
   exportStudentData,
-  importStudentData,
-  addStudent,
   getColleges,
-  getMajors,
   getStudentPaper,
   getStudentPapers
 } from '@/api/teacher'
@@ -289,7 +212,7 @@ import ListPageShell from '@/components/common/ListPageShell.vue'
 
 // 图标引入
 import {
-  Plus, Upload, Download, Refresh, Document, List
+  Download, Refresh, Document, List
 } from '@element-plus/icons-vue'
 
 const userStore = useUserStore()
@@ -318,40 +241,8 @@ const searchQuery = ref('')
 const filterStatus = ref('')
 const filterCollege = ref('')
 
-// 添加学生表单数据
-const dialogVisible = ref(false)
+// 学院列表：供筛选栏与（只读的）学生信息展示使用
 const colleges = ref([])
-const majors = ref([])
-const studentForm = ref({
-  username: '',
-  studentName: '',
-  collegeName: '',
-  major: '',
-  grade: '',
-  email: '',
-  phone: ''
-})
-const formRules = {
-  username: [
-    { required: true, message: '请输入学号', trigger: 'blur' },
-    { pattern: /^\d{10}$/, message: '学号格式不正确', trigger: 'blur' }
-  ],
-  studentName: [
-    { required: true, message: '请输入学生姓名', trigger: 'blur' }
-  ],
-  collegeName: [
-    { required: true, message: '请选择学院', trigger: 'change' }
-  ],
-  major: [
-    { required: true, message: '请选择专业', trigger: 'change' }
-  ],
-  grade: [
-    { required: true, message: '请输入年级', trigger: 'blur' },
-    { pattern: /^\d{4}$/, message: '年级格式不正确', trigger: 'blur' }
-  ]
-}
-
-const studentFormRef = ref()
 
 // 论文预览相关数据
 const previewVisible = ref(false)
@@ -408,26 +299,6 @@ const loadColleges = async () => {
     }
   } catch (error) {
     console.error('获取学院列表失败:', error)
-  }
-}
-
-const loadMajors = async (collegeCode) => {
-  try {
-    const res = await getMajors(collegeCode)
-    if (res.code === 200) {
-      majors.value = res.data
-    }
-  } catch (error) {
-    console.error('获取专业列表失败:', error)
-  }
-}
-
-const handleCollegeChange = (collegeCode) => {
-  studentForm.value.major = ''
-  if (collegeCode) {
-    loadMajors(collegeCode)
-  } else {
-    majors.value = []
   }
 }
 
@@ -758,92 +629,7 @@ const downloadPaper = async () => {
   }
 }
 
-// ── 添加学生 ────────────────────────────────────────────────
-const addNewStudent = () => {
-  studentForm.value = {
-    username: '',
-    studentName: '',
-    collegeName: '',
-    major: '',
-    grade: '',
-    email: '',
-    phone: ''
-  }
-  dialogVisible.value = true
-  loadColleges()
-}
-
-const submitStudentForm = async (formRef) => {
-  if (!formRef) return
-
-  await formRef.validate(async (valid) => {
-    if (valid) {
-      let loading = null
-      try {
-        loading = ElLoading.service({
-          lock: true,
-          text: '正在添加...',
-          background: 'rgba(0,0,0,0.4)'
-        })
-
-        const res = await addStudent(studentForm.value)
-        if (res.code === 200) {
-          ElMessage.success('学生添加成功')
-          dialogVisible.value = false
-          await loadStudents()
-          await loadStats()
-        } else {
-          ElMessage.error(res.message || '添加失败')
-        }
-      } catch (error) {
-        ElMessage.error('添加失败: ' + error.message)
-      } finally {
-        loading?.close()
-      }
-    }
-  })
-}
-
-// ── 批量导入 / 导出 ─────────────────────────────────────────
-const importStudents = async () => {
-  try {
-    const input = document.createElement('input')
-    input.type = 'file'
-    input.accept = '.xlsx,.xls'
-    input.onchange = async (event) => {
-      const file = event.target.files[0]
-      if (file) {
-        const formData = new FormData()
-        formData.append('file', file)
-
-        const loading = ElLoading.service({
-          lock: true,
-          text: '正在导入...',
-          background: 'rgba(0,0,0,0.4)'
-        })
-
-        try {
-          const res = await importStudentData(formData)
-          if (res.code === 200) {
-            ElMessage.success(`导入成功！成功: ${res.data.successCount}条，失败: ${res.data.failCount}条`)
-            await loadStudents()
-            await loadStats()
-          } else {
-            ElMessage.error(res.message || '导入失败')
-          }
-        } catch (error) {
-          ElMessage.error('导入失败: ' + error.message)
-        } finally {
-          loading.close()
-        }
-      }
-    }
-    input.click()
-  } catch (error) {
-    ElMessage.error('操作失败: ' + error.message)
-  }
-}
-
+// ── 导出 ────────────────────────────────────────────────────
 const exportData = async () => {
   let loading = null
   try {
@@ -880,53 +666,6 @@ const exportData = async () => {
 }
 
 // ── 批量操作 ────────────────────────────────────────────────
-const handleBatchAssignAdvisor = async () => {
-  if (selectedStudents.value.length === 0) {
-    ElMessage.warning('请先选择学生')
-    return
-  }
-
-  try {
-    await ElMessageBox.prompt('请选择导师:', '批量分配导师', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      inputPlaceholder: '输入导师姓名或ID'
-    }).then(async ({ value }) => {
-      if (value) {
-        const loading = ElLoading.service({
-          lock: true,
-          text: '正在分配...',
-          background: 'rgba(0,0,0,0.4)'
-        })
-
-        try {
-          const res = await batchAssignAdvisor({
-            studentIds: selectedStudents.value.map(s => s.studentId),
-            advisorName: value
-          })
-          if (res.code === 200) {
-            ElMessage.success('批量分配成功')
-            selectedStudents.value.forEach(student => {
-              student.advisorName = value
-            })
-            studentTableRef.value?.clearSelection()
-          } else {
-            ElMessage.error(res.message || '分配失败')
-          }
-        } catch (error) {
-          ElMessage.error('操作失败: ' + error.message)
-        } finally {
-          loading.close()
-        }
-      }
-    })
-  } catch (error) {
-    if (error !== 'cancel') {
-      ElMessage.error('操作失败: ' + error.message)
-    }
-  }
-}
-
 const handleBatchSendMessage = async () => {
   if (selectedStudents.value.length === 0) {
     ElMessage.warning('请先选择学生')
@@ -1064,7 +803,10 @@ const batchDelete = async () => {
 onMounted(async () => {
   await Promise.all([
     loadStudents(),
-    loadStats()
+    loadStats(),
+    // 学院列表此前只在「添加学生」弹窗里懒加载，入口移除后改在首屏拉取，
+    // 否则筛选栏的学院下拉永远是空
+    loadColleges()
   ])
 })
 </script>
