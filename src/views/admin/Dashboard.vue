@@ -7,43 +7,23 @@
       </template>
     </PageHeader>
 
-    <!-- 系统统计卡片 -->
+    <!-- 系统统计卡片：与其它工作台一致，只保留标签 + 数值 -->
     <div class="stats-grid" v-loading="overviewLoading">
       <div class="stat-card">
-        <div class="stat-icon user-icon">
-          <el-icon><User /></el-icon>
-        </div>
-        <div class="stat-content">
-          <div class="stat-value">{{ stats.totalUsers || 0 }}</div>
-          <div class="stat-label">总用户数</div>
-        </div>
+        <span class="stat-label">总用户数</span>
+        <span class="stat-value">{{ stats.totalUsers || 0 }}</span>
       </div>
       <div class="stat-card">
-        <div class="stat-icon paper-icon">
-          <el-icon><Document /></el-icon>
-        </div>
-        <div class="stat-content">
-          <div class="stat-value">{{ stats.totalPapers || 0 }}</div>
-          <div class="stat-label">总论文数</div>
-        </div>
+        <span class="stat-label">总论文数</span>
+        <span class="stat-value">{{ stats.totalPapers || 0 }}</span>
       </div>
       <div class="stat-card">
-        <div class="stat-icon unassigned-icon">
-          <el-icon><Connection /></el-icon>
-        </div>
-        <div class="stat-content">
-          <div class="stat-value">{{ stats.unassignedCount || 0 }}</div>
-          <div class="stat-label">待分配</div>
-        </div>
+        <span class="stat-label">待分配</span>
+        <span class="stat-value">{{ stats.unassignedCount || 0 }}</span>
       </div>
       <div class="stat-card">
-        <div class="stat-icon health-icon">
-          <el-icon><TrendCharts /></el-icon>
-        </div>
-        <div class="stat-content">
-          <div class="stat-value">{{ stats.systemHealth == null ? '—' : stats.systemHealth + '%' }}</div>
-          <div class="stat-label">系统健康度</div>
-        </div>
+        <span class="stat-label">系统健康度</span>
+        <span class="stat-value">{{ stats.systemHealth == null ? '—' : stats.systemHealth + '%' }}</span>
       </div>
     </div>
 
@@ -90,6 +70,7 @@
               <div class="metric-item">
                 <div class="metric-value">{{ systemMonitorData.todayVisits }}</div>
                 <div class="metric-label">今日访问</div>
+                <div class="metric-bar-spacer" aria-hidden="true"></div>
               </div>
             </div>
             
@@ -127,13 +108,17 @@
               <el-icon><PieChart /></el-icon>
               用户分布
             </div>
+            <span class="dist-total">共 {{ userDistribution.total }} 人</span>
           </div>
           
           <div class="users-distribution" v-loading="overviewLoading">
             <div class="distribution-item">
               <div class="dist-info">
-                <div class="dist-value">{{ userDistribution.students }}</div>
-                <div class="dist-label">学生</div>
+                <span class="dist-label">学生</span>
+                <span class="dist-metrics">
+                  <span class="dist-value">{{ userDistribution.students }}</span>
+                  <span class="dist-percentage">{{ safePercent(userDistribution.students, userDistribution.total) }}%</span>
+                </span>
               </div>
               <el-progress
                 :percentage="safePercent(userDistribution.students, userDistribution.total)"
@@ -144,20 +129,26 @@
             </div>
             <div class="distribution-item">
               <div class="dist-info">
-                <div class="dist-value">{{ userDistribution.teachers }}</div>
-                <div class="dist-label">教师</div>
+                <span class="dist-label">教师</span>
+                <span class="dist-metrics">
+                  <span class="dist-value">{{ userDistribution.teachers }}</span>
+                  <span class="dist-percentage">{{ safePercent(userDistribution.teachers, userDistribution.total) }}%</span>
+                </span>
               </div>
               <el-progress
                 :percentage="safePercent(userDistribution.teachers, userDistribution.total)"
                 :stroke-width="6"
                 :show-text="false"
-                color="var(--app-color-danger)"
+                color="var(--app-color-warning)"
               />
             </div>
             <div class="distribution-item">
               <div class="dist-info">
-                <div class="dist-value">{{ userDistribution.admins }}</div>
-                <div class="dist-label">管理员</div>
+                <span class="dist-label">管理员</span>
+                <span class="dist-metrics">
+                  <span class="dist-value">{{ userDistribution.admins }}</span>
+                  <span class="dist-percentage">{{ safePercent(userDistribution.admins, userDistribution.total) }}%</span>
+                </span>
               </div>
               <el-progress
                 :percentage="safePercent(userDistribution.admins, userDistribution.total)"
@@ -255,8 +246,7 @@ import { formatDate, formatDateTime } from '@/utils/dataType.js'
 
 // 图标引入
 import {
-  Refresh, User, Document, Connection, TrendCharts,
-  Monitor, SuccessFilled, PieChart, Timer
+  Refresh, TrendCharts, Monitor, SuccessFilled, PieChart, Timer
 } from '@element-plus/icons-vue'
 
 const userStore = useUserStore()
@@ -410,7 +400,7 @@ const loadResponseTimeTrend = async (minutes) => {
             tooltip: { trigger: 'axis' },
             legend: { data: ['平均响应(ms)', 'P95响应(ms)', '请求数'] },
             grid: { left: 60, right: 60, top: 20, bottom: 30 },
-            xAxis: { type: 'category', data: d.timestamps || [], boundaryGap: false },
+            xAxis: { type: 'category', data: d.timestamps || [], boundaryGap: false, axisLabel: { hideOverlap: true } },
             yAxis: [
               { type: 'value', name: 'ms', min: 0 },
               { type: 'value', name: '次', min: 0 }
@@ -471,7 +461,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 
-// 统计卡片：4 列等宽，断点与其它工作台一致
+// 统计卡片：4 列等宽，移动端保持 2 列，与教师工作台一致
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -481,67 +471,29 @@ onMounted(() => {
   @media (max-width: 1200px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-
-  @media (max-width: 640px) {
-    grid-template-columns: minmax(0, 1fr);
-  }
 }
 
+// 纯数值卡：标签在上、数值在下，不使用图标色块
 .stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-1);
+  padding: var(--app-space-4) var(--app-space-6);
   background: var(--app-color-card-bg);
   border: 1px solid var(--app-color-border-soft);
   border-radius: var(--app-radius-lg);
-  padding: var(--app-space-4);
-  display: flex;
-  align-items: center;
-  gap: var(--app-space-4);
 
-  .stat-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: var(--app-radius-lg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    flex-shrink: 0;
-    
-    &.user-icon {
-      background: var(--app-color-info-bg);
-      color: var(--app-color-primary);
-    }
-    
-    &.paper-icon {
-      background: var(--app-color-warning-bg);
-      color: var(--app-color-warning);
-    }
-    
-    &.unassigned-icon {
-      background: var(--app-color-success-bg);
-      color: var(--app-color-success);
-    }
-    
-    &.health-icon {
-      background: rgba(var(--app-color-purple-rgb), 0.12);
-      color: var(--app-color-purple);
-    }
+  .stat-label {
+    font-size: var(--app-fs-caption);
+    color: var(--app-color-text-muted);
   }
-  
-  .stat-content {
-    flex: 1;
-    
-    .stat-value {
-      font-size: var(--app-fs-metric);
-      font-weight: 700;
-      color: var(--app-color-ink);
-      line-height: 1.2;
-      margin-bottom: var(--app-space-1);
-    }
-    
-    .stat-label {
-      font-size: var(--app-fs-meta);
-      color: var(--app-color-text-secondary);
-    }
+
+  .stat-value {
+    font-size: var(--app-fs-metric);
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--app-color-ink);
+    font-variant-numeric: tabular-nums;
   }
 }
 
@@ -629,6 +581,11 @@ onMounted(() => {
       font-size: var(--app-fs-meta);
       margin-bottom: var(--app-space-3);
     }
+
+    // 无进度条的指标保留同高占位，保证三块指标底部对齐
+    .metric-bar-spacer {
+      height: 6px;
+    }
   }
   
   .server-info {
@@ -640,9 +597,10 @@ onMounted(() => {
       font-weight: 600;
     }
     
+    // 固定 2 列，避免 4 项在桌面按 auto-fit 排成 3+1 的孤立行
     .server-details {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: var(--app-space-4);
     }
     
@@ -667,13 +625,13 @@ onMounted(() => {
   }
 }
 
-// 用户分布：卡片被拉伸后，内容垂直居中分布，填满右侧高度
+// 用户分布：卡片被拉伸时用等距分布填满，避免内容居中后上下大片空白
 .users-distribution {
   display: flex;
   flex: 1;
   flex-direction: column;
-  justify-content: center;
-  gap: var(--app-space-6);
+  justify-content: space-evenly;
+  gap: var(--app-space-4);
 
   .distribution-item {
     margin-bottom: 0;
@@ -681,21 +639,46 @@ onMounted(() => {
     .dist-info {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: baseline;
+      gap: var(--app-space-2);
       margin-bottom: var(--app-space-2);
-      
-      .dist-value {
-        font-size: var(--app-fs-body);
-        font-weight: 700;
-        color: var(--app-color-ink);
-      }
       
       .dist-label {
         color: var(--app-color-text-secondary);
+        font-size: var(--app-fs-caption);
+      }
+
+      .dist-metrics {
+        display: inline-flex;
+        align-items: baseline;
+        gap: var(--app-space-2);
+      }
+      
+      .dist-value {
+        font-size: var(--app-fs-title);
+        font-weight: 700;
+        line-height: 1.1;
+        color: var(--app-color-ink);
+        font-variant-numeric: tabular-nums;
+      }
+
+      .dist-percentage {
         font-size: var(--app-fs-meta);
+        color: var(--app-color-text-muted);
+        background: var(--app-color-fill);
+        padding: 1px var(--app-space-2);
+        border-radius: var(--app-radius-pill);
+        font-variant-numeric: tabular-nums;
       }
     }
   }
+}
+
+// 分布卡头部总数
+.dist-total {
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
+  font-variant-numeric: tabular-nums;
 }
 
 // 状态标签
@@ -729,12 +712,27 @@ onMounted(() => {
     width: 100%;
     height: 320px;
   }
+
+  @media (max-width: 768px) {
+    .chart-container {
+      height: 240px;
+    }
+  }
 }
 
+// 业务指标：7 项固定一行，平板 4 列，移动端 2 列，避免 auto-fill 产生孤立行
 .business-metrics {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: var(--app-space-4);
+
+  @media (max-width: 1023px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  @media (max-width: 640px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 
   .metric-item {
     padding: var(--app-space-4);
@@ -758,18 +756,34 @@ onMounted(() => {
 
 // 响应式设计
 @media (max-width: 768px) {
-  .metrics-grid {
-    grid-template-columns: 1fr;
+  .monitor-content .metrics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  
-  .server-details {
-    grid-template-columns: 1fr;
+
+  // 第三块“今日访问”跨两列，避免 2 列下只剩半行
+  .monitor-content .metrics-grid .metric-item:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .monitor-content .server-info .server-details {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  // 窄屏下长数值改为上下排列，避免日期在 2 列里被挤压
+  .monitor-content .server-info .server-detail-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--app-space-1);
   }
 }
 
 @media (max-width: 480px) {
+  .monitor-content .server-info .server-details {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .card {
-    padding: var(--app-space-5);
+    padding: var(--app-card-padding);
   }
 }
 </style>
