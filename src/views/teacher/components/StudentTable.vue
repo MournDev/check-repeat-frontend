@@ -1,19 +1,5 @@
 <template>
-  <el-card class="list-card console-card" shadow="never">
-    <!-- 列表头 -->
-    <div class="list-header">
-      <div class="header-title">
-        <el-icon><List /></el-icon>
-        <span>学生列表</span>
-        <span class="total-count">(共 {{ total }} 人)</span>
-      </div>
-      <div class="header-actions">
-        <el-button :icon="Refresh" text @click="$emit('refresh')">
-          刷新
-        </el-button>
-      </div>
-    </div>
-
+  <div class="student-table-wrap">
     <el-table
       ref="tableRef"
       :data="students"
@@ -134,45 +120,32 @@
       </template>
     </el-table>
 
-    <!-- 底栏：批量操作 + 分页 -->
-    <div class="table-footer">
-      <div v-if="selectedCount > 0" class="batch-bar">
-        <span class="batch-summary">已选择 {{ selectedCount }} 个学生（跨页保留）</span>
-        <el-button type="primary" size="small" @click="$emit('batch-assign-advisor')">
-          批量分配导师
-        </el-button>
-        <el-button size="small" @click="$emit('batch-send-message')">
-          批量发送消息
-        </el-button>
-        <el-button size="small" @click="$emit('batch-export')">
-          批量导出
-        </el-button>
-        <el-button type="danger" size="small" @click="$emit('batch-delete')">
-          批量删除
-        </el-button>
-        <el-button size="small" @click="clearSelection">
-          取消选择
-        </el-button>
-      </div>
-      <el-pagination
-        class="pagination"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        :total="total"
-        :page-sizes="[10, 20, 50, 100]"
-        layout="total, sizes, prev, pager, next, jumper"
-        background
-        @update:current-page="$emit('update:current-page', $event)"
-        @update:page-size="handleSizeChange"
-      />
+    <!-- 批量操作：分页由外层 ListPageShell 统一承载 -->
+    <div v-if="selectedCount > 0" class="table-footer">
+      <span class="batch-summary">已选择 {{ selectedCount }} 个学生（跨页保留）</span>
+      <el-button type="primary" size="small" @click="$emit('batch-assign-advisor')">
+        批量分配导师
+      </el-button>
+      <el-button size="small" @click="$emit('batch-send-message')">
+        批量发送消息
+      </el-button>
+      <el-button size="small" @click="$emit('batch-export')">
+        批量导出
+      </el-button>
+      <el-button type="danger" size="small" @click="$emit('batch-delete')">
+        批量删除
+      </el-button>
+      <el-button size="small" @click="clearSelection">
+        取消选择
+      </el-button>
     </div>
-  </el-card>
+  </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import {
-  List, Refresh, Message, UserFilled, More, Document, Delete
+  Message, UserFilled, More, Document, Delete
 } from '@element-plus/icons-vue'
 import { getSimilarityColor } from '@/utils/similarity.js'
 import { formatPercent, formatDate, getPaperStatusText, getPaperStatusType } from '@/utils/dataType.js'
@@ -186,18 +159,6 @@ defineProps({
     type: Boolean,
     default: false
   },
-  total: {
-    type: Number,
-    default: 0
-  },
-  currentPage: {
-    type: Number,
-    default: 1
-  },
-  pageSize: {
-    type: Number,
-    default: 10
-  },
   selectedCount: {
     type: Number,
     default: 0
@@ -205,11 +166,8 @@ defineProps({
 })
 
 const emit = defineEmits([
-  'update:current-page',
-  'update:page-size',
   'selection-change',
   'sort-change',
-  'refresh',
   'view-paper',
   'view-all-papers',
   'assign-tutor',
@@ -222,11 +180,6 @@ const emit = defineEmits([
 ])
 
 const tableRef = ref(null)
-
-const handleSizeChange = (size) => {
-  emit('update:page-size', size)
-  emit('update:current-page', 1)
-}
 
 const clearSelection = () => {
   tableRef.value?.clearSelection()
@@ -253,44 +206,8 @@ const getStatusText = (status) => getPaperStatusText(status)
 </script>
 
 <style lang="scss" scoped>
-.list-card {
-  background: var(--app-color-card-bg);
-  border: 1px solid var(--app-color-border);
-  border-radius: var(--app-radius-lg);
-  overflow: hidden;
-
-  :deep(.el-card__body) {
-    padding: 0;
-  }
-}
-
-.list-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--app-space-3) var(--app-space-4);
-  background: var(--app-color-fill);
-  border-bottom: 1px solid var(--app-color-border);
-
-  .header-title {
-    display: flex;
-    align-items: center;
-    gap: var(--app-space-2);
-    font-weight: 600;
-    font-size: var(--app-fs-body);
-    color: var(--app-color-ink);
-
-    .el-icon {
-      color: var(--app-color-text-muted);
-    }
-
-    .total-count {
-      font-size: var(--app-fs-meta);
-      color: var(--app-color-text-muted);
-      margin-left: var(--app-space-2);
-      font-weight: 400;
-    }
-  }
+.student-table-wrap {
+  min-width: 0;
 }
 
 :deep(.student-table) {
@@ -372,33 +289,21 @@ const getStatusText = (status) => getPaperStatusText(status)
   }
 }
 
-/* 底栏：批量 + 分页 */
+/* 批量操作条：仅选中时出现，分页由外层统一承载 */
 .table-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--app-space-3);
-  padding: var(--app-space-3) var(--app-space-4);
-  border-top: 1px solid var(--app-color-border);
-  background: var(--app-color-card-bg);
-}
-
-.batch-bar {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--app-space-2);
+  margin-top: var(--app-space-3);
+  padding-top: var(--app-space-3);
+  border-top: 1px solid var(--app-color-divider);
 }
 
-.batch-bar .batch-summary {
+.batch-summary {
   font-size: var(--app-fs-meta);
   color: var(--app-color-ink);
   margin-right: var(--app-space-1);
-}
-
-.pagination {
-  margin-left: auto;
 }
 
 /* 空状态 */
@@ -421,20 +326,5 @@ const getStatusText = (status) => getPaperStatusText(status)
   }
 }
 
-@media (max-width: 768px) {
-  .list-header {
-    padding: var(--app-space-3);
-  }
 
-  .table-footer {
-    flex-direction: column;
-    align-items: stretch;
-    padding: var(--app-space-3);
-  }
-
-  .pagination {
-    margin-left: 0;
-    justify-content: center;
-  }
-}
 </style>

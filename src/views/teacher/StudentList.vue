@@ -1,19 +1,7 @@
 <template>
   <div class="student-management">
-    <!-- 页面头部 -->
-    <PageHeader description="管理所有学生信息，分配导师，跟踪论文进度">
-      <template #actions>
-        <el-button type="primary" :icon="Plus" @click="addNewStudent" size="large">
-          添加学生
-        </el-button>
-        <el-button :icon="Upload" @click="importStudents" size="large">
-          批量导入
-        </el-button>
-        <el-button :icon="Download" @click="exportData" size="large">
-          导出数据
-        </el-button>
-      </template>
-    </PageHeader>
+    <!-- 页面说明：主操作收进列表卡工具栏 -->
+    <PageHeader description="管理所有学生信息，分配导师，跟踪论文进度" />
 
     <!-- 统计卡片（可点击过滤） -->
     <StudentStats
@@ -22,36 +10,53 @@
       @filter="onStatFilter"
     />
 
-    <!-- 筛选工具条 -->
-    <StudentFilterBar
-      v-model:keyword="searchQuery"
-      v-model:status="filterStatus"
-      v-model:college="filterCollege"
-      :college-list="collegeList"
-      @reset="resetFilters"
-    />
-
-    <!-- 学生列表 -->
-    <StudentTable
-      ref="studentTableRef"
-      v-model:current-page="currentPage"
+    <ListPageShell
+      v-model:page="currentPage"
       v-model:page-size="pageSize"
-      :students="students"
-      :loading="loading"
+      title="学生列表"
+      :icon="List"
       :total="total"
-      :selected-count="selectedStudents.length"
-      @selection-change="onSelectionChange"
-      @refresh="refreshList"
-      @view-paper="viewPaper"
-      @view-all-papers="viewAllPapers"
-      @assign-tutor="handleAssignTutor"
-      @message="handleMessage"
-      @delete="deleteStudent"
-      @batch-assign-advisor="handleBatchAssignAdvisor"
-      @batch-send-message="handleBatchSendMessage"
-      @batch-export="batchExport"
-      @batch-delete="batchDelete"
-    />
+      :page-sizes="[10, 20, 50, 100]"
+      show-total
+      total-suffix="人"
+      @page-change="handlePageChange"
+      @size-change="handleSizeChange"
+    >
+      <template #toolbar>
+        <el-button type="primary" :icon="Plus" @click="addNewStudent">添加学生</el-button>
+        <el-button :icon="Upload" @click="importStudents">批量导入</el-button>
+        <el-button :icon="Download" @click="exportData">导出数据</el-button>
+        <el-button text :icon="Refresh" @click="refreshList">刷新</el-button>
+      </template>
+
+      <template #filters>
+        <StudentFilterBar
+          v-model:keyword="searchQuery"
+          v-model:status="filterStatus"
+          v-model:college="filterCollege"
+          :college-list="collegeList"
+          @search="handleSearch"
+          @reset="resetFilters"
+        />
+      </template>
+
+      <StudentTable
+        ref="studentTableRef"
+        :students="students"
+        :loading="loading"
+        :selected-count="selectedStudents.length"
+        @selection-change="onSelectionChange"
+        @view-paper="viewPaper"
+        @view-all-papers="viewAllPapers"
+        @assign-tutor="handleAssignTutor"
+        @message="handleMessage"
+        @delete="deleteStudent"
+        @batch-assign-advisor="handleBatchAssignAdvisor"
+        @batch-send-message="handleBatchSendMessage"
+        @batch-export="batchExport"
+        @batch-delete="batchDelete"
+      />
+    </ListPageShell>
 
     <!-- 添加学生对话框 -->
     <el-dialog v-model="dialogVisible" title="添加学生" width="500px" :before-close="() => { dialogVisible = false }">
@@ -280,10 +285,11 @@ import StudentStats from './components/StudentStats.vue'
 import StudentFilterBar from './components/StudentFilterBar.vue'
 import StudentTable from './components/StudentTable.vue'
 import PageHeader from '@/components/common/PageHeader.vue'
+import ListPageShell from '@/components/common/ListPageShell.vue'
 
 // 图标引入
 import {
-  Plus, Upload, Download, Refresh, Document
+  Plus, Upload, Download, Refresh, Document, List
 } from '@element-plus/icons-vue'
 
 const userStore = useUserStore()
@@ -463,6 +469,17 @@ const loadStudents = async () => {
 }
 
 const handleSearch = () => {
+  currentPage.value = 1
+  loadStudents()
+}
+
+const handlePageChange = (page) => {
+  currentPage.value = page
+  loadStudents()
+}
+
+const handleSizeChange = (size) => {
+  pageSize.value = size
   currentPage.value = 1
   loadStudents()
 }
