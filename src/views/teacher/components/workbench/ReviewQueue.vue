@@ -63,6 +63,8 @@
         <el-checkbox
           class="queue-check"
           :model-value="isSelected(paper)"
+          :disabled="!isEligible(paper)"
+          :title="isEligible(paper) ? '选择该论文' : '未完成合格签核，不能批量操作'"
           :aria-label="`选择 ${paper.studentName || '该论文'}`"
           @change="(checked) => toggleSelect(paper, checked)"
         />
@@ -85,6 +87,7 @@
             <span>V{{ paper.version || 1 }}</span>
             <span v-if="paper.deadline" class="meta-deadline">{{ formatDateTime(paper.deadline, 'MM-DD HH:mm') }} 截止</span>
             <span v-else class="meta-deadline">待审核</span>
+            <span v-if="paper.canBatchReview === false" class="meta-lock">未签核</span>
           </div>
         </button>
       </div>
@@ -161,9 +164,13 @@ const selectedIds = ref([])
 
 const isSelected = (paper) => selectedIds.value.includes(String(paper?.paperId))
 
+// 后端待审列表已带 canBatchReview（signoffQualified && auditing），
+// 字段缺失时按可批量处理，最终仍由后端签核门兜底
+const isEligible = (paper) => paper?.canBatchReview !== false
+
 const toggleSelect = (paper, checked) => {
   const id = String(paper?.paperId ?? '')
-  if (!id) return
+  if (!id || !isEligible(paper)) return
   if (checked) {
     if (!selectedIds.value.includes(id)) selectedIds.value = [...selectedIds.value, id]
   } else {
@@ -171,21 +178,23 @@ const toggleSelect = (paper, checked) => {
   }
 }
 
+const eligiblePapers = computed(() => filteredPapers.value.filter(isEligible))
+
 const allSelected = computed(() =>
-  filteredPapers.value.length > 0
-  && filteredPapers.value.every(paper => isSelected(paper))
+  eligiblePapers.value.length > 0
+  && eligiblePapers.value.every(paper => isSelected(paper))
 )
 
 const someSelected = computed(() => selectedIds.value.length > 0)
 
 const toggleSelectAll = (checked) => {
   selectedIds.value = checked
-    ? filteredPapers.value.map(paper => String(paper.paperId))
+    ? eligiblePapers.value.map(paper => String(paper.paperId))
     : []
 }
 
 const selectedPapers = computed(() =>
-  (props.papers || []).filter(paper => isSelected(paper))
+  (props.papers || []).filter(paper => isSelected(paper) && isEligible(paper))
 )
 
 const emitBatch = (action) => {
@@ -438,6 +447,11 @@ watch(() => props.currentId, async () => {
 .meta-deadline {
   margin-left: auto;
   flex-shrink: 0;
+}
+
+.meta-lock {
+  flex-shrink: 0;
+  color: var(--app-color-danger);
 }
 
 .card-meta .sim {

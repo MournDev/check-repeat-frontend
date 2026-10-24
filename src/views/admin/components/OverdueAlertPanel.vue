@@ -4,14 +4,15 @@
       <div class="panel-title">
         <el-icon><Warning /></el-icon>
         <span>超期论文预警</span>
-        <el-tag size="small" type="info" effect="plain">演示数据</el-tag>
+        <el-tag size="small" type="info" effect="plain">{{ total }} 篇</el-tag>
       </div>
       <el-button
         type="primary"
         size="small"
         :icon="Bell"
-        :disabled="filtered.length === 0"
-        @click="remind(filtered)"
+        :loading="reminding"
+        :disabled="records.length === 0"
+        @click="remindAll"
       >
         一键催办
       </el-button>
@@ -25,14 +26,20 @@
         class="level-chip"
         :class="{ active: level === chip.value }"
         :aria-pressed="level === chip.value"
-        @click="level = chip.value"
+        @click="changeLevel(chip.value)"
       >
         {{ chip.label }}
         <span class="chip-count">{{ chip.count }}</span>
       </button>
     </div>
 
-    <el-table :data="filtered" size="small" class="overdue-table" :max-height="300">
+    <el-table
+      :data="records"
+      size="small"
+      class="overdue-table"
+      :max-height="300"
+      v-loading="loading"
+    >
       <el-table-column prop="studentName" label="学生" width="84" show-overflow-tooltip />
       <el-table-column prop="paperTitle" label="论文" min-width="160" show-overflow-tooltip />
       <el-table-column prop="advisorName" label="导师" width="84" show-overflow-tooltip />
@@ -43,16 +50,16 @@
       </el-table-column>
       <el-table-column label="操作" width="86" align="center">
         <template #default="{ row }">
-          <el-button
-            v-if="!remindedIds.includes(row.paperId)"
-            link
-            type="primary"
-            size="small"
-            @click="remind([row])"
+          <el-tooltip
+            v-if="row.reminded"
+            :content="row.lastRemindTime ? `最近催办：${formatDateTime(row.lastRemindTime)}` : '24 小时内已催办'"
+            placement="top"
           >
+            <el-tag size="small" type="success" effect="plain">已催办</el-tag>
+          </el-tooltip>
+          <el-button v-else link type="primary" size="small" :disabled="reminding" @click="remind([row])">
             催办
           </el-button>
-          <el-tag v-else size="small" type="success" effect="plain">已催办</el-tag>
         </template>
       </el-table-column>
       <template #empty>
@@ -60,68 +67,134 @@
       </template>
     </el-table>
 
+    <div v-if="total > size" class="panel-pagination">
+      <el-pagination
+        small
+        layout="prev, pager, next"
+        :current-page="page"
+        :page-size="size"
+        :total="total"
+        @current-change="changePage"
+      />
+    </div>
+
     <p class="panel-tip">
-      预警与催办为前端演示：后端暂无「按审核超期天数」的接口，催办仅提示并记录 console。
-      后端提供预警与催办接口后，替换 MOCK_OVERDUE 与 remind() 即可。
+      超期口径：提交时间 + 审核 SLA；仅统计未出结论的论文。催办会写入催办日志并通知导师。
     </p>
   </section>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
-import { ElMessage } from 'element-plus'
+import { computed, onMounted, ref } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { Warning, Bell } from '@element-plus/icons-vue'
-
-// TODO(mock): 后端 /api/admin/alerts/active 是系统指标预警（CPU/内存等），
-// 不含"论文审核超期"维度；这里先用示例数据把产品结构跑通。
-const MOCK_OVERDUE = [
-  { paperId: '1001', paperTitle: '基于深度学习的图像识别算法研究', studentName: '张一鸣', advisorName: '李建国', overdueDays: 9 },
-  { paperId: '1002', paperTitle: '高校教务管理系统设计与实现', studentName: '王思远', advisorName: '陈晓梅', overdueDays: 7 },
-  { paperId: '1003', paperTitle: '面向智能制造的生产调度优化', studentName: '赵子涵', advisorName: '周明', overdueDays: 6 },
-  { paperId: '1004', paperTitle: '城市交通流量预测模型研究', studentName: '孙雨桐', advisorName: '吴海', overdueDays: 4 },
-  { paperId: '1005', paperTitle: '区块链在供应链金融中的应用', studentName: '刘浩然', advisorName: '郑琳', overdueDays: 3 },
-  { paperId: '1006', paperTitle: '基于知识图谱的问答系统', studentName: '陈嘉懿', advisorName: '李建国', overdueDays: 2 },
-  { paperId: '1007', paperTitle: '低碳建筑能耗评估方法研究', studentName: '杨若曦', advisorName: '陈晓梅', overdueDays: 1 }
-]
-
-const bucketOf = (days) => (days >= 7 ? '7' : days >= 3 ? '3' : '1')
+import { getOverduePapers, remindOverduePapers } from '@/api/admin/papers'
+import { formatDateTime } from '@/utils/dataType.js'
 
 const level = ref('all')
+const page = ref(1)
+const size = ref(10)
+const loading = ref(false)
+const reminding = ref(false)
 
-const chips = computed(() => {
-  const all = MOCK_OVERDUE.length
-  return [
-    { value: 'all', label: '全部', count: all },
-    { value: '1', label: '超时 1 天', count: MOCK_OVERDUE.filter(item => bucketOf(item.overdueDays) === '1').length },
-    { value: '3', label: '超时 3 天', count: MOCK_OVERDUE.filter(item => bucketOf(item.overdueDays) === '3').length },
-    { value: '7', label: '超时 7 天', count: MOCK_OVERDUE.filter(item => bucketOf(item.overdueDays) === '7').length }
-  ]
-})
+const records = ref([])
+const total = ref(0)
+const bucketCounts = ref({})
 
-const filtered = computed(() => {
-  const list = level.value === 'all'
-    ? MOCK_OVERDUE
-    : MOCK_OVERDUE.filter(item => bucketOf(item.overdueDays) === level.value)
-  return [...list].sort((a, b) => b.overdueDays - a.overdueDays)
-})
+const allCount = computed(() =>
+  ['1', '3', '7'].reduce((sum, key) => sum + Number(bucketCounts.value[key] || 0), 0)
+)
 
-// 已催办只在本地记：没有后端记录可回读，刷新后重置
-const remindedIds = ref([])
+const chips = computed(() => [
+  { value: 'all', label: '全部', count: allCount.value },
+  { value: '1', label: '超时 1 天', count: Number(bucketCounts.value['1'] || 0) },
+  { value: '3', label: '超时 3 天', count: Number(bucketCounts.value['3'] || 0) },
+  { value: '7', label: '超时 7 天', count: Number(bucketCounts.value['7'] || 0) }
+])
 
-const remind = (rows) => {
-  const targets = (rows || []).filter(row => row?.paperId)
-  if (!targets.length) return
-  // TODO(mock): 后端暂未提供管理员催办接口，先打印并提示，接口就绪后替换为真实请求
-  console.log('[mock] 一键催办:', targets.map(row => ({
-    paperId: row.paperId,
-    advisorName: row.advisorName,
-    overdueDays: row.overdueDays
-  })))
-  const ids = new Set(remindedIds.value)
-  targets.forEach(row => ids.add(row.paperId))
-  remindedIds.value = [...ids]
-  ElMessage.success(`已向 ${targets.length} 位导师发送催办（演示）`)
+const fetchList = async () => {
+  loading.value = true
+  try {
+    const res = await getOverduePapers({ bucket: level.value, page: page.value, size: size.value })
+    if (res?.code === 200) {
+      records.value = res.data?.records || []
+      total.value = Number(res.data?.total) || 0
+      bucketCounts.value = res.data?.bucketCounts || {}
+    }
+  } catch (error) {
+    console.error('加载超期论文失败:', error)
+  } finally {
+    loading.value = false
+  }
 }
+
+const changeLevel = (value) => {
+  if (level.value === value) return
+  level.value = value
+  page.value = 1
+  fetchList()
+}
+
+const changePage = (nextPage) => {
+  page.value = nextPage
+  fetchList()
+}
+
+// 一键催办：当前筛选下若不止一页，先拉取到后端 100 篇上限再统一提交
+const MAX_REMIND = 100
+const remindAll = async () => {
+  let targets = records.value
+  if (total.value > targets.length) {
+    try {
+      const res = await getOverduePapers({
+        bucket: level.value,
+        page: 1,
+        size: Math.min(total.value, MAX_REMIND)
+      })
+      targets = res?.data?.records || targets
+    } catch (error) {
+      console.error('加载待催办论文失败:', error)
+    }
+  }
+  if (total.value > MAX_REMIND) {
+    ElMessage.warning(`单次最多催办 ${MAX_REMIND} 篇，本次仅处理前 ${MAX_REMIND} 篇`)
+  }
+  await remind(targets)
+}
+
+const remind = async (rows) => {
+  const targets = (rows || []).filter(row => row?.paperId)
+  if (!targets.length || reminding.value) return
+
+  reminding.value = true
+  try {
+    const res = await remindOverduePapers({
+      paperIds: targets.map(row => String(row.paperId)),
+      channel: 'IN_APP'
+    })
+    if (res?.code !== 200) return
+
+    const data = res.data || {}
+    if (Number(data.failed) > 0) {
+      const reasons = (data.failReasons || []).join('<br/>') || '部分论文催办失败'
+      ElMessageBox.alert(
+        reasons,
+        `成功 ${data.success ?? 0} 篇，失败 ${data.failed} 篇`,
+        { dangerouslyUseHTMLString: true, confirmButtonText: '知道了' }
+      ).catch(() => {})
+    } else {
+      ElMessage.success(`已向 ${data.success ?? targets.length} 位导师发送催办`)
+    }
+    await fetchList()
+  } catch (error) {
+    // 响应拦截器已按后端 message 提示
+    console.error('催办超期论文失败:', error)
+  } finally {
+    reminding.value = false
+  }
+}
+
+onMounted(fetchList)
 </script>
 
 <style scoped lang="scss">
@@ -208,6 +281,12 @@ const remind = (rows) => {
   text-align: center;
   font-size: var(--app-fs-caption);
   color: var(--app-color-text-muted);
+}
+
+.panel-pagination {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--app-space-2);
 }
 
 .panel-tip {

@@ -245,7 +245,7 @@
         type="info"
         :closable="false"
         show-icon
-        title="后端暂未提供 ZIP 打包接口：所选数据将逐项下载 Excel；未接入的项会明确提示。"
+        title="暂无 ZIP 打包接口，所选数据将逐项下载 Excel；查重统计为全量报表，其余三项按学期导出。"
       />
 
       <template #footer>
@@ -282,8 +282,9 @@ import { useChart } from '@/composables/useChart'
 import PageHeader from '@/components/common/PageHeader.vue'
 import LifecycleFunnel from '@/views/admin/components/LifecycleFunnel.vue'
 import OverdueAlertPanel from '@/views/admin/components/OverdueAlertPanel.vue'
-// 学期数据包：复用已有的论文清单 / 统计报表导出接口
+// 学期数据包：论文清单 / 审核记录 / 答辩结论支持学期参数；查重统计为全量报表
 import { exportPapers } from '@/api/admin/papers'
+import { exportAdminReviews, exportDefenseConclusions } from '@/api/admin/exports'
 import { exportStatReport } from '@/api/p5'
 
 // 图标导入（模板中其余图标依赖 main.js 的全局注册，无需在此导入）
@@ -374,37 +375,54 @@ const saveBlob = (payload, filename) => {
   window.URL.revokeObjectURL(url)
 }
 
-// 后端没有 ZIP 打包接口：能导的逐项下载，导不了的明确告知，不静默失败
+// 无 ZIP 打包接口：逐项下载，单项失败不影响其他项，最后统一汇总
 const exportSemesterPackage = async () => {
   const semester = semesterOptions.value.find(item => item.value === exportForm.semester)
   if (!semester) return
+
   exportingPackage.value = true
   const downloaded = []
-  const pending = []
+  const failed = []
+  const params = {
+    semester: semester.value,
+    startDate: semester.start,
+    endDate: semester.end
+  }
+
+  const runItem = async (label, request, filename) => {
+    try {
+      const res = await request()
+      saveBlob(res.data || res, filename)
+      downloaded.push(label)
+    } catch (error) {
+      console.error(`导出${label}失败:`, error)
+      failed.push(label)
+    }
+  }
+
   try {
     if (exportForm.items.includes('papers')) {
-      const res = await exportPapers({ semester: semester.value, startDate: semester.start, endDate: semester.end })
-      saveBlob(res.data || res, `论文清单_${semester.value}.xlsx`)
-      downloaded.push('论文清单')
+      await runItem('论文清单', () => exportPapers(params), `论文清单_${semester.value}.xlsx`)
     }
     if (exportForm.items.includes('checks')) {
-      const res = await exportStatReport()
-      saveBlob(res.data || res, `查重统计_${semester.value}.xlsx`)
-      downloaded.push('查重统计')
+      await runItem('查重统计', () => exportStatReport(), '查重统计_全量.xlsx')
     }
-    if (exportForm.items.includes('reviews')) pending.push('审核记录')
-    if (exportForm.items.includes('defense')) pending.push('答辩结论')
+    if (exportForm.items.includes('reviews')) {
+      await runItem('审核记录', () => exportAdminReviews(params), `审核记录_${semester.value}.xlsx`)
+    }
+    if (exportForm.items.includes('defense')) {
+      await runItem('答辩结论', () => exportDefenseConclusions(params), `答辩结论_${semester.value}.xlsx`)
+    }
 
     if (downloaded.length) {
       ElMessage.success(`已下载：${downloaded.join('、')}`)
+    }
+    if (failed.length) {
+      ElMessage.warning(`导出失败：${failed.join('、')}，请稍后重试`)
+    }
+    if (!failed.length) {
       exportDialogVisible.value = false
     }
-    if (pending.length) {
-      ElMessage.warning(`${pending.join('、')}：后端暂未提供按学期的导出接口，已记录需求`)
-    }
-  } catch (error) {
-    console.error('学期数据包导出失败:', error)
-    ElMessage.error('导出失败，请稍后重试')
   } finally {
     exportingPackage.value = false
   }

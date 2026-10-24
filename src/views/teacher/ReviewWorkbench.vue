@@ -449,29 +449,17 @@ const applyBatchTemplate = (template) => {
   batchDialog.opinion = (current ? `${current}\n${content}` : content).slice(0, 500)
 }
 
-// 只保留查重签核合格的论文：单个结论由 canApprove 拦，批量必须在前端先筛，
-// 否则会把未签核的论文一起推进状态
-const filterQualifiedPapers = async (targets) => {
-  const checks = await Promise.all(targets.map(async (paper) => {
-    try {
-      const res = await getCheckSignoff(paper.paperId)
-      return res?.code === 200 && res.data?.qualified === 1 ? paper : null
-    } catch (e) {
-      return null
-    }
-  }))
-  return checks.filter(Boolean)
-}
-
+// 待审列表已携带 canBatchReview（signoffQualified && auditing），这里只做最后一道过滤；
+// 真正的签核门仍在后端 doReview 中逐篇校验
 const submitBatch = async () => {
   const opinion = batchDialog.opinion.trim()
   if (!opinion || batchSubmitting.value) return
 
   batchSubmitting.value = true
   try {
-    const qualified = await filterQualifiedPapers(batchDialog.targets)
-    const excluded = batchDialog.targets.length - qualified.length
-    if (!qualified.length) {
+    const eligible = batchDialog.targets.filter(paper => paper.canBatchReview !== false)
+    const excluded = batchDialog.targets.length - eligible.length
+    if (!eligible.length) {
       ElMessage.warning('所选论文均未完成合格的查重签核，无法批量操作')
       return
     }
@@ -480,12 +468,20 @@ const submitBatch = async () => {
     }
 
     const res = await doReview({
-      paperIds: qualified.map(paper => paper.paperId),
+      paperIds: eligible.map(paper => paper.paperId),
       reviewStatus: batchDialog.action === 'approve' ? 3 : 4,
       reviewOpinion: opinion
     })
     if (res?.code === 200) {
-      ElMessage.success(`已批量${batchDialog.action === 'approve' ? '通过' : '退回'} ${qualified.length} 篇`)
+      const failed = Number(res.data?.failCount) || 0
+      ElMessage.success(`已批量${batchDialog.action === 'approve' ? '通过' : '退回'} ${eligible.length - failed} 篇`)
+      if (failed > 0 && Array.isArray(res.data?.failReasons) && res.data.failReasons.length) {
+        ElMessageBox.alert(
+          res.data.failReasons.map(reason => `• ${reason}`).join('<br/>'),
+          `部分论文处理失败（${failed} 篇）`,
+          { dangerouslyUseHTMLString: true, confirmButtonText: '知道了' }
+        ).catch(() => {})
+      }
       batchDialog.visible = false
       queueRef.value?.clearSelection()
       await refreshList()

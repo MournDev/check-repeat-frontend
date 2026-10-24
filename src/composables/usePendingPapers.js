@@ -233,7 +233,12 @@ export function usePendingPapers(options = {}) {
       email: item.email ?? base.email ?? '',
       version: item.version ?? base.version ?? 1,
       wordCount: item.wordCount ?? base.wordCount ?? null,
-      pageCount: item.pageCount ?? base.pageCount ?? null
+      pageCount: item.pageCount ?? base.pageCount ?? null,
+      // 签核状态：后端顶层与 paperBaseInfo 都会带，缺失时按「可批量」兜底，
+      // 最终仍由 do-review 的服务端签核门校验
+      signoffQualified: item.signoffQualified ?? base.signoffQualified ?? false,
+      signoffId: item.signoffId ?? base.signoffId ?? null,
+      canBatchReview: item.canBatchReview ?? base.canBatchReview ?? true
     }
   }
 

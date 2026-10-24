@@ -4,16 +4,15 @@
       <div class="panel-title">
         <el-icon><TrendCharts /></el-icon>
         <span>论文全生命周期漏斗</span>
-        <el-tag size="small" type="info" effect="plain">演示数据</el-tag>
       </div>
-      <el-button text size="small" :icon="Refresh" @click="renderFunnel">刷新</el-button>
+      <el-button text size="small" :icon="Refresh" @click="loadAndRender">刷新</el-button>
     </header>
 
     <div v-if="chart.empty" class="funnel-empty">暂无阶段数据</div>
     <div v-else :ref="chart.chartRef" class="funnel-chart"></div>
 
     <!-- 图表之外的阶段清单：既是图例也是可点击钻取入口 -->
-    <div class="stage-list">
+    <div v-if="stages.length" class="stage-list">
       <button
         v-for="(stage, index) in stages"
         :key="stage.key"
@@ -23,43 +22,31 @@
       >
         <span class="stage-name">{{ stage.label }}</span>
         <span class="stage-count">{{ stage.count }}</span>
-        <span class="stage-rate">{{ index === 0 ? '—' : conversion(index) }}</span>
+        <span class="stage-rate">{{ index === 0 ? '—' : formatRate(stage.conversionRate) }}</span>
         <el-icon class="stage-arrow"><ArrowRight /></el-icon>
       </button>
     </div>
 
     <p class="panel-tip">
-      阶段人数为前端演示数据，后端漏斗接口就绪后替换；点击任一阶段进入论文库并带上状态筛选。
+      阶段人数优先按状态日志统计，缺失时回退为当前状态快照；点击任一阶段进入论文库并带上状态筛选。
     </p>
   </section>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Refresh, TrendCharts, ArrowRight } from '@element-plus/icons-vue'
 import { useChart } from '@/composables/useChart'
+import { getLifecycleFunnel } from '@/api/admin/papers'
 
 const router = useRouter()
-
-// TODO(mock): 后端暂无生命周期漏斗接口，先用示例数据把结构与钻取跑通。
-// 接口就绪后改为 getLifecycleFunnel()，并删除该常量。
-const stages = [
-  { key: 'submitted', label: '提交论文', count: 1200, status: '' },
-  { key: 'checking', label: '查重阶段', count: 1145, status: 'checking' },
-  { key: 'auditing', label: '导师审核', count: 1038, status: 'auditing' },
-  { key: 'mid', label: '中期答辩', count: 960, status: 'mid_defense' },
-  { key: 'final', label: '终期答辩', count: 902, status: 'final_defense' },
-  { key: 'finalized', label: '定稿', count: 858, status: 'finalized' },
-  { key: 'archived', label: '归档', count: 806, status: 'archived' }
-]
-
 const chart = useChart()
+const stages = ref([])
 
-const conversion = (index) => {
-  const prev = stages[index - 1]?.count
-  if (!prev) return '—'
-  return `${((stages[index].count / prev) * 100).toFixed(1)}%`
+const formatRate = (rate) => {
+  if (rate === null || rate === undefined || Number.isNaN(Number(rate))) return '—'
+  return `${Number(rate).toFixed(1)}%`
 }
 
 const goStage = (stage) => {
@@ -69,7 +56,7 @@ const goStage = (stage) => {
   })
 }
 
-const buildOption = () => ({
+const buildOption = (list) => ({
   tooltip: {
     trigger: 'item',
     formatter: (p) => `${p.name}<br/>${p.value} 篇`
@@ -95,7 +82,7 @@ const buildOption = () => ({
         borderColor: '#ffffff',
         borderWidth: 1
       },
-      data: stages.map((stage) => ({
+      data: list.map((stage) => ({
         name: stage.label,
         value: stage.count,
         status: stage.status
@@ -105,7 +92,18 @@ const buildOption = () => ({
   ]
 })
 
-const renderFunnel = () => chart.render(buildOption())
+const loadAndRender = async () => {
+  try {
+    const res = await getLifecycleFunnel()
+    const list = res?.code === 200 && Array.isArray(res.data?.stages) ? res.data.stages : []
+    stages.value = list
+    await chart.render(list.length ? buildOption(list) : null)
+  } catch (error) {
+    console.error('加载生命周期漏斗失败:', error)
+    stages.value = []
+    await chart.render(null)
+  }
+}
 
 const handleChartClick = (params) => {
   const status = params?.data?.status
@@ -114,7 +112,7 @@ const handleChartClick = (params) => {
 }
 
 onMounted(async () => {
-  await renderFunnel()
+  await loadAndRender()
   chart.on('click', handleChartClick)
 })
 </script>

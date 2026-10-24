@@ -115,3 +115,28 @@ export const batchAuditPapers = (data) => {
     data
   })
 }
+
+export const getOverduePapers = (params) => {
+  return request({
+    url: '/api/admin/papers/overdue',
+    method: 'get',
+    params
+  })
+}
+
+export const remindOverduePapers = (data) => {
+  return request({
+    url: '/api/admin/papers/overdue/remind',
+    method: 'post',
+    data
+  })
+}
+
+
+export const getLifecycleFunnel = (params) => {
+  return request({
+    url: '/api/admin/papers/lifecycle-funnel',
+    method: 'get',
+    params
+  })
+}
