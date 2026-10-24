@@ -2,12 +2,25 @@
   "name": "check-repeat-frontend",
   "private": true,
   "version": "0.0.0",
+  "description": "论文查重管理系统前端（Vue 3 + Element Plus）",
   "type": "module",
+  "author": "Smile-h <3070500838@qq.com>",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitee.com/Sc0102_1129/check-repeat-frontend.git"
+  },
+  "bugs": {
+    "url": "https://gitee.com/Sc0102_1129/check-repeat-frontend/issues"
+  },
+  "engines": {
+    "node": ">=20.19.0",
+    "npm": ">=10.0.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "optimize:images": "node scripts/optimize-images.js"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
