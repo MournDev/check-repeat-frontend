@@ -227,6 +227,12 @@
         <div v-else :ref="rtChart.chartRef" class="chart-container"></div>
       </div>
     </div>
+
+    <!-- 论文全生命周期漏斗 + 超期预警（超管视角同样可见） -->
+    <div class="wave3-panels">
+      <LifecycleFunnel />
+      <OverdueAlertPanel />
+    </div>
   </div>
 </template>
 
@@ -239,6 +245,8 @@ import { ElMessage } from 'element-plus'
 import { getDashboardStats, getBusinessMetrics, getResponseTimeTrend } from '@/api/admin/dashboard'
 import { useChart } from '@/composables/useChart'
 import PageHeader from '@/components/common/PageHeader.vue'
+import LifecycleFunnel from '@/views/admin/components/LifecycleFunnel.vue'
+import OverdueAlertPanel from '@/views/admin/components/OverdueAlertPanel.vue'
 import { getUserList } from '@/api/admin/users'
 import { getPaperList } from '@/api/admin/papers'
 import { getAssignmentStats } from '@/api/admin/assignment'
@@ -498,6 +506,17 @@ onMounted(() => {
 }
 
 // 主要内容区域：左右两栏等高，右栏用垂直居中填满，避免底部留白
+.wave3-panels {
+  display: grid;
+  grid-template-columns: minmax(0, 13fr) minmax(0, 11fr);
+  gap: var(--app-space-4);
+  margin-top: var(--app-space-4);
+
+  @media (max-width: 1200px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 .main-content {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 320px;

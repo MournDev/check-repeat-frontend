@@ -121,6 +121,17 @@
             <el-option label="2021级" value="2021"></el-option>
           </el-select>
         </el-form-item>
+        <!-- 论文状态筛选：生命周期漏斗钻取时通过 ?paperStatus= 带入 -->
+        <el-form-item label="论文状态">
+          <el-select v-model="filterForm.paperStatus" placeholder="全部状态" clearable style="width: 140px">
+            <el-option
+              v-for="option in PAPER_STATUS_OPTIONS"
+              :key="option.value"
+              :label="option.label"
+              :value="option.value"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="查重状态">
           <el-select v-model="filterForm.checkStatus" placeholder="请选择状态" clearable style="width: 120px">
             <el-option label="未查重" value="not_checked"></el-option>
@@ -560,7 +571,8 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, computed } from 'vue'
+import { ref, reactive, onMounted, computed, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 // 导入管理员API
@@ -660,15 +672,25 @@ const filteredMajorList = computed(() => {
   return majorList.value.filter(major => major.collegeId === filterForm.collegeId)
 })
 
+const route = useRoute()
+
 // 筛选表单
 const filterForm = reactive({
   collegeId: '',
   majorId: '',
   grade: '',
+  paperStatus: '',
   checkStatus: '',
   similarityRange: '',
   keyword: ''
 })
+
+// 论文状态下拉：与 reviewStatus.js 的官方状态对齐（存量别名不进筛选）
+const PAPER_STATUS_OPTIONS = [
+  'pending', 'assigned', 'checking', 'auditing', 'completed', 'rejected',
+  'withdrawn', 'reviewing', 'mid_defense', 'final_defense', 'defense_passed',
+  'finalized', 'archived'
+].map(value => ({ value, label: getStatusText(value) }))
 
 // 分页
 const pagination = reactive({
@@ -731,6 +753,7 @@ const resetFilter = () => {
   filterForm.collegeId = ''
   filterForm.majorId = ''
   filterForm.grade = ''
+  filterForm.paperStatus = ''
   filterForm.checkStatus = ''
   filterForm.similarityRange = ''
   filterForm.keyword = ''
@@ -778,6 +801,7 @@ const loadPaperList = async () => {
       collegeId: filterForm.collegeId,
       majorId: filterForm.majorId,
       grade: filterForm.grade,
+      paperStatus: filterForm.paperStatus,
       checkStatus: filterForm.checkStatus,
       keyword: filterForm.keyword
     }
@@ -1297,7 +1321,19 @@ const handleCollegeChange = () => {
 }
 
 // 生命周期
+// 生命周期漏斗钻取：/admin/paper-library?paperStatus=auditing 直接落到对应筛选
+const applyStatusFromQuery = () => {
+  const next = route.query.paperStatus ? String(route.query.paperStatus) : ''
+  if (next === filterForm.paperStatus) return
+  filterForm.paperStatus = next
+  pagination.currentPage = 1
+  loadPaperList()
+}
+
+watch(() => route.query.paperStatus, applyStatusFromQuery)
+
 onMounted(async () => {
+  filterForm.paperStatus = route.query.paperStatus ? String(route.query.paperStatus) : ''
   await Promise.all([
     loadColleges(),
     loadMajors(),

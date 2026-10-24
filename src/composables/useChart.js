@@ -43,6 +43,23 @@ export function useChart() {
   const empty = ref(false)
   let instance = null
   let observer = null
+  // 事件处理器单独保存：render 会重建实例，重建后需要重新绑定（如图表点击钻取）
+  const handlers = new Map()
+
+  const bindHandlers = () => {
+    if (!instance) return
+    handlers.forEach((handler, event) => instance.on(event, handler))
+  }
+
+  /** 注册图表事件（如 click 钻取）；实例尚未创建时先记住，创建后自动绑定 */
+  const on = (event, handler) => {
+    if (!event || typeof handler !== 'function') return
+    handlers.set(event, handler)
+    if (instance) {
+      instance.off(event)
+      instance.on(event, handler)
+    }
+  }
 
   const resize = () => {
     if (instance) instance.resize()
@@ -85,6 +102,7 @@ export function useChart() {
     if (!chartRef.value) return
     instance = echarts.init(chartRef.value)
     instance.setOption(option)
+    bindHandlers()
     ensureGlobalResizeListener()
     resizers.add(resize)
     observeContainer()
@@ -119,6 +137,7 @@ export function useChart() {
     if (!chartRef.value) return
     if (!instance) {
       instance = echarts.init(chartRef.value)
+      bindHandlers()
       ensureGlobalResizeListener()
       resizers.add(resize)
       observeContainer()
@@ -135,6 +154,6 @@ export function useChart() {
     // 布尔值，且渲染副作用内访问 empty.value 仍会被依赖追踪。
     // chartRef 不能同理处理——:ref 绑定需要拿到 ref 对象本身。
     get empty() { return empty.value },
-    render, run, update, dispose, resize
+    render, run, update, on, dispose, resize
   }
 }
