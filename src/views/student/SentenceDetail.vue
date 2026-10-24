@@ -422,8 +422,6 @@ onMounted(() => {
 
 @media (max-width: 768px) {
   .sentence-detail-page {
-    padding: var(--app-space-3);
-
     .sources-card {
       .source-item {
         flex-direction: column;

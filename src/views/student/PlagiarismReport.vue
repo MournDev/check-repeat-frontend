@@ -1376,10 +1376,6 @@ onUnmounted(() => {
 
 // ── 响应式 ──────────────────────────────────────────────────
 @media (max-width: 900px) {
-  .report-page {
-    padding: var(--app-space-3);
-  }
-
   .metric-grid {
     grid-template-columns: minmax(0, 1fr);
   }

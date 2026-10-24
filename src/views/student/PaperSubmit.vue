@@ -1052,10 +1052,6 @@ const resetForm = () => {
 
 // 响应式设计
 @media (max-width: 768px) {
-  .paper-submit-container {
-    padding: var(--app-space-3);
-  }
-  
   .paper-submit-card {
     margin: 0;
 

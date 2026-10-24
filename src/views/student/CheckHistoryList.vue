@@ -317,9 +317,4 @@ onMounted(() => {
   .similarity-high { color: var(--app-color-rate-high); }
 }
 
-@media (max-width: 768px) {
-  .check-history-list-page {
-    padding: var(--app-space-3);
-  }
-}
 </style>

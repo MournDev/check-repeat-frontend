@@ -863,8 +863,6 @@ onUnmounted(() => {
 // 响应式设计
 @media (max-width: 768px) {
   .check-monitor-page {
-    padding: var(--app-space-3);
-
     .current-status {
       flex-direction: column;
       text-align: center;

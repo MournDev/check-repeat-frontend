@@ -968,8 +968,6 @@ onUnmounted(() => {
 
 @media (max-width: 768px) {
   .check-container {
-    padding: var(--app-space-3);
-
     .action-bar {
       flex-wrap: wrap;
     }

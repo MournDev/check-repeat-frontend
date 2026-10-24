@@ -1816,10 +1816,6 @@ onMounted(() => {
 
 // 响应式
 @media (max-width: 768px) {
-    .paper-details-container {
-        padding: var(--app-space-3);
-    }
-
     .paper-header {
         padding: var(--app-space-4);
     }

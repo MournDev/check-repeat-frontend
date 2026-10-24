@@ -1594,8 +1594,6 @@ onMounted(async () => {
 
 @media (max-width: 768px) {
   .check-history-page {
-    padding: var(--app-space-3);
-
     .paper-info-card {
       padding: var(--app-space-4);
       
