@@ -1,7 +1,7 @@
 <template>
   <div class="assignment-center">
     <!-- 子导航：论文分配四页合一，菜单只露出「论文分配」一项 -->
-    <el-tabs :model-value="activeTab" @tab-click="handleTabChange">
+    <el-tabs class="route-tabs" :model-value="activeTab" @tab-click="handleTabChange">
       <el-tab-pane label="分配总览" name="/admin/paper-assignment" />
       <el-tab-pane label="手动分配" name="/admin/paper-assignment/manual" />
       <el-tab-pane label="自动分配" name="/admin/paper-assignment/auto" />
@@ -28,55 +28,3 @@ const handleTabChange = (tab) => {
   router.push(tab.props.name)
 }
 </script>
-
-<style lang="scss" scoped>
-
-:deep(.el-tabs) {
-  margin-bottom: var(--app-space-6);
-
-  .el-tabs__header {
-    margin-bottom: var(--app-space-6);
-
-    .el-tabs__nav {
-      border-bottom: 1px solid var(--app-color-border-strong);
-
-      .el-tabs__item {
-        font-size: var(--app-fs-caption);
-        font-weight: 400;
-        color: var(--app-color-text-muted);
-        padding: var(--app-space-3) var(--app-space-4);
-        margin-right: var(--app-space-6);
-        transition: border-color var(--app-transition-normal);
-
-        &:hover {
-          color: var(--app-color-ink);
-        }
-
-        &.is-active {
-          color: var(--app-color-primary);
-          font-weight: 600;
-
-          &::after {
-            background-color: var(--app-color-primary);
-            height: 2px;
-          }
-        }
-      }
-    }
-  }
-}
-
-
-@media (max-width: 768px) {
-  :deep(.el-tabs) {
-    .el-tabs__header {
-      margin-bottom: var(--app-space-4);
-
-      .el-tabs__nav .el-tabs__item {
-        margin-right: var(--app-space-4);
-        padding: var(--app-space-3) var(--app-space-2);
-      }
-    }
-  }
-}
-</style>
