@@ -79,6 +79,25 @@ export const resetUserPassword = (userId) => {
   })
 }
 
+// 批量导入学生（复用已有的管理端导入接口）
+export const importStudents = (formData) => {
+  return request({
+    url: '/api/teacher/students/import',
+    method: 'post',
+    data: formData,
+    headers: { 'Content-Type': 'multipart/form-data' }
+  })
+}
+
+// 下载学生导入模板
+export const downloadStudentImportTemplate = () => {
+  return request({
+    url: '/api/teacher/students/import-template',
+    method: 'get',
+    responseType: 'blob'
+  })
+}
+
 // 获取用户登录历史
 export const getUserLoginHistory = (userId, params) => {
   return request({

@@ -20,6 +20,12 @@
         <el-button type="primary" :icon="Plus" @click="showAddUserDialog">
           新增用户
         </el-button>
+        <el-button :icon="Upload" @click="openImportDialog">
+          批量导入
+        </el-button>
+        <el-button :icon="Download" :loading="templateDownloading" @click="downloadTemplate">
+          下载模板
+        </el-button>
         <el-button :icon="Refresh" @click="refreshData">
           刷新
         </el-button>
@@ -266,6 +272,61 @@
         </el-button>
       </template>
     </el-dialog>
+
+    <!-- 批量导入学生 -->
+    <el-dialog
+      v-model="importDialogVisible"
+      title="批量导入学生"
+      width="620px"
+      :close-on-click-modal="false"
+      @closed="resetImport"
+    >
+      <el-alert
+        title="仅支持 .xlsx / .xls；请使用下载模板的列名（学号、姓名、学院、专业、年级、邮箱）"
+        type="info"
+        :closable="false"
+        show-icon
+      />
+      <el-upload
+        drag
+        :auto-upload="false"
+        :limit="1"
+        accept=".xlsx,.xls"
+        :file-list="importFileList"
+        :on-change="handleImportFileChange"
+        :on-remove="handleImportFileRemove"
+        style="margin-top: 16px"
+      >
+        <el-icon class="el-icon--upload"><UploadFilled /></el-icon>
+        <div class="el-upload__text">将 Excel 拖到此处，或<em>点击选择</em></div>
+      </el-upload>
+
+      <div v-if="importResult" class="import-result">
+        <el-alert
+          :type="Number(importResult.failCount) > 0 ? 'warning' : 'success'"
+          :closable="false"
+          show-icon
+          :title="`导入完成：成功 ${importResult.successCount || 0} 行，失败 ${importResult.failCount || 0} 行`"
+        />
+        <ul v-if="importResult.failures && importResult.failures.length" class="import-fail-list">
+          <li v-for="failure in importResult.failures" :key="`${failure.row}-${failure.reason}`">
+            第 {{ failure.row }} 行：{{ failure.reason }}
+          </li>
+        </ul>
+      </div>
+
+      <template #footer>
+        <el-button @click="importDialogVisible = false">关闭</el-button>
+        <el-button
+          type="primary"
+          :loading="importing"
+          :disabled="!importFile"
+          @click="submitImport"
+        >
+          开始导入
+        </el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -281,13 +342,15 @@ import {
   deleteUser as deleteApiUser, 
   batchDeleteUsers, 
   updateUserStatus,
-  exportUsers as exportUsersApi
+  exportUsers as exportUsersApi,
+  importStudents,
+  downloadStudentImportTemplate
 } from '@/api/admin/users'
 import { useUserStore } from '@/stores/user'
 
 // 图标导入
 import {
-  Plus, Refresh, Search, RefreshLeft, User, Delete, Download
+  Plus, Refresh, Search, RefreshLeft, User, Delete, Download, Upload, UploadFilled
 } from '@element-plus/icons-vue'
 import PageHeader from '@/components/common/PageHeader.vue'
 import ListPageShell from '@/components/common/ListPageShell.vue'
@@ -302,6 +365,14 @@ const detailDialogVisible = ref(false)
 const userDialogVisible = ref(false)
 const isEdit = ref(false)
 const currentUser = ref({})
+
+// 批量导入
+const importDialogVisible = ref(false)
+const importing = ref(false)
+const templateDownloading = ref(false)
+const importFile = ref(null)
+const importFileList = ref([])
+const importResult = ref(null)
 
 // 筛选表单
 const filterForm = reactive({
@@ -373,6 +444,78 @@ const dialogTitle = computed(() => {
 // 方法
 const refreshData = () => {
   loadUserList()
+}
+
+// ── 批量导入学生 ──────────────────────────────────────────
+const openImportDialog = () => {
+  importFile.value = null
+  importFileList.value = []
+  importResult.value = null
+  importDialogVisible.value = true
+}
+
+const handleImportFileChange = (file) => {
+  importFile.value = file?.raw || null
+  importFileList.value = file ? [file] : []
+}
+
+const handleImportFileRemove = () => {
+  importFile.value = null
+  importFileList.value = []
+}
+
+const resetImport = () => {
+  importing.value = false
+  importFile.value = null
+  importFileList.value = []
+  importResult.value = null
+}
+
+const submitImport = async () => {
+  if (!importFile.value) {
+    ElMessage.warning('请先选择 Excel 文件')
+    return
+  }
+  importing.value = true
+  try {
+    const formData = new FormData()
+    formData.append('file', importFile.value)
+    const res = await importStudents(formData)
+    if (res?.code === 200) {
+      importResult.value = res.data || {}
+      const success = Number(importResult.value.successCount) || 0
+      const failed = Number(importResult.value.failCount) || 0
+      ElMessage.success(`导入完成：成功 ${success} 行，失败 ${failed} 行`)
+      loadUserList()
+    } else {
+      ElMessage.error(res?.message || '导入失败')
+    }
+  } catch (error) {
+    console.error('批量导入学生失败:', error)
+    ElMessage.error(error?.message || '导入失败，请检查文件后重试')
+  } finally {
+    importing.value = false
+  }
+}
+
+const downloadTemplate = async () => {
+  templateDownloading.value = true
+  try {
+    const res = await downloadStudentImportTemplate()
+    const blob = res.data instanceof Blob ? res.data : new Blob([res.data])
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = '学生导入模板.xlsx'
+    link.click()
+    URL.revokeObjectURL(url)
+    ElMessage.success('模板下载已开始')
+  } catch (error) {
+    console.error('下载学生导入模板失败:', error)
+    ElMessage.error(error?.message || '模板下载失败')
+  } finally {
+    templateDownloading.value = false
+  }
 }
 
 const handleSearch = () => {
@@ -809,6 +952,20 @@ const rowKey = (row) => {
   color: var(--app-color-text-secondary);
   line-height: 1.6;
   margin-top: var(--app-space-1);
+}
+
+.import-result {
+  margin-top: var(--app-space-4);
+}
+
+.import-fail-list {
+  max-height: 180px;
+  overflow: auto;
+  margin: var(--app-space-3) 0 0;
+  padding-left: var(--app-space-5);
+  color: var(--app-color-danger);
+  font-size: var(--app-fs-caption);
+  line-height: 1.8;
 }
 
 </style>
