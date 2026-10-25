@@ -294,10 +294,13 @@
             {{ row.wordCount }}字
           </template>
         </el-table-column>
-        <el-table-column label="操作" fixed="right" width="340">
+        <el-table-column label="操作" fixed="right" width="400">
           <template #default="{ row }">
             <el-button size="small" type="primary" text @click="viewPaper(row)">
               查看
+            </el-button>
+            <el-button size="small" type="primary" text @click="handlePreviewPaper(row)">
+              预览
             </el-button>
             <el-button size="small" type="info" text @click="handleDownloadPaper(row)">
               下载
@@ -545,14 +548,14 @@
             placeholder="例如：导师已离职 / 导师超期未处理，由管理员代为出结论"
           />
         </el-form-item>
-        <el-form-item label="审核意见">
+        <el-form-item :label="auditForm.auditResult === 'rejected' ? '审核意见（退回必填）' : '审核意见'">
           <el-input
             v-model="auditForm.auditComment"
             type="textarea"
             :rows="3"
             maxlength="300"
             show-word-limit
-            placeholder="将同步给学生（可选）"
+            :placeholder="auditForm.auditResult === 'rejected' ? '请填写退回原因，将同步给学生' : '将同步给学生（可选）'"
           />
         </el-form-item>
       </el-form>
@@ -560,13 +563,31 @@
         <el-button @click="auditDialogVisible = false">取消</el-button>
         <el-button
           type="primary"
-          :disabled="!auditForm.proxyReason.trim()"
+          :disabled="!auditForm.proxyReason.trim()
+            || (auditForm.auditResult === 'rejected' && !auditForm.auditComment.trim())"
           @click="submitAudit"
         >
           确认代审
         </el-button>
       </template>
     </el-dialog>
+
+    <!-- 论文预览抽屉 -->
+    <el-drawer
+      v-model="previewVisible"
+      :title="previewTitle"
+      size="80%"
+      destroy-on-close
+    >
+      <div v-loading="previewLoading" style="height: 100%">
+        <iframe
+          v-if="previewUrl"
+          :src="previewUrl"
+          style="width: 100%; height: calc(100vh - 120px); border: 0"
+        ></iframe>
+        <el-empty v-else description="暂无可预览内容" />
+      </div>
+    </el-drawer>
   </div>
 </template>
 
@@ -588,6 +609,7 @@ import {
   exportPapers,
   uploadPaper,
   downloadPaper,
+  getPaperPreviewUrl,
   auditPaper,
   batchAuditPapers
 } from '@/api/admin/papers'
@@ -622,6 +644,12 @@ const auditableSelected = computed(() => selectedPapers.value.filter(p => p.pape
 const uploadDialogVisible = ref(false)
 const detailDialogVisible = ref(false)
 const currentPaper = ref(null)
+
+// 论文预览
+const previewVisible = ref(false)
+const previewLoading = ref(false)
+const previewUrl = ref('')
+const previewTitle = ref('论文预览')
 
 // 审核相关
 const auditDialogVisible = ref(false)
@@ -1147,6 +1175,33 @@ const removePaper = async (paper) => {
   }
 }
 
+const handlePreviewPaper = async (paper) => {
+  if (!paper?.id) {
+    ElMessage.warning('未选择论文或论文不存在')
+    return
+  }
+  previewTitle.value = `预览 - ${paper.paperTitle || '论文'}`
+  previewVisible.value = true
+  previewLoading.value = true
+  previewUrl.value = ''
+  try {
+    const res = await getPaperPreviewUrl(paper.id)
+    if (res?.code === 200) {
+      previewUrl.value = res.data?.url || res.data?.previewUrl || ''
+      if (!previewUrl.value) {
+        ElMessage.warning('未获取到有效的预览地址')
+      }
+    } else {
+      ElMessage.error(res?.message || '获取预览地址失败')
+    }
+  } catch (error) {
+    console.error('论文预览失败:', error)
+    ElMessage.error(error?.message || '预览失败，请稍后重试')
+  } finally {
+    previewLoading.value = false
+  }
+}
+
 const handleDownloadPaper = async (paper) => {
   if (!paper || !paper.id) {
     ElMessage.warning('未选择论文或论文不存在')
@@ -1238,11 +1293,14 @@ const submitAudit = async () => {
     ElMessage.warning('请填写代审原因')
     return
   }
+  const opinion = auditForm.auditComment.trim()
+  if (auditForm.auditResult === 'rejected' && !opinion) {
+    ElMessage.warning('退回时必须填写审核意见')
+    return
+  }
 
-  const auditComment = [
-    `${PROXY_AUDIT_MARK}${reason}`,
-    auditForm.auditComment.trim() ? `审核意见：${auditForm.auditComment.trim()}` : ''
-  ].filter(Boolean).join('；')
+  // 代审原因走独立字段留痕；审核意见只放真正的意见，避免空意见被代审原因“填满”
+  const auditComment = opinion
   const auditedIds = isBatchAudit.value
     ? auditableSelected.value.map(p => p.id)
     : [currentAuditPaper.value?.id].filter(Boolean)

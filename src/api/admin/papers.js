@@ -89,6 +89,14 @@ export const exportPapers = (params) => {
   })
 }
 
+// 获取论文预览地址（管理员）
+export const getPaperPreviewUrl = (paperId) => {
+  return request({
+    url: `/api/admin/papers/${paperId}/preview-url`,
+    method: 'get'
+  })
+}
+
 // 单篇论文下载（返回 blob）
 export const downloadPaper = (paperId) => {
   return request({
