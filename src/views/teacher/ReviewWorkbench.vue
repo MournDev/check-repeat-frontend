@@ -346,6 +346,15 @@ const submitReview = async (reviewStatus, reviewOpinion) => {
       reviewOpinion
     })
     if (res?.code === 200) {
+      const data = res.data || {}
+      const successCount = Number(data.successCount) || 0
+      if (successCount === 0) {
+        const reasons = Array.isArray(data.failReasons) && data.failReasons.length
+          ? data.failReasons.join('；')
+          : (res.message || '未知原因')
+        ElMessage.error(`审核失败：${reasons}`)
+        return false
+      }
       ElMessage.success(reviewStatus === 3 ? '初审已通过' : '已退回修改')
       await refreshList()
       // 队列刷新后主动切到下一篇，避免停留在已审核论文
@@ -474,7 +483,15 @@ const submitBatch = async () => {
     })
     if (res?.code === 200) {
       const failed = Number(res.data?.failCount) || 0
-      ElMessage.success(`已批量${batchDialog.action === 'approve' ? '通过' : '退回'} ${eligible.length - failed} 篇`)
+      const successCount = Number(res.data?.successCount) || 0
+      if (successCount === 0) {
+        const reasons = Array.isArray(res.data?.failReasons) && res.data.failReasons.length
+          ? res.data.failReasons.join('；')
+          : (res.message || '未知原因')
+        ElMessage.error(`批量审核失败：${reasons}`)
+        return
+      }
+      ElMessage.success(`已批量${batchDialog.action === 'approve' ? '通过' : '退回'} ${successCount} 篇`)
       if (failed > 0 && Array.isArray(res.data?.failReasons) && res.data.failReasons.length) {
         ElMessageBox.alert(
           res.data.failReasons.map(reason => `• ${reason}`).join('<br/>'),
