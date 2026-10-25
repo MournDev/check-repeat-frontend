@@ -649,8 +649,9 @@ const viewPaperDetail = (paper) => {
 };
 
 // ── 行内动作 ─────────────────────────────────────────────
+// 仅 pending / assigned 可撤回；checking/auditing 等状态由后端拦截，前端不再展示入口。
 const canWithdraw = (paper) =>
-  ['pending', 'checking', 'auditing', 'revision_needed'].includes(paper.paperStatus);
+  ['pending', 'assigned'].includes(paper.paperStatus);
 
 const canDelete = (paper) =>
   paper.paperStatus === 'pending' || paper.paperStatus === 'withdrawn';
