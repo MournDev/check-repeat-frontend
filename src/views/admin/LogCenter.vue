@@ -71,7 +71,7 @@
                   <el-option label="学生" value="STUDENT" />
                   <el-option label="教师" value="TEACHER" />
                   <el-option label="管理员" value="ADMIN" />
-                  <el-option label="super_admin" value="SUPER_ADMIN" />
+                  <el-option label="超级管理员" value="SUPER_ADMIN" />
                 </el-select>
                 <el-select v-model="operationFilters.module" placeholder="功能模块" clearable style="width: 140px" @change="onModuleChange">
                   <el-option
@@ -383,7 +383,14 @@ const OPERATION_MODULES = [
       { value: 'import_students', label: '导入学生' },
       { value: 'export_students', label: '导出学生' },
       { value: 'contact_student', label: '联系学生' },
-      { value: 'send_reminder', label: '发送提醒' }
+      { value: 'send_reminder', label: '发送提醒' },
+      { value: 'student_advisor_eval_submit', label: '提交导师评价' },
+      { value: 'student_guidance_confirm', label: '确认指导记录' },
+      { value: 'student_group_create', label: '创建学生分组' },
+      { value: 'student_group_update', label: '更新学生分组' },
+      { value: 'student_group_delete', label: '删除学生分组' },
+      { value: 'student_group_add_students', label: '添加学生到分组' },
+      { value: 'student_group_remove_student', label: '从分组移除学生' }
     ]
   },
   {
@@ -398,7 +405,10 @@ const OPERATION_MODULES = [
       { value: 'check_task_recheck', label: '重新查重' },
       { value: 'check_task_batch_create', label: '批量创建任务' },
       { value: 'check_task_status', label: '查询任务状态' },
-      { value: 'recheck_plagiarism', label: '重新查重检测' }
+      { value: 'recheck_plagiarism', label: '重新查重检测' },
+      { value: 'check_policy_save', label: '保存检测策略' },
+      { value: 'check_policy_delete', label: '删除检测策略' },
+      { value: 'similarity_threshold_update', label: '更新相似度阈值' }
     ]
   },
   {
@@ -419,7 +429,14 @@ const OPERATION_MODULES = [
       { value: 'batch_send_message', label: '批量发送消息' },
       { value: 'delegate_review', label: '委托审核' },
       { value: 'assign_advisor', label: '分配导师' },
-      { value: 'batch_assign_advisor', label: '批量分配导师' }
+      { value: 'batch_assign_advisor', label: '批量分配导师' },
+      { value: 'review_workflow_update', label: '更新审核工作流' },
+      { value: 'teacher_check_signoff', label: '教师签核查重报告' },
+      { value: 'teacher_review_assign_submit', label: '提交评阅结果' },
+      { value: 'teacher_defense_score_submit', label: '提交答辩评分结论' },
+      { value: 'teacher_guidance_create', label: '发起指导记录' },
+      { value: 'teacher_thesis_finalize', label: '教师定稿确认' },
+      { value: 'teacher_workflow_vote', label: '教师初审投票' }
     ]
   },
   {
@@ -436,7 +453,31 @@ const OPERATION_MODULES = [
       { value: 'admin_paper_delete', label: '删除论文' },
       { value: 'admin_auto_assign', label: '自动分配' },
       { value: 'admin_manual_assign', label: '手动分配' },
-      { value: 'user_assign_role', label: '分配角色' }
+      { value: 'user_assign_role', label: '分配角色' },
+      { value: 'admin_advisor_eval_export', label: '导出导师评价明细' },
+      { value: 'admin_backup_settings_update', label: '更新备份设置' },
+      { value: 'admin_backup_trigger', label: '手动触发数据库备份' },
+      { value: 'admin_check_quota_save', label: '保存学院月度查重额度' },
+      { value: 'admin_config_performance_update', label: '更新性能配置' },
+      { value: 'admin_config_performance_test', label: '测试性能配置' },
+      { value: 'admin_config_performance_reset', label: '重置性能配置' },
+      { value: 'admin_defense_batch_create', label: '新建答辩批次' },
+      { value: 'admin_defense_batch_update', label: '编辑答辩批次' },
+      { value: 'admin_defense_batch_delete', label: '删除答辩批次' },
+      { value: 'admin_defense_enroll', label: '安排学生入答辩批次' },
+      { value: 'admin_defense_members_assign', label: '分配答辩组成员' },
+      { value: 'admin_overdue_remind', label: '催办超期论文' },
+      { value: 'admin_override_remind', label: '催办超期论文（旧）' },
+      { value: 'admin_paper_proxy_audit', label: '论文代审' },
+      { value: 'admin_paper_proxy_batch_audit', label: '论文批量代审' },
+      { value: 'admin_review_assign_allocate', label: '分配评阅任务' },
+      { value: 'admin_role_create', label: '创建角色' },
+      { value: 'admin_role_update', label: '更新角色' },
+      { value: 'admin_role_delete', label: '删除角色' },
+      { value: 'admin_thesis_archive', label: '归档论文' },
+      { value: 'admin_thesis_finalize', label: '定稿论文' },
+      { value: 'admin_thesis_score_recompute', label: '重算论文总评成绩' },
+      { value: 'admin_user_role_assign', label: '分配用户角色' }
     ]
   },
   {
@@ -453,6 +494,7 @@ const OPERATION_MODULES = [
       { value: 'config_reset_default', label: '恢复默认配置' },
       { value: 'config_export', label: '导出配置' },
       { value: 'config_test_email', label: '测试邮件' },
+      { value: 'config_email_test', label: '发送测试邮件' },
       { value: 'system_param_update', label: '系统参数更新' },
       { value: 'system_param_init', label: '初始化系统参数' },
       { value: 'system_maintenance_status', label: '维护状态切换' }
@@ -506,7 +548,26 @@ const OPERATION_MODULES = [
       { value: 'message_template_create', label: '创建模板' },
       { value: 'message_template_update', label: '更新模板' },
       { value: 'message_template_delete', label: '删除模板' },
-      { value: 'message_template_status', label: '模板状态变更' }
+      { value: 'message_template_status', label: '模板状态变更' },
+      { value: 'message_template_status_update', label: '更新模板启用状态' }
+    ]
+  },
+  {
+    value: 'knowledge', label: '知识库',
+    types: [
+      { value: 'knowledge_article_create', label: '新增知识库文章' },
+      { value: 'knowledge_article_update', label: '更新知识库文章' },
+      { value: 'knowledge_article_delete', label: '删除知识库文章' },
+      { value: 'knowledge_article_status_update', label: '更新文章状态' }
+    ]
+  },
+  {
+    value: 'subject', label: '学科管理',
+    types: [
+      { value: 'subject_create', label: '新增学科领域' },
+      { value: 'subject_update', label: '修改学科领域' },
+      { value: 'subject_delete', label: '删除学科领域' },
+      { value: 'subject_enabled', label: '启用或停用学科领域' }
     ]
   },
   {
@@ -908,7 +969,7 @@ const handleCleanExpired = async () => {
 // ==================== 格式化工具函数 ====================
 
 function getUserTypeName(userType) {
-  const map = { 'STUDENT': '学生', 'TEACHER': '教师', 'ADMIN': '管理员', 'SUPER_ADMIN': 'super_admin' }
+  const map = { 'STUDENT': '学生', 'TEACHER': '教师', 'ADMIN': '管理员', 'SUPER_ADMIN': '超级管理员' }
   return map[userType] || userType || ''
 }
 
