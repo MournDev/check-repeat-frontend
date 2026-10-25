@@ -1004,12 +1004,14 @@ const latestPaperSimilarity = computed(() => {
 })
 
 // 检查是否有相似度数据
+// 后端 LatestPaperDTO 会把 similarity 序列化成 null（未查重时），
+// 不能用「字段存在」判断，否则 null 会被当成 0% 并误显示「查重已完成」
 const hasSimilarityData = computed(() => {
   if (!latestPaper.value) return false
-  // 检查是否存在任何相似度相关字段，包括值为0的情况
-  return 'checkRate' in latestPaper.value ||
-         'similarityRate' in latestPaper.value ||
-         'similarity' in latestPaper.value
+  const raw = latestPaper.value.checkRate
+    ?? latestPaper.value.similarityRate
+    ?? latestPaper.value.similarity
+  return raw !== undefined && raw !== null && raw !== ''
 })
 
 // 待办优先级圆点
