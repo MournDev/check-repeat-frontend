@@ -21,7 +21,7 @@
               <el-icon><User /></el-icon>
             </div>
             <div class="stat-info">
-              <div class="stat-value">{{ assignmentStats.unassignedStudents }}</div>
+              <div class="stat-value">{{ assignmentStats.pendingStudents }}</div>
               <div class="stat-label">未分配学生</div>
             </div>
           </div>
@@ -34,7 +34,7 @@
               <el-icon><UserFilled /></el-icon>
             </div>
             <div class="stat-info">
-              <div class="stat-value">{{ assignmentStats.availableTeachers }}</div>
+              <div class="stat-value">{{ assignmentStats.advisorsCount }}</div>
               <div class="stat-label">可用教师</div>
             </div>
           </div>
@@ -47,7 +47,7 @@
               <el-icon><Connection /></el-icon>
             </div>
             <div class="stat-info">
-              <div class="stat-value">{{ assignmentStats.avgLoad }}</div>
+              <div class="stat-value">{{ assignmentStats.avgAssigned }}</div>
               <div class="stat-label">平均指导数</div>
             </div>
           </div>
@@ -107,11 +107,11 @@
             >
               <div class="student-info">
                 <div class="student-basic">
-                  <h4 class="student-name">{{ student.name }}</h4>
-                  <span class="student-id">{{ student.studentId }}</span>
+                  <h4 class="student-name">{{ student.studentName }}</h4>
+                  <span class="student-id">{{ student.studentNo }}</span>
                 </div>
                 <div class="student-major">
-                  <el-tag size="small">{{ getMajorName(student.major) }}</el-tag>
+                  <el-tag size="small">{{ student.majorName || '-' }}</el-tag>
                   <span class="grade">{{ student.grade }}级</span>
                 </div>
                 <div class="student-interests" v-if="student.interests">
@@ -255,8 +255,8 @@
       >
         <el-form-item label="学生信息">
           <div class="student-preview">
-            <div><strong>{{ currentStudent?.name }}</strong> ({{ currentStudent?.studentId }})</div>
-            <div>{{ getMajorName(currentStudent?.major) }} · {{ currentStudent?.grade }}级</div>
+            <div><strong>{{ currentStudent?.studentName }}</strong> ({{ currentStudent?.studentNo }})</div>
+            <div>{{ currentStudent?.majorName || '-' }} · {{ currentStudent?.grade }}级</div>
           </div>
         </el-form-item>
         <el-form-item label="选择导师" prop="teacherId">
@@ -492,9 +492,9 @@ const majorMapping = ref({})
 
 // 统计数据
 const assignmentStats = ref({
-  unassignedStudents: 0,
-  availableTeachers: 0,
-  avgLoad: 0,
+  pendingStudents: 0,
+  advisorsCount: 0,
+  avgAssigned: 0,
   todayAssignments: 0
 })
 
@@ -545,8 +545,8 @@ const filteredStudents = computed(() => {
   if (!studentFilter.value) return unassignedStudents.value
   const filterText = studentFilter.value.toLowerCase()
   return unassignedStudents.value.filter(student => 
-    student.name.toLowerCase().includes(filterText) ||
-    student.studentId.includes(filterText)
+    (student.studentName || '').toLowerCase().includes(filterText) ||
+    (student.studentNo || '').includes(filterText)
   )
 })
 
@@ -740,7 +740,7 @@ const removeFromSelection = (studentId) => {
 
 const getStudentName = (studentId) => {
   const student = unassignedStudents.value.find(s => s.id === studentId)
-  return student ? student.name : ''
+  return student ? student.studentName : ''
 }
 
 const wouldExceedLoad = (teacher) => {

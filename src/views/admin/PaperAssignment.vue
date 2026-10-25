@@ -55,8 +55,8 @@
     >
       <el-table :data="pendingStudents" style="width: 100%" v-loading="loading">
         <el-table-column prop="studentName" label="学生姓名" width="120"></el-table-column>
-        <el-table-column prop="studentId" label="学号" width="120"></el-table-column>
-        <el-table-column prop="major" label="专业" width="150"></el-table-column>
+        <el-table-column prop="studentNo" label="学号" width="140"></el-table-column>
+        <el-table-column prop="majorName" label="专业" width="150"></el-table-column>
         <el-table-column prop="grade" label="年级" width="100"></el-table-column>
         <el-table-column prop="submitTime" label="提交时间" width="180">
           <template #default="{ row }">
@@ -94,7 +94,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 // 导入管理员API
@@ -102,9 +102,14 @@ import {
   getAssignmentStats, 
   getUnassignedStudents, 
   getAvailableTeachers,
-  assignSingleStudent,
-  assignBatchStudents
+  assignSingleStudent
 } from '@/api/admin/assignment'
+import {
+  getAlgorithmConfig,
+  getAssignmentPreview,
+  startAutoAssignment,
+  getAssignmentProgress
+} from '@/api/admin/autoAssignment'
 
 // 导入其他必要API
 import { getStudentDetail } from '@/api/admin/users'
@@ -144,17 +149,12 @@ const refreshData = async () => {
 const loadAssignmentStats = async () => {
   try {
     const response = await getAssignmentStats()
-    assignmentStats.value = response.data
+    assignmentStats.value = response.data || {}
   } catch (error) {
     console.error('加载分配统计失败:', error)
     ElMessage.error('加载统计数据失败')
-    // 降级数据
-    assignmentStats.value = {
-      pendingStudents: 12,
-      assignedStudents: 89,
-      advisorsCount: 25,
-      avgAssigned: 3.6
-    }
+    // API 失败时保持空态，不再展示编造的降级数字
+    assignmentStats.value = {}
   }
 }
 
@@ -162,8 +162,8 @@ const loadPendingStudents = async () => {
   loading.value = true
   try {
     const params = {
-      pageNum: pagination.currentPage,
-      pageSize: pagination.pageSize
+      page: pagination.currentPage,
+      size: pagination.pageSize
     }
     const response = await getUnassignedStudents(params)
     pendingStudents.value = response.data.records || []
@@ -182,32 +182,95 @@ const loadPendingStudents = async () => {
 const loadAvailableAdvisors = async () => {
   try {
     const response = await getAvailableTeachers()
-    availableAdvisors.value = response.data || []
+    // 后端返回的是分页对象，这里只需要当前页的教师列表
+    availableAdvisors.value = response.data?.records || []
   } catch (error) {
     console.error('加载可用导师失败:', error)
     availableAdvisors.value = []
   }
 }
 
+// 自动分配进度轮询
+const autoAssignPolling = ref(null)
+
+const stopAutoAssignPolling = () => {
+  if (autoAssignPolling.value) {
+    clearInterval(autoAssignPolling.value)
+    autoAssignPolling.value = null
+  }
+}
+
+const pollAutoAssignProgress = (taskId) => {
+  stopAutoAssignPolling()
+  let attempts = 0
+  autoAssignPolling.value = setInterval(async () => {
+    attempts++
+    try {
+      const res = await getAssignmentProgress(taskId)
+      const progress = res.data
+      if (!progress) return
+      if (progress.status === 'completed') {
+        stopAutoAssignPolling()
+        ElMessage.success(
+          `自动分配完成：已分配 ${progress.processedCount || 0} / ${progress.totalCount || 0}`
+        )
+        await refreshData()
+      } else if (progress.status === 'failed') {
+        stopAutoAssignPolling()
+        ElMessage.error('自动分配失败，请在“分配记录”中查看原因')
+        await refreshData()
+      } else if (attempts > 150) {
+        // 5 分钟仍未结束：停止轮询，避免页面长期挂请求
+        stopAutoAssignPolling()
+        ElMessage.warning('自动分配仍在执行，请稍后点击刷新查看结果')
+      }
+    } catch (e) {
+      console.error('查询自动分配进度失败:', e)
+    }
+  }, 2000)
+}
+
 const handleAutoAssign = async () => {
   try {
+    // 先取预览，避免没有待分配数据时白跑一次后端任务
+    const previewRes = await getAssignmentPreview()
+    const preview = previewRes.data || {}
+    if (!preview.unassigned) {
+      ElMessage.warning('当前没有待分配学生')
+      return
+    }
+
     await ElMessageBox.confirm(
-      '确定要执行自动分配吗？此操作将为所有待分配学生自动匹配指导老师。',
+      `将按当前算法配置为 ${preview.unassigned} 名待分配学生执行自动分配`
+        + `（可用教师 ${preview.availableTeachers || 0} 人，预计可分配 ${preview.expectedAssigned || 0} 人）。确定继续？`,
       '自动分配确认',
       {
-        confirmButtonText: '确定',
+        confirmButtonText: '开始分配',
         cancelButtonText: '取消',
         type: 'warning'
       }
     )
-    
-    const response = await assignBatchStudents({ algorithm: 'balanced' })
-    ElMessage.success(`自动分配完成，共分配 ${response.data.assignedCount} 名学生`)
-    refreshData()
+
+    // 使用后台已保存的算法配置启动自动分配
+    const configRes = await getAlgorithmConfig()
+    const config = configRes.data
+    if (!config) {
+      ElMessage.error('未获取到自动分配算法配置')
+      return
+    }
+
+    const startRes = await startAutoAssignment({ config })
+    const taskId = startRes.data?.taskId
+    if (!taskId) {
+      ElMessage.error(startRes.message || '启动自动分配失败')
+      return
+    }
+    ElMessage.success('自动分配已启动，完成后将自动刷新')
+    pollAutoAssignProgress(taskId)
   } catch (error) {
-    if (error !== 'cancel') {
+    if (error !== 'cancel' && error !== 'close') {
+      // 响应拦截器已按后端 message 提示
       console.error('自动分配失败:', error)
-      ElMessage.error('自动分配失败')
     }
   }
 }
@@ -247,9 +310,10 @@ const assignAdvisor = async (student) => {
     
     const selectedAdvisor = advisorOptions.find(opt => opt.label.includes(value) || opt.value === value)
     if (selectedAdvisor) {
-      await manualAssign({
-        studentId: student.id,
-        advisorId: selectedAdvisor.value
+      // 后端 singleAssign 的 studentId 字段实际接收论文ID；教师ID字段名是 teacherId
+      await assignSingleStudent({
+        studentId: student.paperId || student.id,
+        teacherId: selectedAdvisor.value
       })
       ElMessage.success('分配成功')
       refreshData()
@@ -264,7 +328,12 @@ const assignAdvisor = async (student) => {
 
 const viewDetails = async (student) => {
   try {
-    const response = await getStudentDetail(student.id)
+    if (!student.studentId) {
+      ElMessage.warning('未找到该论文对应的学生账号')
+      return
+    }
+    // studentId 是学生用户ID（不是论文ID）
+    const response = await getStudentDetail(student.studentId)
     if (response.code === 200 && response.data) {
       studentDetail.value = response.data
       detailDialogVisible.value = true
@@ -290,6 +359,10 @@ const handleCurrentChange = (val) => {
 // 生命周期
 onMounted(() => {
   refreshData()
+})
+
+onUnmounted(() => {
+  stopAutoAssignPolling()
 })
 </script>
 
