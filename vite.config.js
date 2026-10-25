@@ -37,7 +37,10 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     // 目标环境
-    target: 'es2015',
+    // 注意：不要降回 es2015。rolldown-vite 7.2.2 把 async 函数降级为生成器时，
+    // 会误把 element-plus tree-store 内的局部函数重命名为未声明的 traverse$1，
+    // 导致 el-tree-select 过滤时报 ReferenceError。es2020 保留原生 async 可规避。
+    target: 'es2020',
 
     // 生产环境移除 console/debugger
     esbuild: {
