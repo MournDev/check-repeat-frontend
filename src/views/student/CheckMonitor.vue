@@ -278,9 +278,12 @@ const goBack = () => {
 const refreshStatus = async () => {
   try {
     const res = await getCheckTaskDetail(route.params.paperId)
-    if (res.code === 200) {
+    if (res.code === 200 && res.data) {
       updateStatus(res.data)
       ElMessage.success('状态已刷新')
+    } else if (res.code === 200) {
+      // 论文还没有查重任务：空态不是错误
+      ElMessage.warning('该论文暂无查重任务')
     }
   } catch (error) {
     ElMessage.error('刷新失败: ' + error.message)
@@ -498,7 +501,7 @@ const startPolling = () => {
   pollingTimer.value = setInterval(async () => {
     try {
       const res = await getCheckTaskDetail(route.params.paperId)
-      if (res.code === 200) {
+      if (res.code === 200 && res.data) {
         updateStatus(res.data)
       }
     } catch (error) {
