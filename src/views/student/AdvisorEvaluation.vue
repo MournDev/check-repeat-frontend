@@ -280,7 +280,7 @@ const handleSubmit = async () => {
 
 const goPaperDetail = () => {
   if (status.value.paperId) {
-    router.push({ name: 'PaperDetail', query: { paperId: status.value.paperId } })
+    router.push({ name: 'PaperDetail', query: { id: status.value.paperId } })
   }
 }
 
