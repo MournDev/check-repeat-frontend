@@ -23,7 +23,7 @@
               v-for="template in filteredTemplates"
               :key="template.id"
               class="template-card"
-              @click="useTemplate(template)"
+              @click="openTemplatePreview(template)"
             >
               <div class="template-header">
                 <div class="template-title">{{ template.title }}</div>
@@ -162,10 +162,10 @@
       </div>
     </el-dialog>
 
-    <!-- 快速使用抽屉 -->
+    <!-- 模板快速预览抽屉（只读，不产生使用记录） -->
     <el-drawer
       v-model="quickUseDrawerVisible"
-      title="快速使用模板"
+      title="快速预览模板"
       direction="rtl"
       size="400px"
     >
@@ -185,7 +185,7 @@
             v-for="template in recentTemplates"
             :key="template.id"
             class="template-item"
-            @click="applyTemplate(template)"
+            @click="openTemplatePreview(template)"
           >
             <div class="template-info">
               <div class="template-name">{{ template.title }}</div>
@@ -193,8 +193,8 @@
                 {{ truncateContent(template.content, 50) }}
               </div>
             </div>
-            <el-button size="small" type="primary" @click.stop="applyTemplate(template)">
-              应用
+            <el-button size="small" type="primary" @click.stop="openTemplatePreview(template)">
+              预览
             </el-button>
           </div>
         </div>
@@ -205,7 +205,7 @@
             v-for="template in searchableTemplates"
             :key="template.id"
             class="template-item"
-            @click="applyTemplate(template)"
+            @click="openTemplatePreview(template)"
           >
             <div class="template-info">
               <div class="template-name">{{ template.title }}</div>
@@ -215,8 +215,8 @@
                 </el-tag>
               </div>
             </div>
-            <el-button size="small" type="primary" @click.stop="applyTemplate(template)">
-              应用
+            <el-button size="small" type="primary" @click.stop="openTemplatePreview(template)">
+              预览
             </el-button>
           </div>
         </div>
@@ -241,8 +241,7 @@ import {
   getReviewTemplates,
   createReviewTemplate,
   updateReviewTemplate,
-  deleteReviewTemplate,
-  useReviewTemplate
+  deleteReviewTemplate
 } from '@/api/teacher'
 
 // 响应式数据
@@ -398,11 +397,6 @@ const previewTemplate = () => {
   previewDialogVisible.value = true
 }
 
-const useTemplate = (template) => {
-  // 使用模板的逻辑
-  ElMessage.success(`已选择模板：${template.title}`)
-}
-
 const resetForm = () => {
   if (templateFormRef.value) {
     templateFormRef.value.resetFields()
@@ -413,23 +407,12 @@ const openQuickUse = () => {
   quickUseDrawerVisible.value = true
 }
 
-const applyTemplate = async (template) => {
-  try {
-    // 应用模板到当前审核
-    const response = await useReviewTemplate(template.id)
-    ElMessage.success(`模板 "${template.title}" 已应用`)
-    quickUseDrawerVisible.value = false
-
-    // 用服务端返回的 VO 覆盖本地那一行：使用次数与最后使用时间都由服务端维护，
-    // 本地再自行 +1 会与服务端算出的值重复计一次。
-    const index = templates.value.findIndex(t => t.id === template.id)
-    if (index > -1) {
-      templates.value[index] = response.data
-    }
-  } catch (error) {
-    // 不在这里再弹提示：拦截器已经按状态码弹过一次
-    console.error('应用模板失败:', error)
-  }
+// 管理页只做增删改查与预览：不写使用次数（真实使用记录发生在审核工作台）
+const openTemplatePreview = (template) => {
+  if (!template) return
+  previewTemplateData.value = { ...template }
+  quickUseDrawerVisible.value = false
+  previewDialogVisible.value = true
 }
 
 const truncateContent = (content, length = 100) => {

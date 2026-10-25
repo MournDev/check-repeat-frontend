@@ -240,7 +240,7 @@ import SignoffPanel from './components/workbench/SignoffPanel.vue'
 import ReviewHistoryPanel from './components/workbench/ReviewHistoryPanel.vue'
 import { usePendingPapers, isOverdue, isUrgent } from '@/composables/usePendingPapers.js'
 import { useWorkbenchReport } from '@/composables/useWorkbenchReport.js'
-import { doReview, getReviewTemplates } from '@/api/teacher.js'
+import { doReview, getReviewTemplates, useReviewTemplate } from '@/api/teacher.js'
 import { getCheckSignoff, signoffCheckReport } from '@/api/p5.js'
 import { formatDateTime } from '@/utils/dataType.js'
 
@@ -382,15 +382,21 @@ const rejectDialogVisible = ref(false)
 const rejectOpinion = ref('')
 const rejectTemplates = ref([])
 const templatesLoading = ref(false)
-const templatesLoaded = ref(false)
+// 按场景缓存（REJECT/PASS），切换场景时不重复请求
+const templateCache = new Map()
 
-const loadRejectTemplates = async () => {
-  if (templatesLoaded.value) return
+const loadTemplates = async (scenario) => {
+  if (templateCache.has(scenario)) {
+    rejectTemplates.value = templateCache.get(scenario)
+    return
+  }
   templatesLoading.value = true
+  rejectTemplates.value = []
   try {
-    const res = await getReviewTemplates()
-    rejectTemplates.value = (Array.isArray(res?.data) ? res.data : []).slice(0, 8)
-    templatesLoaded.value = true
+    const res = await getReviewTemplates({ scenario })
+    const list = (Array.isArray(res?.data) ? res.data : []).slice(0, 8)
+    templateCache.set(scenario, list)
+    rejectTemplates.value = list
   } catch (e) {
     console.error('加载审核意见模板失败:', e)
   } finally {
@@ -398,18 +404,40 @@ const loadRejectTemplates = async () => {
   }
 }
 
+const OPINION_MAX_LENGTH = 500
+
+/**
+ * 追加模板内容到意见框：超出 500 字上限时截断并提示，避免提交被后端拒绝
+ */
+const appendTemplateContent = (current, content) => {
+  const base = (current || '').trim()
+  const next = base ? `${base}\n${content}` : content
+  if (next.length <= OPINION_MAX_LENGTH) return next
+  ElMessage.warning(`意见最多 ${OPINION_MAX_LENGTH} 字，模板内容已按上限截断`)
+  return next.slice(0, OPINION_MAX_LENGTH)
+}
+
+/**
+ * 真实使用留痕：静默调用 /use 累加次数，失败不影响填写与提交
+ */
+const recordTemplateUsage = (template) => {
+  if (!template?.id) return
+  useReviewTemplate(template.id).catch(e => {
+    console.warn('记录模板使用失败:', e)
+  })
+}
 const handleReject = () => {
   if (!currentPaperId.value || reviewSubmitting.value) return
   rejectOpinion.value = ''
   rejectDialogVisible.value = true
-  loadRejectTemplates()
+  loadTemplates('REJECT')
 }
 
 const applyRejectTemplate = (template) => {
   const content = template?.content
   if (!content) return
-  const current = rejectOpinion.value.trim()
-  rejectOpinion.value = (current ? `${current}\n${content}` : content).slice(0, 500)
+  rejectOpinion.value = appendTemplateContent(rejectOpinion.value, content)
+  recordTemplateUsage(template)
 }
 
 const handleRejectConfirm = async () => {
@@ -448,14 +476,15 @@ const openBatchDialog = (action, targets) => {
   batchDialog.targets = targets
   batchDialog.opinion = ''
   batchDialog.visible = true
-  loadRejectTemplates()
+  // 批量通过展示通过类模板，批量退回展示退回类模板
+  loadTemplates(action === 'approve' ? 'PASS' : 'REJECT')
 }
 
 const applyBatchTemplate = (template) => {
   const content = template?.content
   if (!content) return
-  const current = batchDialog.opinion.trim()
-  batchDialog.opinion = (current ? `${current}\n${content}` : content).slice(0, 500)
+  batchDialog.opinion = appendTemplateContent(batchDialog.opinion, content)
+  recordTemplateUsage(template)
 }
 
 // 待审列表已携带 canBatchReview（signoffQualified && auditing），这里只做最后一道过滤；
