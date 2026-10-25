@@ -49,9 +49,9 @@
             <div class="stat-info">
               <div class="stat-number">{{ stats.pendingReviews }}</div>
               <div class="stat-label">待审核</div>
-              <div class="stat-trend" :class="getTrendClass(getPendingReviewsTrend().type)">
-                <span class="trend-icon">{{ getTrendIcon(getPendingReviewsTrend().type) }}</span>
-                <span>{{ getPendingReviewsTrend().text }}</span>
+              <div class="stat-trend" :class="getTrendClass(statTrends.pendingReviewsTrend.type)">
+                <span class="trend-icon">{{ getTrendIcon(statTrends.pendingReviewsTrend.type) }}</span>
+                <span>{{ statTrends.pendingReviewsTrend.text }}</span>
               </div>
             </div>
           </div>
@@ -231,6 +231,7 @@ const timeRange = ref('month')
 const stats = ref({})
 const statTrends = ref({
   totalReviewsTrend: { type: '', text: '' },
+  pendingReviewsTrend: { type: '', text: '' },
   approvedReviewsTrend: { type: '', text: '' },
   currentStudentsTrend: { type: '', text: '' }
 })
@@ -289,6 +290,7 @@ const loadStats = async () => {
       
       statTrends.value = {
         totalReviewsTrend: res.data.totalReviewsTrend || { type: 'flat', text: '无变化' },
+        pendingReviewsTrend: res.data.pendingReviewsTrend || { type: 'flat', text: '无变化' },
         approvedReviewsTrend: res.data.approvedReviewsTrend || { type: 'flat', text: '无变化' },
         currentStudentsTrend: res.data.currentStudentsTrend || { type: 'flat', text: '无变化' }
       }
@@ -415,10 +417,6 @@ const loadCollegeChart = () => collegeChart.run(
     }
   }
 )
-
-const getPendingReviewsTrend = () => {
-  return { type: 'down', text: '-5% 同比下降' }
-}
 
 const getTrendClass = (type) => {
   if (!type) return 'trend-flat'
