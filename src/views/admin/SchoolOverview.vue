@@ -14,7 +14,14 @@
     <!-- 核心指标概览 -->
     <el-row :gutter="16" class="overview-cards" v-loading="overviewLoading">
       <el-col :xs="12" :sm="6">
-        <el-card class="overview-card" shadow="never">
+        <el-card
+          class="overview-card is-clickable"
+          shadow="never"
+          role="button"
+          tabindex="0"
+          @click="goOverview('/admin/user-management')"
+          @keyup.enter="goOverview('/admin/user-management')"
+        >
           <div class="card-content">
             <div class="card-icon bg-primary">
               <el-icon><User /></el-icon>
@@ -23,12 +30,20 @@
               <div class="card-value">{{ overviewStats.totalUsers }}</div>
               <div class="card-label">总用户数</div>
             </div>
+            <el-icon class="card-arrow"><ArrowRight /></el-icon>
           </div>
         </el-card>
       </el-col>
       
       <el-col :xs="12" :sm="6">
-        <el-card class="overview-card" shadow="never">
+        <el-card
+          class="overview-card is-clickable"
+          shadow="never"
+          role="button"
+          tabindex="0"
+          @click="goOverview('/admin/paper-library')"
+          @keyup.enter="goOverview('/admin/paper-library')"
+        >
           <div class="card-content">
             <div class="card-icon bg-success">
               <el-icon><Document /></el-icon>
@@ -37,12 +52,20 @@
               <div class="card-value">{{ overviewStats.totalPapers }}</div>
               <div class="card-label">论文总数</div>
             </div>
+            <el-icon class="card-arrow"><ArrowRight /></el-icon>
           </div>
         </el-card>
       </el-col>
       
       <el-col :xs="12" :sm="6">
-        <el-card class="overview-card" shadow="never">
+        <el-card
+          class="overview-card is-clickable"
+          shadow="never"
+          role="button"
+          tabindex="0"
+          @click="goOverview('/admin/paper-library', { similarity: 'high' })"
+          @keyup.enter="goOverview('/admin/paper-library', { similarity: 'high' })"
+        >
           <div class="card-content">
             <div class="card-icon bg-warning">
               <el-icon><Warning /></el-icon>
@@ -51,12 +74,20 @@
               <div class="card-value">{{ overviewStats.highSimilarity }}</div>
               <div class="card-label">高重复率</div>
             </div>
+            <el-icon class="card-arrow"><ArrowRight /></el-icon>
           </div>
         </el-card>
       </el-col>
 
       <el-col :xs="12" :sm="6">
-        <el-card class="overview-card" shadow="never">
+        <el-card
+          class="overview-card is-clickable"
+          shadow="never"
+          role="button"
+          tabindex="0"
+          @click="goOverview('/admin/system-monitoring')"
+          @keyup.enter="goOverview('/admin/system-monitoring')"
+        >
           <div class="card-content">
             <div class="card-icon bg-info">
               <el-icon><Monitor /></el-icon>
@@ -65,13 +96,21 @@
               <div class="card-value">{{ realtimeStats.systemLoad }}%</div>
               <div class="card-label">系统负载</div>
             </div>
+            <el-icon class="card-arrow"><ArrowRight /></el-icon>
           </div>
         </el-card>
       </el-col>
 
       <!-- 原「运营概览」的两项核心指标并入此盘 -->
       <el-col :xs="12" :sm="6">
-        <el-card class="overview-card" shadow="never">
+        <el-card
+          class="overview-card is-clickable"
+          shadow="never"
+          role="button"
+          tabindex="0"
+          @click="goOverview('/admin/paper-assignment', { status: 'unassigned' })"
+          @keyup.enter="goOverview('/admin/paper-assignment', { status: 'unassigned' })"
+        >
           <div class="card-content">
             <div class="card-icon bg-warning">
               <el-icon><Clock /></el-icon>
@@ -80,12 +119,20 @@
               <div class="card-value">{{ overviewStats.unassignedCount || 0 }}</div>
               <div class="card-label">待分配论文</div>
             </div>
+            <el-icon class="card-arrow"><ArrowRight /></el-icon>
           </div>
         </el-card>
       </el-col>
 
       <el-col :xs="12" :sm="6">
-        <el-card class="overview-card" shadow="never">
+        <el-card
+          class="overview-card is-clickable"
+          shadow="never"
+          role="button"
+          tabindex="0"
+          @click="goOverview('/admin/system-monitoring')"
+          @keyup.enter="goOverview('/admin/system-monitoring')"
+        >
           <div class="card-content">
             <div class="card-icon bg-success">
               <el-icon><CircleCheck /></el-icon>
@@ -94,6 +141,7 @@
               <div class="card-value">{{ overviewStats.systemHealth == null ? '—' : overviewStats.systemHealth + '%' }}</div>
               <div class="card-label">系统健康度</div>
             </div>
+            <el-icon class="card-arrow"><ArrowRight /></el-icon>
           </div>
         </el-card>
       </el-col>
@@ -265,6 +313,7 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted, nextTick } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 
 // 导入管理员 API
@@ -288,10 +337,11 @@ import { exportSemesterPackage as exportSemesterPackageApi } from '@/api/admin/e
 // 图标导入（模板中其余图标依赖 main.js 的全局注册，无需在此导入）
 import {
   Refresh, Download, User, Document, Warning, Monitor,
-  DataAnalysis, Histogram, TrendCharts, Clock, CircleCheck, FolderOpened
+  DataAnalysis, Histogram, TrendCharts, Clock, CircleCheck, FolderOpened, ArrowRight
 } from '@element-plus/icons-vue'
 
 // 响应式数据
+const router = useRouter()
 const overviewStats = ref({})
 // 加载状态
 const overviewLoading = ref(false)
@@ -360,6 +410,11 @@ const currentSemester = (() => {
   return `${y}-${y + 1}-${firstTerm ? 1 : 2}`
 })()
 exportForm.semester = currentSemester
+
+// KPI 钻取：统一带筛选条件跳转到目标列表页
+const goOverview = (path, query = {}) => {
+  router.push({ path, query })
+}
 
 const saveBlob = (payload, filename) => {
   const blob = payload instanceof Blob ? payload : new Blob([payload])
@@ -808,6 +863,34 @@ onMounted(async () => {
   .overview-card {
     border: none;
     border-radius: var(--app-radius-lg);
+
+    &.is-clickable {
+      cursor: pointer;
+      transition: transform var(--app-transition-fast), box-shadow var(--app-transition-fast);
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--app-color-primary);
+        outline-offset: 2px;
+      }
+    }
+
+    .card-arrow {
+      flex-shrink: 0;
+      margin-left: var(--app-space-2);
+      font-size: var(--app-fs-body);
+      color: var(--app-color-text-muted);
+      transition: color var(--app-transition-fast), transform var(--app-transition-fast);
+    }
+
+    &.is-clickable:hover .card-arrow {
+      color: var(--app-color-primary);
+      transform: translateX(2px);
+    }
     
     .card-content {
       display: flex;

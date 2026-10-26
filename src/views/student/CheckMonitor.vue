@@ -10,6 +10,17 @@
       </template>
     </PageHeader>
 
+    <!-- 实时连接断开提示：页面会自动降级轮询，避免学生误以为进度卡死 -->
+    <el-alert
+      v-if="connectionLost && !isCompleted"
+      class="connection-alert"
+      type="warning"
+      :closable="false"
+      show-icon
+      title="实时连接已断开，正在尝试自动刷新…"
+      description="页面每 10 秒自动获取一次最新进度，也可以手动刷新。"
+    />
+
     <!-- 当前状态显示 -->
     <el-card class="status-card" shadow="never">
       <div class="current-status">
@@ -19,12 +30,11 @@
           </el-icon>
         </div>
         <div class="status-content">
-          <h2 class="status-message">{{ getStatusMessage(currentStatus.status) }}</h2>
+          <h2 class="status-message">{{ displayStatusMessage }}</h2>
           <div class="status-details">
-            <span v-if="currentStatus.estimatedRemainingTime">
-              预计完成时间: {{ formatEstimatedTime(currentStatus.estimatedRemainingTime) }}
-            </span>
-            <span>已用时: {{ formatDuration(currentStatus.elapsedTime || 0) }}</span>
+            <span v-if="queueHint">{{ queueHint }}</span>
+            <span>已用时: {{ elapsedTime }}</span>
+            <span class="update-hint">上次更新: {{ lastUpdatedText }}</span>
           </div>
         </div>
         <div class="refresh-button">
@@ -39,20 +49,25 @@
         <div class="card-header">
           <el-icon><DataLine /></el-icon>
           <span>整体进度</span>
-          <el-tag :type="getProgressTagType(currentStatus.overallProgress)">
-            {{ currentStatus.overallProgress }}%
+          <el-tag :type="progressTagType">
+            {{ progressTagText }}
           </el-tag>
         </div>
       </template>
       
       <div class="overall-progress">
         <el-progress
-          :percentage="currentStatus.overallProgress"
+          :percentage="displayProgress"
+          :indeterminate="progressIndeterminate"
           :stroke-width="16"
           :color="getProgressColor"
+          :show-text="false"
           striped
           striped-flow
         />
+        <p v-if="progressIndeterminate" class="progress-hint">
+          后端暂未返回真实百分比，正在等待进度更新…
+        </p>
         <div class="progress-stages">
           <div 
             v-for="stage in checkStages"
@@ -133,7 +148,7 @@
         </div>
         <div class="estimate-item">
           <div class="estimate-label">预计剩余时间</div>
-          <div class="estimate-value">{{ formatEstimatedTime(currentStatus.estimatedRemainingTime) }}</div>
+          <div class="estimate-value">{{ remainingText }}</div>
         </div>
       </div>
     </el-card>
@@ -165,7 +180,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, reactive, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { 
@@ -187,14 +202,15 @@ const router = useRouter()
 // 响应式数据
 const currentStatus = ref({
   status: 'checking',
-  currentStage: 'internal_check',
+  currentStage: 'queue',
   overallProgress: 0,
   stageProgress: 0,
   elapsedTime: 0, // 秒
   estimatedRemainingTime: 0, // 秒
   stages: {
-    upload: { status: 'completed', duration: 120 },
-    internal_check: { status: 'processing', progress: 0, duration: 0 },
+    queue: { status: 'processing' },
+    upload: { status: 'pending' },
+    internal_check: { status: 'pending' },
     third_party_check: { status: 'pending' },
     report_generation: { status: 'pending' }
   }
@@ -211,7 +227,7 @@ const citationRate = ref(null)
 const logContainer = ref(null)
 
 // 使用实时推送 Hook
-const { connect, disconnect } = useCheckProgress();
+const { connect, disconnect, isConnected, error: progressError } = useCheckProgress();
 
 // 根据后端status映射阶段状态。
 // 后端 CheckTask.status 实际是字符串码（pending/checking/completed/failure/cancelled，
@@ -220,22 +236,26 @@ const { connect, disconnect } = useCheckProgress();
 const mapCheckStatusToStages = (checkStatus) => {
   const code = String(checkStatus ?? '').toLowerCase()
   if (code === '0' || code === 'pending') return [
+    { key: 'queue', name: '排队中', status: 'processing', progress: 0 },
     { key: 'upload', name: '文件上传', status: 'pending', progress: 0 },
     { key: 'check', name: '论文查重', status: 'pending', progress: 0 },
     { key: 'report', name: '报告生成', status: 'pending', progress: 0 }
   ]
   if (code === '1' || code === 'checking') return [
+    { key: 'queue', name: '排队中', status: 'completed', progress: 100 },
     { key: 'upload', name: '文件上传', status: 'completed', progress: 100 },
     { key: 'check', name: '论文查重', status: 'processing', progress: 0 },
     { key: 'report', name: '报告生成', status: 'pending', progress: 0 }
   ]
   if (code === '2' || code === 'completed') return [
+    { key: 'queue', name: '排队中', status: 'completed', progress: 100 },
     { key: 'upload', name: '文件上传', status: 'completed', progress: 100 },
     { key: 'check', name: '论文查重', status: 'completed', progress: 100 },
     { key: 'report', name: '报告生成', status: 'completed', progress: 100 }
   ]
   return [
-    { key: 'upload', name: '文件上传', status: 'failed', progress: 0 },
+    { key: 'queue', name: '排队中', status: 'completed', progress: 100 },
+    { key: 'upload', name: '文件上传', status: 'completed', progress: 100 },
     { key: 'check', name: '论文查重', status: 'failed', progress: 0 },
     { key: 'report', name: '报告生成', status: 'failed', progress: 0 }
   ]
@@ -254,7 +274,7 @@ const totalStages = computed(() => {
 const elapsedTime = computed(() => {
   const start = currentStatus.value.startTime
   if (!start) return '--'
-  const diff = Date.now() - new Date(start).getTime()
+  const diff = nowTick.value - new Date(start).getTime()
   const minutes = Math.floor(diff / 60000)
   if (minutes < 1) return '小于1分钟'
   if (minutes < 60) return `${minutes}分钟`
@@ -263,12 +283,82 @@ const elapsedTime = computed(() => {
   return `${hours}小时${remainMin}分钟`
 })
 
-const getProgressColor = computed(() => {
-  const progress = currentStatus.value.overallProgress
-  if (progress < 30) return 'var(--app-color-success)'
-  if (progress < 70) return 'var(--app-color-warning)'
-  return 'var(--app-color-danger)'
+// ── 进度真实性 / 排队提示 / 断线降级 ──────────────────────
+const connectionLost = ref(false)
+const lastUpdatedAt = ref(null)
+// 只有后端明确返回百分比时才算真实进度；否则显示不确定态，不用相似度硬凑
+const hasRealProgress = ref(false)
+const nowTick = ref(Date.now())
+let clockTimer = null
+let connectionGuardTimer = null
+let hasConnectedOnce = false
+
+const statusKey = computed(() => {
+  const raw = String(currentStatus.value.status ?? '').toLowerCase()
+  if (raw === '0') return 'pending'
+  if (raw === '1') return 'checking'
+  if (raw === '2') return 'completed'
+  return normalizeCheckStatus(raw)
 })
+
+const isCompleted = computed(() => statusKey.value === 'completed')
+
+const progressIndeterminate = computed(() =>
+  ['pending', 'checking'].includes(statusKey.value) && !hasRealProgress.value
+)
+
+const displayProgress = computed(() => {
+  if (isCompleted.value) return 100
+  if (!hasRealProgress.value) return 0
+  return Math.min(100, Math.max(0, Number(currentStatus.value.overallProgress) || 0))
+})
+
+const progressTagText = computed(() => {
+  if (isCompleted.value) return '100%'
+  if (progressIndeterminate.value) return '计算中'
+  return `${Math.round(displayProgress.value)}%`
+})
+
+const progressTagType = computed(() =>
+  progressIndeterminate.value ? 'info' : getProgressTagType(displayProgress.value)
+)
+
+const lastUpdatedText = computed(() =>
+  lastUpdatedAt.value ? formatDateTime(lastUpdatedAt.value, 'HH:mm:ss') : '等待更新'
+)
+
+const waitedMinutes = computed(() => {
+  const start = currentStatus.value.startTime
+  if (!start) return null
+  return Math.max(0, Math.floor((nowTick.value - new Date(start).getTime()) / 60000))
+})
+
+const queueHint = computed(() => {
+  if (statusKey.value === 'pending') {
+    return waitedMinutes.value == null
+      ? '排队中，等待分配查重资源'
+      : `排队中 · 已等待 ${waitedMinutes.value} 分钟`
+  }
+  if (statusKey.value === 'checking') {
+    return waitedMinutes.value == null
+      ? '查重进行中'
+      : `查重进行中 · 已等待 ${waitedMinutes.value} 分钟`
+  }
+  return ''
+})
+
+const displayStatusMessage = computed(() =>
+  statusKey.value === 'pending' ? '正在排队等待查重…' : getStatusMessage(currentStatus.value.status)
+)
+
+const remainingText = computed(() => {
+  if (isCompleted.value) return '已完成'
+  if (statusKey.value === 'pending') return '排队中，暂无预估'
+  if (!currentStatus.value.estimatedRemainingTime) return '暂无预估'
+  return formatEstimatedTime(currentStatus.value.estimatedRemainingTime)
+})
+
+const getProgressColor = computed(() => 'var(--app-color-primary)')
 
 // 方法
 const goBack = () => {
@@ -301,6 +391,7 @@ const updateStatus = (data, { announce = false } = {}) => {
     ...data,
     status: data.checkStatus || data.status || currentStatus.value.status
   }
+  lastUpdatedAt.value = new Date()
 
   // 任务详情带回 taskId（字符串雪花 ID）与 P5 新指标
   if (data.taskId) {
@@ -313,15 +404,18 @@ const updateStatus = (data, { announce = false } = {}) => {
     citationRate.value = data.citationRate
   }
 
-  // 记录首次拿到状态的时刻，供"已用时"计算。
-  // 原先 updateStatus 从不写 startTime，而 elapsedTime 的计算恰恰依赖它。
+  // 优先使用后端真实开始时间；后端未返回时才从本次进入页面起算（仅用于"已等待"文案）
   if (!currentStatus.value.startTime) {
-    currentStatus.value.startTime = new Date().toISOString()
+    currentStatus.value.startTime = data.startTime || data.createTime || data.checkStartTime || new Date().toISOString()
   }
 
-  // 根据后端checkStatus更新阶段状态
-  if (data.checkStatus) {
-    checkStages.value = mapCheckStatusToStages(data.checkStatus)
+  const statusRaw = String(currentStatus.value.status || '').toLowerCase()
+  const completed = statusRaw === '2' || statusRaw === 'completed'
+
+  // 根据后端状态更新阶段状态
+  const stageSource = data.checkStatus || data.status
+  if (stageSource) {
+    checkStages.value = mapCheckStatusToStages(stageSource)
   } else if (data.stages) {
     checkStages.value = checkStages.value.map(stage => ({
       ...stage,
@@ -329,11 +423,19 @@ const updateStatus = (data, { announce = false } = {}) => {
     }))
   }
 
-  // 更新WebSocket实时进度（处理中时）
-  if ((data.checkStatus === '1' || data.checkStatus === 'checking') && data.checkRate != null) {
-    const progress = Math.min(data.checkRate * 3, 99) // 将查重率映射为进度
-    const checkStage = checkStages.value.find(s => s.key === 'check')
-    if (checkStage) checkStage.progress = progress
+  // 进度只认后端真实百分比；拿不到时保持"计算中"不确定态，不用相似度换算
+  const realPercent = [data.overallProgress, data.percent, data.progress, data.checkProgress]
+    .find(value => typeof value === 'number' && Number.isFinite(value))
+
+  if (completed) {
+    currentStatus.value.overallProgress = 100
+    hasRealProgress.value = true
+  } else if (realPercent != null) {
+    currentStatus.value.overallProgress = realPercent
+    hasRealProgress.value = true
+  } else if (statusRaw === '0' || statusRaw === 'pending' || statusRaw === 'cancelled') {
+    currentStatus.value.overallProgress = 0
+    hasRealProgress.value = false
   }
 
   // 添加日志
@@ -342,11 +444,7 @@ const updateStatus = (data, { announce = false } = {}) => {
     scrollToBottom()
   }
 
-  // 是否已完成（后端返回字符串码 completed，老代码只比数字码 '2'）。
-  // 只有实时推送到达的完成事件才弹完成框（announce=true）：进页面时拉详情、
-  // 手动刷新、轮询拿到的 completed 只是把状态如实显示出来，不该凭空弹模态框打断用户。
-  const completed =
-    data.checkStatus === '2' || data.checkStatus === 'completed' || data.status === 'completed'
+  // 只有实时推送到达的完成事件才弹完成框（announce=true）
   if (completed) {
     finalSimilarity.value = data.checkRate || 0
     if (announce) announceCompletion()
@@ -446,38 +544,25 @@ const connectWebSocket = (taskId) => {
 
   // 订阅主题是 /topic/check-progress/{taskId}，传 paperId 会永远收不到消息
   connect(taskId, (data) => {
+    lastUpdatedAt.value = new Date()
     // data.type 已由 useCheckProgress 归一化为 progress | complete | error
     if (data.type === 'progress') {
       addLog('info', data.message || '查重进度更新');
-      currentStatus.value.overallProgress = data.progress || 0;
-      // 已用时按任务开始时刻计算。原先写的是 Date.now() - new Date().getTime()，恒等于 0。
-      const startedAt = currentStatus.value.startTime;
-      if (startedAt) {
-        currentStatus.value.elapsedTime = Math.floor(
-          (Date.now() - new Date(startedAt).getTime()) / 1000
-        );
+      if (typeof data.percent === 'number' && Number.isFinite(data.percent)) {
+        currentStatus.value.overallProgress = data.percent;
+        hasRealProgress.value = true;
       }
     } else if (data.type === 'complete') {
       addLog('success', data.message || '查重完成');
       currentStatus.value.overallProgress = 100;
       currentStatus.value.status = 'completed';
+      hasRealProgress.value = true;
+      checkStages.value = mapCheckStatusToStages('completed');
       // 推送事件里不带完整数据，完成后再查一次任务详情
       getCheckTaskDetail(route.params.paperId)
         .then((res) => {
           if (res.code === 200 && res.data) {
-            if (res.data.checkRate != null) {
-              finalSimilarity.value = res.data.checkRate;
-              currentStatus.value.checkRate = res.data.checkRate;
-            }
-            if (res.data.taskId) {
-              taskId.value = res.data.taskId;
-            }
-            if ('maxPerSource' in res.data) {
-              maxPerSource.value = res.data.maxPerSource;
-            }
-            if ('citationRate' in res.data) {
-              citationRate.value = res.data.citationRate;
-            }
+            updateStatus(res.data)
           }
         })
         .catch(() => {});
@@ -485,8 +570,11 @@ const connectWebSocket = (taskId) => {
     } else if (data.type === 'error') {
       addLog('error', data.message || '查重失败');
       currentStatus.value.status = 'failed';
+      hasRealProgress.value = false;
     }
   });
+  // 首次连接迟迟不成功时，8 秒后自动降级轮询
+  armConnectionGuard();
   // 注：这里原先还挂了两个 watch 监听 hook 的 checkProgress.percent/status，
   // 但上面的回调已经处理了同样的事，结果每帧完成事件都会写两条日志、并重复弹框。
   // 现在只保留回调这一条路径。
@@ -498,6 +586,7 @@ const disconnectWebSocket = () => {
 
 const pollingTimer = ref(null)
 const startPolling = () => {
+  if (pollingTimer.value) return
   pollingTimer.value = setInterval(async () => {
     try {
       const res = await getCheckTaskDetail(route.params.paperId)
@@ -507,7 +596,35 @@ const startPolling = () => {
     } catch (error) {
       console.error('轮询状态失败:', error)
     }
-  }, 5000) // 每5秒轮询一次
+  }, 10000) // 实时连接断开后每 10 秒兜底刷新一次
+}
+
+// 实时连接状态：断开时显示横幅并自动降级为轮询
+watch([isConnected, progressError], ([connected, error]) => {
+  if (connected) {
+    hasConnectedOnce = true
+    connectionLost.value = false
+    if (connectionGuardTimer) {
+      clearTimeout(connectionGuardTimer)
+      connectionGuardTimer = null
+    }
+    stopPolling()
+    return
+  }
+  if (hasConnectedOnce || error) {
+    connectionLost.value = true
+    startPolling()
+  }
+})
+
+// 首次连接 8 秒仍未成功：不再让学生干等，直接降级轮询
+const armConnectionGuard = () => {
+  connectionGuardTimer = setTimeout(() => {
+    if (!isConnected.value) {
+      connectionLost.value = true
+      startPolling()
+    }
+  }, 8000)
 }
 
 const stopPolling = () => {
@@ -542,6 +659,10 @@ onMounted(async () => {
   }
 
   addLog('info', '连接到查重服务...');
+  // "已等待 X 分钟"每 30 秒刷新一次，不依赖推送是否连通
+  clockTimer = setInterval(() => {
+    nowTick.value = Date.now()
+  }, 30000)
 
   // 先取一次任务详情：既作为初始状态，也拿到推送订阅需要的 taskId
   try {
@@ -560,12 +681,24 @@ onMounted(async () => {
 onUnmounted(() => {
   disconnectWebSocket()
   stopPolling()
+  if (clockTimer) {
+    clearInterval(clockTimer)
+    clockTimer = null
+  }
+  if (connectionGuardTimer) {
+    clearTimeout(connectionGuardTimer)
+    connectionGuardTimer = null
+  }
 })
 
 </script>
 
 <style lang="scss" scoped>
 .check-monitor-page {
+
+  .connection-alert {
+    margin-bottom: var(--app-space-4);
+  }
 
   .status-card,
   .progress-card,
@@ -637,6 +770,12 @@ onUnmounted(() => {
     }
 
     .overall-progress {
+      .progress-hint {
+        margin: var(--app-space-2) 0 0;
+        font-size: var(--app-fs-meta);
+        color: var(--app-color-text-muted);
+      }
+
       .progress-stages {
         display: flex;
         justify-content: space-between;

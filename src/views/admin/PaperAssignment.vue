@@ -7,6 +7,15 @@
         <el-button :icon="Refresh" @click="refreshData">刷新</el-button>
       </template>
     </PageHeader>
+
+    <el-alert
+      v-if="showUnassignedNotice"
+      class="drilldown-alert"
+      type="info"
+      :closable="false"
+      show-icon
+      title="已按「待分配论文」筛选进入，列表仅展示尚未分配导师的学生"
+    />
     
     <el-card class="stats-card">
       <div class="assignment-stats">
@@ -95,6 +104,7 @@
 
 <script setup>
 import { ref, reactive, onMounted, onUnmounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 // 导入管理员API
@@ -123,7 +133,9 @@ import ListPageShell from '@/components/common/ListPageShell.vue'
 import { formatDateTime } from '@/utils/dataType.js'
 
 // 响应式数据
+const route = useRoute()
 const loading = ref(false)
+const showUnassignedNotice = ref(false)
 const assignmentStats = ref({})
 const pendingStudents = ref([])
 const availableAdvisors = ref([])
@@ -358,6 +370,11 @@ const handleCurrentChange = (val) => {
 
 // 生命周期
 onMounted(() => {
+  // 全校概览「待分配论文」钻取：/admin/paper-assignment?status=unassigned
+  showUnassignedNotice.value = String(route.query.status || '') === 'unassigned'
+  if (showUnassignedNotice.value) {
+    pagination.currentPage = 1
+  }
   refreshData()
 })
 
@@ -370,6 +387,10 @@ onUnmounted(() => {
 .paper-assignment {
   padding: 0;
   font-family: var(--app-font-family);
+}
+
+.drilldown-alert {
+  margin-bottom: var(--app-space-4);
 }
 
 .stats-card {

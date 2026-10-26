@@ -263,17 +263,22 @@
                                 <el-icon><ChatLineRound /></el-icon>
                                 <span class="section-title">导师反馈</span>
                                 <span v-if="paperDetails.teacherName" class="header-tag advisor-name">{{ paperDetails.teacherName }}</span>
+                                <span v-if="replySentAt" class="header-tag reply-status">已回复 {{ replySentAt }}</span>
                             </div>
                         </template>
 
-                        <div v-if="paperDetails.feedback" class="feedback-text">{{ paperDetails.feedback }}</div>
+                        <div
+                            v-if="paperDetails.feedback"
+                            class="feedback-text markdown-body"
+                            v-html="renderMarkdown(paperDetails.feedback)"
+                        ></div>
                         <div v-else class="no-feedback">
                             <el-empty description="导师暂未给出反馈" :image-size="48" />
                         </div>
 
                         <div class="feedback-actions">
                             <el-button :icon="ChatDotRound" size="small" @click="contactAdvisor">联系导师</el-button>
-                            <el-button :icon="ChatDotRound" size="small" @click="replyToFeedback">回复反馈</el-button>
+                            <el-button :icon="ChatDotRound" size="small" @click="openReplyDialog">回复反馈</el-button>
                             <el-button
                                 v-if="['defense_passed', 'finalized'].includes(paperDetails.paperStatus)"
                                 type="primary"
@@ -308,7 +313,10 @@
                                     </div>
                                     <span class="review-time">{{ formatDate(review.reviewTime, '-') }}</span>
                                 </div>
-                                <div class="review-content">{{ review.comments }}</div>
+                                <div
+                                    class="review-content markdown-body"
+                                    v-html="renderMarkdown(review.comments || '未填写审核意见')"
+                                ></div>
                             </div>
                         </div>
                     </el-card>
@@ -363,6 +371,49 @@
                 </div>
             </template>
         </el-dialog>
+
+        <!-- 回复导师反馈：就地发送站内消息，不再跳转丢内容 -->
+        <el-dialog
+            v-model="replyDialogVisible"
+            title="回复导师反馈"
+            width="520px"
+            :close-on-click-modal="false"
+        >
+            <div class="reply-dialog">
+                <el-alert
+                    type="info"
+                    :closable="false"
+                    show-icon
+                    title="回复将作为站内消息直接发送给导师"
+                />
+
+                <div v-if="paperDetails.feedback" class="reply-quote">
+                    <span class="reply-quote-label">导师原反馈</span>
+                    <div class="reply-quote-content" v-html="renderMarkdown(paperDetails.feedback)"></div>
+                </div>
+
+                <el-input
+                    v-model="replyContent"
+                    type="textarea"
+                    :rows="5"
+                    maxlength="500"
+                    show-word-limit
+                    placeholder="请针对导师的修改意见逐条回复，例如：已按意见重写第 3 章，参考文献格式已统一…"
+                />
+            </div>
+
+            <template #footer>
+                <el-button @click="replyDialogVisible = false">取消</el-button>
+                <el-button
+                    type="primary"
+                    :loading="replySending"
+                    :disabled="!replyContent.trim()"
+                    @click="submitReply"
+                >
+                    发送
+                </el-button>
+            </template>
+        </el-dialog>
     </div>
 </template>
 
@@ -371,7 +422,8 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { ElMessage, ElMessageBox, ElLoading } from 'element-plus'
-import { getPaperDetails, deleteFile as deleteFileAPI, createCheckTask, getCheckTaskDetail } from "@/api/student.js"
+import { getPaperDetails, deleteFile as deleteFileAPI, createCheckTask, getCheckTaskDetail, getMessageSessions, sendMessage } from "@/api/student.js"
+import { renderMarkdown } from '@/utils/markdown'
 import { getAvatarUrl } from '@/utils/avatar'
 import { getSimilarityColor, getSimilarityTagType as baseGetSimilarityTagType } from '@/utils/similarity.js'
 import { getCheckStatusText, getCheckStatusType as getCheckStatusTag } from '@/utils/checkStatus.js'
@@ -430,6 +482,12 @@ const currentFileId = ref('')
 const currentFileName = ref('')
 const currentFileSize = ref('')
 const currentFileType = ref('')
+
+// 回复导师反馈：弹窗内直接发送站内消息
+const replyDialogVisible = ref(false)
+const replyContent = ref('')
+const replySending = ref(false)
+const replySentAt = ref('')
 
 // ========== 计算属性 ==========
 const previewTitle = computed(() => {
@@ -1082,31 +1140,65 @@ const goAdvisorEvaluation = () => {
     router.push({ name: 'AdvisorEvaluation', query: { paperId: String(paperDetails.value?.id || '') } })
 }
 
-const replyToFeedback = async () => {
-    try {
-        const { value } = await ElMessageBox.prompt('请输入对导师反馈的回复：', '回复反馈', {
-            confirmButtonText: '发送',
-            cancelButtonText: '取消',
-            inputType: 'textarea',
-            inputPlaceholder: '请输入您的回复内容'
-        });
-        
-        if (value) {
-            // 引导用户到导师互动页面发送消息
-            const confirmed = await ElMessageBox.confirm(
-              '回复导师反馈请前往"导师互动"页面发送消息，是否立即跳转？',
-              '提示',
-              { confirmButtonText: '立即前往', cancelButtonText: '稍后', type: 'info' }
-            ).catch(() => false)
-            if (confirmed) {
-              router.push('/student/advisor-interaction')
+// 回复导师反馈：在当前弹窗内直接发送站内消息，避免"输入后跳转丢内容"
+const openReplyDialog = () => {
+    replyContent.value = ''
+    replyDialogVisible.value = true
+}
+
+const resolveAdvisorSession = async () => {
+    const res = await getMessageSessions()
+    const sessions = Array.isArray(res?.data) ? res.data : []
+    const teacherMembers = []
+
+    sessions.forEach((session) => {
+        (session.members || []).forEach((member) => {
+            if (String(member.userRole || '').toUpperCase() === 'TEACHER') {
+                teacherMembers.push({ session, member })
             }
+        })
+    })
+
+    if (!teacherMembers.length) return null
+
+    const advisorName = paperDetails.value?.teacherName
+    return teacherMembers.find(item => advisorName && item.member.userName === advisorName)
+        || teacherMembers[0]
+}
+
+const submitReply = async () => {
+    const content = replyContent.value.trim()
+    if (!content || replySending.value) return
+
+    replySending.value = true
+    try {
+        const target = await resolveAdvisorSession()
+        if (!target) {
+            ElMessage.warning('暂未找到与导师的消息会话，请先在「导师互动」中与导师建立会话')
+            return
+        }
+
+        const res = await sendMessage({
+            sessionId: String(target.session.id),
+            receiverId: String(target.member.userId),
+            content,
+            relatedType: 'paper',
+            relatedId: paperId.value
+        })
+
+        if (res?.code === 200) {
+            replyDialogVisible.value = false
+            replyContent.value = ''
+            replySentAt.value = formatDateTime(new Date(), 'HH:mm')
+            ElMessage.success('回复已发送给导师')
+            await loadPaperDetails()
+        } else {
+            ElMessage.error(res?.message || '回复发送失败')
         }
     } catch (error) {
-        if (error !== 'cancel') {
-            console.error('回复失败:', error);
-            ElMessage.error('回复发送失败，请稍后重试');
-        }
+        console.error('回复导师失败:', error)
+    } finally {
+        replySending.value = false
     }
 };
 
@@ -1652,6 +1744,99 @@ onMounted(() => {
     display: flex;
     gap: var(--app-space-2);
     justify-content: flex-end;
+}
+
+// 导师意见 / 审核历史：Markdown 渲染后的排版收敛
+.feedback-text,
+.review-content,
+.reply-quote-content {
+    :deep(p) {
+        margin: 0 0 var(--app-space-2);
+    }
+
+    :deep(p:last-child) {
+        margin-bottom: 0;
+    }
+
+    :deep(ul),
+    :deep(ol) {
+        margin: 0 0 var(--app-space-2);
+        padding-left: var(--app-space-4);
+    }
+
+    :deep(li) {
+        margin-bottom: 2px;
+    }
+
+    :deep(strong) {
+        color: var(--app-color-ink);
+        font-weight: 600;
+    }
+
+    :deep(a) {
+        color: var(--app-color-primary);
+        word-break: break-all;
+    }
+
+    :deep(code) {
+        padding: 1px 4px;
+        font-size: var(--app-fs-meta);
+        background: var(--app-color-fill-light);
+        border-radius: var(--app-radius-xs);
+    }
+
+    :deep(pre) {
+        padding: var(--app-space-3);
+        overflow-x: auto;
+        background: var(--app-color-fill-light);
+        border-radius: var(--app-radius-sm);
+    }
+
+    :deep(pre code) {
+        padding: 0;
+        background: none;
+    }
+
+    :deep(blockquote) {
+        margin: var(--app-space-2) 0;
+        padding: var(--app-space-2) var(--app-space-3);
+        background: var(--app-color-info-bg);
+        border-left: 3px solid var(--app-color-primary);
+    }
+}
+
+// 回复反馈弹窗
+.reply-dialog {
+    display: flex;
+    flex-direction: column;
+    gap: var(--app-space-3);
+}
+
+.reply-quote {
+    padding: var(--app-space-3);
+    background: var(--app-color-fill);
+    border-radius: var(--app-radius-sm);
+    border-left: 3px solid var(--app-color-primary);
+}
+
+.reply-quote-label {
+    display: block;
+    margin-bottom: var(--app-space-1);
+    font-size: var(--app-fs-meta);
+    color: var(--app-color-text-muted);
+}
+
+.reply-quote-content {
+    max-height: 140px;
+    overflow-y: auto;
+    font-size: var(--app-fs-caption);
+    line-height: 1.7;
+    color: var(--app-color-text-secondary);
+}
+
+.reply-status {
+    color: var(--app-color-success);
+    background: var(--app-color-success-bg);
 }
 
 // 论文文件

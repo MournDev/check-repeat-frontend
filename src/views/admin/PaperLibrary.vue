@@ -1388,10 +1388,23 @@ const applyStatusFromQuery = () => {
   loadPaperList()
 }
 
+const applySimilarityFromQuery = () => {
+  const raw = route.query.similarity ? String(route.query.similarity) : ''
+  const next = ['low', 'medium', 'high'].includes(raw) ? raw : ''
+  if (next === filterForm.similarityRange) return
+  filterForm.similarityRange = next
+  pagination.currentPage = 1
+  loadPaperList()
+}
+
 watch(() => route.query.paperStatus, applyStatusFromQuery)
+watch(() => route.query.similarity, applySimilarityFromQuery)
 
 onMounted(async () => {
   filterForm.paperStatus = route.query.paperStatus ? String(route.query.paperStatus) : ''
+  filterForm.similarityRange = ['low', 'medium', 'high'].includes(String(route.query.similarity || ''))
+    ? String(route.query.similarity)
+    : ''
   await Promise.all([
     loadColleges(),
     loadMajors(),

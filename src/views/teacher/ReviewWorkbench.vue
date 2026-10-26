@@ -190,6 +190,28 @@
           description="仅查重签核已合格的论文会被执行，其余将自动排除并在完成后提示。"
         />
 
+        <!-- 目标清单：确认前先看清将处理哪些学生 -->
+        <div class="batch-targets">
+          <div class="batch-targets-head">
+            <span>目标清单</span>
+            <span class="batch-targets-count">{{ batchDialog.targets.length }} 篇</span>
+          </div>
+          <ul class="batch-targets-list">
+            <li
+              v-for="paper in batchDialog.targets.slice(0, 5)"
+              :key="paper.paperId"
+              class="batch-target-item"
+            >
+              <span class="target-student">{{ paper.studentName || '未知学生' }}</span>
+              <span class="target-title" :title="paper.paperTitle">{{ paper.paperTitle || '未命名论文' }}</span>
+              <span v-if="paper.canBatchReview === false" class="target-lock">未签核</span>
+            </li>
+          </ul>
+          <p v-if="batchDialog.targets.length > 5" class="batch-targets-more">
+            另有 {{ batchDialog.targets.length - 5 }} 篇，将在确认后一并处理
+          </p>
+        </div>
+
         <div v-if="templatesLoading" class="template-tip">正在加载意见模板…</div>
         <div v-else-if="rejectTemplates.length" class="template-chips">
           <button
@@ -212,6 +234,15 @@
           show-word-limit
           placeholder="请填写统一的审核意见（将同步给全部选中学生）"
         />
+
+        <!-- 批量通过强制免责确认：不勾选不能提交 -->
+        <el-checkbox
+          v-if="batchDialog.action === 'approve'"
+          v-model="batchDialog.confirmed"
+          class="batch-confirm-check"
+        >
+          我已逐篇核对查重报告与签核结论，理解批量通过不可撤销
+        </el-checkbox>
       </div>
 
       <template #footer>
@@ -219,7 +250,7 @@
         <el-button
           :type="batchDialog.action === 'approve' ? 'primary' : 'danger'"
           :loading="batchSubmitting"
-          :disabled="!batchDialog.opinion.trim()"
+          :disabled="!batchDialog.opinion.trim() || (batchDialog.action === 'approve' && !batchDialog.confirmed)"
           @click="submitBatch"
         >
           确认{{ batchDialog.action === 'approve' ? '通过' : '退回' }}
@@ -467,7 +498,7 @@ const handleApprove = async () => {
 }
 
 // ── 批量结论 ────────────────────────────────────────────────
-const batchDialog = reactive({ visible: false, action: 'approve', opinion: '', targets: [] })
+const batchDialog = reactive({ visible: false, action: 'approve', opinion: '', targets: [], confirmed: false })
 const batchSubmitting = ref(false)
 
 const openBatchDialog = (action, targets) => {
@@ -475,6 +506,7 @@ const openBatchDialog = (action, targets) => {
   batchDialog.action = action
   batchDialog.targets = targets
   batchDialog.opinion = ''
+  batchDialog.confirmed = false
   batchDialog.visible = true
   // 批量通过展示通过类模板，批量退回展示退回类模板
   loadTemplates(action === 'approve' ? 'PASS' : 'REJECT')
@@ -492,6 +524,10 @@ const applyBatchTemplate = (template) => {
 const submitBatch = async () => {
   const opinion = batchDialog.opinion.trim()
   if (!opinion || batchSubmitting.value) return
+  if (batchDialog.action === 'approve' && !batchDialog.confirmed) {
+    ElMessage.warning('请先勾选免责声明，确认已逐篇核对查重报告与签核结论')
+    return
+  }
 
   batchSubmitting.value = true
   try {
@@ -882,6 +918,86 @@ onBeforeUnmount(() => {
   gap: var(--app-space-1);
   max-height: 96px;
   overflow-y: auto;
+}
+
+/* 批量目标清单：确认前让教师看清将处理哪些学生 */
+.batch-targets {
+  padding: var(--app-space-2) var(--app-space-3);
+  background: var(--app-color-fill);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-sm);
+}
+
+.batch-targets-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--app-space-1);
+  font-size: var(--app-fs-meta);
+  font-weight: 600;
+  color: var(--app-color-ink);
+}
+
+.batch-targets-count {
+  font-weight: 500;
+  color: var(--app-color-primary);
+}
+
+.batch-targets-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.batch-target-item {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-2);
+  padding: var(--app-space-1) 0;
+  border-bottom: 1px dashed var(--app-color-divider);
+  font-size: var(--app-fs-meta);
+}
+
+.batch-target-item:last-child {
+  border-bottom: none;
+}
+
+.target-student {
+  flex-shrink: 0;
+  min-width: 64px;
+  color: var(--app-color-ink);
+  font-weight: 600;
+}
+
+.target-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--app-color-text-muted);
+}
+
+.target-lock {
+  flex-shrink: 0;
+  color: var(--app-color-danger);
+}
+
+.batch-targets-more {
+  margin: var(--app-space-1) 0 0;
+  font-size: var(--app-fs-meta);
+  color: var(--app-color-text-muted);
+}
+
+.batch-confirm-check {
+  margin-top: var(--app-space-1);
+  font-size: var(--app-fs-meta);
+}
+
+.batch-confirm-check :deep(.el-checkbox__label) {
+  font-size: var(--app-fs-meta);
+  line-height: 1.5;
+  color: var(--app-color-text);
 }
 
 .template-chip {

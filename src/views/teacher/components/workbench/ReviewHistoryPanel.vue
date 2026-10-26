@@ -18,7 +18,7 @@
             <span v-if="item.version" class="history-version">V{{ item.version }}</span>
             <span class="history-time">{{ formatDateTime(item.reviewTime, 'YYYY-MM-DD HH:mm') }}</span>
           </div>
-          <p class="history-opinion">{{ item.reviewOpinion || '未填写审核意见' }}</p>
+          <div class="history-opinion" v-html="renderMarkdown(item.reviewOpinion || '未填写审核意见')"></div>
         </div>
       </li>
     </ol>
@@ -30,6 +30,7 @@ import { ref, watch } from 'vue'
 import { Clock } from '@element-plus/icons-vue'
 import { getReviewHistory } from '@/api/teacher.js'
 import { formatDateTime } from '@/utils/dataType.js'
+import { renderMarkdown } from '@/utils/markdown'
 import { getReviewResultText, getReviewResultClass } from '@/utils/reviewStatus.js'
 
 const props = defineProps({
@@ -220,6 +221,29 @@ watch(() => props.paperId, load, { immediate: true })
   font-size: var(--app-fs-meta);
   line-height: var(--app-lh-body);
   color: var(--app-color-text);
-  white-space: pre-wrap;
+}
+
+.history-opinion :deep(p) {
+  margin: 0 0 var(--app-space-1);
+}
+
+.history-opinion :deep(p:last-child) {
+  margin-bottom: 0;
+}
+
+.history-opinion :deep(ul),
+.history-opinion :deep(ol) {
+  margin: 0 0 var(--app-space-1);
+  padding-left: var(--app-space-4);
+}
+
+.history-opinion :deep(strong) {
+  color: var(--app-color-ink);
+  font-weight: 600;
+}
+
+.history-opinion :deep(a) {
+  color: var(--app-color-primary);
+  word-break: break-all;
 }
 </style>
