@@ -102,6 +102,14 @@
     </div>
 
     <footer v-if="papers.length" class="queue-hint">
+      <span class="shortcut-switch">
+        <el-switch
+          :model-value="shortcutEnabled"
+          size="small"
+          @change="(value) => emit('toggle-shortcuts', value)"
+        />
+        <span>快捷键(J/K切换)</span>
+      </span>
       <span><kbd>J</kbd><kbd>K</kbd> 切换</span>
       <span><kbd>A</kbd> 通过</span>
       <span><kbd>R</kbd> 退回</span>
@@ -119,10 +127,11 @@ import { formatDateTime, formatPercent } from '@/utils/dataType.js'
 const props = defineProps({
   papers: { type: Array, default: () => [] },
   currentId: { type: [String, Number], default: '' },
-  loading: { type: Boolean, default: false }
+  loading: { type: Boolean, default: false },
+  shortcutEnabled: { type: Boolean, default: true }
 })
 
-const emit = defineEmits(['select', 'refresh', 'filtered-change', 'batch-approve', 'batch-reject'])
+const emit = defineEmits(['select', 'refresh', 'filtered-change', 'batch-approve', 'batch-reject', 'toggle-shortcuts'])
 
 const listRef = ref(null)
 
@@ -479,12 +488,21 @@ watch(() => props.currentId, async () => {
 .queue-hint {
   flex-shrink: 0;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--app-space-3);
+  gap: var(--app-space-2) var(--app-space-3);
   padding: var(--app-space-2) var(--app-space-4);
   border-top: 1px solid var(--app-color-border);
   font-size: var(--app-fs-meta);
   color: var(--app-color-text-muted);
+}
+
+.shortcut-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-1);
+  padding-right: var(--app-space-2);
+  border-right: 1px solid var(--app-color-divider);
 }
 
 .queue-hint span {

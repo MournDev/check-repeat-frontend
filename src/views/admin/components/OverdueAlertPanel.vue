@@ -39,6 +39,7 @@
       class="overdue-table"
       :max-height="300"
       v-loading="loading"
+      @row-click="openPaperDrawer"
     >
       <el-table-column prop="studentName" label="学生" width="84" show-overflow-tooltip />
       <el-table-column prop="paperTitle" label="论文" min-width="160" show-overflow-tooltip />
@@ -57,7 +58,7 @@
           >
             <el-tag size="small" type="success" effect="plain">已催办</el-tag>
           </el-tooltip>
-          <el-button v-else link type="primary" size="small" :disabled="reminding" @click="remind([row])">
+          <el-button v-else link type="primary" size="small" :disabled="reminding" @click.stop="remind([row])">
             催办
           </el-button>
         </template>
@@ -81,6 +82,51 @@
     <p class="panel-tip">
       超期口径：提交时间 + 审核 SLA；仅统计未出结论的论文。催办会写入催办日志并通知导师。
     </p>
+
+    <!-- 行点击详情：从预警直接定位到论文与导师，不再只看一行数字 -->
+    <el-drawer v-model="drawerVisible" title="超期论文详情" size="420px">
+      <div v-if="selectedPaper" class="overdue-drawer">
+        <h3 class="drawer-title">{{ selectedPaper.paperTitle || '未命名论文' }}</h3>
+
+        <el-descriptions :column="1" border>
+          <el-descriptions-item label="学生">
+            {{ selectedPaper.studentName || '未知学生' }}
+            <span v-if="selectedPaper.studentNo" class="drawer-sub">（{{ selectedPaper.studentNo }}）</span>
+          </el-descriptions-item>
+          <el-descriptions-item label="指导老师">
+            {{ selectedPaper.advisorName || '未分配导师' }}
+          </el-descriptions-item>
+          <el-descriptions-item label="论文状态">
+            {{ getStatusText(selectedPaper.paperStatus) }}
+          </el-descriptions-item>
+          <el-descriptions-item label="超期天数">
+            <span class="overdue-days" :class="{ severe: selectedPaper.overdueDays >= 7 }">
+              {{ selectedPaper.overdueDays }} 天
+            </span>
+          </el-descriptions-item>
+          <el-descriptions-item label="应完成时间">
+            {{ formatDateTime(selectedPaper.deadline, 'YYYY-MM-DD HH:mm', '—') }}
+          </el-descriptions-item>
+          <el-descriptions-item label="最近催办">
+            {{ selectedPaper.lastRemindTime ? formatDateTime(selectedPaper.lastRemindTime) : '暂无催办记录' }}
+          </el-descriptions-item>
+        </el-descriptions>
+
+        <div class="drawer-actions">
+          <el-button
+            v-if="!selectedPaper.reminded"
+            type="primary"
+            :icon="Bell"
+            :loading="reminding"
+            :disabled="!selectedPaper.paperId"
+            @click="remind([selectedPaper])"
+          >
+            催办该导师
+          </el-button>
+          <el-tag v-else type="success" effect="plain">24 小时内已催办</el-tag>
+        </div>
+      </div>
+    </el-drawer>
   </section>
 </template>
 
@@ -90,12 +136,21 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { Warning, Bell } from '@element-plus/icons-vue'
 import { getOverduePapers, remindOverduePapers } from '@/api/admin/papers'
 import { formatDateTime } from '@/utils/dataType.js'
+import { getStatusText } from '@/utils/reviewStatus.js'
 
 const level = ref('all')
 const page = ref(1)
 const size = ref(10)
 const loading = ref(false)
 const reminding = ref(false)
+const drawerVisible = ref(false)
+const selectedPaper = ref(null)
+
+const openPaperDrawer = (row) => {
+  if (!row) return
+  selectedPaper.value = row
+  drawerVisible.value = true
+}
 
 const records = ref([])
 const total = ref(0)
@@ -159,6 +214,21 @@ const remindAll = async () => {
   if (total.value > MAX_REMIND) {
     ElMessage.warning(`单次最多催办 ${MAX_REMIND} 篇，本次仅处理前 ${MAX_REMIND} 篇`)
   }
+
+  const teacherCount = new Set(
+    targets.map(row => String(row.teacherId || row.advisorName || row.paperId))
+  ).size
+  const confirmed = await ElMessageBox.confirm(
+    `本次将向 ${teacherCount} 位导师发送站内信催办，确定吗？`,
+    '一键催办确认',
+    {
+      confirmButtonText: '确认催办',
+      cancelButtonText: '取消',
+      type: 'info'
+    }
+  ).catch(() => false)
+
+  if (!confirmed) return
   await remind(targets)
 }
 
@@ -167,6 +237,7 @@ const remind = async (rows) => {
   if (!targets.length || reminding.value) return
 
   reminding.value = true
+  let retryTargets = []
   try {
     const res = await remindOverduePapers({
       paperIds: targets.map(row => String(row.paperId)),
@@ -176,12 +247,46 @@ const remind = async (rows) => {
 
     const data = res.data || {}
     if (Number(data.failed) > 0) {
-      const reasons = (data.failReasons || []).join('<br/>') || '部分论文催办失败'
-      ElMessageBox.alert(
-        reasons,
-        `成功 ${data.success ?? 0} 篇，失败 ${data.failed} 篇`,
-        { dangerouslyUseHTMLString: true, confirmButtonText: '知道了' }
-      ).catch(() => {})
+      // 失败明细：优先取逐篇结果，再兼容失败原因里的论文 ID
+      const failedIds = new Set()
+      ;(data.records || []).forEach(record => {
+        if (record?.success === false && record.paperId != null) {
+          failedIds.add(String(record.paperId))
+        }
+      })
+      ;(data.failReasons || []).forEach(reason => {
+        const matched = String(reason).match(/论文ID[：:]\s*(\d+)/)
+        if (matched) failedIds.add(matched[1])
+      })
+      retryTargets = targets.filter(row => failedIds.has(String(row.paperId)))
+
+      const reasonList = (data.failReasons || []).length
+        ? data.failReasons.map(reason => `<li>${reason}</li>`).join('')
+        : '<li>部分论文催办失败，原因未知</li>'
+      const message = `
+        <div style="margin-bottom: 6px;">成功 ${data.success ?? 0} 篇，失败 ${data.failed} 篇</div>
+        <ul style="margin: 0; padding-left: 18px; line-height: 1.7;">${reasonList}</ul>
+      `
+
+      if (retryTargets.length) {
+        const action = await ElMessageBox.confirm(
+          message,
+          `部分论文催办失败（${data.failed} 篇）`,
+          {
+            dangerouslyUseHTMLString: true,
+            confirmButtonText: '重试失败项',
+            cancelButtonText: '知道了',
+            type: 'warning'
+          }
+        ).catch(err => err)
+        if (action !== 'confirm') retryTargets = []
+      } else {
+        await ElMessageBox.alert(
+          message,
+          `成功 ${data.success ?? 0} 篇，失败 ${data.failed} 篇`,
+          { dangerouslyUseHTMLString: true, confirmButtonText: '知道了' }
+        ).catch(() => {})
+      }
     } else {
       ElMessage.success(`已向 ${data.success ?? targets.length} 位导师发送催办`)
     }
@@ -191,6 +296,11 @@ const remind = async (rows) => {
     console.error('催办超期论文失败:', error)
   } finally {
     reminding.value = false
+  }
+
+  // 等 reminding 复位后再重试，避免被"正在催办"的守卫拦掉
+  if (retryTargets.length) {
+    await remind(retryTargets)
   }
 }
 
@@ -204,6 +314,37 @@ onMounted(fetchList)
   background: var(--app-color-card-bg);
   border: 1px solid var(--app-color-border);
   border-radius: var(--app-radius-lg);
+}
+
+.overdue-panel :deep(.el-table__row) {
+  cursor: pointer;
+}
+
+.overdue-drawer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-3);
+}
+
+.drawer-title {
+  margin: 0;
+  font-family: var(--app-font-family);
+  font-size: var(--app-fs-body);
+  line-height: 1.4;
+  color: var(--app-color-ink);
+}
+
+.drawer-sub {
+  color: var(--app-color-text-muted);
+  font-weight: 400;
+}
+
+.drawer-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-2);
+  padding-top: var(--app-space-2);
+  border-top: 1px solid var(--app-color-divider);
 }
 
 .panel-head {

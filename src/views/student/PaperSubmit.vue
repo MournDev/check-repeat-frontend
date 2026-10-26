@@ -165,7 +165,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { getAllColleges, getMajorsByCollegeId } from '@/api/user'
@@ -174,6 +174,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { Check, Upload } from '@element-plus/icons-vue'
 import SparkMD5 from 'spark-md5'
 import { getSubjectFieldTree } from '@/api/user.js'
+import { formatDateTime } from '@/utils/dataType.js'
 import {
   loadPaperTypes,
   getPaperTypeText,
@@ -199,6 +200,20 @@ const fileMd5 = ref('') // 文件 MD5 值
 const loginUserId = ref('') // Long 类型，后端已改为 Long
 const uploadProgress = ref(0) // 上传进度
 const uploadStatus = ref('') // 上传状态
+
+// ========== 草稿保护 ==========
+// 按用户隔离，避免同一台电脑换账号后看到别人的草稿
+const draftKey = computed(() => `paper_submit_draft_${userStore.userInfo?.userId || loginUserId.value || 'anonymous'}`)
+const isDirty = ref(false)
+const hasSubmitted = ref(false)
+const isRestoringDraft = ref(false)
+let draftSaveTimer = null
+
+const draftContextKey = computed(() => {
+  const action = String(route.query.action || 'new')
+  const paperId = String(route.query.paperId || '')
+  return `${action}:${paperId}`
+})
 
 // 分步表单相关
 const activeStep = ref(0)
@@ -323,6 +338,129 @@ const retryLoadPaperTypes = async () => {
   }
 }
 
+// ========== 草稿读写 ==========
+const buildDraftSnapshot = () => ({
+  savedAt: new Date().toISOString(),
+  contextKey: draftContextKey.value,
+  form: {
+    subjectCode: paperForm.value.subjectCode || '',
+    paperTitle: paperForm.value.paperTitle || '',
+    collegeId: paperForm.value.collegeId || '',
+    majorId: paperForm.value.majorId || '',
+    paperType: paperForm.value.paperType || '',
+    paperAbstract: paperForm.value.paperAbstract || '',
+    file: paperForm.value.file || ''
+  },
+  file: {
+    fileId: paperId.value || '',
+    fileName: uploadedFileName.value || '',
+    fileMd5: fileMd5.value || ''
+  },
+  step: activeStep.value
+})
+
+const saveDraftNow = () => {
+  if (hasSubmitted.value || !isDirty.value || isRestoringDraft.value) return
+  try {
+    localStorage.setItem(draftKey.value, JSON.stringify(buildDraftSnapshot()))
+  } catch (error) {
+    // 隐私模式或空间不足时静默失败，不影响提交主流程
+    console.warn('保存论文草稿失败:', error)
+  }
+}
+
+const scheduleDraftSave = () => {
+  if (hasSubmitted.value || isRestoringDraft.value) return
+  clearTimeout(draftSaveTimer)
+  draftSaveTimer = setTimeout(saveDraftNow, 400)
+}
+
+const clearDraft = () => {
+  clearTimeout(draftSaveTimer)
+  draftSaveTimer = null
+  try {
+    localStorage.removeItem(draftKey.value)
+  } catch (error) {
+    console.warn('清除论文草稿失败:', error)
+  }
+}
+
+const offerDraftRestore = async () => {
+  let draft = null
+  try {
+    const raw = localStorage.getItem(draftKey.value)
+    draft = raw ? JSON.parse(raw) : null
+  } catch (error) {
+    console.warn('读取论文草稿失败:', error)
+  }
+
+  // 只恢复同一提交上下文（新建 / 撤回重提 / 修改重提且同一论文）的草稿
+  if (!draft || draft.contextKey !== draftContextKey.value) return
+
+  const savedTime = formatDateTime(draft.savedAt, 'HH:mm', '未知时间')
+  try {
+    await ElMessageBox.confirm(
+      `检测到您有未提交的草稿（保存在 ${savedTime}），是否恢复？`,
+      '恢复草稿',
+      {
+        confirmButtonText: '恢复',
+        cancelButtonText: '重新填写',
+        distinguishCancelAndClose: true,
+        type: 'info'
+      }
+    )
+  } catch (action) {
+    // 明确选择“重新填写”才丢弃；直接关闭弹窗则保留草稿
+    if (action === 'cancel') clearDraft()
+    return
+  }
+
+  isRestoringDraft.value = true
+  paperForm.value = {
+    ...paperForm.value,
+    ...(draft.form || {})
+  }
+  paperId.value = draft.file?.fileId || ''
+  uploadedFileName.value = draft.file?.fileName || ''
+  fileMd5.value = draft.file?.fileMd5 || ''
+  if (paperId.value) {
+    fileList.value = [{
+      name: uploadedFileName.value || '已上传论文',
+      uid: Date.now(),
+      status: 'success'
+    }]
+  }
+  activeStep.value = Number(draft.step) || 0
+  isRestoringDraft.value = false
+  isDirty.value = true
+  ElMessage.success('已恢复上次草稿')
+}
+
+// 表单一变化就标记脏状态并延迟写草稿；文件上传成功也会更新 paperForm.file
+watch(paperForm, () => {
+  if (isRestoringDraft.value) return
+  isDirty.value = true
+  scheduleDraftSave()
+}, { deep: true })
+
+const handleBeforeUnload = (event) => {
+  if (!isDirty.value || hasSubmitted.value) return
+  saveDraftNow()
+  event.preventDefault()
+  event.returnValue = '系统可能不会保存您所做的更改'
+  return event.returnValue
+}
+
+onMounted(() => {
+  window.addEventListener('beforeunload', handleBeforeUnload)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('beforeunload', handleBeforeUnload)
+  saveDraftNow()
+  clearTimeout(draftSaveTimer)
+})
+
 // 页面初始化。两处分支（token 就绪 / 等 500ms）走同一套逻辑。
 const initPage = async () => {
   await getColleges()
@@ -335,7 +473,9 @@ const initPage = async () => {
     loginUserId.value = userStore.userInfo.userId
   }
   // 检查是否是撤回后重新提交模式
-  checkResubmitMode()
+  await checkResubmitMode()
+  // 恢复提示放在重新提交提示之后，避免两个弹窗同时出现
+  await offerDraftRestore()
 }
 
 onMounted(async () => {
@@ -544,7 +684,7 @@ const handleDrop = async (event) => {
 }
 
 // 检查是否是撤回后重新提交模式
-const checkResubmitMode = () => {
+const checkResubmitMode = async () => {
   const action = route.query.action;
   const paperIdParam = route.query.paperId;
 
@@ -553,7 +693,7 @@ const checkResubmitMode = () => {
     resubmitPaperId.value = paperIdParam;
 
     // 显示提示信息
-    ElMessageBox.alert(
+    await ElMessageBox.alert(
       '您正在对已撤回的论文进行重新提交。请修改论文内容后重新上传并提交。',
       '重新提交模式',
       {
@@ -566,7 +706,7 @@ const checkResubmitMode = () => {
     resubmitPaperId.value = paperIdParam;
 
     // 显示提示信息
-    ElMessageBox.alert(
+    await ElMessageBox.alert(
       '您正在根据审核意见修改论文。请修改论文内容后重新上传并提交。',
       '修改重提模式',
       {
@@ -677,6 +817,9 @@ const submitPaper = async () => {
           
       if (res.code === 200) {
         ElMessage.success('重新提交成功！论文已进入审核流程');
+        hasSubmitted.value = true;
+        isDirty.value = false;
+        clearDraft();
         // 跳转到我的论文页面
         setTimeout(() => {
           router.push('/student/my-papers');
@@ -690,6 +833,9 @@ const submitPaper = async () => {
       if (res.code === 200) {
         ElMessage.success('论文提交成功，系统正在自动分配指导老师')
         // 后端已异步自动分配指导老师，无需前端单独调用
+        hasSubmitted.value = true
+        isDirty.value = false
+        clearDraft()
         // 跳转到我的论文页面
         setTimeout(() => {
           router.push('/student/my-papers');
@@ -706,6 +852,8 @@ const submitPaper = async () => {
 
 // 重置表单
 const resetForm = () => {
+  clearDraft()
+  isRestoringDraft.value = true
   if (basicFormRef.value) {
     basicFormRef.value.resetFields()
   }
@@ -720,6 +868,13 @@ const resetForm = () => {
   uploadProgress.value = 0
   uploadStatus.value = ''
   activeStep.value = 0
+  // 等 watcher 跑完再解除保护，避免刚重置就被重新写成空草稿
+  setTimeout(() => {
+    isRestoringDraft.value = false
+    isDirty.value = false
+    hasSubmitted.value = false
+    clearDraft()
+  }, 0)
 }
 </script>
 

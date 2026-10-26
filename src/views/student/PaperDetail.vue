@@ -197,18 +197,7 @@
                             </div>
                         </template>
 
-                        <el-steps :active="getActiveStep(paperDetails.paperStatus)" finish-status="success" align-center>
-                            <el-step title="提交论文" :description="formatDate(paperDetails.submitTime, '-')" />
-                            <el-step :title="paperDetails.teacherName ? '分配导师' : '等待分配'"
-                                :description="paperDetails.teacherName || '处理中'" />
-                            <el-step :title="getReviewStepTitle(paperDetails.paperStatus)"
-                                :description="getReviewStepDesc(paperDetails)" />
-                            <el-step title="审核完成"
-                                :description="paperDetails.paperStatus === 'completed' ? formatDate(paperDetails.reviewTime, '-') : '--'" />
-                            <el-step :title="dictStatusText('mid_defense', '中期答辩')" :icon="Calendar" :description="getDefenseStepDesc('mid_defense')" />
-                            <el-step :title="dictStatusText('final_defense', '终期答辩')" :icon="Trophy" :description="getDefenseStepDesc('final_defense')" />
-                            <el-step :title="dictStatusText('defense_passed', '答辩通过')" :icon="CircleCheckFilled" :description="getDefenseStepDesc('defense_passed')" />
-                        </el-steps>
+                        <StatusTimeline :paper="paperDetails" :check-task="checkTask" />
                     </el-card>
                 </el-col>
 
@@ -424,6 +413,7 @@ import { useUserStore } from '@/stores/user'
 import { ElMessage, ElMessageBox, ElLoading } from 'element-plus'
 import { getPaperDetails, deleteFile as deleteFileAPI, createCheckTask, getCheckTaskDetail, getMessageSessions, sendMessage } from "@/api/student.js"
 import { renderMarkdown } from '@/utils/markdown'
+import StatusTimeline from '@/components/common/StatusTimeline.vue'
 import { getAvatarUrl } from '@/utils/avatar'
 import { getSimilarityColor, getSimilarityTagType as baseGetSimilarityTagType } from '@/utils/similarity.js'
 import { getCheckStatusText, getCheckStatusType as getCheckStatusTag } from '@/utils/checkStatus.js'

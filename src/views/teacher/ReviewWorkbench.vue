@@ -6,9 +6,11 @@
         :papers="papers"
         :current-id="currentPaperId"
         :loading="loading"
+        :shortcut-enabled="shortcutsEnabled"
         @select="selectPaper"
         @refresh="refreshQueue"
         @filtered-change="onFilteredChange"
+        @toggle-shortcuts="shortcutsEnabled = $event"
         @batch-approve="openBatchDialog('approve', $event)"
         @batch-reject="openBatchDialog('reject', $event)"
       />
@@ -40,22 +42,7 @@
             <span v-if="currentPaper.deadline">截止 {{ formatDateTime(currentPaper.deadline, 'MM-DD HH:mm') }}</span>
           </div>
 
-          <div class="steps">
-            <div class="step done">
-              <span class="step-dot">1</span>
-              <span class="step-text">查看材料</span>
-            </div>
-            <div class="step-line" :class="{ done: !!signoff }" />
-            <div class="step" :class="{ done: !!signoff, current: !signoff }">
-              <span class="step-dot">2</span>
-              <span class="step-text">{{ signoff ? (signoff.qualified === 1 ? '已合格签核' : '签核不合格') : '查重签核' }}</span>
-            </div>
-            <div class="step-line" :class="{ done: signoff?.qualified === 1 }" />
-            <div class="step" :class="{ current: signoff?.qualified === 1 }">
-              <span class="step-dot">3</span>
-              <span class="step-text">初审结论</span>
-            </div>
-          </div>
+          <StatusTimeline :paper="timelinePaper" dense />
         </header>
 
         <el-tabs v-model="activeTab" class="wb-tabs">
@@ -269,6 +256,7 @@ import PaperPreviewPane from './components/workbench/PaperPreviewPane.vue'
 import CheckReportPanel from './components/workbench/CheckReportPanel.vue'
 import SignoffPanel from './components/workbench/SignoffPanel.vue'
 import ReviewHistoryPanel from './components/workbench/ReviewHistoryPanel.vue'
+import StatusTimeline from '@/components/common/StatusTimeline.vue'
 import { usePendingPapers, isOverdue, isUrgent } from '@/composables/usePendingPapers.js'
 import { useWorkbenchReport } from '@/composables/useWorkbenchReport.js'
 import { doReview, getReviewTemplates, useReviewTemplate } from '@/api/teacher.js'
@@ -291,6 +279,17 @@ const currentPaper = computed(() =>
 const avatarText = computed(() => {
   const name = currentPaper.value?.studentName
   return name ? name.trim().slice(0, 1) : '?'
+})
+
+// 工作台里的论文都是待审核论文，后端列表未带 paperStatus 时按 auditing 兜底
+const timelinePaper = computed(() => {
+  const paper = currentPaper.value
+  if (!paper) return null
+  return {
+    ...paper,
+    paperStatus: paper.paperStatus || 'auditing',
+    feedback: paper.feedback || paper.auditComment || ''
+  }
 })
 
 // ── 报告 ────────────────────────────────────────────────────
@@ -413,6 +412,43 @@ const rejectDialogVisible = ref(false)
 const rejectOpinion = ref('')
 const rejectTemplates = ref([])
 const templatesLoading = ref(false)
+// 快捷键默认开启；关闭后 window 上的按键监听直接返回，避免误触
+const shortcutsEnabled = ref(true)
+
+// 退回意见草稿：按论文 ID 存在 sessionStorage，取消/切换论文后回来可恢复
+const REJECT_DRAFT_PREFIX = 'review_reject_draft_'
+const rejectDraftKey = (paperId) => `${REJECT_DRAFT_PREFIX}${paperId}`
+
+const readRejectDraft = (paperId) => {
+  if (!paperId) return ''
+  try {
+    return sessionStorage.getItem(rejectDraftKey(paperId)) || ''
+  } catch (error) {
+    return ''
+  }
+}
+
+const saveRejectDraft = (paperId, value) => {
+  if (!paperId) return
+  try {
+    if (value && value.trim()) {
+      sessionStorage.setItem(rejectDraftKey(paperId), value)
+    } else {
+      sessionStorage.removeItem(rejectDraftKey(paperId))
+    }
+  } catch (error) {
+    console.warn('保存审核意见草稿失败:', error)
+  }
+}
+
+const clearRejectDraft = (paperId) => {
+  if (!paperId) return
+  try {
+    sessionStorage.removeItem(rejectDraftKey(paperId))
+  } catch (error) {
+    console.warn('清除审核意见草稿失败:', error)
+  }
+}
 // 按场景缓存（REJECT/PASS），切换场景时不重复请求
 const templateCache = new Map()
 
@@ -459,8 +495,10 @@ const recordTemplateUsage = (template) => {
 }
 const handleReject = () => {
   if (!currentPaperId.value || reviewSubmitting.value) return
-  rejectOpinion.value = ''
+  const draft = readRejectDraft(currentPaperId.value)
+  rejectOpinion.value = draft
   rejectDialogVisible.value = true
+  if (draft) ElMessage.info('已恢复上次编辑内容')
   loadTemplates('REJECT')
 }
 
@@ -473,10 +511,21 @@ const applyRejectTemplate = (template) => {
 
 const handleRejectConfirm = async () => {
   const opinion = rejectOpinion.value.trim()
+  const paperId = currentPaperId.value
   if (!opinion) return
   const ok = await submitReview(4, opinion)
-  if (ok) rejectDialogVisible.value = false
+  if (ok) {
+    // submitReview 会自动切到下一篇，必须清当前这篇的草稿
+    clearRejectDraft(paperId)
+    rejectDialogVisible.value = false
+  }
 }
+
+// 输入即存草稿：取消弹窗或切到别的论文后再回来，内容仍在
+watch(rejectOpinion, (value) => {
+  if (!rejectDialogVisible.value) return
+  saveRejectDraft(currentPaperId.value, value)
+})
 
 const handleApprove = async () => {
   if (!canApprove.value) return
@@ -610,6 +659,7 @@ const moveSelection = (step) => {
 }
 
 const onKeydown = (event) => {
+  if (!shortcutsEnabled.value) return
   if (event.ctrlKey || event.metaKey || event.altKey) return
   if (isTypingTarget(event.target)) return
   // 确认框、退回弹窗等浮层打开时不响应快捷键
