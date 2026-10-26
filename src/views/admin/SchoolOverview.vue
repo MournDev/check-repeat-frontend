@@ -7,7 +7,7 @@
       <template #actions>
         <el-button :icon="Refresh" @click="refreshAllData(false)">刷新数据</el-button>
         <el-button :icon="FolderOpened" @click="exportDialogVisible = true">导出学期数据包</el-button>
-        <el-button type="primary" :icon="Download" @click="exportReport">导出报告</el-button>
+        <el-button type="primary" :icon="Download" @click="openReportDialog">导出报告</el-button>
       </template>
     </PageHeader>
 
@@ -163,7 +163,12 @@
                 </div>
               </template>
               <!-- 图表数据为空/加载失败时显式空态，禁止 mock 兜底 -->
-              <el-empty v-if="collegeChart.empty" description="暂无学院分布数据" :image-size="60" class="chart-empty" />
+              <div v-if="collegeChart.error" class="chart-error">
+                <el-icon class="error-icon"><WarningFilled /></el-icon>
+                <p>图表加载失败</p>
+                <el-button size="small" type="primary" plain @click="collegeChart.retry()">重试</el-button>
+              </div>
+              <el-empty v-else-if="collegeChart.empty" description="暂无学院分布数据" :image-size="60" class="chart-empty" />
               <div v-else :ref="collegeChart.chartRef" class="chart-container"></div>
             </el-card>
           </el-col>
@@ -178,7 +183,12 @@
                   </span>
                 </div>
               </template>
-              <el-empty v-if="trendChart.empty" description="暂无月度趋势数据" :image-size="60" class="chart-empty" />
+              <div v-if="trendChart.error" class="chart-error">
+                <el-icon class="error-icon"><WarningFilled /></el-icon>
+                <p>图表加载失败</p>
+                <el-button size="small" type="primary" plain @click="trendChart.retry()">重试</el-button>
+              </div>
+              <el-empty v-else-if="trendChart.empty" description="暂无月度趋势数据" :image-size="60" class="chart-empty" />
               <div v-else :ref="trendChart.chartRef" class="chart-container"></div>
             </el-card>
           </el-col>
@@ -193,7 +203,12 @@
               </span>
             </div>
           </template>
-          <el-empty v-if="similarityChart.empty" description="暂无查重结果分布数据" :image-size="60" class="chart-empty large" />
+          <div v-if="similarityChart.error" class="chart-error large">
+            <el-icon class="error-icon"><WarningFilled /></el-icon>
+            <p>图表加载失败</p>
+            <el-button size="small" type="primary" plain @click="similarityChart.retry()">重试</el-button>
+          </div>
+          <el-empty v-else-if="similarityChart.empty" description="暂无查重结果分布数据" :image-size="60" class="chart-empty large" />
           <div v-else :ref="similarityChart.chartRef" class="chart-container large"></div>
         </el-card>
       </el-col>
@@ -209,7 +224,12 @@
               </span>
             </div>
           </template>
-          <el-empty v-if="roleChart.empty" description="暂无人员分布数据" :image-size="60" class="chart-empty" />
+          <div v-if="roleChart.error" class="chart-error">
+            <el-icon class="error-icon"><WarningFilled /></el-icon>
+            <p>图表加载失败</p>
+            <el-button size="small" type="primary" plain @click="roleChart.retry()">重试</el-button>
+          </div>
+          <el-empty v-else-if="roleChart.empty" description="暂无人员分布数据" :image-size="60" class="chart-empty" />
           <div v-else :ref="roleChart.chartRef" class="chart-container"></div>
         </el-card>
 
@@ -263,7 +283,41 @@
       </el-col>
     </el-row>
 
-    <!-- 学期数据包导出：后端暂无 ZIP 打包接口，按项逐一下载 -->
+    <!-- 导出报告：先选统计周期，默认最近 30 天 -->
+    <el-dialog v-model="reportDialogVisible" title="导出全校报告" width="480px">
+      <el-form label-width="90px">
+        <el-form-item label="统计周期">
+          <el-date-picker
+            v-model="reportDateRange"
+            type="daterange"
+            value-format="YYYY-MM-DD"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 100%"
+          />
+        </el-form-item>
+      </el-form>
+
+      <el-alert
+        type="info"
+        :closable="false"
+        show-icon
+        title="默认统计最近 30 天，可按需调整后导出 PDF 报告"
+      />
+
+      <template #footer>
+        <el-button @click="reportDialogVisible = false">取消</el-button>
+        <el-button
+          type="primary"
+          :loading="exportingReport"
+          :disabled="!reportDateRange || reportDateRange.length !== 2"
+          @click="exportReport"
+        >
+          导出
+        </el-button>
+      </template>
+    </el-dialog>
     <el-dialog v-model="exportDialogVisible" title="导出学期数据包" width="560px">
       <el-form label-width="90px">
         <el-form-item label="学期">
@@ -337,7 +391,7 @@ import { exportSemesterPackage as exportSemesterPackageApi } from '@/api/admin/e
 // 图标导入（模板中其余图标依赖 main.js 的全局注册，无需在此导入）
 import {
   Refresh, Download, User, Document, Warning, Monitor,
-  DataAnalysis, Histogram, TrendCharts, Clock, CircleCheck, FolderOpened, ArrowRight
+  DataAnalysis, Histogram, TrendCharts, Clock, CircleCheck, FolderOpened, ArrowRight, WarningFilled
 } from '@element-plus/icons-vue'
 
 // 响应式数据
@@ -375,6 +429,24 @@ const EXPORT_ITEMS = [
 
 const exportDialogVisible = ref(false)
 const exportingPackage = ref(false)
+const reportDialogVisible = ref(false)
+const exportingReport = ref(false)
+
+const toLocalDateString = (date) => {
+  const d = new Date(date)
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${d.getFullYear()}-${month}-${day}`
+}
+
+const last30DaysRange = () => {
+  const end = new Date()
+  const start = new Date()
+  start.setDate(end.getDate() - 29)
+  return [toLocalDateString(start), toLocalDateString(end)]
+}
+
+const reportDateRange = ref(last30DaysRange())
 const exportForm = reactive({
   semester: '',
   items: EXPORT_ITEMS.map(item => item.value)
@@ -414,6 +486,13 @@ exportForm.semester = currentSemester
 // KPI 钻取：统一带筛选条件跳转到目标列表页
 const goOverview = (path, query = {}) => {
   router.push({ path, query })
+}
+
+const openReportDialog = () => {
+  if (!reportDateRange.value || reportDateRange.value.length !== 2) {
+    reportDateRange.value = last30DaysRange()
+  }
+  reportDialogVisible.value = true
 }
 
 const saveBlob = (payload, filename) => {
@@ -483,10 +562,17 @@ const refreshAllData = async (silent = false) => {
 }
 
 const exportReport = async () => {
+  const range = reportDateRange.value
+  if (!range || range.length !== 2) {
+    ElMessage.warning('请先选择统计周期')
+    return
+  }
+
+  exportingReport.value = true
   try {
     const response = await exportSchoolReport({
-      startTime: new Date(new Date().setDate(new Date().getDate() - 30)).toISOString(),
-      endTime: new Date().toISOString()
+      startTime: new Date(`${range[0]}T00:00:00`).toISOString(),
+      endTime: new Date(`${range[1]}T23:59:59`).toISOString()
     })
 
     // 创建下载链接
@@ -494,16 +580,19 @@ const exportReport = async () => {
     const url = window.URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
-    link.download = `school-overview-report-${new Date().toISOString().split('T')[0]}.pdf`
+    link.download = `school-overview-report-${range[0]}_${range[1]}.pdf`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
     window.URL.revokeObjectURL(url)
 
     ElMessage.success('报告导出成功')
+    reportDialogVisible.value = false
   } catch (error) {
     console.error('导出报告失败:', error)
     ElMessage.error('报告导出失败')
+  } finally {
+    exportingReport.value = false
   }
 }
 const loadOverviewData = async () => {
@@ -552,6 +641,9 @@ const loadOverviewData = async () => {
 const initCollegeChart = () => collegeChart.run(
   () => getCollegeDistribution(),
   (response) => {
+    if (response?.code && response.code !== 200) {
+      throw new Error(response.message || '学院分布接口返回异常')
+    }
     // 兼容多种返回结构：数组 / collegeStats.distribution / distribution
     let items = []
     if (response) {
@@ -565,8 +657,8 @@ const initCollegeChart = () => collegeChart.run(
       name: item.collegeName || item.name || '未知'
     }))
 
-    // 空数据：显式空态，不渲染空图表
-    if (!chartData.length) return null
+    // 空数据或全 0：显式空态，不渲染一张全是 0 的图
+    if (!chartData.some(item => Number(item.value) > 0)) return null
 
     return {
       tooltip: {
@@ -614,6 +706,9 @@ const initCollegeChart = () => collegeChart.run(
 const initTrendChart = () => trendChart.run(
   () => getMonthlyTrend(),
   (response) => {
+    if (response?.code && response.code !== 200) {
+      throw new Error(response.message || '月度趋势接口返回异常')
+    }
     // 默认空数组：拿不到数据就走空态，绝不用假月份假数量兜底
     let months = []
     let paperCounts = []
@@ -637,6 +732,7 @@ const initTrendChart = () => trendChart.run(
     }
 
     if (!months.length) return null
+    if (!paperCounts.some(value => Number(value) > 0)) return null
 
     return {
       tooltip: {
@@ -677,6 +773,9 @@ const initTrendChart = () => trendChart.run(
 const initSimilarityChart = () => similarityChart.run(
   () => getSimilarityDistribution(),
   (response) => {
+    if (response?.code && response.code !== 200) {
+      throw new Error(response.message || '查重分布接口返回异常')
+    }
     // 兼容后端多种返回结构：data 可能是数组，也可能为 { records: [] } / { list: [] }
     let items = []
     if (response) {
@@ -712,6 +811,7 @@ const initSimilarityChart = () => similarityChart.run(
     }))
 
     if (!chartData.length) return null
+    if (!chartData.some(item => Number(item.value) > 0)) return null
 
     return {
       tooltip: {
@@ -771,6 +871,9 @@ const initRoleChart = () => roleChart.run(
 
     if (!students && !teachers && !admins) {
       const response = await getRealtimeStats()
+      if (response?.code && response.code !== 200) {
+        throw new Error(response.message || '人员分布接口返回异常')
+      }
       students = Number(response.data.students ?? 0) || 0
       teachers = Number(response.data.teachers ?? 0) || 0
       admins = Number(response.data.admins ?? 0) || 0
@@ -996,7 +1099,8 @@ onMounted(async () => {
     }
 
     // 图表空态容器：与 chart-container 同高，保证卡片高度稳定
-    .chart-empty {
+    .chart-empty,
+    .chart-error {
       height: 280px;
       display: flex;
       align-items: center;
@@ -1004,6 +1108,22 @@ onMounted(async () => {
 
       &.large {
         height: 320px;
+      }
+    }
+
+    .chart-error {
+      flex-direction: column;
+      gap: var(--app-space-2);
+      color: var(--app-color-danger);
+      text-align: center;
+
+      .error-icon {
+        font-size: 28px;
+      }
+
+      p {
+        margin: 0;
+        font-size: var(--app-fs-caption);
       }
     }
   }

@@ -258,11 +258,21 @@
               <div class="advisor-contact">
                 <div class="contact-item">
                   <el-icon><Phone /></el-icon>
-                  <span>{{ advisorInfo.phone || '暂无' }}</span>
+                  <a
+                    v-if="advisorInfo.phone && advisorInfo.phone !== '暂无'"
+                    :href="`tel:${advisorInfo.phone}`"
+                    class="contact-link"
+                  >{{ advisorInfo.phone }}</a>
+                  <span v-else>暂无</span>
                 </div>
                 <div class="contact-item">
                   <el-icon><Message /></el-icon>
-                  <span>{{ advisorInfo.email || '暂无' }}</span>
+                  <a
+                    v-if="advisorInfo.email && advisorInfo.email !== '暂无'"
+                    :href="`mailto:${advisorInfo.email}`"
+                    class="contact-link"
+                  >{{ advisorInfo.email }}</a>
+                  <span v-else>暂无</span>
                 </div>
                 <div class="contact-item">
                   <el-icon><OfficeBuilding /></el-icon>
@@ -548,11 +558,11 @@ const progressSteps = computed(() => {
   return [
     {
       title: '论文提交',
-      description: progress >= 1 ? '已完成' : (progress === 0 && latestPaper.value ? '进行中' : '等待提交')
+      description: progress >= 1 ? '已完成' : (progress === 0 && latestPaper.value ? '待提交' : '等待提交')
     },
     {
       title: '查重检测',
-      description: progress >= 2 ? '已完成' : (progress === 1 ? '进行中' : '等待检测')
+      description: progress >= 2 ? '已完成' : '排队中'
     },
     {
       title: '导师审核',
@@ -881,7 +891,7 @@ const primaryAction = computed(() => {
     return {
       label: '查看查重进度', type: 'primary', icon: DataLine, disabled: false,
       onClick: () => router.push(`/student/check-monitor/${paper.id}`),
-      hint: '查重任务进行中，可实时查看进度'
+      hint: '查重任务已进入排队或检测，可实时查看进度'
     }
   }
   if (status === 'auditing') {
@@ -935,17 +945,39 @@ const goTodo = (item) => {
 }
 
 const contactAdvisor = () => {
-  if (advisorInfo.value) {
-    ElMessageBox.alert(
-      `您可以通过以下方式联系${advisorInfo.value.name}老师：\n\n📞 电话：${advisorInfo.value.phone}\n📧 邮箱：${advisorInfo.value.email}\n🏢 办公室：${advisorInfo.value.office}`,
-      '联系指导老师',
-      {
-        confirmButtonText: '我知道了',
-        callback: () => {
-        }
-      }
-    )
-  }
+  if (!advisorInfo.value) return
+  const phone = advisorInfo.value.phone || ''
+  const email = advisorInfo.value.email || ''
+  const office = advisorInfo.value.office || ''
+
+  const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (char) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[char] || char))
+
+  const phoneHtml = phone
+    ? `<a href="tel:${escapeHtml(phone)}" style="color: var(--app-color-primary); text-decoration: none;">${escapeHtml(phone)}</a>`
+    : '未提供'
+  const emailHtml = email
+    ? `<a href="mailto:${escapeHtml(email)}" style="color: var(--app-color-primary); text-decoration: none;">${escapeHtml(email)}</a>`
+    : '未提供'
+
+  ElMessageBox.alert(
+    `<div style="line-height: 2;">
+      <div>联系 ${escapeHtml(advisorInfo.value.name || '指导老师')} 老师</div>
+      <div>电话：${phoneHtml}</div>
+      <div>邮箱：${emailHtml}</div>
+      <div>办公室：${escapeHtml(office || '未提供')}</div>
+    </div>`,
+    '联系指导老师',
+    {
+      confirmButtonText: '我知道了',
+      dangerouslyUseHTMLString: true
+    }
+  )
 }
 
 const getStatusType = (status) => {
@@ -1086,7 +1118,7 @@ const getReviewStatus = (paper) => {
   if (!paper) return '等待提交';
   const statusMap = {
     'draft': '草稿中，可随时提交',
-    'submitted': '已提交，等待审核',
+    'submitted': '待处理，等待进入审核流程',
     'auditing': '审核中，请耐心等待',
     'rejected': '审核未通过，需要修改',
     'completed': '审核通过，恭喜完成',
@@ -2110,6 +2142,15 @@ const renderComparisonChart = () => {
   font-size: var(--app-fs-meta);
   color: var(--app-color-text-muted);
   word-break: break-all;
+}
+
+.contact-link {
+  color: var(--app-color-primary);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .advisor-stats {

@@ -341,8 +341,8 @@ const queueHint = computed(() => {
   }
   if (statusKey.value === 'checking') {
     return waitedMinutes.value == null
-      ? '查重进行中'
-      : `查重进行中 · 已等待 ${waitedMinutes.value} 分钟`
+      ? '查重中'
+      : `查重中 · 已等待 ${waitedMinutes.value} 分钟`
   }
   return ''
 })

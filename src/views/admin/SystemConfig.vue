@@ -53,7 +53,7 @@
                   :max="1000"
                   controls-position="right"
                 ></el-input-number>
-                <div class="form-tip">等待查重的任务队列容量</div>
+                <div class="form-tip">排队中任务的队列容量</div>
               </el-form-item>
               <el-form-item label="缓存策略">
                 <el-radio-group v-model="performanceConfig.cacheStrategy">

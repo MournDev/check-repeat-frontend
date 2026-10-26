@@ -107,7 +107,12 @@
             </div>
           </template>
           <div class="chart-container">
-            <el-empty v-if="reviewTrendChart.empty" description="暂无审核趋势数据" :image-size="60" />
+            <div v-if="reviewTrendChart.error" class="chart-error">
+              <el-icon class="error-icon"><WarningFilled /></el-icon>
+              <p>图表加载失败</p>
+              <el-button size="small" type="primary" plain @click="reviewTrendChart.retry()">重试</el-button>
+            </div>
+            <el-empty v-else-if="reviewTrendChart.empty" description="暂无审核趋势数据" :image-size="60" />
             <div v-else :ref="reviewTrendChart.chartRef" style="width: 100%; height: 300px;"></div>
           </div>
         </el-card>
@@ -123,7 +128,12 @@
             </div>
           </template>
           <div class="chart-container">
-            <el-empty v-if="statusDistributionChart.empty" description="暂无状态分布数据" :image-size="60" />
+            <div v-if="statusDistributionChart.error" class="chart-error">
+              <el-icon class="error-icon"><WarningFilled /></el-icon>
+              <p>图表加载失败</p>
+              <el-button size="small" type="primary" plain @click="statusDistributionChart.retry()">重试</el-button>
+            </div>
+            <el-empty v-else-if="statusDistributionChart.empty" description="暂无状态分布数据" :image-size="60" />
             <div v-else :ref="statusDistributionChart.chartRef" style="width: 100%; height: 300px;"></div>
           </div>
         </el-card>
@@ -139,7 +149,12 @@
             </div>
           </template>
           <div class="chart-container">
-            <el-empty v-if="similarityChart.empty" description="暂无相似度分布数据" :image-size="60" />
+            <div v-if="similarityChart.error" class="chart-error">
+              <el-icon class="error-icon"><WarningFilled /></el-icon>
+              <p>图表加载失败</p>
+              <el-button size="small" type="primary" plain @click="similarityChart.retry()">重试</el-button>
+            </div>
+            <el-empty v-else-if="similarityChart.empty" description="暂无相似度分布数据" :image-size="60" />
             <div v-else :ref="similarityChart.chartRef" style="width: 100%; height: 300px;"></div>
           </div>
         </el-card>
@@ -155,7 +170,12 @@
             </div>
           </template>
           <div class="chart-container">
-            <el-empty v-if="collegeChart.empty" description="暂无学院分布数据" :image-size="60" />
+            <div v-if="collegeChart.error" class="chart-error">
+              <el-icon class="error-icon"><WarningFilled /></el-icon>
+              <p>图表加载失败</p>
+              <el-button size="small" type="primary" plain @click="collegeChart.retry()">重试</el-button>
+            </div>
+            <el-empty v-else-if="collegeChart.empty" description="暂无学院分布数据" :image-size="60" />
             <div v-else :ref="collegeChart.chartRef" style="width: 100%; height: 300px;"></div>
           </div>
         </el-card>
@@ -220,7 +240,7 @@ import { useChart } from '@/composables/useChart'
 // 图标导入
 import {
   TrendCharts, PieChart as PieChartIcon, Histogram, OfficeBuilding, List, Download,
-  Document, Clock, CircleCheck, User
+  Document, Clock, CircleCheck, User, WarningFilled
 } from '@element-plus/icons-vue'
 
 // Store
@@ -343,7 +363,12 @@ const loadReviewTrendChart = () => reviewTrendChart.run(
     chartType: 'line'
   }),
   (res) => {
-    if (res.code !== 200 || !res.data?.series?.length) return null
+    if (res.code !== 200) throw new Error(res.message || '审核趋势接口返回异常')
+    if (!res.data?.series?.length) return null
+    const hasValue = res.data.series.some(item =>
+      Array.isArray(item.data) && item.data.some(value => Number(value) > 0)
+    )
+    if (!hasValue) return null
     return {
       tooltip: { trigger: 'axis' },
       legend: { data: res.data.series.map(item => item.name) },
@@ -361,7 +386,9 @@ const loadStatusDistributionChart = () => statusDistributionChart.run(
     timeRange: timeRange.value
   }),
   (res) => {
-    if (res.code !== 200 || !Array.isArray(res.data) || res.data.length === 0) return null
+    if (res.code !== 200) throw new Error(res.message || '状态分布接口返回异常')
+    if (!Array.isArray(res.data) || res.data.length === 0) return null
+    if (!res.data.some(item => Number(item.value ?? item.count ?? 0) > 0)) return null
     return {
       tooltip: { trigger: 'item' },
       legend: { orient: 'vertical', left: 'left' },
@@ -391,7 +418,11 @@ const loadSimilarityChart = () => similarityChart.run(
     timeRange: timeRange.value
   }),
   (res) => {
-    if (res.code !== 200 || !res.data?.series?.length) return null
+    if (res.code !== 200) throw new Error(res.message || '相似度分布接口返回异常')
+    if (!res.data?.series?.length) return null
+    if (!res.data.series.some(item =>
+      Array.isArray(item.data) && item.data.some(value => Number(value) > 0)
+    )) return null
     return {
       tooltip: { trigger: 'axis' },
       xAxis: { type: 'category', data: res.data.categories || [] },
@@ -408,7 +439,11 @@ const loadCollegeChart = () => collegeChart.run(
     timeRange: timeRange.value
   }),
   (res) => {
-    if (res.code !== 200 || !res.data?.series?.length) return null
+    if (res.code !== 200) throw new Error(res.message || '学院分布接口返回异常')
+    if (!res.data?.series?.length) return null
+    if (!res.data.series.some(item =>
+      Array.isArray(item.data) && item.data.some(value => Number(value) > 0)
+    )) return null
     return {
       tooltip: { trigger: 'axis' },
       xAxis: { type: 'category', data: res.data.categories || [] },
@@ -552,6 +587,26 @@ onMounted(async () => {
 
       .chart-container {
         padding: var(--app-space-4) 0;
+
+        .chart-error {
+          height: 300px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: var(--app-space-2);
+          color: var(--app-color-danger);
+          text-align: center;
+
+          .error-icon {
+            font-size: 28px;
+          }
+
+          p {
+            margin: 0;
+            font-size: var(--app-fs-caption);
+          }
+        }
       }
     }
   }

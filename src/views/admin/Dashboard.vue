@@ -223,7 +223,12 @@
         </div>
       </div>
       <div class="chart-wrap" v-loading="rtLoading">
-        <el-empty v-if="rtChart.empty" description="暂无响应时间数据" :image-size="60" />
+        <div v-if="rtChart.error" class="chart-error">
+          <el-icon class="error-icon"><WarningFilled /></el-icon>
+          <p>图表加载失败</p>
+          <el-button size="small" type="primary" plain @click="loadResponseTimeTrend(rtTrendPeriod)">重试</el-button>
+        </div>
+        <el-empty v-else-if="rtChart.empty" description="暂无响应时间数据" :image-size="60" />
         <div v-else :ref="rtChart.chartRef" class="chart-container"></div>
       </div>
     </div>
@@ -254,7 +259,7 @@ import { formatDate, formatDateTime } from '@/utils/dataType.js'
 
 // 图标引入
 import {
-  Refresh, TrendCharts, Monitor, SuccessFilled, PieChart, Timer
+  Refresh, TrendCharts, Monitor, SuccessFilled, PieChart, Timer, WarningFilled
 } from '@element-plus/icons-vue'
 
 const userStore = useUserStore()
@@ -400,42 +405,50 @@ const loadResponseTimeTrend = async (minutes) => {
   rtTrendPeriod.value = minutes
   rtLoading.value = true
   try {
-    const res = await getResponseTimeTrend(minutes)
-    const d = res?.code === 200 ? res.data : null
-    await rtChart.render(
-      d
-        ? {
-            tooltip: { trigger: 'axis' },
-            legend: { data: ['平均响应(ms)', 'P95响应(ms)', '请求数'] },
-            grid: { left: 60, right: 60, top: 20, bottom: 30 },
-            xAxis: { type: 'category', data: d.timestamps || [], boundaryGap: false, axisLabel: { hideOverlap: true } },
-            yAxis: [
-              { type: 'value', name: 'ms', min: 0 },
-              { type: 'value', name: '次', min: 0 }
-            ],
-            series: [
-              {
-                name: '平均响应(ms)', type: 'line', smooth: true,
-                data: d.avgResponseTime || [],
-                itemStyle: { color: '#0066cc' },
-                areaStyle: { color: 'rgba(14,165,233,0.1)' }
-              },
-              {
-                name: 'P95响应(ms)', type: 'line', smooth: true,
-                data: d.p95ResponseTime || [],
-                itemStyle: { color: '#ff9500' },
-                lineStyle: { type: 'dashed' }
-              },
-              {
-                name: '请求数', type: 'bar',
-                data: d.requestCount || [],
-                yAxisIndex: 1,
-                itemStyle: { color: 'rgba(0,102,204,0.2)', borderColor: '#0066cc', borderRadius: [4, 4, 0, 0] },
-                barMaxWidth: 20
-              }
-            ]
-          }
-        : null
+    await rtChart.run(
+      () => getResponseTimeTrend(minutes),
+      (res) => {
+        if (res?.code !== 200) throw new Error(res?.message || '响应时间接口返回异常')
+        const d = res.data
+        if (!d) return null
+        const hasValue = [
+          ...(d.avgResponseTime || []),
+          ...(d.p95ResponseTime || []),
+          ...(d.requestCount || [])
+        ].some(value => Number(value) > 0)
+        if (!hasValue) return null
+        return {
+          tooltip: { trigger: 'axis' },
+          legend: { data: ['平均响应(ms)', 'P95响应(ms)', '请求数'] },
+          grid: { left: 60, right: 60, top: 20, bottom: 30 },
+          xAxis: { type: 'category', data: d.timestamps || [], boundaryGap: false, axisLabel: { hideOverlap: true } },
+          yAxis: [
+            { type: 'value', name: 'ms', min: 0 },
+            { type: 'value', name: '次', min: 0 }
+          ],
+          series: [
+            {
+              name: '平均响应(ms)', type: 'line', smooth: true,
+              data: d.avgResponseTime || [],
+              itemStyle: { color: '#0066cc' },
+              areaStyle: { color: 'rgba(14,165,233,0.1)' }
+            },
+            {
+              name: 'P95响应(ms)', type: 'line', smooth: true,
+              data: d.p95ResponseTime || [],
+              itemStyle: { color: '#ff9500' },
+              lineStyle: { type: 'dashed' }
+            },
+            {
+              name: '请求数', type: 'bar',
+              data: d.requestCount || [],
+              yAxisIndex: 1,
+              itemStyle: { color: 'rgba(0,102,204,0.2)', borderColor: '#0066cc', borderRadius: [4, 4, 0, 0] },
+              barMaxWidth: 20
+            }
+          ]
+        }
+      }
     )
   } catch (error) {
     console.error('加载响应时间趋势失败:', error)
@@ -725,6 +738,26 @@ onMounted(() => {
 
   .chart-wrap {
     min-height: 120px;
+  }
+
+  .chart-error {
+    height: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--app-space-2);
+    color: var(--app-color-danger);
+    text-align: center;
+
+    .error-icon {
+      font-size: 28px;
+    }
+
+    p {
+      margin: 0;
+      font-size: var(--app-fs-caption);
+    }
   }
 
   .chart-container {

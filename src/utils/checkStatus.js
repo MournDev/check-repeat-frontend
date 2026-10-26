@@ -16,7 +16,7 @@ export const CHECK_STATUS = {
 }
 
 export const CHECK_STATUS_META = {
-  pending: { label: '待查重', type: 'info', message: '准备开始查重检测...' },
+  pending: { label: '排队中', type: 'info', message: '排队中，等待调度器分配' },
   checking: { label: '查重中', type: 'warning', message: '正在进行查重检测...' },
   completed: { label: '已完成', type: 'success', message: '查重检测已完成' },
   failure: { label: '失败', type: 'danger', message: '查重检测失败' },

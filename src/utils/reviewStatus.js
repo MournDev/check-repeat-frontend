@@ -14,7 +14,7 @@
 export const PAPER_STATUS = {
   PENDING: 'pending',                 // 待分配
   ASSIGNED: 'assigned',               // 已分配
-  CHECKING: 'checking',               // 待查重
+  CHECKING: 'checking',               // 排队中（等待查重任务执行）
   AUDITING: 'auditing',               // 待审核（导师初审）
   COMPLETED: 'completed',             // 审核通过（语义收窄为初审通过）
   REJECTED: 'rejected',               // 审核不通过
@@ -32,7 +32,7 @@ export const PAPER_STATUS = {
 export const PAPER_STATUS_META = {
   [PAPER_STATUS.PENDING]: { label: '待分配', tagType: 'info' },
   [PAPER_STATUS.ASSIGNED]: { label: '已分配', tagType: 'info' },
-  [PAPER_STATUS.CHECKING]: { label: '待查重', tagType: 'warning' },
+  [PAPER_STATUS.CHECKING]: { label: '排队中', tagType: 'warning' },
   [PAPER_STATUS.AUDITING]: { label: '待审核', tagType: 'warning' },
   [PAPER_STATUS.COMPLETED]: { label: '审核通过', tagType: 'success' },
   [PAPER_STATUS.REJECTED]: { label: '审核不通过', tagType: 'danger' },
@@ -47,7 +47,7 @@ export const PAPER_STATUS_META = {
   [PAPER_STATUS.REVISION_NEEDED]: { label: '需要修改', tagType: 'warning' },
   need_revision: { label: '需要修改', tagType: 'warning' },
   draft: { label: '草稿', tagType: 'info' },
-  submitted: { label: '已提交', tagType: 'info' },
+  submitted: { label: '待处理', tagType: 'info' },
   reviewed: { label: '已审核', tagType: 'warning' },
   revised: { label: '需要修改', tagType: 'warning' },
   not_submitted: { label: '未提交', tagType: 'info' }

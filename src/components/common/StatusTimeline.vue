@@ -165,7 +165,9 @@ const submitResult = computed(() => {
 })
 
 const checkResult = computed(() => {
-  if (!checkDone.value) return '等待查重'
+  if (!checkDone.value) {
+    return status.value === 'checking' ? '排队中' : '待处理'
+  }
   return similarityText.value ? `总相似比 ${similarityText.value}` : '查重已完成'
 })
 

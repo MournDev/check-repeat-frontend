@@ -71,7 +71,7 @@
         <el-form-item label="查重状态">
           <el-select v-model="searchForm.checkStatus" placeholder="选择查重状态" clearable>
             <el-option label="全部" value="" />
-            <el-option label="待查重" value="pending" />
+            <el-option label="排队中" value="pending" />
             <el-option label="查重中" value="checking" />
             <el-option label="已完成" value="completed" />
             <el-option label="失败" value="failure" />

@@ -150,8 +150,8 @@
 
                     <!-- 相似度报告预览弹窗 -->
                     <el-dialog v-model="similarityPreviewVisible" title="相似度报告预览" width="90%" top="5vh"
-                        destroy-on-close @closed="closeSimilarityPreview">
-                        <div class="preview-wrapper" v-loading="similarityPreviewLoading">
+                        :fullscreen="similarityPreviewFullscreen" destroy-on-close @closed="closeSimilarityPreview">
+                        <div class="preview-wrapper" :class="{ 'is-fullscreen': similarityPreviewFullscreen }" v-loading="similarityPreviewLoading">
                             <iframe v-if="similarityPreviewUrl && !similarityPreviewError"
                                 :src="similarityPreviewUrl" class="preview-iframe"
                                 @load="onSimilarityIframeLoad"
@@ -179,8 +179,12 @@
                                     <el-button @click="downloadSimilarityReport">
                                         <el-icon><Download /></el-icon> 下载报告
                                     </el-button>
+                                    <el-button @click="similarityPreviewFullscreen = !similarityPreviewFullscreen">
+                                        <el-icon><FullScreen /></el-icon>
+                                        {{ similarityPreviewFullscreen ? '退出全屏' : '全屏' }}
+                                    </el-button>
                                     <el-button @click="openReportInNewWindow">
-                                        <el-icon><FullScreen /></el-icon> 新窗口
+                                        <el-icon><Link /></el-icon> 新窗口
                                     </el-button>
                                     <el-button @click="closeSimilarityReport">关闭</el-button>
                                 </div>
@@ -313,9 +317,9 @@
             </el-row>
         </div>
         <!-- 文件预览弹框 -->
-        <el-dialog v-model="previewVisible" :title="previewTitle" width="90%" top="5vh" destroy-on-close
-            @closed="resetPreview" class="file-preview-dialog">
-            <div class="preview-wrapper" v-loading="previewLoading">
+        <el-dialog v-model="previewVisible" :title="previewTitle" width="90%" top="5vh"
+            :fullscreen="filePreviewFullscreen" destroy-on-close @closed="resetPreview" class="file-preview-dialog">
+            <div class="preview-wrapper" :class="{ 'is-fullscreen': filePreviewFullscreen }" v-loading="previewLoading">
                 <!-- 统一用iframe加载所有类型（后端+kkfileview自动处理格式转换） -->
                 <iframe v-if="previewUrl && !previewError" :src="previewUrl" class="preview-iframe" @load="onIframeLoad"
                     @error="onIframeError"></iframe>
@@ -350,9 +354,15 @@
                     </div>
                     <div class="footer-actions">
                         <el-button @click="closePreview">关闭</el-button>
-                        <el-button @click="openInNewWindow">
+                        <el-button @click="filePreviewFullscreen = !filePreviewFullscreen">
                             <el-icon>
                                 <FullScreen />
+                            </el-icon>
+                            {{ filePreviewFullscreen ? '退出全屏' : '全屏' }}
+                        </el-button>
+                        <el-button @click="openInNewWindow">
+                            <el-icon>
+                                <Link />
                             </el-icon>
                             新窗口
                         </el-button>
@@ -428,7 +438,7 @@ import {
     ArrowLeft, Download, Document, TrendCharts, Timer,
     ChatLineRound, ChatDotRound, Paperclip, Upload, View, Refresh,
     DocumentChecked, DocumentAdd, Picture, VideoPlay, EditPen, FullScreen, Star,
-    Calendar, Trophy, CircleCheckFilled, CircleCheck, Loading, CircleClose, Clock, QuestionFilled
+    Calendar, Trophy, CircleCheckFilled, CircleCheck, Loading, CircleClose, Clock, QuestionFilled, Link
 } from '@element-plus/icons-vue'
 import { getFileInfo } from "@/api/student.js"
 import { getSubjectFieldTree } from '@/api/user.js'
@@ -459,11 +469,13 @@ const previewUrl = ref('')
 const previewLoading = ref(false)
 const previewError = ref(false)
 const errorMessage = ref('')
+const filePreviewFullscreen = ref(false)
 // 相似度报告预览相关数据
 const similarityPreviewVisible = ref(false)
 const similarityPreviewUrl = ref('')
 const similarityPreviewLoading = ref(false)
 const similarityPreviewError = ref(false)
+const similarityPreviewFullscreen = ref(false)
 const similarityErrorMessage = ref('')
 const currentSimilarityFileSize = ref('')
 
@@ -554,6 +566,7 @@ const resetPreview = () => {
     previewLoading.value = false
     previewError.value = false
     errorMessage.value = ''
+    filePreviewFullscreen.value = false
 }
 
 // 重新加载
@@ -1061,9 +1074,9 @@ const viewSimilarityReport = async () => {
         }
     } else if (checkTask.value.checkStatus.toLowerCase() !== 'completed') {
         const statusMap = {
-            'checking': '检测正在进行中，请稍后再查看报告',
+            'checking': '查重中，请稍后再查看报告',
             'failure': '检测失败，无法查看报告',
-            'pending': '检测排队中'
+            'pending': '排队中，等待调度器分配'
         }
         ElMessage.warning(statusMap[checkTask.value.checkStatus.toLowerCase()] || '检测未完成')
         return
@@ -1109,17 +1122,40 @@ const closeSimilarityPreview = () => {
     similarityPreviewLoading.value = false
     similarityPreviewError.value = false
     similarityErrorMessage.value = ''
+    similarityPreviewFullscreen.value = false
 }
+
+// 联系信息直接渲染成可点击的 tel/mailto 链接，手机端可一键拨打/发信
+const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (char) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+}[char] || char))
 
 const contactAdvisor = () => {
     if (paperDetails.value && paperDetails.value.teacherName) {
-        const phone = paperDetails.value.teacherPhone || '未提供'
-        const email = paperDetails.value.teacherEmail || '未提供'
+        const phone = paperDetails.value.teacherPhone || ''
+        const email = paperDetails.value.teacherEmail || ''
+        const phoneHtml = phone
+            ? `<a href="tel:${escapeHtml(phone)}" style="color: var(--app-color-primary); text-decoration: none;">${escapeHtml(phone)}</a>`
+            : '未提供'
+        const emailHtml = email
+            ? `<a href="mailto:${escapeHtml(email)}" style="color: var(--app-color-primary); text-decoration: none;">${escapeHtml(email)}</a>`
+            : '未提供'
 
         ElMessageBox.alert(
-            `联系 ${paperDetails.value.teacherName} 老师\n\n电话：${phone}\n邮箱：${email}`,
+            `<div style="line-height: 2;">
+                <div>联系 ${escapeHtml(paperDetails.value.teacherName)} 老师</div>
+                <div>电话：${phoneHtml}</div>
+                <div>邮箱：${emailHtml}</div>
+            </div>`,
             '联系指导老师',
-            { confirmButtonText: '我知道了' }
+            {
+                confirmButtonText: '我知道了',
+                dangerouslyUseHTMLString: true
+            }
         )
     } else {
         ElMessage.warning('暂无导师联系信息')
@@ -1948,6 +1984,10 @@ onMounted(() => {
     height: 70vh;
     position: relative;
     background: var(--app-color-card-bg);
+
+    &.is-fullscreen {
+        height: calc(100vh - 160px);
+    }
 
     .preview-iframe {
         width: 100%;

@@ -295,14 +295,24 @@
             <el-icon class="detail-icon"><Message /></el-icon>
             <div class="detail-content">
               <span class="detail-label">邮箱</span>
-              <span class="detail-value">{{ advisorInfo.email }}</span>
+              <a
+                v-if="advisorInfo.email"
+                :href="`mailto:${advisorInfo.email}`"
+                class="detail-value detail-link"
+              >{{ advisorInfo.email }}</a>
+              <span v-else class="detail-value">未提供</span>
             </div>
           </div>
           <div class="detail-item">
             <el-icon class="detail-icon"><Phone /></el-icon>
             <div class="detail-content">
               <span class="detail-label">电话</span>
-              <span class="detail-value">{{ advisorInfo.phone }}</span>
+              <a
+                v-if="advisorInfo.phone"
+                :href="`tel:${advisorInfo.phone}`"
+                class="detail-value detail-link"
+              >{{ advisorInfo.phone }}</a>
+              <span v-else class="detail-value">未提供</span>
             </div>
           </div>
           <div class="detail-item">
@@ -1075,6 +1085,15 @@ onMounted(() => {
       font-size: var(--app-fs-caption);
       color: var(--app-color-ink);
       word-break: break-all;
+    }
+
+    .detail-link {
+      color: var(--app-color-primary);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 }

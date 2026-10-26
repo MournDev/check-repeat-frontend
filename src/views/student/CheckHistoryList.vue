@@ -31,18 +31,13 @@
             @change="fetchPapers"
           >
             <el-option label="待分配" value="pending"></el-option>
-            <el-option label="待查重" value="checking"></el-option>
+            <el-option label="排队中" value="checking"></el-option>
             <el-option label="待审核" value="auditing"></el-option>
             <el-option label="审核通过" value="completed"></el-option>
             <el-option label="审核不通过" value="rejected"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="论文类型">
-          <!--
-            选项来自后端 PaperTypeEnum（经 /api/dict/data/type/paper_type 合成），
-            不是前端硬编码。原先这里写死的是 THESIS/JOURNAL/CONFERENCE —— 一套
-            后端从未存在过的取值，选中任何一个都必然筛出 0 条。
-          -->
           <el-select
             v-model="filterForm.paperType"
             placeholder="全部类型"

@@ -41,8 +41,13 @@ function ensureGlobalResizeListener() {
 export function useChart() {
   const chartRef = shallowRef(null)
   const empty = ref(false)
+  const error = ref(false)
   let instance = null
   let observer = null
+
+  // run 的最近一次参数，供重试按钮复用
+  let lastFetcher = null
+  let lastToOption = null
   // 事件处理器单独保存：render 会重建实例，重建后需要重新绑定（如图表点击钻取）
   const handlers = new Map()
 
@@ -113,13 +118,23 @@ export function useChart() {
    * 返回空 option 或 fetcher 抛错均落空态，业务错误提示由 axios 拦截器统一弹出
    */
   const run = async (fetcher, toOption) => {
+    lastFetcher = fetcher
+    lastToOption = toOption
+    error.value = false
     try {
       const data = await fetcher()
       await render(toOption ? await toOption(data) : data)
-    } catch (error) {
-      console.error('[useChart] 图表数据加载失败:', error)
+    } catch (err) {
+      console.error('[useChart] 图表数据加载失败:', err)
+      error.value = true
       await render(null)
     }
+  }
+
+  /** 重试最近一次取数：接口失败时由页面的“重试”按钮调用 */
+  const retry = async () => {
+    if (!lastFetcher) return
+    await run(lastFetcher, lastToOption)
   }
 
   /**
@@ -154,6 +169,7 @@ export function useChart() {
     // 布尔值，且渲染副作用内访问 empty.value 仍会被依赖追踪。
     // chartRef 不能同理处理——:ref 绑定需要拿到 ref 对象本身。
     get empty() { return empty.value },
-    render, run, update, on, dispose, resize
+    get error() { return error.value },
+    render, run, retry, update, on, dispose, resize
   }
 }
