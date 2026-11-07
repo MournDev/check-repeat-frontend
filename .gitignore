@@ -41,7 +41,9 @@ nginx-1.28.0/
 # AI / 编辑器本地配置，不入库
 .claude/
 .trae/
-.github/
+# .github 整体忽略，仅放行 CI 工作流
+.github/*
+!.github/workflows/
 
 # Editor directories and files
 .vscode/
