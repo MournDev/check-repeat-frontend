@@ -185,9 +185,5 @@ src/
 - `Dockerfile` / `docker-compose.yml` / `nginx.conf` / `deploy/`：部署制品与说明。
 
 ## 联系
-
-- 仓库：[Gitee · check-repeat-frontend](https://gitee.com/Sc0102_1129/check-repeat-frontend)
-- 作者：Smile-h
+- 作者：MournDev
 - 邮箱：3070500838@qq.com
-
-本项目为私有项目（`private: true`），未对外授权。
